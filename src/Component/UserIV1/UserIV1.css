@@ -1,0 +1,1635 @@
+undefined * {
+    line-height: 1
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    font-weight: 300
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit
+}
+
+.left {
+    text-align: left
+}
+
+.right {
+    text-align: right
+}
+
+.center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.justify {
+    text-align: justify
+}
+
+.container {
+    max-width: 1140px;
+    width: 100% !important;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto !important;
+    margin-left: auto !important
+}
+
+@media (min-width:576px) and (max-width:768px) {
+    .container {
+        max-width: 540px
+    }
+}
+
+@media (min-width:768px) and (max-width:992px) {
+    .container {
+        max-width: 720px
+    }
+}
+
+@media (min-width:992px) and (max-width:1200px) {
+    .container {
+        max-width: 960px
+    }
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    line-height: 1
+}
+
+body {
+    font-size: 0;
+    font-family: "Nunito Sans"
+}
+
+html {
+    font-size: 100%
+}
+
+input,
+textarea,
+select {
+    min-height: 20px;
+    border: 0;
+    font-size: 16px
+}
+
+.headerOne,
+.headerTwo,
+.headerThree,
+.headerFour,
+.headerFive,
+.headerSix,
+.paragraph {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    margin: 0.1rem 0;
+    width: 100%
+}
+
+.lg-text-center-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: inherit
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block
+}
+
+body {
+    line-height: 1
+}
+
+ol,
+ul {
+    list-style: none
+}
+
+blockquote,
+q {
+    quotes: none
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: "";
+    content: none
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+a,
+a:link,
+a:visited,
+a:focus,
+a:hover,
+a:active {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    -o-object-fit: inherit;
+       object-fit: inherit;
+    border-radius: inherit
+}
+
+span {
+    display: block
+}
+
+.useriv1-elem-65:hover {
+    color: #000000
+}
+
+.useriv1-elem-72:hover {
+    color: #000000
+}
+
+.useriv1-elem-5 {
+    padding: 20px 16px 20px 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0e4823ff;
+    z-index: 1200;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    margin-left: auto;
+    min-height: 20px;
+    min-width: 20px;
+    position: relative;
+    display: flex;
+    max-width: 1980px;
+    margin-right: auto
+}
+
+.useriv1-elem-4 {
+    justify-content: space-between;
+    align-items: center;
+    height: -moz-fit-content;
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    max-width: 1200px;
+    position: relative
+}
+
+.useriv1-elem-3 {
+    padding: 0px 0px 0px 0px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #00000000;
+    background-image: url(https://res.cloudinary.com/dbyioi2qq/q_auto/v1688108670/static/component-126-2svg_1688108561_26947.svg);
+    background-position: 50% 50%;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-origin: padding-box;
+    border-width: 0px 0px 0px 0px;
+    border-style: solid solid solid solid;
+    border-color: #000000 #000000 #000000 #000000;
+    height: 15px;
+    width: 35px;
+    display: none;
+    position: relative
+}
+
+.useriv1-elem-2 {
+    height: -moz-fit-content;
+    height: fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-1 {
+    font-family: Fraunces;
+    font-size: 25px;
+    font-weight: 700;
+    color: #ffffffff;
+    line-height: 35px;
+    padding: 0px 0px 0px 0px;
+    opacity: 100%;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-15 {
+    padding: 50px 16px 30px 16px;
+    flex-direction: column;
+    align-items: center;
+    background-color: #D1E6FF;
+    margin-left: auto;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: auto;
+    max-width: 1980px;
+    position: relative
+}
+
+.useriv1-elem-16 {
+    font-family: Inter;
+    font-size: 40px;
+    font-weight: 700;
+    color: #182433;
+    line-height: 50px;
+    padding: 30px 0px 0px 0px;
+    text-align: center;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-14 {
+    padding: 50px 1px 1px 1px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    -moz-column-gap: 19px;
+         column-gap: 19px;
+    row-gap: 40px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 1160px;
+    position: relative
+}
+
+.useriv1-elem-13 {
+    padding: 60px 25px 60px 25px;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+    background-color: #ffffffff;
+    box-shadow: 0px 4px 30px 0px #0000000c;
+    border-radius: 23px 23px 23px 23px;
+    border-width: 0px 0px 0px 0px;
+    border-style: solid solid solid solid;
+    border-color: #D1E6FF #D1E6FF #D1E6FF #D1E6FF;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 373px;
+    position: relative
+}
+
+.useriv1-elem-6 {
+    font-family: Inter;
+    font-size: 26px;
+    font-weight: 600;
+    color: #182433;
+    line-height: 36px;
+    padding: 30px 0px 0px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-12 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 500;
+    color: #767D86;
+    line-height: 27px;
+    padding: 30px 0px 30px 0px;
+    text-align: center;
+    opacity: 100%;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative;
+    max-width: none
+}
+
+.useriv1-elem-10 {
+    font-family: Inter;
+    font-size: 50px;
+    font-weight: 700;
+    color: #182433;
+    line-height: 60px;
+    padding: 0px 0px 0px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-11 {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 600;
+    color: #767D86;
+    line-height: 24px;
+    padding: 0px 0px 25px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-59 {
+    padding: 15px 24px 15px 24px;
+    border-radius: 100px 100px 100px 100px;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid solid solid solid;
+    border-color: #182433 #182433 #182433 #182433;
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffffff;
+    line-height: 26px;
+    background-color: #182433;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    position: relative;
+    max-width: 230px
+}
+
+.useriv1-elem-9 {
+    padding: 20px 1px 20px 1px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 5px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 167px;
+    position: relative
+}
+
+.useriv1-elem-8 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-56 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-7 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-21 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-57 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-20 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-19 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-17 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-18 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-23 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-58 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-22 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-55 {
+    padding: 60px 25px 60px 25px;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+    background-color: #ffffffff;
+    box-shadow: 0px 4px 30px 0px #0000000c;
+    border-radius: 23px 23px 23px 23px;
+    border-width: 0px 0px 0px 0px;
+    border-style: solid solid solid solid;
+    border-color: #D1E6FF #D1E6FF #D1E6FF #D1E6FF;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 373px;
+    position: relative
+}
+
+.useriv1-elem-39 {
+    font-family: Inter;
+    font-size: 26px;
+    font-weight: 600;
+    color: #182433;
+    line-height: 36px;
+    padding: 30px 0px 0px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-84 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 500;
+    color: #767D86;
+    line-height: 27px;
+    padding: 30px 0px 30px 0px;
+    text-align: center;
+    opacity: 100%;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative;
+    max-width: none
+}
+
+.useriv1-elem-53 {
+    font-family: Inter;
+    font-size: 50px;
+    font-weight: 700;
+    color: #182433;
+    line-height: 60px;
+    padding: 0px 0px 0px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-54 {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 600;
+    color: #767D86;
+    line-height: 24px;
+    padding: 0px 0px 25px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-52 {
+    padding: 15px 24px 15px 24px;
+    border-radius: 100px 100px 100px 100px;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid solid solid solid;
+    border-color: #182433 #182433 #182433 #182433;
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffffff;
+    line-height: 26px;
+    background-color: #182433;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    position: relative;
+    max-width: 230px
+}
+
+.useriv1-elem-51 {
+    padding: 20px 1px 20px 1px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 5px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 167px;
+    position: relative
+}
+
+.useriv1-elem-42 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-40 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-41 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-48 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-46 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-47 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-45 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-43 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-44 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-50 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-83 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-49 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-38 {
+    padding: 60px 25px 60px 25px;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+    background-color: #ffffffff;
+    box-shadow: 0px 4px 30px 0px #0000000c;
+    border-radius: 23px 23px 23px 23px;
+    border-width: 0px 0px 0px 0px;
+    border-style: solid solid solid solid;
+    border-color: #D1E6FF #D1E6FF #D1E6FF #D1E6FF;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 373px;
+    position: relative
+}
+
+.useriv1-elem-24 {
+    font-family: Inter;
+    font-size: 26px;
+    font-weight: 600;
+    color: #182433;
+    line-height: 36px;
+    padding: 30px 0px 0px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-85 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 500;
+    color: #767D86;
+    line-height: 27px;
+    padding: 30px 0px 30px 0px;
+    text-align: center;
+    opacity: 100%;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative;
+    max-width: none
+}
+
+.useriv1-elem-36 {
+    font-family: Inter;
+    font-size: 50px;
+    font-weight: 700;
+    color: #182433;
+    line-height: 60px;
+    padding: 0px 0px 0px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-37 {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 600;
+    color: #767D86;
+    line-height: 24px;
+    padding: 0px 0px 25px 0px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-60 {
+    padding: 15px 24px 15px 24px;
+    border-radius: 100px 100px 100px 100px;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid solid solid solid;
+    border-color: #182433 #182433 #182433 #182433;
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffffff;
+    line-height: 26px;
+    background-color: #182433;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    position: relative;
+    max-width: 230px
+}
+
+.useriv1-elem-35 {
+    padding: 20px 1px 20px 1px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 5px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 167px;
+    position: relative
+}
+
+.useriv1-elem-27 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-25 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-26 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-32 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-30 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-31 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-29 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-61 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-28 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-34 {
+    padding: 1px 1px 1px 1px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    -moz-column-gap: 10px;
+         column-gap: 10px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.useriv1-elem-62 {
+    padding: 0px 0px 0px 0px;
+    color: #385173;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-width: 10px;
+    min-height: 10px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-33 {
+    font-family: Inter;
+    font-size: 17px;
+    font-weight: 400;
+    color: #767D86;
+    line-height: 27px;
+    opacity: 100%;
+    z-index: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-82 {
+    padding: 16px 0px 16px 0px;
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    display: flex;
+    margin-right: auto;
+    position: relative
+}
+
+.useriv1-elem-63 {
+    -o-object-fit: cover;
+       object-fit: cover;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 152px;
+    position: relative
+}
+
+.useriv1-elem-81 {
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-70 {
+    padding: 0px 32px 0px 32px;
+    justify-content: center;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-69 {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-64 {
+    font-family: Nunito Sans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 28px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-65 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-66 {
+    align-items: stretch;
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-67 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-68 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-80 {
+    padding: 0px 32px 0px 32px;
+    flex-direction: column;
+    justify-content: space-between;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-74 {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-71 {
+    font-family: Nunito Sans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 28px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-72 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-73 {
+    align-items: stretch;
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.useriv1-elem-79 {
+    -moz-column-gap: 12px;
+         column-gap: 12px;
+    row-gap: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.useriv1-elem-75 {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.useriv1-elem-76 {
+    padding: 2px 2px 2px 2px;
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.useriv1-elem-77 {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.useriv1-elem-78 {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.paragraph {
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 400
+}

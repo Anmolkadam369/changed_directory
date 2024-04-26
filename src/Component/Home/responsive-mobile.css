@@ -1,0 +1,623 @@
+
+
+@media (max-width:767px) {
+    .home-elem-13 {
+        padding: 0px 0px 0px 0px
+    }
+
+    .home-elem-195 {
+        background-image: url(https://res.cloudinary.com/dbyioi2qq/q_auto/v1688121981/static/group-488svg_1688121873_90362.svg);
+        height: 16px;
+        width: 25px
+    }
+
+    .home-elem-12 {
+        padding: 32px 16px 32px 16px;
+        flex-direction: column;
+        align-items: center;
+        background-color: #9b9b9bff
+    }
+
+    .home-elem-8 {
+        justify-content: center;
+        align-items: center
+    }
+
+    .home-elem-9 {
+        justify-content: center
+    }
+
+    .home-elem-10 {
+        justify-content: center
+    }
+
+    .home-elem-11 {
+        justify-content: center
+    }
+
+    .home-elem-193 {
+        padding: 32px 16px 32px 16px
+    }
+
+    .home-elem-189 {
+        justify-content: center;
+        align-items: center
+    }
+
+    .home-elem-190 {
+        justify-content: center
+    }
+
+    .home-elem-191 {
+        justify-content: center
+    }
+
+    .home-elem-192 {
+        justify-content: center
+    }
+
+    .home-elem-20 {
+        flex-wrap: wrap;
+        row-gap: 60px
+    }
+
+    .home-elem-21 {
+        align-items: center
+    }
+
+    .home-elem-25 {
+        font-size: 30px;
+        line-height: 40px;
+        text-align: center
+    }
+
+    .home-elem-26 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center
+    }
+
+    .home-elem-27 {
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 10px;
+        background-color: #efefef00;
+        max-width: none
+    }
+
+    .home-elem-28 {
+        font-size: 12px;
+        line-height: 22px;
+        text-align: center;
+        background-color: #EFEFEF;
+        border-radius: 20px 20px 20px 20px;
+        min-height: 42px
+    }
+
+    .home-elem-29 {
+        font-size: 12px;
+        line-height: 22px;
+        width: 100%;
+        min-width: auto;
+        max-width: 300px
+    }
+
+    .home-elem-31 {
+        margin-bottom: -100px;
+        height: 82px;
+        max-width: 86px
+    }
+
+    .home-elem-35 {
+        flex-wrap: nowrap;
+        justify-content: center;
+        row-gap: 20px
+    }
+
+    .home-elem-36 {
+        height: 220px;
+        max-width: 150px
+    }
+
+    .home-elem-37 {
+        height: 270px;
+        max-width: 200px
+    }
+
+    .home-elem-38 {
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 20px;
+        margin-top: -20px
+    }
+
+    .home-elem-39 {
+        font-size: 10px;
+        line-height: 20px
+    }
+
+    .home-elem-40 {
+        flex-direction: row;
+        max-width: 200px;
+        max-height: none
+    }
+
+    .home-elem-41 {
+        font-size: 15px;
+        line-height: 25px
+    }
+
+    .home-elem-42 {
+        font-size: 10px;
+        line-height: 20px;
+        padding: 0px 0px 0px 0px;
+        width: 100%;
+        max-width: none
+    }
+
+    .home-elem-44 {
+        width: fit-content
+    }
+
+    .home-elem-43 {
+        font-size: 15px;
+        line-height: 25px
+    }
+
+    .home-elem-46 {
+        flex-wrap: wrap
+    }
+
+    .home-elem-47 {
+        font-size: 24px;
+        line-height: 34px;
+        text-align: center
+    }
+
+    .home-elem-49 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center
+    }
+
+    .home-elem-50 {
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 20px
+    }
+
+    .home-elem-52 {
+        font-size: 12px;
+        line-height: 22px
+    }
+
+    .home-elem-57 {
+        font-size: 12px;
+        line-height: 22px
+    }
+
+    .home-elem-56 {
+        font-size: 30px;
+        line-height: 40px
+    }
+
+    .home-elem-54 {
+        font-size: 12px;
+        line-height: 22px
+    }
+
+    .home-elem-53 {
+        font-size: 30px;
+        line-height: 40px
+    }
+
+    .home-elem-59 {
+        padding: 100px 16px 50px 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 50px
+    }
+
+    .home-elem-60 {
+        max-width: 385px;
+        min-height: 332px
+    }
+
+    .home-elem-62 {
+        align-items: center
+    }
+
+    .home-elem-63 {
+        font-size: 24px;
+        line-height: 34px;
+        text-align: center
+    }
+
+    .home-elem-64 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center
+    }
+
+    .home-elem-65 {
+        font-size: 12px;
+        line-height: 22px
+    }
+
+    .home-elem-79 {
+        padding: 50px 16px 50px 16px;
+        flex-wrap: wrap-reverse;
+        justify-content: center;
+        row-gap: 50px
+    }
+
+    .home-elem-78 {
+        align-items: center
+    }
+
+    .home-elem-75 {
+        font-size: 24px;
+        line-height: 34px;
+        text-align: center
+    }
+
+    .home-elem-76 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center
+    }
+
+    .home-elem-77 {
+        font-size: 12px;
+        line-height: 22px
+    }
+
+    .home-elem-74 {
+        max-width: 385px;
+        min-height: 332px
+    }
+
+    .home-elem-72 {
+        padding: 50px 16px 50px 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 50px
+    }
+
+    .home-elem-67 {
+        max-width: 385px;
+        min-height: 332px
+    }
+
+    .home-elem-71 {
+        align-items: center
+    }
+
+    .home-elem-68 {
+        font-size: 24px;
+        line-height: 34px;
+        text-align: center
+    }
+
+    .home-elem-69 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center
+    }
+
+    .home-elem-70 {
+        font-size: 12px;
+        line-height: 22px
+    }
+
+    .home-elem-80 {
+        padding: 50px 16px 50px 16px
+    }
+
+    .home-elem-82 {
+        font-size: 24px;
+        line-height: 34px;
+        max-width: 300px
+    }
+
+    .home-elem-83 {
+        font-size: 14px;
+        line-height: 24px;
+        max-width: 360px
+    }
+
+    .home-elem-81 {
+        justify-content: center
+    }
+
+    .home-elem-84 {
+        max-width: none
+    }
+
+    .home-elem-87 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-95 {
+        max-width: none
+    }
+
+    .home-elem-94 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-91 {
+        max-width: none
+    }
+
+    .home-elem-90 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-107 {
+        max-width: none
+    }
+
+    .home-elem-106 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-103 {
+        max-width: none
+    }
+
+    .home-elem-102 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-99 {
+        max-width: none
+    }
+
+    .home-elem-98 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-112 {
+        padding: 50px 16px 50px 16px
+    }
+
+    .home-elem-111 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-110 {
+        font-size: 24px;
+        line-height: 34px
+    }
+
+    .home-elem-125 {
+        align-items: center
+    }
+
+    .home-elem-114 {
+        column-gap: 10px;
+        max-width: none
+    }
+
+    .home-elem-117 {
+        font-size: 10px;
+        line-height: 20px
+    }
+
+    .home-elem-121 {
+        font-size: 10px;
+        line-height: 20px
+    }
+
+    .home-elem-120 {
+        font-size: 10px;
+        line-height: 20px
+    }
+
+    .home-elem-119 {
+        font-size: 10px;
+        line-height: 20px
+    }
+
+    .home-elem-118 {
+        font-size: 10px;
+        line-height: 20px
+    }
+
+    .home-elem-122 {
+        font-size: 16px;
+        line-height: 26px
+    }
+
+    .home-elem-123 {
+        font-size: 16px;
+        line-height: 26px
+    }
+
+    .home-elem-124 {
+        font-size: 28px;
+        line-height: 38px
+    }
+
+    .home-elem-149 {
+        column-gap: 10px
+    }
+
+    .home-elem-145 {
+        font-size: 16px;
+        line-height: 26px
+    }
+
+    .home-elem-146 {
+        font-size: 16px;
+        line-height: 26px
+    }
+
+    .home-elem-148 {
+        font-size: 28px;
+        line-height: 38px
+    }
+
+    .home-elem-137 {
+        column-gap: 10px
+    }
+
+    .home-elem-133 {
+        font-size: 16px;
+        line-height: 26px
+    }
+
+    .home-elem-134 {
+        font-size: 16px;
+        line-height: 26px
+    }
+
+    .home-elem-136 {
+        font-size: 28px;
+        line-height: 38px
+    }
+
+    .home-elem-156 {
+        padding: 50px 16px 50px 16px
+    }
+
+    .home-elem-157 {
+        flex-wrap: wrap;
+        row-gap: 30px
+    }
+
+    .home-elem-154 {
+        font-size: 24px;
+        line-height: 34px;
+        text-align: center
+    }
+
+    .home-elem-155 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: center
+    }
+
+    .home-elem-153 {
+        justify-content: center
+    }
+
+    .home-elem-158 {
+        height: 212px;
+        max-width: 340px
+    }
+
+    .home-elem-150 {
+        font-size: 20px;
+        line-height: 30px
+    }
+
+    .home-elem-151 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-165 {
+        height: 212px;
+        max-width: 340px
+    }
+
+    .home-elem-163 {
+        font-size: 20px;
+        line-height: 30px
+    }
+
+    .home-elem-164 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-161 {
+        height: 212px;
+        max-width: 340px
+    }
+
+    .home-elem-159 {
+        font-size: 20px;
+        line-height: 30px
+    }
+
+    .home-elem-160 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-168 {
+        font-size: 26px;
+        line-height: 36px
+    }
+
+    .home-elem-169 {
+        font-size: 14px;
+        line-height: 24px
+    }
+
+    .home-elem-172 {
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 10px;
+        background-color: #efefef00
+    }
+
+    .home-elem-170 {
+        font-size: 12px;
+        line-height: 22px;
+        text-align: center;
+        background-color: #EFEFEF;
+        border-radius: 30px 30px 30px 30px;
+        min-height: 46px
+    }
+
+    .home-elem-171 {
+        font-size: 12px;
+        line-height: 22px;
+        width: 100%;
+        max-width: 300px
+    }
+
+    .home-elem-188 {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start
+    }
+
+    .home-elem-185 {
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        column-gap: 20px;
+        row-gap: 50px;
+        max-width: none
+    }
+
+    .home-elem-176 {
+        align-items: center
+    }
+
+    .home-elem-174 {
+        text-align: center
+    }
+
+    .home-elem-183 {
+        justify-content: center
+    }
+
+    .home-elem-184 {
+        align-items: center
+    }
+}

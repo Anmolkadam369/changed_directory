@@ -1,0 +1,880 @@
+undefined * {
+    line-height: 1
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    font-weight: 300
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit
+}
+
+.left {
+    text-align: left
+}
+
+.right {
+    text-align: right
+}
+
+.center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.justify {
+    text-align: justify
+}
+
+.container {
+    max-width: 1140px;
+    width: 100% !important;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto !important;
+    margin-left: auto !important
+}
+
+@media (min-width:576px) and (max-width:768px) {
+    .container {
+        max-width: 540px
+    }
+}
+
+@media (min-width:768px) and (max-width:992px) {
+    .container {
+        max-width: 720px
+    }
+}
+
+@media (min-width:992px) and (max-width:1200px) {
+    .container {
+        max-width: 960px
+    }
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    line-height: 1
+}
+
+body {
+    font-size: 0;
+    font-family: "Nunito Sans"
+}
+
+html {
+    font-size: 100%
+}
+
+input,
+textarea,
+select {
+    min-height: 20px;
+    border: 0;
+    font-size: 16px
+}
+
+.headerOne,
+.headerTwo,
+.headerThree,
+.headerFour,
+.headerFive,
+.headerSix,
+.paragraph {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    margin: 0.1rem 0;
+    width: 100%
+}
+
+.lg-text-center-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: inherit
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block
+}
+
+body {
+    line-height: 1
+}
+
+ol,
+ul {
+    list-style: none
+}
+
+blockquote,
+q {
+    quotes: none
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: "";
+    content: none
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+a,
+a:link,
+a:visited,
+a:focus,
+a:hover,
+a:active {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    -o-object-fit: inherit;
+       object-fit: inherit;
+    border-radius: inherit
+}
+
+span {
+    display: block
+}
+
+.Registrationdetails-elem-9::-moz-placeholder {
+    font-family: Kumbh Sans;
+    color: #0000007f
+}
+
+.Registrationdetails-elem-9::placeholder {
+    font-family: Kumbh Sans;
+    color: #0000007f
+}
+
+.Registrationdetails-elem-19:hover {
+    color: #000000
+}
+
+.Registrationdetails-elem-26:hover {
+    color: #000000
+}
+
+.Registrationdetails-elem-39:hover {
+    color: #047ae5ff
+}
+
+.Registrationdetails-elem-5 {
+    padding: 20px 16px 20px 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0e4823ff;
+    z-index: 1200;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    margin-left: auto;
+    min-height: 20px;
+    min-width: 20px;
+    position: relative;
+    display: flex;
+    max-width: 1980px;
+    margin-right: auto
+}
+
+.Registrationdetails-elem-4 {
+    justify-content: space-between;
+    align-items: center;
+    height: -moz-fit-content;
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    max-width: 1200px;
+    position: relative
+}
+
+.Registrationdetails-elem-3 {
+    padding: 0px 0px 0px 0px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #00000000;
+    background-image: url(https://res.cloudinary.com/dbyioi2qq/q_auto/v1688108670/static/component-126-2svg_1688108561_26947.svg);
+    background-position: 50% 50%;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-origin: padding-box;
+    border-width: 0px 0px 0px 0px;
+    border-style: solid solid solid solid;
+    border-color: #000000 #000000 #000000 #000000;
+    height: 15px;
+    width: 35px;
+    display: none;
+    position: relative
+}
+
+.Registrationdetails-elem-2 {
+    height: -moz-fit-content;
+    height: fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-1 {
+    font-family: Fraunces;
+    font-size: 25px;
+    font-weight: 700;
+    color: #ffffffff;
+    line-height: 35px;
+    padding: 0px 0px 0px 0px;
+    opacity: 100%;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-16 {
+    padding: 50px 16px 50px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    z-index: 1;
+    width: 100%;
+    height: 40.705119509937205%;
+    margin-left: auto;
+    min-height: 25vh;
+    min-width: 20px;
+    position: relative;
+    display: flex;
+    max-width: 1200px;
+    margin-right: auto
+}
+
+.Registrationdetails-elem-15 {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    z-index: 1;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    position: relative;
+    display: flex;
+    max-width: 700px
+}
+
+.Registrationdetails-elem-14 {
+    padding: 0px 0px 0px 0px;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    margin-top: auto;
+    min-height: 20px;
+    min-width: 20px;
+    position: relative;
+    display: flex;
+    max-width: 600px;
+    margin-bottom: auto
+}
+
+.Registrationdetails-elem-7 {
+    row-gap: 40px;
+    font-family: Roboto;
+    font-size: 48px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 58px;
+    padding: 10px 0px 5px 0px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-13 {
+    padding: 50px 0px 0px 0px;
+    flex-direction: column;
+    row-gap: 20px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    max-width: 560px;
+    position: relative
+}
+
+.Registrationdetails-elem-11 {
+    padding: 0px 0px 0px 0px;
+    flex-direction: row;
+    -moz-column-gap: 20px;
+         column-gap: 20px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    margin-right: NaNpx;
+    position: relative
+}
+
+.Registrationdetails-elem-10 {
+    flex-direction: column;
+    row-gap: 8px;
+    z-index: 150;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    position: relative;
+    display: flex
+}
+
+.Registrationdetails-elem-8 {
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000ff;
+    line-height: 26px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-9 {
+    padding: 12px 16px 12px 12px;
+    font-family: Roboto;
+    font-size: 16px;
+    color: #000000;
+    line-height: 26px;
+    border: 1px solid #cccccc;
+    border-radius: 8px 8px 8px 8px;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative
+}
+
+.Registrationdetails-elem-12 {
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000ff;
+    line-height: 26px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-6 {
+    padding: 12px 30px 12px 30px;
+    background-color: #000000ff;
+    border-radius: 19px 19px 19px 19px;
+    border-width: 0px 0px 0px 0px;
+    border-style: groove groove groove groove;
+    border-color: #333 #333 #333 #333;
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 400;
+    color: #ffffffff;
+    line-height: 26px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    position: relative
+}
+
+.Registrationdetails-elem-42 {
+    padding: 16px 0px 16px 0px;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 16px;
+    background-color: #FEFEFE;
+    width: 100%;
+    height: auto;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-36 {
+    padding: 16px 0px 16px 0px;
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    display: flex;
+    margin-right: auto;
+    position: relative
+}
+
+.Registrationdetails-elem-17 {
+    -o-object-fit: cover;
+       object-fit: cover;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 152px;
+    position: relative
+}
+
+.Registrationdetails-elem-35 {
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-24 {
+    padding: 0px 32px 0px 32px;
+    justify-content: center;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-23 {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-18 {
+    font-family: Nunito Sans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 28px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-19 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-20 {
+    align-items: stretch;
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-21 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-22 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-34 {
+    padding: 0px 32px 0px 32px;
+    flex-direction: column;
+    justify-content: space-between;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-28 {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-25 {
+    font-family: Nunito Sans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 28px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-26 {
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-27 {
+    align-items: stretch;
+    font-family: Nunito Sans;
+    font-size: 16px;
+    font-weight: 300;
+    color: #333;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: auto;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-33 {
+    -moz-column-gap: 12px;
+         column-gap: 12px;
+    row-gap: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    min-height: 20px;
+    min-width: 20px;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-29 {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.Registrationdetails-elem-30 {
+    padding: 2px 2px 2px 2px;
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.Registrationdetails-elem-31 {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.Registrationdetails-elem-32 {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 22px;
+    height: 22px;
+    position: relative
+}
+
+.Registrationdetails-elem-37 {
+    background-color: #ccc;
+    width: 900%;
+    height: 1px;
+    min-height: 1px;
+    min-width: 20px;
+    display: block;
+    max-width: 1140px;
+    position: relative
+}
+
+.Registrationdetails-elem-41 {
+    justify-content: center;
+    align-items: center;
+    -moz-column-gap: 2px;
+         column-gap: 2px;
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    margin-left: auto;
+    display: flex;
+    position: relative
+}
+
+.Registrationdetails-elem-38 {
+    font-family: Nunito Sans;
+    font-size: 14px;
+    font-weight: 300;
+    color: #666;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 27px;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-39 {
+    font-family: Nunito Sans;
+    font-size: 14px;
+    font-weight: 300;
+    color: #666;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 27px;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.Registrationdetails-elem-40 {
+    font-family: Nunito Sans;
+    font-size: 14px;
+    font-weight: 300;
+    color: #666;
+    line-height: 24px;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 27px;
+    display: block;
+    min-height: 10px;
+    min-width: 16px;
+    position: relative
+}
+
+.paragraph {
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 400
+}

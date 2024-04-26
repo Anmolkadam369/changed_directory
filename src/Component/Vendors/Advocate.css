@@ -1,0 +1,156 @@
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    height: 1000px;
+    position: fixed; /* Makes the sidebar stay in place when scrolling */
+    top: 0; /* Aligns the top of the sidebar with the top of the viewport */
+    left: 0; /* Aligns the sidebar to the left side of the viewport */
+    overflow-y: auto; /* Adds scroll to the sidebar if content exceeds its height */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Adds subtle shadow for depth */
+    border-right: 1px solid #ddd; /* Adds a slight separation from the content */
+    font-family: 'Arial', sans-serif; /* Improves text readability */
+    color: #333; /* Sets a universal text color for the sidebar */
+  }
+  
+  /* Additional styling for navigation links or items in the sidebar */
+  .sidebar a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    margin-bottom: 5px; /* Space between items */
+    border-radius: 5px; /* Rounds the corners of link items */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+  }
+  
+  /* Hover effect for links */
+  .sidebar a:hover {
+    background-color: #ddd; /* Light highlight for hovered item */
+    color: #000; /* Darker text color for contrast */
+  }
+  
+  /* Style for a title or header within the sidebar */
+  .sidebar .sidebar-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px; /* Space after the title */
+  }
+  
+  /* Style for a list of items, assuming you're using <ul> for navigation */
+  .sidebar ul {
+    list-style-type: none; /* Removes default list bullets */
+    padding: 0; /* Resets default padding */
+    margin: 0; /* Resets default margin */
+  }
+  
+  .sidebar ul li {
+    margin-bottom: 10px; /* Space between list items */
+  }
+  
+    
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .sidebar ul li {
+      cursor: pointer;
+      padding: 10px 0;
+    }
+    
+    .sidebar ul ul {
+      padding-left: 20px;
+    }
+    
+    /* Admin Page Layout */
+    .admin-page {
+      margin-left: 50px;  
+      width: 100%;
+      display: flex;
+      height: 100vh;
+      /* margin: auto; Centering the admin page horizontally */
+    }
+    
+    /* Content Styles */
+    .content {
+      margin-left: 200px;
+      width: calc(100% - 200px); /* Subtract 200px from the total width */
+      flex-grow: 1; /* Grow to absorb all additional space */
+      padding: 20px;
+      background-color: #f9f9f9; /* Light grey background */
+      min-height: 100vh; /* Minimum height is 100% of the viewport height */
+      box-sizing: border-box; /* Include padding and border in the width and height calculations */
+  }
+    
+    .dashboard-header h1 {
+      color: #333; /* Dark text for better readability */
+      margin-bottom: 20px;
+    }
+    
+    /* Summary Section Styles */
+    .dashboard-summary {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    
+    .summary-item {
+      background-color: #fff; /* White background for summary items */
+      padding: 20px;
+      border-radius: 8px; /* Rounded corners for the boxes */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+      text-align: center;
+    }
+    
+    .summary-item h2 {
+      color: #4CAF50; /* A green color for numbers */
+      margin: 0;
+      margin-bottom: 10px;
+    }
+    
+    .summary-item p {
+      color: #666; /* Lighter text for the description */
+      margin: 0;
+    }
+    
+    /* Footer Styles */
+    .dashboard-footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333; /* Dark background for footer */
+      color: #fff; /* White text color */
+      margin-top: 60px;
+      border-radius: 8px;
+    }
+    
+    /* Charts Section Styles */
+    .charts-section {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap; /* Ensure responsiveness */
+      margin-top: 20px;
+    }
+    
+    .chart-container {
+      width: 50%; /* Adjust based on preference */
+      text-align: center;
+      margin-bottom: 20px; /* Space between charts if they wrap */
+    }
+    .heading-box{
+          margin-left: 20px;
+          margin-bottom: 10px;
+          font-size: 170%;
+          color: red;
+          background-color: #f0f0f0;
+          padding: 20px; 
+          border: 1px solid #ccc; 
+          border-radius: 10px;
+          width:250px
+    }
+    .no-vehicle {
+        color: red;
+        font-style: italic;
+    }
+    
