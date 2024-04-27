@@ -13,41 +13,82 @@ body, html {
 
 /* Sidebar Styles */
 .admin-page .sidebar {
-  width: 240px;
+  width: 100%; /* Extend the sidebar to full width */
+  height: 10%; /* Set a fixed height */
   background: #333;
   color: white;
-  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
-  transition: width 0.5s;
-  overflow-y: auto;
+  /* overflow-x: auto;  */
+  overflow-y: visible;
+  display: flex; /* Use flexbox to align items horizontally */
+  align-items: center; /* Center items vertically within the bar */
+  z-index: 1000;
 }
 
 .admin-page .sidebar ul {
   list-style: none;
-  width: 100%;
-  padding: 20px 0;
+  display: flex; /* Display list items in a row */
+  /* width: 100%; */
+  padding:15;
+  margin: 0;
+  position: relative;
 }
 
 .admin-page .sidebar li {
+  position: relative;
   padding: 10px 20px;
   cursor: pointer;
   transition: background 0.3s ease;
+  white-space: nowrap;
+  z-index: 1000;
 }
 
-.admin-page .sidebar li:hover {
+/* .admin-page .sidebar li:hover {
   background: #444;
 }
 
-/* Nested List Items in Sidebar */
-.admin-page .sidebar ul ul {
-  padding-left: 0px;
-  display: none; /* Initially hide sub-menus */
+.admin-page .sidebar ul ul, .admin-page .sidebar div.submenu {
+  display: none; 
+  position: absolute;
+  top: 50px; 
+  left: 0;
+  background: #333;
+  width: 100%;
+  box-shadow: 0 8px 6px -6px black; 
+} */
+
+/* .admin-page .sidebar li:hover > ul, .admin-page .sidebar li:hover > div.submenu {
+  display: block; 
+} */
+
+/* Ensuring the list displays correctly under the Reports menu */
+.admin-page .sidebar .submenu {
+  display: none;  /* Hidden by default, will be shown dynamically */
+  position: absolute;
+  top: 100%;  /* Align right below the Reports menu item */
+  left: 0;
+  background: #333;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  width: 160px;  
+  z-index: 1050;
 }
 
-.admin-page .sidebar li:hover > ul {
-  display: block; /* Show sub-menu on hover */
+.admin-page .sidebar li.active > .submenu,
+.admin-page .sidebar li:hover > .submenu {
+  display: block; /* Display the submenu when Reports item is active/hovered */
+}
+
+.admin-page .sidebar .submenu li {
+  color: white; /* Submenu text color */
+  padding: 10px; /* Padding for submenu items */
+  cursor: pointer; /* Make it clear that submenu items are clickable */
+  text-align: left;
+}
+
+.admin-page .sidebar .submenu li:hover {
+  background: #444; /* Submenu item hover effect */
 }
 
 .admin-page .content {

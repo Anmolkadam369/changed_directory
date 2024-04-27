@@ -67,7 +67,7 @@ const VendorApproved = () => {
   return (
     <div>
       <h3 className='bigtitle'>Vendor View / Edit</h3>
-      <table style={{marginTop:"30px", marginBottom:"50px", marginLeft:"40px"}}>
+      <table style={{marginTop:"30px", marginBottom:"50px", marginLeft:"20px", marginRight:'40px'}}>
         <thead>
           <tr>
             <th>Sr. No.</th>

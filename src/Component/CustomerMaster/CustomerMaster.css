@@ -1,8 +1,8 @@
 .Customer-master-form {
-    /* margin-top:30px; */
-    max-width: 1080px;
+    margin-top:30px;
+    max-width: 1380px;
     /* margin: 0 auto; */
-    margin-left: 20px;
+    margin-left: 60px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(38, 21, 21, 0.1);
     /* border-radius: 8px; */
@@ -74,8 +74,16 @@
       }
   }
   .selected-container {
-    background-color: lavender; /* Sets the background color to lavender */
-    border: 1px solid #ccc; /* Optional: adds a border to the box */
-    padding: 15px; /* Adds padding inside the box for some spacing */
-    margin-top: 10px; /* Adds some top margin for spacing from other elements */
+    background-color: #f1f1f1; 
+    border: 1px solid #ccc; 
+    padding: 15px; 
+    margin-top: 10px;
+  }
+
+  .register-container {
+    background-color: #f1f1f1; 
+    border: 1px solid #ccc; 
+    padding: 30px; 
+    margin-top: 10px;
+    margin-bottom : 10px;
   }

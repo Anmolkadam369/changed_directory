@@ -162,7 +162,7 @@ const VendorMasterForm = () => {
   return (
     <div style={{ display: 'flex' }}>
 
-      <form onSubmit={handleSubmit} className="vendor-master-form">
+      <form onSubmit={handleSubmit} className="Customer-master-form">
         <div class="header-container">
           <h3 class="bigtitle">Vendor Master</h3>
           <span class="mandatory-note">All fields are mandatory</span>
@@ -177,7 +177,6 @@ const VendorMasterForm = () => {
               value={formData.systemDate}
               onChange={handleChange}
               readOnly
-              style={{ width: '250px' }}
             />
           </label>
 

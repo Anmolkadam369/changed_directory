@@ -1,9 +1,8 @@
 .vendor-master-form {
-  margin: 0 auto 0 auto; /* This sets top margin to 30px and centers it horizontally */
+  margin: 40ox 40px 0px ; /* This sets top margin to 30px and centers it horizontally */
   padding: 20px;
   width: 1080px; /* Ensures it doesn't grow beyond 1200px but can be less */
   box-shadow: 0 4px 8px rgba(38, 21, 21, 0.1);
-  /* border-radius: 8px; */
   background-color: white;
 }
 

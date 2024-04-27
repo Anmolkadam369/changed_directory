@@ -66,8 +66,8 @@ function view(id) {
   console.log("dddddddddddddddddddd", data.data)
   return (
 <div>
-      <h3 className='titles'>Register View / Edit</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <h3 className='bigtitle'>Register View / Edit</h3>
+      <table style={{ width: '90%',marginLeft:'20px', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>Sr. No.</th>

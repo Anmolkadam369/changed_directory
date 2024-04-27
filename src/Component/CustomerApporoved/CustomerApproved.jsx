@@ -32,8 +32,8 @@ const CustomerApproved = () => {
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
-      <h3 className='titles'>Customer View / Edit</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <h3 className='bigtitle'>Customer View / Edit</h3>
+      <table style={{ width: '90%', marginLeft:"20px", borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>Sr. No.</th>

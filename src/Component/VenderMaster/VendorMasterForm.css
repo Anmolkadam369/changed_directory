@@ -1,10 +1,11 @@
 .vendor-master-form {
     margin-top:30px;
-    max-width: 1200px;
-    margin: 0 auto;
+    /* margin-right: 0px; */
+    margin-bottom: auto;
+    margin-left:60px;
+    width: 1080px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(38, 21, 21, 0.1);
-    /* border-radius: 8px; */
     background-color: #fff;
   }
   
@@ -86,5 +87,6 @@
   color: red;
   margin-top:10px;
   font-size: 0.8rem;    /* Makes the font size smaller */
-  margin-left:15px;        /* Optional: changes the color to make it less prominent */
+  margin-left:10px;        /* Optional: changes the color to make it less prominent */
+  margin-bottom:5px;
 }

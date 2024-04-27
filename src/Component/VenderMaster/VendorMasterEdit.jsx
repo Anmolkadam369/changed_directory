@@ -207,9 +207,9 @@ const handleSubmit = async (e) => {
   return (
     <div style={{ display: 'flex' }}>
 
-      <form onSubmit={handleSubmit} className="vendor-master-form">
+      <form onSubmit={handleSubmit} className="Customer-master-form">
         <div>
-          <h3 className='titles' >Vendor Master Edits</h3>
+          <h3 className='bigtitle' >Vendor Master Edits</h3>
 
           <Snackbar
             open={openSnackbar}
@@ -224,8 +224,10 @@ const handleSubmit = async (e) => {
 
 
         </div>
-        <div className='form-row'>
-          <label className="form-field" style={{ width: '20px' }}>
+
+
+        <div className="form-row">
+        <label className="form-field">
             System Date:
             <input
               type="date"
@@ -233,13 +235,8 @@ const handleSubmit = async (e) => {
               value={formData.systemDate}
               onChange={handleChange}
               readOnly={IsReadOnly}
-              style={{ width: '250px' }}
             />
           </label>
-        </div>
-
-
-        <div className="form-row">
           <label className="form-field">
             Customer Location:
             <input
@@ -304,9 +301,6 @@ const handleSubmit = async (e) => {
               required
               readOnly={IsReadOnly} />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             Pincode:
             <input
@@ -320,6 +314,9 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
             />
           </label>
+        </div>
+
+        <div className='form-row'>
           <label className="form-field">
             Vendor Phone No:
             <input
@@ -346,9 +343,6 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
             />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             Contact Person:
             <input
@@ -360,7 +354,6 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
             />
           </label>
-
           <label className="form-field">
             Contact Person Number :
             <input
@@ -371,7 +364,10 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
               required />
           </label>
-          <label className="form-field">
+        </div>
+
+        <div className='form-row'>
+        <label className="form-field">
             Contact Person Number 2 :
             <input
               type='text'
@@ -381,9 +377,6 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
               required />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             PAN Number:
             <input
@@ -434,7 +427,6 @@ const handleSubmit = async (e) => {
               disabled={IsReadOnly}
               required />
           </label>
-
           <label className="form-field">
             Agreement :
             <input
@@ -458,9 +450,6 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
               required />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             GST Number:
             <input
@@ -471,7 +460,9 @@ const handleSubmit = async (e) => {
               readOnly={IsReadOnly}
               required />
           </label>
+        </div>
 
+        <div className='form-row'>
           <label className="form-field">
             GSTIN :
             <input
@@ -481,6 +472,7 @@ const handleSubmit = async (e) => {
               accept=".pdf,image/*"
               ref={GSTRef}
               disabled={IsReadOnly}
+              style={{ width: '240px' }}
               required />
           </label>
         </div>

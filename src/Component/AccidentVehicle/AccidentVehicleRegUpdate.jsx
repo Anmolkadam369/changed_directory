@@ -55,7 +55,7 @@ const AccidentVehicleRegUpdate = () => {
   const getData = async (e) => {
     const response = await axios.get('http://localhost:3001/api/getAccidentVehicleInfo');
     console.log("response", response);
-    if(response && response.message !== "No accident vehicle data found.") setData(response.data.data)
+    if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
   };
 
   function view(id) {
@@ -66,7 +66,7 @@ const AccidentVehicleRegUpdate = () => {
   return (
     <div>
       <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
-      <table style={{ width: '100%', marginLeft:"30px"}}>
+      <table style={{ width: '90%', marginLeft: "30px", marginRight: "30px" }}>
         <thead>
           <tr>
             <th>Sr. No.</th>
@@ -84,20 +84,20 @@ const AccidentVehicleRegUpdate = () => {
             </tr>
           ) : (
             data.map((item, index) => (
-              <tr key={item.id}>
+              <tr key={item.id} style={{ textAlign: "center" }}> {/* Centralized here */}
                 <td>{index + 1}</td>
                 <td>{item.CustomerName}</td>
                 <td>{item.accidentFileNo}</td>
                 <td>{item.choosenPlan}</td>
                 <td>{item && item.selectedOptions ? JSON.parse(item.selectedOptions).join(', ') : '---'}</td>
                 <td>
-                <button onClick={() => view(item.accidentFileNo)} className='view-button'>View here</button>
-              </td>
-
+                  <button onClick={() => view(item.accidentFileNo)} className='view-button'>View here</button>
+                </td>
               </tr>
             ))
           )}
         </tbody>
+
       </table>
     </div>
   );

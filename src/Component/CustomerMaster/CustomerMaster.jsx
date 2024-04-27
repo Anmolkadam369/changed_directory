@@ -588,7 +588,9 @@ const CustomerMaster = () => {
 
 
         <div style={{ textAlign: 'center' }}>
-          <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+          <button type="submit" 
+          style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+          >
             Submit
           </button>
         </div>

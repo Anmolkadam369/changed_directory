@@ -62,7 +62,7 @@ const CustomerMasterEdit = () => {
         GVW: comingData.GVW || "",
         ULW: comingData.ULW || "",
         InsuranceName: comingData.InsuranceName || "",
-        GSTNo:comingData.GSTNo || ""
+        GSTNo: comingData.GSTNo || ""
         // GST:"",
         // fleetSize:""
       }));
@@ -98,8 +98,8 @@ const CustomerMasterEdit = () => {
     rate: "",
     fleetSize: "",
     plan: '',
-    GST:"",
-    GSTNo:"",
+    GST: "",
+    GSTNo: "",
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "",
     year: "", type: "", application: "", GVW: "", ULW: "",
     InsuranceName: ""
@@ -122,13 +122,13 @@ const CustomerMasterEdit = () => {
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(formData)) {
-        if (key === 'panCard' || key === 'adharCard' || key === 'agreement' || key === 'GST') {
-            if (value === null || value === undefined || (value && value.size === 0)) {
-                return `Field '${key}' is required here.`;
-            }
+      if (key === 'panCard' || key === 'adharCard' || key === 'agreement' || key === 'GST') {
+        if (value === null || value === undefined || (value && value.size === 0)) {
+          return `Field '${key}' is required here.`;
         }
+      }
     }
-    console.log("type",formData['CustomerType'])
+    console.log("type", formData['CustomerType'])
 
 
     for (const [key, value] of Object.entries(formData)) {
@@ -137,7 +137,7 @@ const CustomerMasterEdit = () => {
       //     if (!formData['plan']) {
       //         return "Field 'plan' is required in retail.";
       //     }
-  
+
       // } else if (formData['CustomerType'] === 'fleetOwner') {
       //     const requiredFields = ['vehicleNo', 'chassisNo', 'engineNo', 'make', 'model', 'year', 'type', 'application', 'GVW', 'ULW', 'InsuranceName'];
       //     for (const field of requiredFields) {
@@ -147,18 +147,18 @@ const CustomerMasterEdit = () => {
       //     }
       // }
 
-      if (key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo'&& key !=  'engineNo'&& key !=  'make'&& key !=  'model'&& key !=  'year'&& key !=  'type'&& key !=  'application'&& key !=  'GVW'&& key !=  'ULW'&& key !=  'InsuranceName' && key != 'plan') {
-        if (value === '')   return `Fields '${key}' is required.`;
-    }
+      if (key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+        if (value === '') return `Fields '${key}' is required.`;
+      }
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
-        return 'Please enter a valid email address.';
+      return 'Please enter a valid email address.';
     }
 
     return ''; // If all checks pass, return an empty string
-};
+  };
 
   const handleChange = (e) => {
     const { name, type, files } = e.target;
@@ -194,8 +194,8 @@ const CustomerMasterEdit = () => {
         ...prevState,
         [name]: value
       }));
-      if(name === "CustomerType") {
-        if(value === "retail") {
+      if (name === "CustomerType") {
+        if (value === "retail") {
           setIsRetail(true);
           setIsFleetOwner(false);
         } else if (value === "fleetOwner") {
@@ -252,7 +252,7 @@ const CustomerMasterEdit = () => {
       setTimeout(() => {
         navigate("../Admin");
       }, 2000);
-    } 
+    }
     catch (error) {
       console.error("Error during form submission:", error);
       const errorMessage = error.response?.data || 'An error occurred';
@@ -261,13 +261,16 @@ const CustomerMasterEdit = () => {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex'}}>
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
-          <h3 className='titles'>Customer Master Edit</h3>
+        <div class='header-container'>
+          <h2 className='bigtitle'>Customer Master Edit</h2>
+          <span class="mandatory-note">All fields are mandatory</span>
+        </div>
 
-        <div className='form-row'>
-          <label className="form-field" style={{ width: '20px' }}>
+        <div className="form-row">
+          <label className="form-field">
             System Date:
             <input
               type="date"
@@ -275,12 +278,8 @@ const CustomerMasterEdit = () => {
               value={formData.systemDate}
               onChange={handleChange}
               readOnly={IsReadOnly}
-              style={{ width: '250px' }}
             />
           </label>
-        </div>
-
-        <div className="form-row">
           <label className="form-field">
             Customer Location:
             <input
@@ -292,7 +291,7 @@ const CustomerMasterEdit = () => {
             />
           </label>
           <label className="form-field">
-            Customer Code: {/* This might not be editable if it's system generated */}
+            Customer Code:
             <input
               type="text"
               name="CustomerCode"
@@ -330,9 +329,6 @@ const CustomerMasterEdit = () => {
             Customer City  :
             <input type='text' name="CustomerCity" value={formData.CustomerCity} onChange={handleChange} required readOnly={IsReadOnly} />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             Pincode:
             <input
@@ -346,6 +342,9 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
             />
           </label>
+        </div>
+
+        <div className='form-row'>
           <label className="form-field">
             Customer Phone No:
             <input
@@ -372,9 +371,6 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
             />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             Contact Person:
             <input
@@ -385,7 +381,6 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
               required />
           </label>
-
           <label className="form-field">
             Contact Person Number :
             <input
@@ -396,6 +391,9 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
               required />
           </label>
+        </div>
+
+        <div className='form-row'>
           <label className="form-field">
             Contact Person Number 2 :
             <input
@@ -406,9 +404,6 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
               required />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             PAN Number:
             <input
@@ -419,7 +414,6 @@ const CustomerMasterEdit = () => {
               onChange={handleChange}
               required />
           </label>
-
           <label className="form-field">
             PAN Card :
             <input
@@ -457,7 +451,6 @@ const CustomerMasterEdit = () => {
               accept=".pdf,image/*"
               required />
           </label>
-
           <label className="form-field">
             Agreement :
             <input
@@ -480,9 +473,6 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
               required />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             GST Number:
             <input
@@ -493,7 +483,9 @@ const CustomerMasterEdit = () => {
               readOnly={IsReadOnly}
               required />
           </label>
+        </div>
 
+        <div className='form-row'>
           <label className="form-field">
             GSTIN :
             <input
@@ -506,30 +498,41 @@ const CustomerMasterEdit = () => {
               disabled={IsReadOnly}
               required />
           </label>
-          {isFleetOwner && <div>
-            <label className="form-field">
-              Plan:
-              <input
-                type='text'
-                name="plan"
-                value={formData.plan}
-                onChange={handleChange}
-                readOnly={IsReadOnly}
-                required />
-            </label>
-            <label className="form-field">
-              Fleet Size :
-              <input
-                type='file'
-                name="fleetSize"
-                // value={formData.fleetSize}
-                onChange={handleChange}
-                ref={fleetSizeRef}
-                disabled={IsReadOnly}
-                required />
-            </label>
-          </div>}
         </div>
+        <div>
+          {isFleetOwner && (
+            <div className='selected-container'>
+              <div class="header-container">
+                <h3 class="bigtitle">Fleet Owner</h3>
+                <span class="mandatory-note">All fields are mandatory</span>
+              </div>
+              <div className='form-row'>
+                <label className="form-field">
+                  Plan:
+                  <input
+                    type='text'
+                    name="plan"
+                    value={formData.plan}
+                    onChange={handleChange}
+                    readOnly={IsReadOnly}
+                    required />
+                </label>
+                <label className="form-field">
+                  Fleet Size :
+                  <input
+                    type='file'
+                    name="fleetSize"
+                    // value={formData.fleetSize}
+                    onChange={handleChange}
+                    ref={fleetSizeRef}
+                    disabled={IsReadOnly}
+                    required />
+                </label>
+              </div>
+            </div>
+          )}
+        </div>
+
 
 
         {isRetail &&

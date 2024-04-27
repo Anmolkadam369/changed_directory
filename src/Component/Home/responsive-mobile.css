@@ -110,20 +110,22 @@
     }
 
     .home-elem-35 {
-        flex-wrap: nowrap;
+        display: flex;
+        flex-wrap: wrap;
         justify-content: center;
-        row-gap: 20px
+        align-items: center;
     }
 
-    .home-elem-36 {
-        height: 220px;
-        max-width: 150px
+    .home-elem-36 img, .home-elem-37 img {
+        display: block;
+        height: auto;
+        max-width: 100%
     }
-
+/* 
     .home-elem-37 {
         height: 270px;
         max-width: 200px
-    }
+    } */
 
     .home-elem-38 {
         flex-wrap: wrap;
