@@ -45,25 +45,6 @@ body, html {
   z-index: 1000;
 }
 
-/* .admin-page .sidebar li:hover {
-  background: #444;
-}
-
-.admin-page .sidebar ul ul, .admin-page .sidebar div.submenu {
-  display: none; 
-  position: absolute;
-  top: 50px; 
-  left: 0;
-  background: #333;
-  width: 100%;
-  box-shadow: 0 8px 6px -6px black; 
-} */
-
-/* .admin-page .sidebar li:hover > ul, .admin-page .sidebar li:hover > div.submenu {
-  display: block; 
-} */
-
-/* Ensuring the list displays correctly under the Reports menu */
 .admin-page .sidebar .submenu {
   display: none;  /* Hidden by default, will be shown dynamically */
   position: absolute;
@@ -77,12 +58,12 @@ body, html {
 
 .admin-page .sidebar li.active > .submenu,
 .admin-page .sidebar li:hover > .submenu {
-  display: block; /* Display the submenu when Reports item is active/hovered */
+  display: block; 
 }
 
 .admin-page .sidebar .submenu li {
   color: white; /* Submenu text color */
-  padding: 10px; /* Padding for submenu items */
+  /* padding: 10px; */
   cursor: pointer; /* Make it clear that submenu items are clickable */
   text-align: left;
 }

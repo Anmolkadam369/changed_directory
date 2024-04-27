@@ -7,14 +7,12 @@ import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
 
-
 function WorkshopResponse() {
     const location = useLocation();
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
 
-    // Initially set formData from location state if available
     const initialData = location.state?.data || {
         agreementCPA: "",
         allBillCopy: "",

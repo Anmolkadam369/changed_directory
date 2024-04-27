@@ -1,68 +1,89 @@
 /* Sidebar Styles */
 .sidebar {
-    width: 250px;
-    background-color: #f0f0f0;
-    padding: 20px;
-    height: 1000px;
-    position: fixed; /* Makes the sidebar stay in place when scrolling */
-    top: 0; /* Aligns the top of the sidebar with the top of the viewport */
-    left: 0; /* Aligns the sidebar to the left side of the viewport */
-    overflow-y: auto; /* Adds scroll to the sidebar if content exceeds its height */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Adds subtle shadow for depth */
-    border-right: 1px solid #ddd; /* Adds a slight separation from the content */
-    font-family: 'Arial', sans-serif; /* Improves text readability */
-    color: #333; /* Sets a universal text color for the sidebar */
+  width: 250px; /* Fixed width for large screens */
+  background-color: #f0f0f0;
+  padding: 20px;
+  height: 100vh; /* Full viewport height */
+  position: fixed; /* Makes the sidebar stay in place when scrolling */
+  top: 0; /* Aligns the top of the sidebar with the top of the viewport */
+  left: 0; /* Aligns the sidebar to the left side of the viewport */
+  overflow-y: auto; /* Adds scroll to the sidebar if content exceeds its height */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Adds subtle shadow for depth */
+  border-right: 1px solid #ddd; /* Adds a slight separation from the content */
+  font-family: 'Arial', sans-serif; /* Improves text readability */
+  color: #333; /* Sets a universal text color for the sidebar */
+  z-index: 1000; /* Ensures sidebar is above other content */
+}
+
+/* Additional styling for navigation links or items in the sidebar */
+.sidebar a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  margin-bottom: 5px; /* Space between items */
+  border-radius: 5px; /* Rounds the corners of link items */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Hover effect for links */
+.sidebar a:hover {
+  background-color: #ddd; /* Light highlight for hovered item */
+  color: #000; /* Darker text color for contrast */
+}
+
+/* Style for a title or header within the sidebar */
+.sidebar .sidebar-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px; /* Space after the title */
+}
+
+/* Style for a list of items, assuming you're using <ul> for navigation */
+.sidebar ul {
+  list-style-type: none; /* Removes default list bullets */
+  padding: 0; /* Resets default padding */
+  margin: 0; /* Resets default margin */
+}
+
+.sidebar ul li {
+  margin-bottom: 10px; /* Space between list items */
+  cursor: pointer; /* Indicates clickable items */
+  padding: 10px 0;
+}
+
+/* Media Query for Tablets and Smaller Screens */
+@media (max-width: 768px) {
+  .sidebar {
+      width: 100%; /* Full width for smaller screens */
+      height: auto; /* Adaptive height based on content */
+      position: relative; /* Normal flow under small screen conditions */
   }
-  
-  /* Additional styling for navigation links or items in the sidebar */
+
   .sidebar a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: #333;
-    margin-bottom: 5px; /* Space between items */
-    border-radius: 5px; /* Rounds the corners of link items */
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+      padding: 8px; /* Slightly smaller padding */
   }
-  
-  /* Hover effect for links */
-  .sidebar a:hover {
-    background-color: #ddd; /* Light highlight for hovered item */
-    color: #000; /* Darker text color for contrast */
-  }
-  
-  /* Style for a title or header within the sidebar */
+
   .sidebar .sidebar-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 20px; /* Space after the title */
+      font-size: 16px; /* Smaller font size */
   }
-  
-  /* Style for a list of items, assuming you're using <ul> for navigation */
-  .sidebar ul {
-    list-style-type: none; /* Removes default list bullets */
-    padding: 0; /* Resets default padding */
-    margin: 0; /* Resets default margin */
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 480px) {
+  .sidebar {
+      width: 100%; /* Ensures full width */
+      padding: 15px; /* Slightly less padding to save space */
   }
-  
+
   .sidebar ul li {
-    margin-bottom: 10px; /* Space between list items */
+      padding: 8px 0; /* Less padding for list items */
   }
-  
-    
-    .sidebar ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    
-    .sidebar ul li {
-      cursor: pointer;
-      padding: 10px 0;
-    }
-    
-    .sidebar ul ul {
+}
+
+    /* .sidebar ul ul {
       padding-left: 20px;
-    }
+    } */
     
     /* Admin Page Layout */
     .admin-page {

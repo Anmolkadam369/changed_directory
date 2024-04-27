@@ -233,10 +233,10 @@ const Admin = () => {
                 </ul>
             </aside>
 
-            <main className="content" style={{ paddingLeft: "0px", marginLeft: '100px' }}>
+            <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: "50px" }}>
                     <div>
-                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '100px', marginLeft: '10px' }}
+                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
                             onClick={() => setShowUserId(!showUserId)} />
                         {showUserId && (
                             <div style={{
