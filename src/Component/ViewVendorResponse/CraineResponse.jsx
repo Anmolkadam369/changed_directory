@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
+import backendUrl from '../../environment';
 
 
 function CraineResponse() {
@@ -44,7 +45,7 @@ function CraineResponse() {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action,formData.VendorCode);
-            const response = await axios.put(`http://localhost:3001/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}`);
+            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
             } else {

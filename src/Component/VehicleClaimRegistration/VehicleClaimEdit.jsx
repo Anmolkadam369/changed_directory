@@ -6,6 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
 import {Alert} from '@mui/material';
+import backendUrl from '../../environment';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -514,7 +515,7 @@ const VehicleClaimEdit = () => {
     };
 
     const getDataById= async (id)=>{
-        const response = await axios.get(`http://localhost:3001/api/getVehicle/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getVehicle/${id}`);
         console.log("getDataById",response.data.data)
         setComingData(response.data.data[0])
       }
@@ -523,7 +524,7 @@ const VehicleClaimEdit = () => {
         e.preventDefault();
         console.log('Form data submitted inside:', token,"some",userId);
         try{
-            const response = await axios.put(`http://localhost:3001/api/updateVehicleClaim/${id}/${userId}`, JSON.stringify(accidentData),{
+            const response = await axios.put(`${backendUrl}/api/updateVehicleClaim/${id}/${userId}`, JSON.stringify(accidentData),{
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'

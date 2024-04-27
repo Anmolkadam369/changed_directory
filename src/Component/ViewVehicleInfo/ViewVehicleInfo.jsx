@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import {useNavigate} from 'react-router-dom';
+import backendUrl from '../../environment';
 
 const ViewVehicleInfo = () => {
 const [data, setData] = useState([]);
@@ -59,7 +60,7 @@ function view(id) {
 }
 
   const getData = async (e) => {
-    const response = await axios.get('http://localhost:3001/api/vehicleClaim');
+    const response = await axios.get(`${backendUrl}/api/vehicleClaim`);
     console.log("response", response.data.data);
     setData(response.data.data)
   };

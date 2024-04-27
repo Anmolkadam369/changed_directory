@@ -18,6 +18,7 @@ import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
 import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
 import VendorResponse from '../Vendors/VendorsResponse';
 import claimproassist from '../../Assets/claimproassist.jpg'
+import bacendUrl from "../../environment";
 
 const Admin = () => {
 
@@ -95,8 +96,8 @@ const Admin = () => {
     }, [token, userId, navigate]);
 
     const findUserById = async (id) => {
-        console.log("HEY", id)
-        const response = await axios.get(`http://localhost:3001/api/findById/${id}`);
+        console.log("HEY", `${bacendUrl}/api/findById/${id}`)
+        const response = await axios.get(`${bacendUrl}/api/findById/${id}`);
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);
         setGetData(response.data.data[0])

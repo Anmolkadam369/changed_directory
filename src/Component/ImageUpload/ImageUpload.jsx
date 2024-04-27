@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import "./ImageUpload.css"
 import {useNavigate} from 'react-router-dom';
+import backendUrl from '../../environment';
 
 function ImageUpload() {
     const navigate = useNavigate();
@@ -44,7 +45,7 @@ function ImageUpload() {
         });
     
         try {
-            const response = await axios.post('http://localhost:3001/api/photos', formData, {
+            const response = await axios.post(`${backendUrl}/api/photos`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

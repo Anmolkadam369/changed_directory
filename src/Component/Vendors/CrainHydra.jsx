@@ -22,6 +22,7 @@ import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import AssignedVehicleAdvocate from './AssignedVehiclesAdvocate';
 import AssignedVehicleMachanic from './AssignedVehiclesMachanic';
 import AssignedVehicleCrain from './AssignedVehiclesCrain';
+import backendUrl from '../../environment';
 
 
 const CrainHydra = () => {
@@ -94,7 +95,7 @@ const CrainHydra = () => {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`http://localhost:3001/api/findByIdForVendor/${id}`);
+        const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);
         setGetData(response.data.data[0])

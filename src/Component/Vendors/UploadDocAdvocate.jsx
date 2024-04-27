@@ -6,6 +6,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 function UploadDocAdvocate() {
     const location = useLocation();
@@ -64,7 +65,7 @@ function UploadDocAdvocate() {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`http://localhost:3001/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
         console.log("daa", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -118,7 +119,7 @@ function UploadDocAdvocate() {
         event.preventDefault();
         console.log('formData', formData);
         try {
-            const response = await axios.post(`http://localhost:3001/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData),{
+            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData),{
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'

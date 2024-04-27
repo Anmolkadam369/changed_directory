@@ -7,6 +7,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -168,7 +169,7 @@ const CustomerMaster = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `http://localhost:3001/api/customerInfo/${userId}`,
+        url: `${backendUrl}/api/customerInfo/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': token

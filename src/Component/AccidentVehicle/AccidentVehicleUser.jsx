@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 
 
@@ -75,7 +76,7 @@ const AccidentVehicleUser = () => {
 
   const getData = async (e) => {
     console.log("userid",userId);
-    const response = await axios.get(`http://localhost:3001/api/getPersonalAccidentVehicleInfoById/${userId}`);
+    const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
     if(response.data.message == "No accident vehicle data found.") setData([])
     else{
     console.log("response", response.data.data);

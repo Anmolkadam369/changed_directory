@@ -7,6 +7,7 @@ import { useNavigate, useLocation, json } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
+import backendUrl from '../../environment';
 
 
 function AddedDataByMachanic() {
@@ -71,7 +72,7 @@ function AddedDataByMachanic() {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`http://localhost:3001/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
         console.log("daa", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -100,7 +101,7 @@ function AddedDataByMachanic() {
         event.preventDefault();
         console.log('formData', formData);
         try {
-            const response = await axios.post(`http://localhost:3001/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData),{
+            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData),{
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'

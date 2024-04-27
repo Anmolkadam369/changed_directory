@@ -11,6 +11,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import backendUrl from '../../environment';
 
 const VendorMasterForm = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -141,7 +142,7 @@ const VendorMasterForm = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `http://localhost:3001/api/venderInfo/${userId}`,
+        url: `${backendUrl}/api/venderInfo/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': token

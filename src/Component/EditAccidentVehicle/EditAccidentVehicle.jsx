@@ -7,6 +7,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 function EditAccidentVehicle() {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -71,13 +72,13 @@ function EditAccidentVehicle() {
 
     const getDataById = async (id) => {
         console.log("getdatabyid",id)
-        const response = await axios.get(`http://localhost:3001/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
         console.log("getDataByID", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
     const getVendorInfo = async (id) => {
-        const response = await axios.get(`http://localhost:3001/api/getVendor`);
+        const response = await axios.get(`${backendUrl}/api/getVendor`);
         console.log("vendorInfo", response)
         console.log("response", response.data);
         setVendorData(response.data)
@@ -165,7 +166,7 @@ function EditAccidentVehicle() {
         setAlertInfo({ ...alertInfo, show: false });
         console.log('myformdataformData', formData);
         try {
-            const response = await axios.put(`http://localhost:3001/editVehicleInfo/${formData.accidentFileNo}/${userId}`, JSON.stringify(formData),{
+            const response = await axios.put(`${backendUrl}/editVehicleInfo/${formData.accidentFileNo}/${userId}`, JSON.stringify(formData),{
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'

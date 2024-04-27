@@ -6,6 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import './LoginPage.css';
 import download from '../../Assets/download.png';
 import { Alert } from '@mui/material';
+import backendUrl from '../../environment';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3001/api/login', {
+      const response = await axios.post(`${backendUrl}/api/login`, {
         username,
         password,
       });

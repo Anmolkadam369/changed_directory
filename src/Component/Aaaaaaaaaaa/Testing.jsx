@@ -4,6 +4,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import bacendUrl from "../../environment";
 
 
 // function Testing() {
@@ -165,6 +166,7 @@ function Testing() {
     const [selectValue, setSelectValue] = useState('');
     const [textValue, setTextValue] = useState('');
   
+    console.log("backendurl",bacendUrl)
     const handleDateChange = (newValue) => {
       setSelectedDate(newValue);
     };

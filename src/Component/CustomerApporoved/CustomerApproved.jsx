@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 const CustomerApproved = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const CustomerApproved = () => {
   }
 
   const getData = async (e) => {
-    const response = await axios.get('http://localhost:3001/api/getCustomer');
+    const response = await axios.get(`${backendUrl}/api/getCustomer`);
     console.log("response", response.data.data);
     setData(response.data.data)
   };

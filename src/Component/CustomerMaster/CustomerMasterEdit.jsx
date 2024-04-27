@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
+import backendUrl from '../../environment';
 
 const CustomerMasterEdit = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -114,7 +115,7 @@ const CustomerMasterEdit = () => {
 
 
   const getDataById = async (id) => {
-    const response = await axios.get(`http://localhost:3001/api/getCustomer/${id}`);
+    const response = await axios.get(`${backendUrl}/api/getCustomer/${id}`);
     console.log("daa", response.data.data)
     console.log("response", response.data.data[0]);
     setComingData(response.data.data[0])
@@ -241,7 +242,7 @@ const CustomerMasterEdit = () => {
     try {
       const response = await axios({
         method: 'PUT',
-        url: `http://localhost:3001/api/customerUpdate/${id}/${userId}`,
+        url: `${backendUrl}/api/customerUpdate/${id}/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': token

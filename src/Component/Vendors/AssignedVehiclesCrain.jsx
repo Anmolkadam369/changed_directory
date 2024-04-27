@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 
 
@@ -35,7 +36,7 @@ useEffect(() => {
     const fetchAssignedCases = async () => {
       console.log("randomId", GetDataOfUser.randomId);
       try {
-        const response = await axios.get(`http://localhost:3001/api/assignedTasksCrain/${GetDataOfUser.vendorCode}`);
+        const response = await axios.get(`${backendUrl}/api/assignedTasksCrain/${GetDataOfUser.vendorCode}`);
         console.log("accident vehicle table", response.data.data);
         setData(response.data.data);
       } catch (error) {
@@ -49,7 +50,7 @@ useEffect(() => {
 
   const findUserById = async (id) => {
     console.log("HEY", id)
-    const response = await axios.get(`http://localhost:3001/api/findByIdForVendor/${id}`);
+    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
     console.log("findByIdForVendor", response.data)
     console.log("findByIdForVendor", response.data.data[0]);
     setGetDataOfUser(response.data.data[0])

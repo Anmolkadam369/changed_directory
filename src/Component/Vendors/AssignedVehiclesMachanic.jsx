@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 
 
@@ -33,7 +34,7 @@ const AssignedVehicleMachanic = () => {
     if (GetDataOfUser.length !== 0 && GetDataOfUser.vendorCode) {
       const fetchAssignedCases = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/api/assignedTasksMachanic/${GetDataOfUser.vendorCode}`);
+          const response = await axios.get(`${backendUrl}/api/assignedTasksMachanic/${GetDataOfUser.vendorCode}`);
           console.log("response", response.data.data);
           setData(response.data.data);
         } catch (error) {
@@ -47,7 +48,7 @@ const AssignedVehicleMachanic = () => {
 
   const findUserById = async (id) => {
     console.log("HEY", id)
-    const response = await axios.get(`http://localhost:3001/api/findByIdForVendor/${id}`);
+    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
     console.log("daa", response.data)
     console.log("data", response.data.data[0]);
     setGetDataOfUser(response.data.data[0])

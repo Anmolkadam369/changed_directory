@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
+import backendUrl from '../../environment';
 
 function Registration({ onVehicleData }) {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -22,7 +23,7 @@ function Registration({ onVehicleData }) {
     async function getVehicalData() {
         try {
             console.log("reg",regNo, "useriD", userId)
-            const getData = await axios.get(`http://localhost:3001/api/vehicle/${regNo}/${userId}`)
+            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}`)
             console.log("data", getData)
             console.log(getData.data)
             if (getData.data.message == 'Vehicle found') {

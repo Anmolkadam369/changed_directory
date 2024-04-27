@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Input from '@mui/material/Input';
 import { Alert } from '@mui/material';
+import backendUrl from '../../environment';
 
 
 function Location1({ vehicleData }) {
@@ -86,7 +87,7 @@ function Location1({ vehicleData }) {
     }, [token, userId, navigate]);
 
     const findUserById = async (id) => {
-        const response = await axios.get(`http://localhost:3001/api/findByIdCustomer/${id}`);
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
         setGetData(response.data.data[0]);
         console.log(getData)
     }
@@ -167,7 +168,7 @@ function Location1({ vehicleData }) {
         console.log("AccidentData", accidentDataObject)
         try {
             try {
-                const response = await axios.post(`http://localhost:3001/addVehicleInfo`, accidentDataObject);
+                const response = await axios.post(`${backendUrl}/addVehicleInfo`, accidentDataObject);
                 if (response.data) {
                     alert(`Your Accident File Number: ${response.data.data}`);
                     console.log("response", response.data.data)

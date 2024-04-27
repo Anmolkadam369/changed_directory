@@ -19,6 +19,7 @@ import Location from '../Location/Location';
 import Location1 from '../Location1/Location1';
 import { Alert } from '@mui/material';
 import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
+import backendUrl from '../../environment';
 
 
 const User = () => {
@@ -94,7 +95,7 @@ const User = () => {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`http://localhost:3001/api/findByIdCustomer/${id}`);
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);
         setGetData(response.data.data[0])

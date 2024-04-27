@@ -8,6 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import backendUrl from '../../environment';
 
 const VendorMasterEdit = () => {
   const location = useLocation();
@@ -84,7 +85,7 @@ const VendorMasterEdit = () => {
     GST:null,
   });
   const getDataById = async (id) => {
-    const response = await axios.get(`http://localhost:3001/api/getVendor/${id}`);
+    const response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
     console.log("daa", response.data.data)
     console.log("response", response.data.data[0]);
     setComingData(response.data.data[0])
@@ -182,7 +183,7 @@ const handleSubmit = async (e) => {
   try {
       const response = await axios({
           method: 'PUT',
-          url: `http://localhost:3001/api/venderUpdate/${id}/${userId}`,
+          url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
           data: formDataObj,
           headers: {
               'Authorization': token

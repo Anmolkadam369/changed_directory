@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 
 
@@ -53,7 +54,7 @@ const AccidentVehicleRegUpdate = () => {
   };
 
   const getData = async (e) => {
-    const response = await axios.get('http://localhost:3001/api/getAccidentVehicleInfo');
+    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo`);
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
   };

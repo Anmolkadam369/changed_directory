@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 
 
@@ -60,7 +61,7 @@ const VendorResponse = () => {
   // };
 
   const getData = async (e) => {
-    const response = await axios.get('http://localhost:3001/api/vendorResponse');
+    const response = await axios.get(`${backendUrl}/api/vendorResponse`);
     console.log("response", response.data);
     console.log("machanicData", response.data.data)
     console.log("machanicData", response.data.data[0].machanicData)

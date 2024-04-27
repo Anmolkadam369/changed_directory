@@ -6,6 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
+import backendUrl from '../../environment';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -298,7 +299,7 @@ const VehicleClaimRegistration = () => {
         e.preventDefault();
         try {
             console.log('Form data submitted:', accidentData);
-            const response = await axios.post(`http://localhost:3001/api/addVehicleClaim/${userId}`, JSON.stringify(accidentData), {
+            const response = await axios.post(`${backendUrl}/api/addVehicleClaim/${userId}`, JSON.stringify(accidentData), {
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'

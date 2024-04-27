@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import backendUrl from '../../environment';
 
 
 
@@ -53,7 +54,7 @@ const AccidentVehicle = () => {
   };
 
   const getData = async (e) => {
-    const response = await axios.get('http://localhost:3001/api/getVehicleToAssignVendor');
+    const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor`);
     console.log("response", response.data.data);
     setData(response.data.data)
   };
