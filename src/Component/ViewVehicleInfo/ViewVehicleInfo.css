@@ -1,3 +1,28 @@
+.responsive-table {
+  overflow-x: auto;  /* Allows table to scroll horizontally */
+}
+
+@media (max-width: 768px) {
+  .responsive-table table {
+    width: auto; /* Allows table to shrink and expand as needed */
+  }
+  
+  .responsive-table th, .responsive-table td {
+    padding: 8px; /* Reduce padding on smaller screens */
+  }
+
+  /* Optional: Hide less important columns on smaller screens */
+  .responsive-table th:nth-child(3), .responsive-table td:nth-child(3) {
+    display: none;
+  }
+}
+
+
+
+
+
+
+
 table {
     width: 100%;
     border-collapse: collapse;

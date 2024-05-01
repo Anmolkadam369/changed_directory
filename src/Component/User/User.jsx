@@ -20,6 +20,8 @@ import Location1 from '../Location1/Location1';
 import { Alert } from '@mui/material';
 import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import backendUrl from '../../environment';
+import claimproassist from '../../Assets/claimproassist.jpg'
+
 
 
 const User = () => {
@@ -35,23 +37,14 @@ const User = () => {
 
     let navigate = useNavigate();
 
-    const [view, setView] = useState('');
     const [showAddVehicleOptions, setShowAddVehicleOptions] = useState(false);
-    const [showVehicleInfo, setShowVehicleInfo] = useState(false);
     const [vehicleData, setVehicleData] = useState(null);
     console.log("vehicleDATA", vehicleData)
-
 
     const [showCustomerOptions, setShowCustomerOptions] = useState(false);
     const [showReportsOptions, setShowReportsOptions] = useState(false);
     const [showAddVehicle, setShowAddVehicle] = useState(false);
     console.log("shoaddvehic", showAddVehicle)
-    const [showViewVendor, setShowViewVendor] = useState(false);
-    const [showAddCustomer, setShowAddCustomer] = useState(false);
-    const [showViewCustomer, setShowViewCustomer] = useState(false);
-    const [showVehicleClaim, setShowVehicleClaim] = useState(false);
-    const [showVehicleClaimView, setShowVehicleClaimView] = useState(false);
-    const [addImages, setaddImages] = useState(false);
     const [myAccidentVehicle, setMyAccidentVehicle] = useState(false);
     const [sendLocation, setSendLocation] = useState(false);
 
@@ -114,168 +107,73 @@ const User = () => {
         <div className="admin-page">
             <aside className="sidebar">
                 <ul>
+                <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px'}} />
+
                     <li onClick={() => {
                         setShowCustomerOptions(!showCustomerOptions)
-                        setShowAddVehicle(false); // Show AddVendor Form
-                        setShowViewVendor(false);
-                        setShowViewCustomer(false); // Show ViewVendor Form
-                        setShowAddCustomer(false); // Hide AddVendor Form
-                        setStartingPage(true); // Hide Starting Page
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setaddImages(false)
-                        setMyAccidentVehicle(false)
-
-                    }}>Dashboard</li>
-
-                    <li style={{ marginLeft: '10px' }} onClick={() => {
-                        setShowAddVehicleOptions(!showAddVehicleOptions);
-                        setShowAddVehicle(true); // Show AddVendor Form
-                        setStartingPage(false); // Hide Starting Page
-                        setShowViewVendor(false); // Hide ViewVendor Form
-                        setShowAddCustomer(false); // Show AddVendor Form
-                        setShowViewCustomer(false); // Hide ViewVendor Form
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setaddImages(false)
-                        setMyAccidentVehicle(false)
-
-                    }}>Adding Vehicle</li>
-                    {showAddVehicleOptions && (
-                        <ul>
-                            <li onClick={() => {
-                                setShowAddVehicle(true);
-                                setStartingPage(false);
-                                setShowViewVendor(false);
-                                setShowAddCustomer(false);
-                                setShowViewCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false)
-                                setaddImages(false)
-                                setMyAccidentVehicle(false)
-
-                            }}>
-                                Search Vehicle
-                            </li>
-
-                        </ul>
-                    )}
-
-                    {vehicleData && (<li style={{ marginLeft: '10px' }} onClick={() => {
-                        setShowAddVehicleOptions(!showAddVehicleOptions);
-                        setShowAddVehicle(false); // Show AddVendor Form
-                        setStartingPage(false); // Hide Starting Page
-                        setShowViewVendor(false); // Hide ViewVendor Form
-                        setShowAddCustomer(false); // Show AddVendor Form
-                        setShowViewCustomer(false); // Hide ViewVendor Form
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setaddImages(false)
-                        setMyAccidentVehicle(false)
-                        setSendLocation(true)
-
-                    }}>Locate Vehicle</li>)}
-                {showAddVehicleOptions && (
-                        <ul>
-                            <li onClick={() => {
-                                setShowAddVehicle(false);
-                                setStartingPage(false);
-                                setShowViewVendor(false);
-                                setShowAddCustomer(false);
-                                setShowViewCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false)
-                                setaddImages(false)
-                                setMyAccidentVehicle(false)
-                                setSendLocation(true)
-
-                            }}>
-                                Send Location
-                            </li>
-
-                        </ul>
-                    )}
-
-                    <li style={{ marginLeft: '10px' }} onClick={() => {
-                        setShowReportsOptions(!showReportsOptions)
                         setShowAddVehicle(false);
-                        setShowViewVendor(false);
-                        setShowViewCustomer(false);
-                        setShowAddCustomer(false);
-                        setStartingPage(false);
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setMyAccidentVehicle(true)
-                        setaddImages(false)
-                    }}>Reports</li>
-                    {showReportsOptions && (
-                        <div style={{ marginLeft: "30px" }}>
-                            {/* <li onClick={() => {
-                                setShowViewVendor(true);
-                                setShowAddVehicle(false);
-                                setStartingPage(false);
-                                setShowAddCustomer(false);
-                                setShowViewCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false);
-                                setaddImages(false)
-                                setMyAccidentVehicle(false)
+                        setStartingPage(true);
+                        setMyAccidentVehicle(false)
+                        setSendLocation(false)
+                    }}>Dashboard</li>
+                    <ul>
+                        <li onClick={(e) => {
+                            setShowAddVehicleOptions(!showAddVehicleOptions)
+                            setShowAddVehicle(true);
+                            setStartingPage(false);
+                            setMyAccidentVehicle(false)
+                            setSendLocation(false)
+                            e.stopPropagation();
 
-                            }}>
-                                View Vendor
-                            </li>
-                            <li onClick={() => {
-                                setStartingPage(false);
-                                setShowAddCustomer(false);
-                                setShowViewVendor(false);
-                                setShowAddVehicle(false);
-                                setShowViewCustomer(true);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false);
-                                setaddImages(false)
-                                setMyAccidentVehicle(false)
+                        }}>Adding Vehicle
+                            {showAddVehicleOptions && (
+                                <ul className='submenu'>
+                                    <li onClick={(e) => {
+                                        setShowAddVehicle(true);
+                                        setStartingPage(false);
+                                        setMyAccidentVehicle(false)
+                                        setSendLocation(false)
+                                        e.stopPropagation();
+                                    }}>
+                                        Search Vehicle
+                                    </li>
+                                </ul>
+                            )}
+                        </li>
+                    </ul>
 
-                            }}>
-                                View Customer
-                            </li>
-                            <li onClick={() => {
-                                setShowViewCustomer(false);
-                                setStartingPage(false);
-                                setShowViewVendor(false);
-                                setShowAddVehicle(false);
-                                setShowAddCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(true);
-                                setaddImages(false)
-                                setMyAccidentVehicle(false)
-
-                            }}>
-                                View Register
-                            </li> */}
-                            <li onClick={() => {
-                                setShowViewCustomer(false);
-                                setStartingPage(false);
-                                setShowViewVendor(false);
-                                setShowAddVehicle(false);
-                                setShowAddCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false);
-                                setaddImages(false)
-                                setMyAccidentVehicle(true)
-
-                            }}>
-                                My accident Vehicle
-                            </li>
-                        </div>
-                    )}
-
+                    
+                    <ul>
+                        <li onClick={(e) => {
+                            setShowReportsOptions(!showReportsOptions)
+                            setShowAddVehicle(false);
+                            setStartingPage(false);
+                            setMyAccidentVehicle(true)
+                            setSendLocation(false)
+                            e.stopPropagation();
+                        }}>Reports
+                            {showReportsOptions && (
+                                <ul className='submenu'>
+                                    <li onClick={(e) => {
+                                        setShowAddVehicle(false);
+                                        setStartingPage(false);
+                                        setMyAccidentVehicle(true)
+                                        setSendLocation(false)
+                                        e.stopPropagation();
+                                    }}>
+                                        My Vehicle
+                                    </li>
+                                </ul>
+                            )}
+                        </li>
+                    </ul>
                 </ul>
             </aside>
-            <div className="admin-page" style={{ maxWidth: '80%' }}>
-                <main className="content">
+            <div className="admin-page">
+                <main className="content" style={{marginLeft:'0px'}}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' }}>
                         <div>
-                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
+                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px', marginTop:"40px" }}
                                 onClick={() => setShowUserId(!showUserId)} />
                             {showUserId && (
                                 <div style={{
@@ -376,48 +274,26 @@ const User = () => {
                     {
                         showAddVehicle ? (
                             <>
-                                <Registration onVehicleData={handleVehicleData} />
+                                {!vehicleData && <Registration onVehicleData={handleVehicleData} />}
                                 {alertInfo.show && (
                                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
                                         {alertInfo.message}
                                     </Alert>
                                 )}
-                                {vehicleData && getData && <Location vehicleData={vehicleData} />}
+                                {/* {vehicleData && getData && <Location vehicleData={vehicleData} />} */}
+                                {vehicleData && getData && vehicleData.choosenPlan && <Location1 vehicleData={vehicleData} />}
+
                             </>
                         ) : null
                     }
 
-                    {
+                    {/* {
                         sendLocation ? (
                             <>
                                 {vehicleData.choosenPlan && <Location1 vehicleData={vehicleData} />}
                             </>
-                        ) : null}
+                        ) : null} */}
 
-
-
-                    {
-                        showViewVendor &&
-                        <VendorApproved />
-                    }
-
-                    {
-                        showViewCustomer &&
-                        <CustomerApproved />
-                    }
-                    {
-                        showVehicleClaim &&
-                        <VehicleClaimRegistration />
-                    }
-                    {
-                        showVehicleClaimView &&
-                        <ViewVehicleInfo />
-                    }
-
-                    {
-                        addImages &&
-                        <ImageUpload />
-                    }
                     {
                         myAccidentVehicle &&
                         <AccidentVehicleUser />

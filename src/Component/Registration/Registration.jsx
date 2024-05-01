@@ -40,7 +40,9 @@ function Registration({ onVehicleData }) {
                 setAlertInfo({ show: true, message: getData.data.message, severity: 'success' });
             }
         } catch (error) {
-            console.log("error", error.message);
+            console.log("error", error);
+            if(error.message == "Request failed with status code 401") setAlertInfo({ show: true, message: "you are not authorized", severity: 'success' });
+
         }
     }
 

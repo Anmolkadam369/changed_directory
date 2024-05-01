@@ -22,6 +22,7 @@ import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import AssignedVehicleAdvocate from './AssignedVehiclesAdvocate';
 import AssignedVehicleWorkshop from './AssignedVehiclesWorkshop';
 import backendUrl from '../../environment';
+import claimproassist from '../../Assets/claimproassist.jpg'
 
 
 const Workshop = () => {
@@ -37,25 +38,16 @@ const Workshop = () => {
 
     let navigate = useNavigate();
 
-    const [view, setView] = useState('');
-    const [showAddVehicleOptions, setShowAddVehicleOptions] = useState(false);
-    const [showVehicleInfo, setShowVehicleInfo] = useState(false);
     const [vehicleData, setVehicleData] = useState(null);
     console.log("vehicle", vehicleData)
 
 
     const [showCustomerOptions, setShowCustomerOptions] = useState(false);
     const [showReportsOptions, setShowReportsOptions] = useState(false);
-    const [showAddVehicle, setShowAddVehicle] = useState(false);
-    const [showViewVendor, setShowViewVendor] = useState(false);
-    const [showAddCustomer, setShowAddCustomer] = useState(false);
-    const [showViewCustomer, setShowViewCustomer] = useState(false);
-    const [showVehicleClaim, setShowVehicleClaim] = useState(false);
-    const [showVehicleClaimView, setShowVehicleClaimView] = useState(false);
-    const [addImages, setaddImages] = useState(false);
-    const [myAccidentVehicle, setMyAccidentVehicle] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [startingPage, setStartingPage] = useState(true);
+    const [myAccidentVehicle, setMyAccidentVehicle] = useState(true);
+
 
     const vendorData = [10, 4];
     const vendorLabels = ['resolved', 'pending'];
@@ -94,118 +86,43 @@ const Workshop = () => {
         setGetData(response.data.data[0])
     }
 
-    const handleVehicleData = (data) => {
-        console.log("Received data from Registration:", data);
-        if (data.message != "Vehicle found") alert("No Vehicle found !!!")
-        else setVehicleData(data.data);
-
-    };
-
     return (
         <div className="admin-page">
             <aside className="sidebar">
                 <ul>
+                    <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px' }} />
+
                     <li onClick={() => {
                         setShowCustomerOptions(!showCustomerOptions)
-                        setShowAddVehicle(false); // Show AddVendor Form
-                        setShowViewVendor(false);
-                        setShowViewCustomer(false); // Show ViewVendor Form
-                        setShowAddCustomer(false); // Hide AddVendor Form
                         setStartingPage(true); // Hide Starting Page
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setaddImages(false)
                         setMyAccidentVehicle(false)
-
                     }}>Dashboard</li>
-
-                    {/* <li style={{ marginLeft: '10px' }} onClick={() => {
-                        setShowAddVehicleOptions(!showAddVehicleOptions);
-                        setShowAddVehicle(true); // Show AddVendor Form
-                        setStartingPage(false); // Hide Starting Page
-                        setShowViewVendor(false); // Hide ViewVendor Form
-                        setShowAddCustomer(false); // Show AddVendor Form
-                        setShowViewCustomer(false); // Hide ViewVendor Form
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setaddImages(false)
-                        setMyAccidentVehicle(false)
-
-                    }}>Adding Vehicle Data</li>
-                    {showAddVehicleOptions && (
-                        <ul>
-                            <li onClick={() => {
-                                setShowAddVehicle(true);
-                                setStartingPage(false);
-                                setShowViewVendor(false);
-                                setShowAddCustomer(false);
-                                setShowViewCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false)
-                                setaddImages(false)
-                                setMyAccidentVehicle(false)
-
-                            }}>
-                                Adding Data
-                            </li>
-
-                            {vehicleData && (
-                                <li onClick={() => {
-                                    setShowViewCustomer(false); // Hide ViewCustomer Form
-                                    setStartingPage(false); // Hide Starting Page
-                                    setShowViewVendor(false); // Hide ViewVendor Form
-                                    setShowAddVehicle(false); // Hide AddVehicle Form
-                                    setShowAddCustomer(true); // Show AddCustomer Form
-                                    setShowVehicleClaim(false);
-                                    setShowVehicleClaimView(false)
-                                    setaddImages(false)
-                                    setMyAccidentVehicle(false)
-
-
-                                }}>
-                                    Send Location Details
-                                </li>
-                            )}
-                        </ul>
-                    )} */}
-
-                    <li style={{ marginLeft: '10px' }} onClick={() => {
+                <ul>
+                    <li onClick={(e) => {
                         setShowReportsOptions(!showReportsOptions)
-                        setShowAddVehicle(false);
-                        setShowViewVendor(false);
-                        setShowViewCustomer(false);
-                        setShowAddCustomer(false);
                         setStartingPage(false);
-                        setShowVehicleClaim(false);
-                        setShowVehicleClaimView(false);
-                        setMyAccidentVehicle(true)
-                        setaddImages(false)
-                    }}>Reports</li>
+                        setMyAccidentVehicle(true);
+                        e.stopPropagation();
+                    }}>Reports
                     {showReportsOptions && (
-                        <div style={{ marginLeft: "30px" }}>
+                        <ul  className='submenu' >
 
                             <li onClick={() => {
-                                setShowViewCustomer(false);
                                 setStartingPage(false);
-                                setShowViewVendor(false);
-                                setShowAddVehicle(false);
-                                setShowAddCustomer(false);
-                                setShowVehicleClaim(false);
-                                setShowVehicleClaimView(false);
-                                setaddImages(false)
                                 setMyAccidentVehicle(true)
-
                             }}>
                                 Cases Assigned
                             </li>
-                        </div>
+                        </ul>
                     )}
+                    </li>
+                    </ul>
 
                 </ul>
             </aside>
-            <div className="admin-page" style={{ maxWidth: '80%' }}>
-                <main className="content">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' }}>
+            <div className="admin-page">
+                <main className="content" style={{ marginLeft: '0px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginTop:"40px" }}>
                         <div>
                             <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
                                 onClick={() => setShowUserId(!showUserId)} />
@@ -270,7 +187,7 @@ const Workshop = () => {
                                 }} />
                             </div>
                             <h2 className='heading-box'>
-                                Clients Details
+                                Client's Details
                             </h2>
 
                             <section className="dashboard-summary">
@@ -284,7 +201,7 @@ const Workshop = () => {
                                 </div>
                                 <div className="summary-item">
                                     <h2>100</h2>
-                                    <p>Vehicle Registered On behalf of Organization</p>
+                                    <p>Vehicle Registered On behalf</p>
                                 </div>
 
                             </section>
@@ -301,48 +218,11 @@ const Workshop = () => {
                             </section>
                         </div>
                     }
-                    {
-                        showAddVehicle ? (
-                            <>
-                               <VehicleClaimEdit/>
-                            </>
-                        ) : null
-                    }
-
-                    {
-                        showAddCustomer ? (
-                            <>
-                                {vehicleData && <Location1 vehicleData={vehicleData} />}
-                            </>
-                        ) : null}
 
 
-
-                    {
-                        showViewVendor &&
-                        <VendorApproved />
-                    }
-
-                    {
-                        showViewCustomer &&
-                        <CustomerApproved />
-                    }
-                    {
-                        showVehicleClaim &&
-                        <VehicleClaimRegistration />
-                    }
-                    {
-                        showVehicleClaimView &&
-                        <ViewVehicleInfo />
-                    }
-
-                    {
-                        addImages &&
-                        <ImageUpload />
-                    }
                     {
                         myAccidentVehicle &&
-                        <AssignedVehicleWorkshop/>
+                        <AssignedVehicleWorkshop />
                     }
 
 

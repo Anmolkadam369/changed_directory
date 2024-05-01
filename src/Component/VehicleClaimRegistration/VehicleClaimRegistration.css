@@ -1,39 +1,45 @@
 /* VehicleClaimRegistration.css */
 .container {
-  margin-top: 30px;
-  max-width: 1600px;
-  margin: 0 auto;
+  margin-top: 40px;
+  margin-bottom: 40px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(38, 21, 21, 0.1);
-  border-radius: 8px;
-  background-color:  linear-gradient(-135deg, #c850c0, #4158d0);;
+  background-color: white;
 }
+
 /* Radio Button Group */
 .radio-group {
   display: flex;
   align-items: center;
 }
 
-.radio-group > label {
-  margin-right: 15px; /* Spacing between each radio option */
-  font-weight: normal; /* Adjust the font weight as necessary */
+.radio-group>label {
+  margin-right: 15px;
+  /* Spacing between each radio option */
+  font-weight: normal;
+  /* Adjust the font weight as necessary */
 }
 
 /* Individual Radio Button Label */
 .radio-group label label {
   display: inline-flex;
   align-items: center;
-  margin-right: 5px; /* Spacing between radio button and its label text */
-  cursor: pointer; /* Indicates the label is clickable */
+  margin-right: 5px;
+  /* Spacing between radio button and its label text */
+  cursor: pointer;
+  /* Indicates the label is clickable */
 }
 
 /* Radio Buttons */
 .radio-group input[type="radio"] {
-  margin-right: 5px; /* Space before the label text */
+  margin-right: 5px;
+  /* Space before the label text */
 }
 
-.label, /* For standalone labels */
-.form-field label { /* For labels inside .form-field */
+.label,
+/* For standalone labels */
+.form-field label {
+  /* For labels inside .form-field */
   display: block;
   margin-bottom: 10px;
   color: #333;
@@ -49,14 +55,18 @@
 
 .form-field {
   font-size: small;
-  flex: 1 1 calc(25% - 10px); /* Adjust for 4 items per row, accounting for gap */
+  flex: 1 1 calc(25% - 10px);
+  /* Adjust for 4 items per row, accounting for gap */
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px; /* Space between rows */
+  margin-bottom: 20px;
+  /* Space between rows */
 }
 
-.inputField, /* For input elements */
-.textAreaField { /* For textarea elements, if you decide to use this class */
+.inputField,
+/* For input elements */
+.textAreaField {
+  /* For textarea elements, if you decide to use this class */
   width: 100%;
   padding: 7px;
   margin-top: 5px;
@@ -66,7 +76,8 @@
   font-size: medium;
 }
 
-.button { /* For button elements */
+.button {
+  /* For button elements */
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -81,9 +92,11 @@
   background-color: #45a049;
 }
 
-.required { /* For indicating required fields */
+.required {
+  /* For indicating required fields */
   color: red;
-  display: inline; /* To show asterisk alongside the label */
+  display: inline;
+  /* To show asterisk alongside the label */
   margin-left: 5px;
 }
 
@@ -91,19 +104,21 @@
 @media (max-width: 768px) {
   .form-row {
     flex-direction: column;
-    
+
   }
 
   .form-field {
-    flex: 1 1 100%; /* Each field takes full width on smaller screens */
+    flex: 1 1 100%;
+    /* Each field takes full width on smaller screens */
   }
 
   .button {
-    width: 100%; /* Makes the button full width on smaller screens */
+    width: 100%;
+    /* Makes the button full width on smaller screens */
   }
 }
 
-.heading-box{
+.heading-box {
   margin-top: 20px;
   text-align: center;
   margin-bottom: 20px;
@@ -125,12 +140,15 @@
 }
 
 .radio-group label {
-  margin-right: 5px; /* Spacing to the right of each label */
-  white-space: nowrap; /* Prevents label text from wrapping */
+  margin-right: 5px;
+  /* Spacing to the right of each label */
+  white-space: nowrap;
+  /* Prevents label text from wrapping */
 }
 
 .radio-group input[type="radio"] {
-  margin-right: 5px; /* Spacing to the right of each radio button */
+  margin-right: 5px;
+  /* Spacing to the right of each radio button */
 }
 
 /* Styles for text, date, and file inputs */
@@ -144,5 +162,17 @@ input[type="file"] {
 
 input[type="radio"] {
   margin-left: 10px;
+}
+
+.notUploaded {
+  margin-top: 10px; /* reduced from 20px to 10px to decrease space above the box */
+  padding: 5px;     /* reduced from 10px to 5px for smaller internal padding */
+  font-size: 14px;  /* adding font-size for smaller text, adjust as needed */
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 

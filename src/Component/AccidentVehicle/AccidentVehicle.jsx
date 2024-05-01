@@ -76,8 +76,10 @@ const AccidentVehicle = () => {
   
   return (
     <div>
-      <h3 className='titles'>Assign Vendor to Accident Vehicle</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div class="header-container">
+          <h3 class="bigtitle">Assign Vendor to Accident Vehicle</h3>
+        </div>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginLeft:"30px" }}>
         <thead>
           <tr>
             <th>Sr. No.</th>

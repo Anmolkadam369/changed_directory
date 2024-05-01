@@ -2,6 +2,8 @@ undefined * {
     line-height: 1
 }
 
+
+
 *,
 *::before,
 *::after {
@@ -612,24 +614,25 @@ span {
     position: relative
 }
 
+/* Existing styles */
 .home-elem-17 {
-    padding: 12px 26px 12px 26px;
+    padding: 12px 26px;
     background-color: #EEE;
-    border-radius: 100px 100px 100px 100px;
-    border-width: 0px 0px 0px 0px;
-    border-style: groove groove groove groove;
-    border-color: #333 #333 #333 #333;
+    border-radius: 100px;
+    border: 0; /* Simplified border property */
+    border-style: groove;
+    border-color: #333;
     font-family: Fraunces;
     font-size: 14px;
     font-weight: 700;
     color: #111;
     line-height: 24px;
-    width: -moz-fit-content;
+    margin-right: 10px;
     width: fit-content;
-    height: -moz-fit-content;
     height: fit-content;
-    position: relative
+    position: relative;
 }
+
 
 .home-elem-194 {
     padding: 0px 16px 20px 16px;
@@ -833,6 +836,7 @@ span {
     position: relative
 }
 
+
 .home-elem-26 {
     font-family: Fraunces;
     font-size: 18px;
@@ -851,6 +855,7 @@ span {
     position: relative
 }
 
+
 .home-elem-27 {
     padding: 10px 10px 10px 10px;
     flex-direction: row;
@@ -867,6 +872,7 @@ span {
     max-width: 500px;
     position: relative
 }
+
 
 .home-elem-28 {
     padding: 8px 16px 8px 12px;
@@ -1183,6 +1189,7 @@ span {
     max-width: 575px
 }
 
+
 .home-elem-48 {
     padding: 0px 0px 0px 0px;
     flex-direction: column;
@@ -1193,6 +1200,7 @@ span {
     max-width: 575px;
     position: relative
 }
+
 
 .home-elem-49 {
     font-family: Fraunces;
@@ -1365,6 +1373,7 @@ span {
     position: relative
 }
 
+
 .home-elem-60 {
     padding: 40px 40px 0px 40px;
     flex-direction: column;
@@ -1468,6 +1477,8 @@ span {
     max-width: 1232px;
     position: relative
 }
+
+
 
 .home-elem-78 {
     padding: 0px 0px 0px 0px;
@@ -1573,6 +1584,7 @@ span {
     position: relative
 }
 
+
 .home-elem-67 {
     padding: 40px 40px 0px 40px;
     flex-direction: column;
@@ -1677,6 +1689,8 @@ span {
     max-width: 1980px;
     position: relative
 }
+
+
 
 .home-elem-82 {
     font-family: Fraunces;
@@ -2140,6 +2154,16 @@ span {
     margin-right: auto;
     max-width: 1980px;
     position: relative
+}
+@media (max-width: 480px) {
+    .home-elem-112 {
+       display: none;
+    }
+    /* Additional styles for container or parent elements */
+    .container-or-parent-selector {
+        overflow-x: visible; /* Ensures nothing is hidden due to overflow */
+        white-space: nowrap; /* Prevents wrapping which could hide elements */
+    }
 }
 
 .home-elem-113 {

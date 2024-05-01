@@ -45,11 +45,10 @@ const CustomerMasterEdit = () => {
         contactPersonNum2: comingData.contactPersonNum2 || "",
         cusLocation: comingData.cusLocation || "",
         panNo: comingData.panNo || "",
-        // panCard : comingData.panCard || "",
+        panCard : comingData.panCard || "",
         adharNo: comingData.adharNo || "",
-        // adharCard : comingData.adharCard || "",
-        // agreement : comingData.agreement || "",
-        rate: comingData.rate || "",
+        adharCard : comingData.adharCard || "",
+        agreement : comingData.agreement || "",
         fleetSize: comingData.fleetSize || "",
         plan: comingData.plan || "",
         vehicleNo: comingData.vehicleNo || "",
@@ -63,12 +62,12 @@ const CustomerMasterEdit = () => {
         GVW: comingData.GVW || "",
         ULW: comingData.ULW || "",
         InsuranceName: comingData.InsuranceName || "",
-        GSTNo: comingData.GSTNo || ""
-        // GST:"",
-        // fleetSize:""
+        GSTNo: comingData.GSTNo || "",
+        GST: comingData.GST || "",
+        fleetSize: comingData.fleetSize || ""
       }));
     }
-  }, [comingData]); // Separate useEffect for handling comingData updates
+  }, [comingData]);
 
 
   const today = new Date().toISOString().split('T')[0];
@@ -96,7 +95,6 @@ const CustomerMasterEdit = () => {
     adharNo: '',
     adharCard: "",
     agreement: "",
-    rate: "",
     fleetSize: "",
     plan: '',
     GST: "",
@@ -262,7 +260,7 @@ const CustomerMasterEdit = () => {
   };
 
   return (
-    <div style={{ display: 'flex'}}>
+    <div >
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <div class='header-container'>
@@ -416,16 +414,23 @@ const CustomerMasterEdit = () => {
               required />
           </label>
           <label className="form-field">
-            PAN Card :
-            <input
-              type='file'
-              name="panCard"
-              // value={formData.panCard}
-              onChange={handleChange}
-              ref={panRef}
-              disabled={IsReadOnly}
-              accept=".pdf,image/*"
-              required />
+            PAN Card:
+            {IsReadOnly ? (
+              formData.panCard ? (
+                <img src={formData.panCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No PAN Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="panCard"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={panRef}
+                required
+              />
+            )}
           </label>
           <label className="form-field">
             Adhar Number :
@@ -440,39 +445,43 @@ const CustomerMasterEdit = () => {
         </div>
 
         <div className='form-row'>
-          <label className="form-field">
+        <label className="form-field">
             Adhar Card:
-            <input
-              type='file'
-              name="adharCard"
-              // value={formData.adharCard}
-              onChange={handleChange}
-              disabled={IsReadOnly}
-              ref={adharCardRef}
-              accept=".pdf,image/*"
-              required />
+            {IsReadOnly ? (
+              formData.adharCard ? (
+                <img src={formData.adharCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No Adhar Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="adharCard"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={adharCardRef}
+                required
+              />
+            )}
           </label>
           <label className="form-field">
             Agreement :
-            <input
-              type='file'
-              name="agreement"
-              // value={formData.agreement}
-              onChange={handleChange}
-              disabled={IsReadOnly}
-              ref={agreementRef}
-              accept=".pdf,image/*"
-              required />
-          </label>
-          <label className="form-field">
-            Rate/KM :
-            <input
-              type='text'
-              name="rate"
-              value={formData.rate}
-              onChange={handleChange}
-              readOnly={IsReadOnly}
-              required />
+            {IsReadOnly ? (
+              formData.agreement ? (
+                <img src={formData.agreement} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No Adhar Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="agreement"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={agreementRef}
+                required
+              />
+            )}
           </label>
           <label className="form-field">
             GST Number:
@@ -487,17 +496,24 @@ const CustomerMasterEdit = () => {
         </div>
 
         <div className='form-row'>
-          <label className="form-field">
+        <label className="form-field">
             GSTIN :
-            <input
-              type='file'
-              name="GST"
-              // value={formData.GST}
-              onChange={handleChange}
-              ref={GSTRef}
-              accept=".pdf,image/*"
-              disabled={IsReadOnly}
-              required />
+            {IsReadOnly ? (
+              formData.GST ? (
+                <img src={formData.GST} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No Adhar Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="GST"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={GSTRef}
+                required
+              />
+            )}
           </label>
         </div>
         <div>

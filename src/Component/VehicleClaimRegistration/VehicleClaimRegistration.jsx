@@ -295,25 +295,6 @@ const VehicleClaimRegistration = () => {
             });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            console.log('Form data submitted:', accidentData);
-            const response = await axios.post(`${backendUrl}/api/addVehicleClaim/${userId}`, JSON.stringify(accidentData), {
-                headers: {
-                    'authorization': token,
-                    'Content-Type': 'application/json'
-                }
-            });
-            console.log("response", response.data);
-            setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
-        }
-        catch (error) {
-            console.error('Error response:', error.response);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-        }
-    };
 
     const intimationUpload = useRef(null);
     const firUpload = useRef(null);
@@ -350,6 +331,7 @@ const VehicleClaimRegistration = () => {
         const { name, type, value, files } = e.target;
 
         if (type === 'file') {
+            console.log("myfile")
             if (files[0] && files[0].size > 102400) {
                 setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
                 const refs = {
@@ -399,26 +381,65 @@ const VehicleClaimRegistration = () => {
                 [name]: files[0]
             }));
         }
-        if (name === 'advocateNo') {
+        else if (name === 'advocateNo') {
             const re = /^[0-9\b]+$/;
             if (value === '' || re.test(value)) {
                 if (value.length <= 10) {
                     setAccidentData(prev => ({ ...prev, [name]: value }));
                 }
             }
-        } else if (name === 'state') {
+        } 
+        else if (name === 'state') {
             loadCities(value);
+            setAccidentData(prev => ({ ...prev, [name]: value }));
         }
-        setAccidentData(prev => ({ ...prev, [name]: value }));
+        else{
+            console.log("name"[name], value)
+            setAccidentData(prev => ({ ...prev, [name]: value }));
+        }
     }
+
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log('Form data submitted:', accidentData);
+        const formDataObj = new FormData();
+        for (const key in accidentData) {
+            if (accidentData[key]) {
+              if (accidentData[key] instanceof File) {
+                formDataObj.append(key, accidentData[key], accidentData[key].name);
+              } else {
+                formDataObj.append(key, accidentData[key]);
+              }
+            }
+          }
+      
+          for (let pair of formDataObj.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+          }
+
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${backendUrl}/api/addVehicleClaim/${userId}`,
+                data: formDataObj,
+                headers: {
+                  'Authorization': token
+                }
+              });
+            console.log("response", response.data);
+            setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+        }
+        catch (error) {
+            console.error('Error response:', error.response);
+            const errorMessage = error.response?.data || 'An error occurred';
+            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+        }
+    };
+
 
     return (
         <div className='container'>
-
-            <div class="header-container">
-                <h3 class="title-big-heading">Vehicle Claim Registration</h3>
-            </div>
-
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
                 <div class='header-container'>
                     <h2 className='bigtitle'>Accident Details</h2>
@@ -1197,6 +1218,7 @@ const VehicleClaimRegistration = () => {
                     <label className="form-field">
                         Docket Date:
                         <input
+                            type="date"
                             className='inputField'
                             name="docketDate"
                             value={accidentData.docketDate}

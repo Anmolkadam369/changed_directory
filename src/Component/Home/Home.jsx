@@ -1,5 +1,11 @@
 import React from 'react';
 import './Home.css';
+import './responsive-mobile.css'
+import './responsive-tablet.css'
+import './responsive-bp_1280.css'
+import './responsive-bp_1440.css'
+import './responsive-bp_1920.css'
+
 import { useNavigate } from 'react-router-dom';
 import trucks1 from '../../Assets/trucks1.jpg';
 import trucks2 from '../../Assets/trucks2.jpg';
@@ -17,7 +23,6 @@ function Home() {
         <div className="home-elem-19">
             <div className="home-elem-14">
                 <div className="home-elem-13">
-                    <div className="home-elem-195"></div>
                     <div className="home-elem-15">
                         <span className="home-elem-18">
                             <p>Claim Pro Assist </p>

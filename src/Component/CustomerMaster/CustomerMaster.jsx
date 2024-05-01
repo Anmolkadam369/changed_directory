@@ -184,7 +184,7 @@ const CustomerMaster = () => {
     }
   };
   return (
-    <div style={{ display: 'flex' }}>
+    <div>
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
 

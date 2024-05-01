@@ -105,8 +105,11 @@ const AssignedVehicleMachanic = () => {
 
   return (
     <div>
-      <h3 style={{ textAlign: 'center', backgroundColor: 'lightGreen', padding: '20px' }}>Assigned Vehicles To Machanic</h3>
+
       <div class='form-container'>
+      <div class="header-container">
+        <h3 class="bigtitle">Assigned Vehicles To Mechanic</h3>
+      </div>
         <div class='form-row'>
           <div class="form-field">
             <label>Vehicle No:
@@ -171,66 +174,79 @@ const AssignedVehicleMachanic = () => {
 
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Sr. No.</th>
-            <th>Accident File No</th>
-            <th>AccidentVehicleCode</th>
-            <th>assignedBy</th>
-            <th>View/Upload Document</th>
-            <th>Accepted By Admin</th>
 
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
+      <div className="responsive-table">
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
             <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
-            </tr>
-          ) : (
-            data.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.accidentFileNo}</td>
-                <td>{item.AccidentVehicleCode}</td>
-                <td>{item.assignedBy}</td>
-                <td>
-                  {item.details.length > 0 ? (
-                    <button
-                      onClick={() => view(item.AccidentVehicleCode)}
-                      className="view-button"
-                      disabled={item.details[0].acceptedByAdmin === "reject"}
-                      style={{
-                        backgroundColor: item.details[0].acceptedByAdmin === "reject" ? '#d3d3d3' : undefined, // Grey when disabled
-                        color: 'white',
-                        padding: '10px 30px',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: item.details[0].acceptedByAdmin === "reject" ? 'not-allowed' : 'pointer' // Change cursor based on state
-                      }}>
-                      Upload Data
-                    </button>
-                  ) :  <button
-                  onClick={() => view(item.AccidentVehicleCode)}
-                  className="view-button" style={{padding:'10px 30px'}}
-                  >
-                  Upload Data
-                </button>}
+              <th>Sr. No.</th>
+              <th>Accident File No</th>
+              <th>AccidentVehicleCode</th>
+              <th>assignedBy</th>
+              <th>View/Upload Document</th>
+              <th>Accepted By Admin</th>
+              <th>Rejection Reason</th>
 
-                </td>
-                {item.details !== 0 ? (
-                  <td style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                    {item.details.length > 0 && item.details[0].acceptedByAdmin ? item.details[0].acceptedByAdmin : "Pending"}
-                  </td>
-                ) : (
-                  <td style={{ fontWeight: 'bold', textAlign: 'center' }}>Pending</td>
-                )}
+
+            </tr>
+          </thead>
+          <tbody>
+            {data.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              data.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{index + 1}</td>
+                  <td>{item.accidentFileNo}</td>
+                  <td>{item.AccidentVehicleCode}</td>
+                  <td>{item.assignedBy}</td>
+                  <td>
+                    {item.details.length > 0 ? (
+                      <button
+                        onClick={() => view(item.AccidentVehicleCode)}
+                        className="view-button"
+                        disabled={item.details[0].acceptedByAdmin === "reject"}
+                        style={{
+                          backgroundColor: item.details[0].acceptedByAdmin === "reject" ? '#d3d3d3' : undefined, // Grey when disabled
+                          color: 'white',
+                          padding: '10px 30px',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: item.details[0].acceptedByAdmin === "reject" ? 'not-allowed' : 'pointer' // Change cursor based on state
+                        }}>
+                        Upload Data
+                      </button>
+                    ) : <button
+                      onClick={() => view(item.AccidentVehicleCode)}
+                      className="view-button" style={{ padding: '10px 30px' }}
+                    >
+                      Upload Data
+                    </button>}
+
+                  </td>
+                  {item.details !== 0 ? (
+                    <td style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                      {item.details.length > 0 && item.details[0].acceptedByAdmin ? item.details[0].acceptedByAdmin : "Pending"}
+                    </td>
+                  ) : (
+                    <td style={{ fontWeight: 'bold', textAlign: 'center' }}>Pending</td>
+                  )}
+
+                  <td style={{ textAlign: 'center' }}>
+                    {item.details.length > 0
+                      ? (item.details[0].reasonforRejection !== undefined && item.details[0].reasonforRejection !== null && item.details[0].reasonforRejection !== ''
+                        ? item.details[0].reasonforRejection
+                        : "Accepted")
+                      : "Pending"}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CustomerApproved.css'
+import '../AccidentVehicle/AccidentVehicle.css'
+
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCoffee, faHome, faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -34,13 +36,14 @@ const CustomerApproved = () => {
   return (
     <div>
       <h3 className='bigtitle'>Customer View / Edit</h3>
+      <div className='responsive-table'>
       <table style={{ width: '90%', marginLeft:"20px", borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>Sr. No.</th>
             <th>Customer Name</th>
-            <th>Customer Type</th>
             <th>Email</th>
+            <th>Customer Type</th>
             <th>Edited By</th>
             <th>View</th>
 
@@ -56,8 +59,8 @@ const CustomerApproved = () => {
               <tr key={item.id}>
                 <td>{index + 1}</td>
                 <td>{item.CustomerName}</td>
-                <td>{item.CustomerType}</td>
                 <td>{item.email}</td>
+                <td>{item.CustomerType}</td>
                 <td>{item.EditedBy}</td>
                 <td>
                 <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
@@ -67,6 +70,7 @@ const CustomerApproved = () => {
           )}
         </tbody>
       </table>
+    </div>
     </div>
   );
 

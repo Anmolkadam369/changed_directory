@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './VendorMasterForm.css'
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -48,17 +48,17 @@ const VendorMasterEdit = () => {
         contactPersonNum2: comingData.contactPersonNum2 || "",
         cusLocation: comingData.cusLocation || "",
         panNo: comingData.panNo || "",
-        // panCard : comingData.panCard || "",
+        panCard: comingData.panCard || "",
         adharNo: comingData.adharNo || "",
-        // adharCard : comingData.adharCard || "",
-        // agreement : comingData.agreement || "",
-        // GST : comingData.GST || "",
+        adharCard: comingData.adharCard || "",
+        agreement: comingData.agreement || "",
+        GST: comingData.GST || "",
         rate: comingData.rate || "",
-        GSTNo : comingData.GSTNo || ""
-        
+        GSTNo: comingData.GSTNo || ""
+
       }));
     }
-  }, [comingData]); // Separate useEffect for handling comingData updates
+  }, [comingData]);
 
 
   const [formData, setFormData] = useState({
@@ -81,8 +81,8 @@ const VendorMasterEdit = () => {
     adharCard: null,
     agreement: null,
     rate: "",
-    GSTNo:"",
-    GST:null,
+    GSTNo: "",
+    GST: null,
   });
   const getDataById = async (id) => {
     const response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
@@ -101,112 +101,112 @@ const VendorMasterEdit = () => {
   const handleChange = (e) => {
     const { name, type, files } = e.target;
     if (type === 'file') {
-        if (files[0] && files[0].size > 102400) {
-          setSnackbarMessage("File size should be less than 2 MB!");
-          setOpenSnackbar(true);
-          const refs = {
-            GST: GSTRef,
-            panCard: panRef,
-            adharCard: adharCardRef,
-            agreement: agreementRef
+      if (files[0] && files[0].size > 102400) {
+        setSnackbarMessage("File size should be less than 2 MB!");
+        setOpenSnackbar(true);
+        const refs = {
+          GST: GSTRef,
+          panCard: panRef,
+          adharCard: adharCardRef,
+          agreement: agreementRef
         };
 
         if (refs[name] && refs[name].current) {
-            refs[name].current.value = "";
+          refs[name].current.value = "";
         }
 
-          setFormData(prevState => ({
-              ...prevState,
-              [name]: null // Reset the file state
-          }));
-          return;
-        }
         setFormData(prevState => ({
-            ...prevState,
-            [name]: files[0]
+          ...prevState,
+          [name]: null // Reset the file state
         }));
-    } else {
-        const { value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    }
-};
-
-const validateForm = () => {
-  for (const [key, value] of Object.entries(formData)) {
-    if (key === 'panCard' || key === 'adharCard' || key === 'agreement' || key === 'GST') {
-      if (value === null || value === undefined || value.size === 0)
-        return `Field '${key}' is required.`;
-    }
-    if (value === '') {
-      return `Field '${key}' is required.`;
-    }
-  }
-
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(formData.email)) {
-    return 'Please enter a valid email address.';
-  }
-
-  return '';
-};
-
-
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const validationMessage = validateForm();
-  if (validationMessage) {
-    setSnackbarMessage(validationMessage);
-    setOpenSnackbar(true);
-    return;
-  }
-  console.log('Form data submitted:', formData);
-  const formDataObj = new FormData();
-  for (const key in formData) {
-      if (formData[key]) {  // Check if the data is not undefined or null
-          if (formData[key] instanceof File) {
-              formDataObj.append(key, formData[key], formData[key].name);
-          } else {
-              formDataObj.append(key, formData[key]);
-          }
+        return;
       }
-  }
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: files[0]
+      }));
+    } else {
+      const { value } = e.target;
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    }
+  };
 
-  // Debugging FormData contents
-  for (let pair of formDataObj.entries()) {
+  const validateForm = () => {
+    for (const [key, value] of Object.entries(formData)) {
+      if (key === 'panCard' || key === 'adharCard' || key === 'agreement' || key === 'GST') {
+        if (value === null || value === undefined || value.size === 0)
+          return `Field '${key}' is required.`;
+      }
+      if (value === '') {
+        return `Field '${key}' is required.`;
+      }
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      return 'Please enter a valid email address.';
+    }
+
+    return '';
+  };
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationMessage = validateForm();
+    if (validationMessage) {
+      setSnackbarMessage(validationMessage);
+      setOpenSnackbar(true);
+      return;
+    }
+    console.log('Form data submitted:', formData);
+    const formDataObj = new FormData();
+    for (const key in formData) {
+      if (formData[key]) {  // Check if the data is not undefined or null
+        if (formData[key] instanceof File) {
+          formDataObj.append(key, formData[key], formData[key].name);
+        } else {
+          formDataObj.append(key, formData[key]);
+        }
+      }
+    }
+
+    // Debugging FormData contents
+    for (let pair of formDataObj.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
-  }
+    }
 
-  try {
+    try {
       const response = await axios({
-          method: 'PUT',
-          url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
-          data: formDataObj,
-          headers: {
-              'Authorization': token
-          }
+        method: 'PUT',
+        url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
+        data: formDataObj,
+        headers: {
+          'Authorization': token
+        }
       });
       console.log("response", response.data);
       setSnackbarMessage("Form submitted successfully!");
       setOpenSnackbar(true);
       setTimeout(() => {
-          navigate("../Admin");
+        navigate("../Admin");
       }, 2000);
-  } catch (error) {
+    } catch (error) {
       console.error("Error during form submission:", error);
       setSnackbarMessage("Failed to submit the form.");
       setOpenSnackbar(true);
-  }
-};
+    }
+  };
 
   const editable = () => {
     setIsReadOnly(!IsReadOnly)
   }
   return (
-    <div style={{ display: 'flex' }}>
+    <div>
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <div>
@@ -228,7 +228,7 @@ const handleSubmit = async (e) => {
 
 
         <div className="form-row">
-        <label className="form-field">
+          <label className="form-field">
             System Date:
             <input
               type="date"
@@ -368,7 +368,7 @@ const handleSubmit = async (e) => {
         </div>
 
         <div className='form-row'>
-        <label className="form-field">
+          <label className="form-field">
             Contact Person Number 2 :
             <input
               type='text'
@@ -390,18 +390,25 @@ const handleSubmit = async (e) => {
           </label>
 
           <label className="form-field">
-            PAN Card :
-            <input
-              type='file'
-              name="panCard"
-              // value={formData.panCard}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              // readOnly={IsReadOnly}
-              ref={panRef}
-              disabled={IsReadOnly}
-              required />
+            PAN Card:
+            {IsReadOnly ? (
+              formData.panCard ? (
+                <img src={formData.panCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No PAN Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="panCard"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={panRef}
+                required
+              />
+            )}
           </label>
+
           <label className="form-field">
             Adhar Number :
             <input
@@ -417,29 +424,41 @@ const handleSubmit = async (e) => {
         <div className='form-row'>
           <label className="form-field">
             Adhar Card:
-            <input
-              type='file'
-              name="adharCard"
-              // value={formData.adharCard}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              // readOnly={IsReadOnly}
-              ref={adharCardRef}
-              disabled={IsReadOnly}
-              required />
+            {IsReadOnly ? (
+              formData.adharCard ? (
+                <img src={formData.adharCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No Adhar Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="adharCard"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={adharCardRef}
+                required
+              />
+            )}
           </label>
           <label className="form-field">
             Agreement :
-            <input
-              type='file'
-              name="agreement"
-              // value={formData.GST}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              // readOnly={IsReadOnly}
-              ref={agreementRef}
-              disabled={IsReadOnly}
-              required />
+            {IsReadOnly ? (
+              formData.agreement ? (
+                <img src={formData.agreement} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No Adhar Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="agreement"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={agreementRef}
+                required
+              />
+            )}
           </label>
           <label className="form-field">
             Rate/KM :
@@ -466,15 +485,22 @@ const handleSubmit = async (e) => {
         <div className='form-row'>
           <label className="form-field">
             GSTIN :
-            <input
-              type='file'
-              name="GST"
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              ref={GSTRef}
-              disabled={IsReadOnly}
-              style={{ width: '240px' }}
-              required />
+            {IsReadOnly ? (
+              formData.GST ? (
+                <img src={formData.GST} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+              ) : (
+                <p>No Adhar Card uploaded</p>
+              )
+            ) : (
+              <input
+                type="file"
+                name="GST"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={GSTRef}
+                required
+              />
+            )}
           </label>
         </div>
 

@@ -75,63 +75,72 @@ const AccidentVehicleUser = () => {
   }
 
   const getData = async (e) => {
-    console.log("userid",userId);
+    console.log("userid", userId);
     const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
-    if(response.data.message == "No accident vehicle data found.") setData([])
-    else{
-    console.log("response", response.data.data);
-    setData(response.data.data)}
+    if (response.data.message == "No accident vehicle data found.") setData([])
+    else {
+      console.log("response", response.data.data);
+      setData(response.data.data)
+    }
   };
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
-      <h3 className='titles'>My Vehicles Cases</h3>
-      <div class='form-container'>
-        <div class='form-row'>
-          <div class="form-field">
+
+      <div style={{ display: 'flex', flexDirection: 'column', padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+        <div style={{ marginBottom: '10px' }}>
+        <div class="header-container">
+        <h3 class="bigtitle">My Vehicles Cases</h3>
+      </div>
+          <div style={{ marginBottom: '15px' }}>
             <label>Vehicle No:
               <input
                 type='text'
                 name="VehicleNo"
+                style={{ width: '100%', padding: '8px' }}
                 value={formData.VehicleNo}
                 onChange={handleChange}
                 required />
             </label>
           </div>
-          <div class="form-field">
+          <div style={{ marginBottom: '15px' }}>
             <label>Accident File No:
               <input
                 type='text'
                 name="accidentFileNo"
+                style={{ width: '100%', padding: '8px' }}
                 value={formData.accidentFileNo}
                 onChange={handleChange}
                 required />
             </label>
           </div>
-          <div class="form-field">
+          <div style={{ marginBottom: '15px' }}>
             <label>Loss Type:
               <input
                 type='text'
                 name="lossType"
+                style={{ width: '100%', padding: '8px' }}
                 value={formData.lossType}
                 onChange={handleChange}
                 required />
             </label>
           </div>
-          <div class="form-field">
+          <div style={{ marginBottom: '15px' }}>
             <label>Service Type:
               <input
                 type='text'
                 name="serviceType"
+                style={{ width: '100%', padding: '8px' }}
                 value={formData.serviceType}
                 onChange={handleChange}
                 required />
             </label>
           </div>
-          <div class="form-field">
+          <div style={{ marginBottom: '15px' }}>
             <label>Vendor Type:
               <select
                 name="vendorType"
+                style={{ width: '100%', padding: '8px' }}
                 value={formData.vendorType}
                 onChange={handleChange}
                 required>
@@ -143,59 +152,63 @@ const AccidentVehicleUser = () => {
               </select>
             </label>
           </div>
-
-          <div class="form-field">
+          <div style={{ marginBottom: '15px' }}>
             <label>From Date:
               <input
                 type='date'
                 name="fromDate"
+                style={{ width: '100%', padding: '8px' }}
                 value={formData.fromDate}
                 onChange={handleChange}
                 required />
-            </label>
             To Date:
             <input
               type='date'
               name="toDate"
+              style={{ width: '100%', padding: '8px' }}
               value={formData.toDate}
               onChange={handleChange}
               required />
+            </label>
           </div>
         </div>
-
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Sr. No.</th>
-            <th>Accident File No</th>
-            <th>Chassis Number</th>
-            <th>Model</th>
-            <th>See Updated Pics</th>
+      <div className=''></div>
 
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
+      <div className='responsive-table'>
+        <table style={{ width: '100%', marginLeft:"40px", borderCollapse: 'collapse' }}>
+          <thead>
             <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
+              <th>Sr. No.</th>
+              <th>Accident File No</th>
+              <th>Model</th>
+              <th>Chassis Number</th>
+              <th>See Updated Pics</th>
+
             </tr>
-          ) : (
-            data.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.accidentFileNo}</td>
-                <td>{item.chassisNo}</td>
-                <td>{item.model}</td>
-                <td>
-                  <button onClick={() => view(item.id)} className="view-button">Updated Pics</button>
-                </td>
+          </thead>
+          <tbody>
+            {data.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              data.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{index + 1}</td>
+                  <td>{item.accidentFileNo}</td>
+                  <td>{item.model}</td>
+                  <td>{item.chassisNo}</td>
+                  <td>
+                    <button onClick={() => view(item.id)} className="view-button">Updated Pics</button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 

@@ -104,7 +104,8 @@ function UploadDocAdvocate() {
         indemnityBondCopy:"",
         bailerDetails:"",
         releaseOrderCopy:"",
-        feedback:""
+        feedback:"",
+        releaseUpload:""
     });
 
     const handleChange = (event) => {
@@ -307,7 +308,6 @@ function UploadDocAdvocate() {
                         name="firCopy"
                         value={formData.firCopy}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label> 
                 <label className="form-field">
@@ -318,7 +318,6 @@ function UploadDocAdvocate() {
                         name="POA"
                         value={formData.POA}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label> 
                 <label className="form-field">
@@ -329,7 +328,6 @@ function UploadDocAdvocate() {
                         name="petitionCopy"
                         value={formData.petitionCopy}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
                 <label className="form-field">
@@ -340,7 +338,6 @@ function UploadDocAdvocate() {
                         name="policeReportCopy"
                         value={formData.policeReportCopy}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
                 <label className="form-field">
@@ -351,7 +348,6 @@ function UploadDocAdvocate() {
                         className='inputField'
                         value={formData.indemnityBondCopy}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
 
@@ -365,7 +361,6 @@ function UploadDocAdvocate() {
                         className='inputField'
                         value={formData.bailerDetails}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
                 <label className="form-field">
@@ -376,7 +371,6 @@ function UploadDocAdvocate() {
                         className='inputField'
                         value={formData.releaseOrderCopy}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
                 <label className="form-field">
@@ -387,17 +381,15 @@ function UploadDocAdvocate() {
                         className='inputField'
                         value={formData.releaseUpload}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
                 <label className="form-field">
                     FeedBack:
                     <textarea
-                        name="feedbackByAdvocate"
+                        name="feedback"
                         className='inputField'
-                        value={formData.feedbackByAdvocate}
+                        value={formData.feedback}
                         onChange={handleChange}
-                        readOnly={IsReadOnly}
                     />
                 </label>
             </div>

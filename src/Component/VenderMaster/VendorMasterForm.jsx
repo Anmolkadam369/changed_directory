@@ -25,6 +25,7 @@ const VendorMasterForm = () => {
       navigate("/");
     }
   }, [token, userId, navigate]);
+  console.log("userIIIIIID", userId);
 
   const [formData, setFormData] = useState({
     systemDate: today,
@@ -161,7 +162,7 @@ const VendorMasterForm = () => {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div>
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <div class="header-container">

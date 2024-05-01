@@ -195,6 +195,8 @@ function MachanicResponse() {
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
+    const [action, setAction] = useState('');
+
 
     // Initially set formData from location state if available
     const initialData = location.state?.data || {
@@ -203,7 +205,9 @@ function MachanicResponse() {
         partsArrangment: "",
         trial: "",
         payment: "",
-        feedback: ""
+        feedback: "",
+        reasonOfReject: ""
+
     };
     const [formData, setFormData] = useState(initialData);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -225,7 +229,7 @@ function MachanicResponse() {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.VendorCode);
-            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}`);
+            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
             } else {
@@ -241,22 +245,9 @@ function MachanicResponse() {
 
     return (
         <div className='container'>
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: 'lightblue',
-                color: 'brown',
-                padding: '20px 0',
-                marginBottom: '30px',
-            }}>
-                <h1>DATA UPLOADED BY MECHANIC</h1>
-                <hr style={{
-                    border: '0',
-                    height: '2px',
-                    backgroundColor: '#fff',
-                    maxWidth: '50%',
-                    margin: '0 auto',
-                }} />
-            </div>
+                   <div class="header-container">
+          <h3 class="bigtitle">Data Uploaded by Mechanic</h3>
+        </div>
             <div className='form-row'>
                 {/* Ensure correct name attribute values are used */}
                 <label className="form-field">
@@ -287,6 +278,25 @@ function MachanicResponse() {
                     <textarea name="feedback" className='inputField' value={formData.feedback} readOnly />
                 </label>
             </div>
+
+            {action === "reject" && (
+                <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
+                        Reason to Reject:
+                    <label>
+                        <textarea name="reasonOfReject" className='inputField'value={formData.reasonOfReject}
+                            onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
+                        />
+                    <button
+                        type="button"
+                        onClick={() => { onSubmit('reject'); }}
+                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft:"50px", marginTop:"20px"}}>
+                        Submit
+                    </button>
+                    </label>
+
+                </div>
+            )}
+
             {alertInfo.show && (
                 <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
                     {alertInfo.message}
@@ -302,10 +312,11 @@ function MachanicResponse() {
                 </button>
                 <button
                     type="button"
-                    onClick={() => onSubmit('reject')}
+                    onClick={() => { setAction('reject'); }}
                     style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
                 >
                     Reject
+
                 </button>
             </div>
 

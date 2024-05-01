@@ -1,3 +1,22 @@
+.responsive-table {
+  overflow-x: auto;  /* Allows table to scroll horizontally */
+}
+
+@media (max-width: 768px) {
+  .responsive-table table {
+    width: auto; /* Allows table to shrink and expand as needed */
+  }
+  
+  .responsive-table th, .responsive-table td {
+    padding: 8px; /* Reduce padding on smaller screens */
+  }
+
+}
+
+
+
+
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -86,6 +105,7 @@ tbody tr:hover {
   margin-bottom: 30px;
   margin-top: 30px;
   margin-left: 30px;
+  text-align: center;
 
 }
 

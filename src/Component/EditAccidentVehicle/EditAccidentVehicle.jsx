@@ -62,13 +62,18 @@ function EditAccidentVehicle() {
                 rearView: null,
                 CustomerName: comingData.CustomerName || "",
                 choosenPlan: comingData.choosenPlan || '',
-                advocate: "", workshop: '', machanic: "", crain: "",
+                advocate: comingData.advocate || "",
+                workshop: comingData.workshop || "", 
+                machanic: comingData.machanic || "", 
+                crain: comingData.crain || "", 
                 randomId: comingData.randomId || ""
             }));
             console.log("RANDOMID", comingData.randomId)
         }
 
     }, [comingData])
+
+
 
     const getDataById = async (id) => {
         console.log("getdatabyid",id)
@@ -186,11 +191,17 @@ function EditAccidentVehicle() {
           }
     };
 
+    
+    console.log("advocate", formData.advocate)
+    console.log("workshop", formData.workshop)
+    console.log("machanic", formData.machanic)
+    console.log("crain", formData.crain)
+
 
     return (
+        <div style={{marginTop:"40px"}}>    
         <div className='container'>
-
-                <h1 className='titles'>EDIT ACCIDENT VEHICLE (UPDATING)</h1>
+                <h1 className='bigtitle'>EDIT ACCIDENT VEHICLE (UPDATING)</h1>
 
 
             <div className='form-row'>
@@ -328,6 +339,7 @@ function EditAccidentVehicle() {
                                 name="advocate"
                                 value={formData.advocate}
                                 onChange={handleChange}
+                                disabled={formData.advocate !== null && formData.advocate !== ""}
                             >
                                 <option value="">Select a Advocate</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "advocate").map((vendor) => (
@@ -342,6 +354,7 @@ function EditAccidentVehicle() {
                                 name="crain"
                                 value={formData.crain}
                                 onChange={handleChange}
+                                disabled={formData.crain !== null && formData.crain !== ""}
                             >
                                 <option value="">Select a Crain</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crain").map((vendor) => (
@@ -356,6 +369,7 @@ function EditAccidentVehicle() {
                                 name="machanic"
                                 value={formData.machanic}
                                 onChange={handleChange}
+                                disabled={formData.machanic !== null && formData.machanic !== ""}
                             >
                                 <option value="">Select a Machanic</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "machanic").map((vendor) => (
@@ -370,6 +384,7 @@ function EditAccidentVehicle() {
                                 name="workshop"
                                 value={formData.workshop}
                                 onChange={handleChange}
+                                disabled={formData.workshop !== null && formData.workshop !== ""}
                             >
                                 <option value="">Select a Workshop</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
@@ -389,6 +404,7 @@ function EditAccidentVehicle() {
                                 name="crain"
                                 value={formData.crain}
                                 onChange={handleChange}
+                                disabled={formData.crain !== null && formData.crain !== ""}
                             >
                                 <option value="">Select a Crain</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crain").map((vendor) => (
@@ -403,6 +419,7 @@ function EditAccidentVehicle() {
                                 name="machanic"
                                 value={formData.machanic}
                                 onChange={handleChange}
+                                disabled={formData.machanic !== null && formData.machanic !== ""}
                             >
                                 <option value="">Select a Workshop</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "machanic").map((vendor) => (
@@ -417,6 +434,7 @@ function EditAccidentVehicle() {
                                 name="workshop"
                                 value={formData.workshop}
                                 onChange={handleChange}
+                                disabled={formData.workshop !== null && formData.workshop !== ""}
                             >
                                 <option value="">Select a Workshop</option>
                                 {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
@@ -437,6 +455,7 @@ function EditAccidentVehicle() {
                                 name="workshop"
                                 value={formData.workshop}
                                 onChange={handleChange}
+                                disabled={formData.workshop !== null && formData.workshop !== ""}
                             >
                                 <option value="">Select a Workshop</option>
                                 {vendorData?.data?.length > 0 ? (
@@ -464,6 +483,7 @@ function EditAccidentVehicle() {
           <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }} onClick={onSubmit}>
             Submit
           </button>
+        </div>
         </div>
         </div>
     );

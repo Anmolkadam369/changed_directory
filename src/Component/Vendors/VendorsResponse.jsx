@@ -104,7 +104,9 @@ const VendorResponse = () => {
   
   return (
     <div style={{ padding: '20px', margin: '20px' }}>
-      <h1 className='titles'>Vendor Response Overview</h1>
+      <div class="header-container">
+          <h3 class="bigtitle">Vendor Response Overview</h3>
+        </div>
 
       <div style={{ padding: '20px', marginTop: '20px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <div>
@@ -113,7 +115,7 @@ const VendorResponse = () => {
 
                <h2 className='title1'>Customer Name: {vehicle.CustomerName}    |    Vehicle Number: {vehicle.vehicleNumber}</h2>
               
-              <table className="vendor-table">
+              <table style={{marginLeft:"30px"}}>
                 <thead>
                   <tr>
                     <th>Vehicle Inspection</th>
@@ -146,7 +148,7 @@ const VendorResponse = () => {
                 </tbody>
               </table>
 
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+              <table style={{marginLeft:"30px"}}>
                 <thead>
                   <tr>
                     <th>Vehicle Inspection</th>
@@ -183,7 +185,7 @@ const VendorResponse = () => {
                 </tbody>
               </table>
 
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table style={{ marginLeft:"30px" }}>
                 <thead>
                   <tr>
                     <th>FIR Copy</th>
@@ -222,7 +224,7 @@ const VendorResponse = () => {
                 </tbody>
               </table>
 
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table style={{ marginLeft:"30px" }}>
                 <thead>
                   <tr>
                     <th>Payment</th>
