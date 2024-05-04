@@ -83,6 +83,8 @@ const AccidentVehicleUser = () => {
       setData(response.data.data)
     }
   };
+
+  
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>

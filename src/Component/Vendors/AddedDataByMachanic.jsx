@@ -11,7 +11,7 @@ import backendUrl from '../../environment';
 
 
 function AddedDataByMachanic() {
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
     const { id } = location.state || {};
     console.log("Received IDssss:", id);
@@ -101,11 +101,11 @@ function AddedDataByMachanic() {
         event.preventDefault();
         console.log('formData', formData);
         try {
-            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData),{
+            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData), {
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'
-                  }
+                }
             });
             console.log("response", response.data);
             console.log("response", response.data.status);
@@ -120,27 +120,14 @@ function AddedDataByMachanic() {
             console.error('Error response:', error.response);
             const errorMessage = error.response?.data || 'An error occurred';
             setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-          }
+        }
     };
 
 
     return (
         <div className='container'>
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: '#4CAF50', // Choose your color
-                color: 'white', // Choose text color
-                padding: '20px 0', // Vertical padding and no horizontal padding
-                marginBottom: '30px', // Space below the header
-            }}>
-                <h1>USER'S PERSONAL DATA (UPDATING)</h1>
-                <hr style={{
-                    border: '0',
-                    height: '2px', // Thickness of the hr
-                    backgroundColor: '#fff', // Same as the text color for consistency
-                    maxWidth: '50%', // Width of the hr
-                    margin: '0 auto', // Center the hr
-                }} />
+            <div class='header-container'>
+                <h2 className='bigtitle'>User Details</h2>
             </div>
 
             <div className='form-row'>
@@ -218,7 +205,6 @@ function AddedDataByMachanic() {
                 </label>
             </div>
 
-
             <div className='form-row'>
                 <label className="form-field">
                     Longitude:
@@ -266,22 +252,196 @@ function AddedDataByMachanic() {
                 </label>
             </div>
 
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: 'lightblue', // Choose your color
-                color: 'brown', // Choose text color
-                padding: '20px 0', // Vertical padding and no horizontal padding
-                marginBottom: '30px', // Space below the header
-            }}>
-                <h1>DATA UPLOADED BY MACHANIC</h1>
-                <hr style={{
-                    border: '0',
-                    height: '2px', // Thickness of the hr
-                    backgroundColor: '#fff', // Same as the text color for consistency
-                    maxWidth: '50%', // Width of the hr
-                    margin: '0 auto', // Center the hr
-                }} />
+
+            <div class='header-container'>
+                <h2 className='bigtitle'>Accident Images</h2>
             </div>
+
+            <div className="form-row">
+                <label className="form-field">
+                    Chassis Number:
+                    {comingData.ChassisNoView ? (
+                        <>
+                            <img
+                                src={comingData.ChassisNoView}
+                                alt="Front LH"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Cluster Number:
+                    {comingData.ClusterView ? (
+                        <>
+                            <img
+                                src={comingData.ClusterView}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    FrontLH Number:
+                    {comingData.frontLH ? (
+                        <>
+                            <img
+                                src={comingData.frontLH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    frontRH:
+                    {comingData.frontRH ? (
+                        <>
+                            <img
+                                src={comingData.frontRH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    front View:
+                    {comingData.frontView ? (
+                        <>
+                            <img
+                                src={comingData.frontView}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    rear LH:
+                    {comingData.rearLH ? (
+                        <>
+                            <img
+                                src={comingData.rearLH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    rear RH:
+                    {comingData.rearRH ? (
+                        <>
+                            <img
+                                src={comingData.rearRH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo:
+                    {comingData.MajorDamages1 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages1}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 2:
+                    {comingData.MajorDamages2 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages2}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 3:
+                    {comingData.MajorDamages3 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages3}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 4:
+                    {comingData.MajorDamages4 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages4}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 5:
+                    {comingData.MajorDamages5 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages5}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+
+            </div>
+
+            <div class='header-container'>
+                <h2 className='bigtitle'>Document Upload - Mechanic</h2>
+            </div>
+            <br />
 
 
             <div className='form-row'>
@@ -313,6 +473,38 @@ function AddedDataByMachanic() {
                         onChange={handleChange}
                     />
                 </label>
+                <label className="form-field">
+                    Trial:
+                    <textarea
+                        name="trial"
+                        className='inputField'
+                        value={formData.trial}
+                        onChange={handleChange}
+                    />
+                </label>
+            </div>
+            <div className='form-row'>
+            <label className="form-field">
+                    Payment:
+                    <textarea
+                        name="payment"
+                        className='inputField'
+                        value={formData.payment}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label className="form-field">
+                    Feedback:   
+                    <textarea
+                        name="feedback"
+                        className='inputField'
+                        value={formData.feedback}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
+
             </div>
             {alertInfo.show && (
                 <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>

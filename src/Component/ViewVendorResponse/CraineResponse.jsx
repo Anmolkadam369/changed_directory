@@ -64,6 +64,192 @@ function CraineResponse() {
 
     return (
         <div className='container'>
+
+<div class='header-container'>
+                    <h2 className='bigtitle'>Accident Images</h2>
+                </div>
+
+                <div className="form-row">
+                    <label className="form-field">
+                        Chassis Number:
+                        {formData.ChassisNoView ? (
+                            <>
+                                <img
+                                    src={formData.ChassisNoView}
+                                    alt="Front LH"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Cluster Number:
+                        {formData.ClusterView ? (
+                            <>
+                                <img
+                                    src={formData.ClusterView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        FrontLH Number:
+                        {formData.frontLH ? (
+                            <>
+                                <img
+                                    src={formData.frontLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                             
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        frontRH:
+                        {formData.frontRH ? (
+                            <>
+                                <img
+                                    src={formData.frontRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        front View:
+                        {formData.frontView ? (
+                            <>
+                                <img
+                                    src={formData.frontView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                                
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear LH:
+                        {formData.rearLH ? (
+                            <>
+                                <img
+                                    src={formData.rearLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                              
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear RH:
+                        {formData.rearRH ? (
+                            <>
+                                <img
+                                    src={formData.rearRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo:
+                        {formData.MajorDamages1 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages1}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                             
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 2:
+                        {formData.MajorDamages2 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages2}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 3:
+                        {formData.MajorDamages3 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages3}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 4:
+                        {formData.MajorDamages4 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages4}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                                
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 5:
+                        {formData.MajorDamages5 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages5}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+
+                </div>
         <div class="header-container">
           <h3 class="bigtitle">Data Uploaded by Craine Manager</h3>
         </div>

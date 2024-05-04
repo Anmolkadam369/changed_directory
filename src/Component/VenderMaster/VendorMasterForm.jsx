@@ -45,7 +45,6 @@ const VendorMasterForm = () => {
     panCard: "info",
     adharNo: '',
     adharCard: "info",
-    agreement: "info",
     rate: "",
     GSTNo: "",
     GST: "info"
@@ -54,7 +53,6 @@ const VendorMasterForm = () => {
   const GSTRef = useRef(null);
   const panRef = useRef(null);
   const adharCardRef = useRef(null);
-  const agreementRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, type, files } = e.target;
@@ -65,7 +63,7 @@ const VendorMasterForm = () => {
           GST: GSTRef,
           panCard: panRef,
           adharCard: adharCardRef,
-          agreement: agreementRef
+         
         };
 
         if (refs[name] && refs[name].current) {
@@ -93,7 +91,7 @@ const VendorMasterForm = () => {
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(formData)) {
-      if (key === 'panCard' || key === 'adharCard' || key === 'agreement' || key === 'GST') {
+      if (key === 'panCard' || key === 'adharCard' || key === 'GST') {
         if (value === null || value === undefined || value.size === 0)
           return `Field '${key}' is required.`;
       }
@@ -156,8 +154,6 @@ const VendorMasterForm = () => {
       }, 2000);
     } catch (error) {
       console.error("Error during form submission:", error);
-      const errorMessage = error.response?.data || 'An error occurred';
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
     }
   };
 
@@ -330,7 +326,6 @@ const VendorMasterForm = () => {
             <input
               type='file'
               name="panCard"
-              // value={formData.panCard}
               onChange={handleChange}
               accept=".pdf,image/*"
               ref={panRef}
@@ -360,17 +355,7 @@ const VendorMasterForm = () => {
               ref={adharCardRef}
               required />
           </label>
-          <label className="form-field">
-            Agreement :
-            <input
-              type='file'
-              name="agreement"
-              // value={formData.agreement}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              ref={agreementRef}
-              required />
-          </label>
+
           <label className="form-field">
             Rate/KM :
             <input

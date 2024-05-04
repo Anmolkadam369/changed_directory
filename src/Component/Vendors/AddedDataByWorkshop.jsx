@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef} from 'react';
 import '../EditAccidentVehicle/EditAccidentVehicle.css'
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -90,57 +90,188 @@ function AddedDataByWorkshop() {
         feedback: ""
     });
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+    const vehicleHandover = useRef(null);
+    const estimateGiven = useRef(null);
+    const agreementCPA = useRef(null);
+    const deadlineSheet = useRef(null);
+    const supplementryEstimate = useRef(null);
+    const preApproval = useRef(null);
+    const allBillCopy = useRef(null);
+
+    const handleChange = (e) => {
+        const { name, type, files } = e.target;
+        if (type === 'file') {
+            if (files[0] && files[0].size > 500000) {
+                setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
+                const refs = {
+                    vehicleHandover: vehicleHandover,
+                    estimateGiven: estimateGiven,
+                    agreementCPA: agreementCPA,
+                    deadlineSheet: deadlineSheet,
+                    supplementryEstimate: supplementryEstimate,
+                    preApproval: preApproval,
+                    allBillCopy:allBillCopy
+                };
+
+                if (refs[name] && refs[name].current) {
+                    refs[name].current.value = "";
+                }
+
+                setFormData(prevState => ({
+                    ...prevState,
+                    [name]: null // Reset the file state
+                }));
+                return;
+            }
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: files[0]
+            }));
+        } else {
+            const { value } = e.target;
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
     };
     console.log('the id which want to send', formData, id, userId);
 
-    const onSubmit = async (event) => {
-        event.preventDefault();
-        console.log('formData', formData, id, userId);
-        try {
-            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`,  JSON.stringify(formData),{
-                headers: {
-                    'authorization': token,
-                    'Content-Type': 'application/json'
-                  }
-            });
-            console.log("response", response.data.status);
-            if (response.data.message === "data inserted successfully") {
-                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
-            } else {
-                const errorMessage = 'An error occurred';
-                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+    const validateForm = () => {
+        for (const [key, value] of Object.entries(formData)) {
+            if (key === 'firCopy' || key === 'POA' || key === 'petitionCopy'
+                || key === 'policeReportCopy' || key === 'bailerDetails' || key === 'releaseOrderCopy' ||
+                key === "indemnityBondCopy" || key === "releaseUploead") {
+                if (value === null || value === undefined || value.size === 0)
+                    return `Field '${key}' is required.`;
             }
-        } catch (error) {
-            console.error('Error response:', error.response);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-          }
+            if (key === 'feedback' && value === '') {
+                return `Field '${key}' is required.`;
+            }
+        }
     };
 
+    const onSubmsit = async (e) => {
+        e.preventDefault();
+        console.log('formData', formData, id, userId);
+        if (!e.target.checkValidity()) {
+            e.target.reportValidity();
+            setAlertInfo({ show: true, message: `${e.target.key} should be in correct format`, severity: 'error' });
+            return;
+        }
+        const validationMessage = validateForm();
+        if (validationMessage) {
+            setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+            return;
+        }
+        console.log('formData', formData);
+        setAlertInfo({ ...alertInfo, show: false });
+
+        const formDataObj = new FormData();
+        for (const key in formData) {
+            if (formData[key]) {
+                if (formData[key] instanceof File) {
+                    formDataObj.append(key, formData[key], formData[key].name);
+                } else {
+                    formDataObj.append(key, formData[key]);
+                }
+            }
+        }
+
+        for (let pair of formDataObj.entries()) {
+            console.log(`${pair[0]}:`, pair[1] instanceof Blob ? `${pair[1].name}, size: ${pair[1].size}` : pair[1]);
+        }
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`,
+                data: formDataObj,
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            console.log("RESPONSE", response)
+            if (response.data.message === "data inserted successfully")
+                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+            console.log("Data sent to the backend:", formDataObj);
+
+        } catch (error) {
+            console.error("Error during form submission:", error);
+            if (error.response) {
+                console.error("Response data:", error.response.data);
+                console.error("Status code:", error.response.status);
+            } else if (error.request) {
+                console.error("No response received:", error.request);
+            } else {
+                console.error("Error setting up request:", error.message);
+            }
+        };
+    };
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        if (!e.target.checkValidity()) {
+            e.target.reportValidity();
+            setAlertInfo({ show: true, message: `${e.target.key} should be in correct format`, severity: 'error' });
+            return;
+        }
+        const validationMessage = validateForm();
+        if (validationMessage) {
+            setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+            return;
+        }
+        console.log('formData', formData);
+        setAlertInfo({ ...alertInfo, show: false });
+
+        const formDataObj = new FormData();
+        for (const key in formData) {
+            if (formData[key]) {
+                if (formData[key] instanceof File) {
+                    formDataObj.append(key, formData[key], formData[key].name);
+                } else {
+                    formDataObj.append(key, formData[key]);
+                }
+            }
+        }
+
+        // Debug log for FormData contents
+        for (let pair of formDataObj.entries()) {
+            console.log(`${pair[0]}:`, pair[1] instanceof Blob ? `${pair[1].name}, size: ${pair[1].size}` : pair[1]);
+        }
+
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`,
+                data: formDataObj,
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            console.log("RESPONSE", response)
+            if (response.data.message === "data inserted successfully")
+                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+            console.log("Data sent to the backend:", formDataObj);
+
+        } catch (error) {
+            console.error("Error during form submission:", error);
+            if (error.response) {
+                console.error("Response data:", error.response.data);
+                console.error("Status code:", error.response.status);
+            } else if (error.request) {
+                console.error("No response received:", error.request);
+            } else {
+                console.error("Error setting up request:", error.message);
+            }
+        };
+    }
 
     return (
         <div className='container'>
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: '#4CAF50', // Choose your color
-                color: 'white', // Choose text color
-                padding: '20px 0', // Vertical padding and no horizontal padding
-                marginBottom: '30px', // Space below the header
-            }}>
-                <h1>USER'S PERSONAL DATA (UPDATING)</h1>
-                <hr style={{
-                    border: '0',
-                    height: '2px', // Thickness of the hr
-                    backgroundColor: '#fff', // Same as the text color for consistency
-                    maxWidth: '50%', // Width of the hr
-                    margin: '0 auto', // Center the hr
-                }} />
+              <div class='header-container'>
+                <h2 className='bigtitle'>User Details</h2>
             </div>
 
             <div className='form-row'>
@@ -218,7 +349,6 @@ function AddedDataByWorkshop() {
                 </label>
             </div>
 
-
             <div className='form-row'>
                 <label className="form-field">
                     Longitude:
@@ -266,22 +396,195 @@ function AddedDataByWorkshop() {
                 </label>
             </div>
 
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: 'lightblue', // Choose your color
-                color: 'brown', // Choose text color
-                padding: '20px 0', // Vertical padding and no horizontal padding
-                marginBottom: '30px', // Space below the header
-            }}>
-                <h1>DATA UPLOADED BY WORKSHOP</h1>
-                <hr style={{
-                    border: '0',
-                    height: '2px', // Thickness of the hr
-                    backgroundColor: '#fff', // Same as the text color for consistency
-                    maxWidth: '50%', // Width of the hr
-                    margin: '0 auto', // Center the hr
-                }} />
+            <div class='header-container'>
+                <h2 className='bigtitle'>Accident Images</h2>
             </div>
+
+            <div className="form-row">
+                <label className="form-field">
+                    Chassis Number:
+                    {comingData.ChassisNoView ? (
+                        <>
+                            <img
+                                src={comingData.ChassisNoView}
+                                alt="Front LH"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Cluster Number:
+                    {comingData.ClusterView ? (
+                        <>
+                            <img
+                                src={comingData.ClusterView}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    FrontLH Number:
+                    {comingData.frontLH ? (
+                        <>
+                            <img
+                                src={comingData.frontLH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    frontRH:
+                    {comingData.frontRH ? (
+                        <>
+                            <img
+                                src={comingData.frontRH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    front View:
+                    {comingData.frontView ? (
+                        <>
+                            <img
+                                src={comingData.frontView}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    rear LH:
+                    {comingData.rearLH ? (
+                        <>
+                            <img
+                                src={comingData.rearLH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    rear RH:
+                    {comingData.rearRH ? (
+                        <>
+                            <img
+                                src={comingData.rearRH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo:
+                    {comingData.MajorDamages1 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages1}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 2:
+                    {comingData.MajorDamages2 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages2}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 3:
+                    {comingData.MajorDamages3 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages3}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 4:
+                    {comingData.MajorDamages4 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages4}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 5:
+                    {comingData.MajorDamages5 ? (
+                        <>
+                            <img
+                                src={comingData.MajorDamages5}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+
+            </div>
+
+            <div class='header-container'>
+                <h2 className='bigtitle'>Document Upload - Workshop</h2>
+            </div>
+            <br />
 
 
             <div className='form-row'>
@@ -301,8 +604,9 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="vehicleHandover"
-                        value={formData.vehicleHandover}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={vehicleHandover}
                     />
                 </label>
                 <label className="form-field">
@@ -311,8 +615,9 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="estimateGiven"
-                        value={formData.estimateGiven}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={estimateGiven}
                     />
                 </label>
                 <label className="form-field">
@@ -321,8 +626,9 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="agreementCPA"
-                        value={formData.agreementCPA}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={agreementCPA}
                     />
                 </label>
             </div>
@@ -334,8 +640,9 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="deadlineSheet"
-                        value={formData.deadlineSheet}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={deadlineSheet}
                     />
                 </label>
                 <label className="form-field">
@@ -344,8 +651,9 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="supplementryEstimate"
-                        value={formData.supplementryEstimate}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={supplementryEstimate}
                     />
                 </label>
                 <label className="form-field">
@@ -354,8 +662,9 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="preApproval"
-                        value={formData.preApproval}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={preApproval}
                     />
                 </label>
                 <label className="form-field">
@@ -423,8 +732,10 @@ function AddedDataByWorkshop() {
                         type="file"
                         className='inputField'
                         name="allBillCopy"
-                        value={formData.allBillCopy}
                         onChange={handleChange}
+                        accept=".pdf,image/*"
+                        ref={allBillCopy}
+
                     />
                 </label>
                 <label className="form-field">

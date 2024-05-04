@@ -21,10 +21,15 @@ const VehicleClaimRegistration = () => {
     console.log("Received IDssss:", id);
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
+    const [IsReadOnly, setIsReadOnly] = useState(true);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [currentImage, setCurrentImage] = useState(null);
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [selectedState, setSelectedState] = useState('');
+    const [comingData, setComingData] = useState([]);
+    console.log("comingData", comingData)
     const [isLoadingStates, setIsLoadingStates] = useState(true);
     const [isLoadingCities, setIsLoadingCities] = useState(true);
     const today = new Date().toISOString().split('T')[0];
@@ -38,10 +43,16 @@ const VehicleClaimRegistration = () => {
             navigate("/");
         }
         console.log("id", id)
-        console.log("idssssssssssssssss", userId)
-
+        getDataById(id);
         setAccidentData({ accidentFileNo: id });
     }, [token, userId, navigate, id]);
+
+    const getDataById = async (id) => {
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleData/${id}`);
+        console.log("daa", response.data)
+        console.log("response", response.data.data[0]);
+        setComingData(response.data.data[0])
+    }
 
     const [accidentData, setAccidentData] = useState({
         accidentFileNo: id,
@@ -332,7 +343,7 @@ const VehicleClaimRegistration = () => {
 
         if (type === 'file') {
             console.log("myfile")
-            if (files[0] && files[0].size > 102400) {
+            if (files[0] && files[0].size > 5000000) {
                 setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
                 const refs = {
                     intimationUpload: intimationUpload,
@@ -349,7 +360,7 @@ const VehicleClaimRegistration = () => {
                     DLicencedoc: DLicencedoc,
                     DLVerdoc: DLVerdoc,
                     LRdoc: LRdoc,
-                    PUCdoc:PUCdoc,
+                    PUCdoc: PUCdoc,
                     policeReportdoc: policeReportdoc,
                     intimationdoc: intimationdoc,
                     spotSurveydoc: spotSurveydoc,
@@ -388,35 +399,35 @@ const VehicleClaimRegistration = () => {
                     setAccidentData(prev => ({ ...prev, [name]: value }));
                 }
             }
-        } 
+        }
         else if (name === 'state') {
             loadCities(value);
             setAccidentData(prev => ({ ...prev, [name]: value }));
         }
-        else{
+        else {
             console.log("name"[name], value)
             setAccidentData(prev => ({ ...prev, [name]: value }));
         }
     }
 
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form data submitted:', accidentData);
         const formDataObj = new FormData();
         for (const key in accidentData) {
             if (accidentData[key]) {
-              if (accidentData[key] instanceof File) {
-                formDataObj.append(key, accidentData[key], accidentData[key].name);
-              } else {
-                formDataObj.append(key, accidentData[key]);
-              }
+                if (accidentData[key] instanceof File) {
+                    formDataObj.append(key, accidentData[key], accidentData[key].name);
+                } else {
+                    formDataObj.append(key, accidentData[key]);
+                }
             }
-          }
-      
-          for (let pair of formDataObj.entries()) {
+        }
+
+        for (let pair of formDataObj.entries()) {
             console.log(`${pair[0]}:`, pair[1]);
-          }
+        }
 
         try {
             const response = await axios({
@@ -424,9 +435,9 @@ const VehicleClaimRegistration = () => {
                 url: `${backendUrl}/api/addVehicleClaim/${userId}`,
                 data: formDataObj,
                 headers: {
-                  'Authorization': token
+                    'Authorization': token
                 }
-              });
+            });
             console.log("response", response.data);
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
         }
@@ -437,10 +448,333 @@ const VehicleClaimRegistration = () => {
         }
     };
 
+    const toggleModal = () => {
+        setModalOpen(!isModalOpen);
+    };
+
+    const openModal = (imageUrl) => {
+        setCurrentImage(imageUrl);
+        setModalOpen(true);
+    };
+    console.log("CURRENTIMAGE", currentImage)
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setCurrentImage(null);
+    };
 
     return (
         <div className='container'>
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
+                <div class='header-container'>
+                    <h2 className='bigtitle'>Accident Images</h2>
+                </div>
+
+                <div className="form-row">
+                    <label className="form-field">
+                        Chassis Number:
+                        {comingData.ChassisNoView ? (
+                            <>
+                                <img
+                                    src={comingData.ChassisNoView}
+                                    alt="Front LH"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={() => openModal(comingData.ChassisNoView)}  // Pass the correct image URL here.
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={closeModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={currentImage}
+                                                alt="Enlarged view"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Cluster Number:
+                        {comingData.ClusterView ? (
+                            <>
+                                <img
+                                    src={comingData.ClusterView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={() => openModal(comingData.ClusterView)}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={closeModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={currentImage}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        FrontLH Number:
+                        {comingData.frontLH ? (
+                            <>
+                                <img
+                                    src={comingData.frontLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.frontLH}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        frontRH:
+                        {comingData.frontRH ? (
+                            <>
+                                <img
+                                    src={comingData.frontRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        front View:
+                        {comingData.frontView ? (
+                            <>
+                                <img
+                                    src={comingData.frontView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.frontView}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear LH:
+                        {comingData.rearLH ? (
+                            <>
+                                <img
+                                    src={comingData.rearLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.rearLH}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear RH:
+                        {comingData.rearRH ? (
+                            <>
+                                <img
+                                    src={comingData.rearRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.rearRH}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo:
+                        {comingData.MajorDamages1 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages1}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.MajorDamages1}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 2:
+                        {comingData.MajorDamages2 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages2}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.MajorDamages2}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 3:
+                        {comingData.MajorDamages3 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages3}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.MajorDamages3}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 4:
+                        {comingData.MajorDamages4 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages4}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.MajorDamages4}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 5:
+                        {comingData.MajorDamages5 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages5}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                // onClick={toggleModal}
+                                />
+                                {/* {isModalOpen && (
+                                    <div className="modal-background" onClick={toggleModal}>
+                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                            <img
+                                                src={comingData.MajorDamages5}
+                                                alt="Chassis Number"
+                                                style={{ maxWidth: '500px', display: 'block' }}
+                                            />
+                                        </div>
+                                    </div>
+                                )} */}
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+
+                </div>
+
                 <div class='header-container'>
                     <h2 className='bigtitle'>Accident Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
@@ -851,7 +1185,7 @@ const VehicleClaimRegistration = () => {
                             name="dateOfMaterialSurvey"
                             value={accidentData.dateOfMaterialSurvey}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.dateOfSurvey || accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
                         />
                     </label>
@@ -903,7 +1237,7 @@ const VehicleClaimRegistration = () => {
                             name="dateOfFinalSurvey"
                             value={accidentData.dateOfFinalSurvey}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.dateOfMaterialSurvey || accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
                         />
                     </label>
@@ -954,7 +1288,7 @@ const VehicleClaimRegistration = () => {
                             name="investigationDate"
                             value={accidentData.investigationDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.dateOfMaterialSurvey || accidentData.accidentDate || new Date().toISOString().split('T')[0]}
                         />
                     </label>
 
@@ -1442,1744 +1776,1744 @@ const VehicleClaimRegistration = () => {
                         </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>insurance:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="insurance"
-                                    value="yes"
-                                    checked={accidentData.insurance === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="insurance"
-                                    value="no"
-                                    checked={accidentData.insurance === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.insurance === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="insurancedoc"
-                                    ref={insurancedoc}
-                                    onChange={handleChange}
-                                />
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>insurance:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="insurance"
+                                        value="yes"
+                                        checked={accidentData.insurance === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="insurance"
+                                        value="no"
+                                        checked={accidentData.insurance === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.insurance === 'no' && (
-                            <>
+                            {accidentData.insurance === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="insuranceDate"
-                                        value={accidentData.insurancenoDate}
+                                        name="insurancedoc"
+                                        ref={insurancedoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="insuranceassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.insuranceassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="insuranceremark"
-                                        placeholder="Remark"
-                                        value={accidentData.insuranceremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.insurance === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="insuranceDate"
+                                            value={accidentData.insurancenoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="insuranceassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.insuranceassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="insuranceremark"
+                                            placeholder="Remark"
+                                            value={accidentData.insuranceremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>fitness:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="fitness"
-                                    value="yes"
-                                    checked={accidentData.fitness === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="fitness"
-                                    value="no"
-                                    checked={accidentData.fitness === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.fitness === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="fitnessdoc"
-                                    ref={fitnessdoc}
-                                    onChange={handleChange}
-                                />
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>fitness:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="fitness"
+                                        value="yes"
+                                        checked={accidentData.fitness === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="fitness"
+                                        value="no"
+                                        checked={accidentData.fitness === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.fitness === 'no' && (
-                            <>
+                            {accidentData.fitness === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="fitnessDate"
-                                        value={accidentData.fitnessnoDate}
+                                        name="fitnessdoc"
+                                        ref={fitnessdoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="fitnessassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.fitnessassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="fitnessremark"
-                                        placeholder="Remark"
-                                        value={accidentData.fitnessremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.fitness === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="fitnessDate"
+                                            value={accidentData.fitnessnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="fitnessassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.fitnessassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="fitnessremark"
+                                            placeholder="Remark"
+                                            value={accidentData.fitnessremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>1/Y Permit:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="nationalPermit1Year"
-                                    value="yes"
-                                    checked={accidentData.nationalPermit1Year === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="nationalPermit1Year"
-                                    value="no"
-                                    checked={accidentData.nationalPermit1Year === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.nationalPermit1Year === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="nationalPermit1Yeardoc"
-                                    ref={nationalPermit1Yeardoc}
-                                    onChange={handleChange}
-                                />
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>1/Y Permit:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="nationalPermit1Year"
+                                        value="yes"
+                                        checked={accidentData.nationalPermit1Year === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="nationalPermit1Year"
+                                        value="no"
+                                        checked={accidentData.nationalPermit1Year === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.nationalPermit1Year === 'no' && (
-                            <>
+                            {accidentData.nationalPermit1Year === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="nationalPermit1YearDate"
-                                        value={accidentData.nationalPermit1YearnoDate}
+                                        name="nationalPermit1Yeardoc"
+                                        ref={nationalPermit1Yeardoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="nationalPermit1YearassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.nationalPermit1YearassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="nationalPermit1Yearremark"
-                                        placeholder="Remark"
-                                        value={accidentData.nationalPermit1Yearremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.nationalPermit1Year === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="nationalPermit1YearDate"
+                                            value={accidentData.nationalPermit1YearnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="nationalPermit1YearassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.nationalPermit1YearassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="nationalPermit1Yearremark"
+                                            placeholder="Remark"
+                                            value={accidentData.nationalPermit1Yearremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>5 Year:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="nationalPermit5Year"
-                                    value="yes"
-                                    checked={accidentData.nationalPermit5Year === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="nationalPermit5Year"
-                                    value="no"
-                                    checked={accidentData.nationalPermit5Year === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.nationalPermit5Year === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="nationalPermit5Yeardoc"
-                                    ref={nationalPermit5Yeardoc}
-                                    onChange={handleChange}
-                                />
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>5 Year:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="nationalPermit5Year"
+                                        value="yes"
+                                        checked={accidentData.nationalPermit5Year === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="nationalPermit5Year"
+                                        value="no"
+                                        checked={accidentData.nationalPermit5Year === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.nationalPermit5Year === 'no' && (
-                            <>
+                            {accidentData.nationalPermit5Year === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="nationalPermit5YearDate"
-                                        value={accidentData.nationalPermit5YearnoDate}
+                                        name="nationalPermit5Yeardoc"
+                                        ref={nationalPermit5Yeardoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="nationalPermit5YearassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.nationalPermit5YearassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="nationalPermit5Yearremark"
-                                        placeholder="Remark"
-                                        value={accidentData.nationalPermit5Yearremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.nationalPermit5Year === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="nationalPermit5YearDate"
+                                            value={accidentData.nationalPermit5YearnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="nationalPermit5YearassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.nationalPermit5YearassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="nationalPermit5Yearremark"
+                                            placeholder="Remark"
+                                            value={accidentData.nationalPermit5Yearremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 <div className='form-row'>
-                <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>tax Token:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="taxToken"
-                                    value="yes"
-                                    checked={accidentData.taxToken === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="taxToken"
-                                    value="no"
-                                    checked={accidentData.taxToken === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.taxToken === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="taxTokendoc"
-                                    ref={taxTokendoc}
-                                    onChange={handleChange}
-                                />
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>tax Token:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="taxToken"
+                                        value="yes"
+                                        checked={accidentData.taxToken === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="taxToken"
+                                        value="no"
+                                        checked={accidentData.taxToken === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.taxToken === 'no' && (
-                            <>
+                            {accidentData.taxToken === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="taxTokenDate"
-                                        value={accidentData.taxTokennoDate}
+                                        name="taxTokendoc"
+                                        ref={taxTokendoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="taxTokenassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.taxTokenassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="taxTokenremark"
-                                        placeholder="Remark"
-                                        value={accidentData.taxTokenremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.taxToken === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="taxTokenDate"
+                                            value={accidentData.taxTokennoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="taxTokenassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.taxTokenassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="taxTokenremark"
+                                            placeholder="Remark"
+                                            value={accidentData.taxTokenremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>DL:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="DLicence"
-                                    value="yes"
-                                    checked={accidentData.DLicence === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="DLicence"
-                                    value="no"
-                                    checked={accidentData.DLicence === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.DLicence === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="DLicencedoc"
-                                    ref={DLicencedoc}
-                                    onChange={handleChange}
-                                />
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>DL:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="DLicence"
+                                        value="yes"
+                                        checked={accidentData.DLicence === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="DLicence"
+                                        value="no"
+                                        checked={accidentData.DLicence === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.DLicence === 'no' && (
-                            <>
+                            {accidentData.DLicence === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="DLicenceDate"
-                                        value={accidentData.DLicencenoDate}
+                                        name="DLicencedoc"
+                                        ref={DLicencedoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="DLicenceassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.DLicenceassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="DLicenceremark"
-                                        placeholder="Remark"
-                                        value={accidentData.DLicenceremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.DLicence === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="DLicenceDate"
+                                            value={accidentData.DLicencenoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="DLicenceassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.DLicenceassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="DLicenceremark"
+                                            placeholder="Remark"
+                                            value={accidentData.DLicenceremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                        <div className="form-row radio-group inputField">
-                            <label>DL Ver:</label>
-                            <label>
-                                Yes
-                                <input
-                                    type="radio"
-                                    name="DLVer"
-                                    value="yes"
-                                    checked={accidentData.DLVer === 'yes'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                            <label>
-                                No
-                                <input
-                                    type="radio"
-                                    name="DLVer"
-                                    value="no"
-                                    checked={accidentData.DLVer === 'no'}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-
-                        {accidentData.DLVer === 'yes' && (
-                            <div className="form-field">
-                                <input
-                                    type="file"
-                                    className='inputField'
-                                    name="DLVerdoc"
-                                    ref={DLVerdoc}
-                                    onChange={handleChange}
-                                />
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>DL Ver:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="DLVer"
+                                        value="yes"
+                                        checked={accidentData.DLVer === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="DLVer"
+                                        value="no"
+                                        checked={accidentData.DLVer === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             </div>
-                        )}
 
-                        {accidentData.DLVer === 'no' && (
-                            <>
+                            {accidentData.DLVer === 'yes' && (
                                 <div className="form-field">
                                     <input
-                                        type="date"
+                                        type="file"
                                         className='inputField'
-                                        name="DLVerDate"
-                                        value={accidentData.DLVernoDate}
+                                        name="DLVerdoc"
+                                        ref={DLVerdoc}
                                         onChange={handleChange}
-                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                    />
+                                </div>
+                            )}
 
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="DLVerassignedTo"
-                                        placeholder="Assigned to whom"
-                                        value={accidentData.DLVerassignedTo}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="form-field">
-                                    <input
-                                        type="text"
-                                        className='inputField'
-                                        name="DLVerremark"
-                                        placeholder="Remark"
-                                        value={accidentData.DLVerremark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            {accidentData.DLVer === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="DLVerDate"
+                                            value={accidentData.DLVernoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="DLVerassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.DLVerassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="DLVerremark"
+                                            placeholder="Remark"
+                                            value={accidentData.DLVerremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                    <div className="form-row radio-group inputField">
-                        <label>LR:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="LR"
-                                value="yes"
-                                checked={accidentData.LR === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="LR"
-                                value="no"
-                                checked={accidentData.LR === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>LR:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="LR"
+                                        value="yes"
+                                        checked={accidentData.LR === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="LR"
+                                        value="no"
+                                        checked={accidentData.LR === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.LR === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="LRdoc"
-                                ref={LRdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.LR === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="LRdoc"
+                                        ref={LRdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.LR === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="LRDate"
+                                            value={accidentData.LRnoDate}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="LRassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.LRassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="LRremark"
+                                            placeholder="Remark"
+                                            value={accidentData.LRremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.LR === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="LRDate"
-                                    value={accidentData.LRnoDate}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="LRassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.LRassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="LRremark"
-                                    placeholder="Remark"
-                                    value={accidentData.LRremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                    </div>
                     </div>
                     <div className='form-field'>
-                    <div>
-                    <div className="form-row radio-group inputField">
-                        <label>PUC:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="PUC"
-                                value="yes"
-                                checked={accidentData.PUC === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="PUC"
-                                value="no"
-                                checked={accidentData.PUC === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>PUC:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="PUC"
+                                        value="yes"
+                                        checked={accidentData.PUC === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="PUC"
+                                        value="no"
+                                        checked={accidentData.PUC === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.PUC === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="PUCdoc"
-                                ref={PUCdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.PUC === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="PUCdoc"
+                                        ref={PUCdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.PUC === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="PUCDate"
+                                            value={accidentData.PUCnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="PUCassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.PUCassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="PUCremark"
+                                            placeholder="Remark"
+                                            value={accidentData.PUCremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.PUC === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="PUCDate"
-                                    value={accidentData.PUCnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="PUCassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.PUCassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="PUCremark"
-                                    placeholder="Remark"
-                                    value={accidentData.PUCremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                    </div>
                     </div>
                 </div>
 
 
                 <div className='form-row'>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>Report:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="policeReport"
-                                value="yes"
-                                checked={accidentData.policeReport === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="policeReport"
-                                value="no"
-                                checked={accidentData.policeReport === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>Report:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="policeReport"
+                                        value="yes"
+                                        checked={accidentData.policeReport === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="policeReport"
+                                        value="no"
+                                        checked={accidentData.policeReport === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.policeReport === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="policeReportdoc"
-                                ref={policeReportdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.policeReport === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="policeReportdoc"
+                                        ref={policeReportdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.policeReport === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="policeReportDate"
+                                            value={accidentData.policeReportnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="policeReportassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.policeReportassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="policeReportremark"
+                                            placeholder="Remark"
+                                            value={accidentData.policeReportremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.policeReport === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="policeReportDate"
-                                    value={accidentData.policeReportnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="policeReportassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.policeReportassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="policeReportremark"
-                                    placeholder="Remark"
-                                    value={accidentData.policeReportremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>Intimation:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="intimation"
-                                value="yes"
-                                checked={accidentData.intimation === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="intimation"
-                                value="no"
-                                checked={accidentData.intimation === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>Intimation:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="intimation"
+                                        value="yes"
+                                        checked={accidentData.intimation === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="intimation"
+                                        value="no"
+                                        checked={accidentData.intimation === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.intimation === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="intimationdoc"
-                                ref={intimationdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.intimation === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="intimationdoc"
+                                        ref={intimationdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.intimation === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="intimationDate"
+                                            value={accidentData.intimationnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="intimationassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.intimationassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="intimationremark"
+                                            placeholder="Remark"
+                                            value={accidentData.intimationremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.intimation === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="intimationDate"
-                                    value={accidentData.intimationnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="intimationassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.intimationassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="intimationremark"
-                                    placeholder="Remark"
-                                    value={accidentData.intimationremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>spotSurvey:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="spotSurvey"
-                                value="yes"
-                                checked={accidentData.spotSurvey === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="spotSurvey"
-                                value="no"
-                                checked={accidentData.spotSurvey === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>spotSurvey:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="spotSurvey"
+                                        value="yes"
+                                        checked={accidentData.spotSurvey === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="spotSurvey"
+                                        value="no"
+                                        checked={accidentData.spotSurvey === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.spotSurvey === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="spotSurveydoc"
-                                ref={spotSurveydoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.spotSurvey === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="spotSurveydoc"
+                                        ref={spotSurveydoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.spotSurvey === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="spotSurveyDate"
+                                            value={accidentData.spotSurveynoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="spotSurveyassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.spotSurveyassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="spotSurveyremark"
+                                            placeholder="Remark"
+                                            value={accidentData.spotSurveyremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.spotSurvey === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="spotSurveyDate"
-                                    value={accidentData.spotSurveynoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="spotSurveyassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.spotSurveyassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="spotSurveyremark"
-                                    placeholder="Remark"
-                                    value={accidentData.spotSurveyremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>spotReport:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="spotReport"
-                                value="yes"
-                                checked={accidentData.spotReport === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="spotReport"
-                                value="no"
-                                checked={accidentData.spotReport === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>spotReport:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="spotReport"
+                                        value="yes"
+                                        checked={accidentData.spotReport === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="spotReport"
+                                        value="no"
+                                        checked={accidentData.spotReport === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.spotReport === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="spotReportdoc"
-                                ref={spotReportdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.spotReport === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="spotReportdoc"
+                                        ref={spotReportdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.spotReport === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="spotReportDate"
+                                            value={accidentData.spotReportnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="spotReportassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.spotReportassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="spotReportremark"
+                                            placeholder="Remark"
+                                            value={accidentData.spotReportremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.spotReport === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="spotReportDate"
-                                    value={accidentData.spotReportnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="spotReportassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.spotReportassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="spotReportremark"
-                                    placeholder="Remark"
-                                    value={accidentData.spotReportremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>estimate:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="estimateGiven"
-                                value="yes"
-                                checked={accidentData.estimateGiven === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="estimateGiven"
-                                value="no"
-                                checked={accidentData.estimateGiven === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>estimate:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="estimateGiven"
+                                        value="yes"
+                                        checked={accidentData.estimateGiven === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="estimateGiven"
+                                        value="no"
+                                        checked={accidentData.estimateGiven === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.estimateGiven === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="estimateGivendoc"
-                                ref={estimateGivendoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.estimateGiven === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="estimateGivendoc"
+                                        ref={estimateGivendoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.estimateGiven === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="estimateGivenDate"
+                                            value={accidentData.estimateGivennoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="estimateGivenassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.estimateGivenassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="estimateGivenremark"
+                                            placeholder="Remark"
+                                            value={accidentData.estimateGivenremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.estimateGiven === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="estimateGivenDate"
-                                    value={accidentData.estimateGivennoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="estimateGivenassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.estimateGivenassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="estimateGivenremark"
-                                    placeholder="Remark"
-                                    value={accidentData.estimateGivenremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                </div>
-                
-                <div className='form-row'>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>Payment:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="advancePayment"
-                                value="yes"
-                                checked={accidentData.advancePayment === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="advancePayment"
-                                value="no"
-                                checked={accidentData.advancePayment === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
-
-                    {accidentData.advancePayment === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="advancePaymentdoc"
-                                ref={advancePaymentdoc}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )}
-
-                    {accidentData.advancePayment === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="advancePaymentDate"
-                                    value={accidentData.advancePaymentnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="advancePaymentassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.advancePaymentassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="advancePaymentremark"
-                                    placeholder="Remark"
-                                    value={accidentData.advancePaymentremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>F/survey:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="finalsurveyInitial"
-                                value="yes"
-                                checked={accidentData.finalsurveyInitial === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="finalsurveyInitial"
-                                value="no"
-                                checked={accidentData.finalsurveyInitial === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
-
-                    {accidentData.finalsurveyInitial === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="finalsurveyInitialdoc"
-                                ref={finalsurveyInitialdoc}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )}
-
-                    {accidentData.finalsurveyInitial === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="finalsurveyInitialDate"
-                                    value={accidentData.finalsurveyInitialnoDate}
-                                    onChange={handleChange}
-                                />
-                                min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="finalsurveyInitialassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.finalsurveyInitialassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="finalsurveyInitialremark"
-                                    placeholder="Remark"
-                                    value={accidentData.finalsurveyInitialremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>2nd/Survey</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="finalSurvey2nd"
-                                value="yes"
-                                checked={accidentData.finalSurvey2nd === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="finalSurvey2nd"
-                                value="no"
-                                checked={accidentData.finalSurvey2nd === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
-
-                    {accidentData.finalSurvey2nd === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="finalSurvey2nddoc"
-                                ref={finalSurvey2nddoc}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )}
-
-                    {accidentData.finalSurvey2nd === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="finalSurvey2ndDate"
-                                    value={accidentData.finalSurvey2ndnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="finalSurvey2ndassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.finalSurvey2ndassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="finalSurvey2ndremark"
-                                    placeholder="Remark"
-                                    value={accidentData.finalSurvey2ndremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>Approval:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="workApproval"
-                                value="yes"
-                                checked={accidentData.workApproval === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="workApproval"
-                                value="no"
-                                checked={accidentData.workApproval === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
-
-                    {accidentData.workApproval === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="workApprovaldoc"
-                                ref={workApprovaldoc}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )}
-
-                    {accidentData.workApproval === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="workApprovalDate"
-                                    value={accidentData.workApprovalnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="workApprovalassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.workApprovalassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="workApprovalremark"
-                                    placeholder="Remark"
-                                    value={accidentData.workApprovalremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>Inspection</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="reinspection"
-                                value="yes"
-                                checked={accidentData.reinspection === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="reinspection"
-                                value="no"
-                                checked={accidentData.reinspection === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
-
-                    {accidentData.reinspection === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="reinspectiondoc"
-                                ref={reinspectiondoc}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )}
-
-                    {accidentData.reinspection === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="reinspectionDate"
-                                    value={accidentData.reinspectionnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="reinspectionassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.reinspectionassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="reinspectionremark"
-                                    placeholder="Remark"
-                                    value={accidentData.reinspectionremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
                 </div>
 
                 <div className='form-row'>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>finalBill:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="finalBill"
-                                value="yes"
-                                checked={accidentData.finalBill === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="finalBill"
-                                value="no"
-                                checked={accidentData.finalBill === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>Payment:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="advancePayment"
+                                        value="yes"
+                                        checked={accidentData.advancePayment === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="advancePayment"
+                                        value="no"
+                                        checked={accidentData.advancePayment === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.finalBill === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="finalBilldoc"
-                                ref={finalBilldoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.advancePayment === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="advancePaymentdoc"
+                                        ref={advancePaymentdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.advancePayment === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="advancePaymentDate"
+                                            value={accidentData.advancePaymentnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="advancePaymentassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.advancePaymentassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="advancePaymentremark"
+                                            placeholder="Remark"
+                                            value={accidentData.advancePaymentremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.finalBill === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="finalBillDate"
-                                    value={accidentData.finalBillnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="finalBillassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.finalBillassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="finalBillremark"
-                                    placeholder="Remark"
-                                    value={accidentData.finalBillremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField">
-                        <label>Balance:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="paymentBalance"
-                                value="yes"
-                                checked={accidentData.paymentBalance === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="paymentBalance"
-                                value="no"
-                                checked={accidentData.paymentBalance === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>F/survey:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="finalsurveyInitial"
+                                        value="yes"
+                                        checked={accidentData.finalsurveyInitial === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="finalsurveyInitial"
+                                        value="no"
+                                        checked={accidentData.finalsurveyInitial === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.paymentBalance === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="paymentBalancedoc"
-                                ref={paymentBalancedoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.finalsurveyInitial === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="finalsurveyInitialdoc"
+                                        ref={finalsurveyInitialdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.finalsurveyInitial === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="finalsurveyInitialDate"
+                                            value={accidentData.finalsurveyInitialnoDate}
+                                            onChange={handleChange}
+                                        />
+                                        min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="finalsurveyInitialassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.finalsurveyInitialassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="finalsurveyInitialremark"
+                                            placeholder="Remark"
+                                            value={accidentData.finalsurveyInitialremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.paymentBalance === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="paymentBalanceDate"
-                                    value={accidentData.paymentBalancenoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="paymentBalanceassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.paymentBalanceassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="paymentBalanceremark"
-                                    placeholder="Remark"
-                                    value={accidentData.paymentBalanceremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField inputField">
-                        <label>settelMent:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="settelMent"
-                                value="yes"
-                                checked={accidentData.settelMent === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="settelMent"
-                                value="no"
-                                checked={accidentData.settelMent === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>2nd/Survey</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="finalSurvey2nd"
+                                        value="yes"
+                                        checked={accidentData.finalSurvey2nd === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="finalSurvey2nd"
+                                        value="no"
+                                        checked={accidentData.finalSurvey2nd === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.settelMent === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="settelMentdoc"
-                                ref={settelMentdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.finalSurvey2nd === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="finalSurvey2nddoc"
+                                        ref={finalSurvey2nddoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.finalSurvey2nd === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="finalSurvey2ndDate"
+                                            value={accidentData.finalSurvey2ndnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="finalSurvey2ndassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.finalSurvey2ndassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="finalSurvey2ndremark"
+                                            placeholder="Remark"
+                                            value={accidentData.finalSurvey2ndremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
-
-                    {accidentData.settelMent === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="settelMentDate"
-                                    value={accidentData.settelMentnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="settelMentassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.settelMentassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="settelMentremark"
-                                    placeholder="Remark"
-                                    value={accidentData.settelMentremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-                </div>
-                <div className='form-field'>
-                <div>
-                    <div className="form-row radio-group inputField inputField">
-                        <label>claimForm:</label>
-                        <label>
-                            Yes
-                            <input
-                                type="radio"
-                                name="claimForm"
-                                value="yes"
-                                checked={accidentData.claimForm === 'yes'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label>
-                            No
-                            <input
-                                type="radio"
-                                name="claimForm"
-                                value="no"
-                                checked={accidentData.claimForm === 'no'}
-                                onChange={handleChange}
-                            />
-                        </label>
                     </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>Approval:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="workApproval"
+                                        value="yes"
+                                        checked={accidentData.workApproval === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="workApproval"
+                                        value="no"
+                                        checked={accidentData.workApproval === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.claimForm === 'yes' && (
-                        <div className="form-field">
-                            <input
-                                type="file"
-                                className='inputField'
-                                name="claimFormdoc"
-                                ref={claimFormdoc}
-                                onChange={handleChange}
-                            />
+                            {accidentData.workApproval === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="workApprovaldoc"
+                                        ref={workApprovaldoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.workApproval === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="workApprovalDate"
+                                            value={accidentData.workApprovalnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="workApprovalassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.workApprovalassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="workApprovalremark"
+                                            placeholder="Remark"
+                                            value={accidentData.workApprovalremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    )}
+                    </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>Inspection</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="reinspection"
+                                        value="yes"
+                                        checked={accidentData.reinspection === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="reinspection"
+                                        value="no"
+                                        checked={accidentData.reinspection === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
 
-                    {accidentData.claimForm === 'no' && (
-                        <>
-                            <div className="form-field">
-                                <input
-                                    type="date"
-                                    className='inputField'
-                                    name="claimFormDate"
-                                    value={accidentData.claimFormnoDate}
-                                    onChange={handleChange}
-                                    min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            {accidentData.reinspection === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="reinspectiondoc"
+                                        ref={reinspectiondoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
 
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="claimFormassignedTo"
-                                    placeholder="Assigned to whom"
-                                    value={accidentData.claimFormassignedTo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="form-field">
-                                <input
-                                    type="text"
-                                    className='inputField'
-                                    name="claimFormremark"
-                                    placeholder="Remark"
-                                    value={accidentData.claimFormremark}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </>
-                    )}
+                            {accidentData.reinspection === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="reinspectionDate"
+                                            value={accidentData.reinspectionnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="reinspectionassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.reinspectionassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="reinspectionremark"
+                                            placeholder="Remark"
+                                            value={accidentData.reinspectionremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
                 </div>
+
+                <div className='form-row'>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>finalBill:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="finalBill"
+                                        value="yes"
+                                        checked={accidentData.finalBill === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="finalBill"
+                                        value="no"
+                                        checked={accidentData.finalBill === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+
+                            {accidentData.finalBill === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="finalBilldoc"
+                                        ref={finalBilldoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.finalBill === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="finalBillDate"
+                                            value={accidentData.finalBillnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="finalBillassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.finalBillassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="finalBillremark"
+                                            placeholder="Remark"
+                                            value={accidentData.finalBillremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField">
+                                <label>Balance:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="paymentBalance"
+                                        value="yes"
+                                        checked={accidentData.paymentBalance === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="paymentBalance"
+                                        value="no"
+                                        checked={accidentData.paymentBalance === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+
+                            {accidentData.paymentBalance === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="paymentBalancedoc"
+                                        ref={paymentBalancedoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.paymentBalance === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="paymentBalanceDate"
+                                            value={accidentData.paymentBalancenoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="paymentBalanceassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.paymentBalanceassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="paymentBalanceremark"
+                                            placeholder="Remark"
+                                            value={accidentData.paymentBalanceremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField inputField">
+                                <label>settelMent:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="settelMent"
+                                        value="yes"
+                                        checked={accidentData.settelMent === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="settelMent"
+                                        value="no"
+                                        checked={accidentData.settelMent === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+
+                            {accidentData.settelMent === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="settelMentdoc"
+                                        ref={settelMentdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.settelMent === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="settelMentDate"
+                                            value={accidentData.settelMentnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="settelMentassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.settelMentassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="settelMentremark"
+                                            placeholder="Remark"
+                                            value={accidentData.settelMentremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className='form-field'>
+                        <div>
+                            <div className="form-row radio-group inputField inputField">
+                                <label>claimForm:</label>
+                                <label>
+                                    Yes
+                                    <input
+                                        type="radio"
+                                        name="claimForm"
+                                        value="yes"
+                                        checked={accidentData.claimForm === 'yes'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    No
+                                    <input
+                                        type="radio"
+                                        name="claimForm"
+                                        value="no"
+                                        checked={accidentData.claimForm === 'no'}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+
+                            {accidentData.claimForm === 'yes' && (
+                                <div className="form-field">
+                                    <input
+                                        type="file"
+                                        className='inputField'
+                                        name="claimFormdoc"
+                                        ref={claimFormdoc}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
+
+                            {accidentData.claimForm === 'no' && (
+                                <>
+                                    <div className="form-field">
+                                        <input
+                                            type="date"
+                                            className='inputField'
+                                            name="claimFormDate"
+                                            value={accidentData.claimFormnoDate}
+                                            onChange={handleChange}
+                                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="claimFormassignedTo"
+                                            placeholder="Assigned to whom"
+                                            value={accidentData.claimFormassignedTo}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <input
+                                            type="text"
+                                            className='inputField'
+                                            name="claimFormremark"
+                                            placeholder="Remark"
+                                            value={accidentData.claimFormremark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className='form-field'></div>
                 </div>
-                <div className='form-field'></div>
-            </div>
 
                 {alertInfo.show && (
                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>

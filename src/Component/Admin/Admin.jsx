@@ -103,11 +103,14 @@ const Admin = () => {
         setGetData(response.data.data[0])
     }
 
+    
+
     return (
         <div className="admin-page">
             <aside className='sidebar'>
                 <ul>
                 <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px'}} />
+                    
                     <li onClick={() => {
                         setShowCustomerOptions(!showCustomerOptions);
                         resetStates();

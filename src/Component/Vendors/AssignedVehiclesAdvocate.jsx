@@ -114,9 +114,9 @@ const AssignedVehicleAdvocate = () => {
     <div>
 
       <div class='form-container'>
-      <div class="header-container">
-        <h3 class="bigtitle">Assigned Vehicles To Advocate</h3>
-      </div>
+        <div class="header-container">
+          <h3 class="bigtitle">Assigned Vehicles To Advocate</h3>
+        </div>
         <div class='form-row'>
           <div class="form-field">
             <label>Vehicle No:
@@ -240,12 +240,12 @@ const AssignedVehicleAdvocate = () => {
                   )}
 
                   <td style={{ textAlign: 'center' }}>
-                    {item.details.length > 0
-                      ? (item.details[0].reasonforRejection !== undefined && item.details[0].reasonforRejection !== null && item.details[0].reasonforRejection !== ''
+                    {item.details.length > 0 ? item.details[0].reasonforRejection != "undefined" || item.details[0].reasonforRejection === ''
                         ? item.details[0].reasonforRejection
-                        : "Accepted")
+                        : "Accepted"
                       : "Pending"}
                   </td>
+
 
                 </tr>
               ))

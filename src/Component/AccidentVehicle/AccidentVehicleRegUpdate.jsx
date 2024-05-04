@@ -90,7 +90,7 @@ const AccidentVehicleRegUpdate = () => {
                 <td>{item.CustomerName}</td>
                 <td>{item.accidentFileNo}</td>
                 <td>{item.choosenPlan}</td>
-                <td>{item && item.selectedOptions ? JSON.parse(item.selectedOptions).join(', ') : '---'}</td>
+                <td>{item && item.selectedOptions }</td>
                 <td>
                   <button onClick={() => view(item.accidentFileNo)} className='view-button'>View here</button>
                 </td>

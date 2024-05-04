@@ -47,7 +47,7 @@ function AdvocateResponse() {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
-            console.log("url",`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`)
+            console.log("url", `${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`)
             const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
@@ -62,42 +62,294 @@ function AdvocateResponse() {
         }
     };
 
+
+    const handleDownload = (url, filename) => {
+        fetch(url, { mode: 'no-cors' })  // Added no-cors mode
+            .then(response => response.blob())
+            .then(blob => {
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+                window.URL.revokeObjectURL(downloadUrl);
+            })
+            .catch(e => console.error('Error downloading the file: ', e));
+    };
+
     return (
         <div className='container'>
+             <div class='header-container'>
+                    <h2 className='bigtitle'>Accident Images</h2>
+                </div>
+
+                <div className="form-row">
+                    <label className="form-field">
+                        Chassis Number:
+                        {formData.ChassisNoView ? (
+                            <>
+                                <img
+                                    src={formData.ChassisNoView}
+                                    alt="Front LH"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Cluster Number:
+                        {formData.ClusterView ? (
+                            <>
+                                <img
+                                    src={formData.ClusterView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        FrontLH Number:
+                        {formData.frontLH ? (
+                            <>
+                                <img
+                                    src={formData.frontLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                             
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        frontRH:
+                        {formData.frontRH ? (
+                            <>
+                                <img
+                                    src={formData.frontRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        front View:
+                        {formData.frontView ? (
+                            <>
+                                <img
+                                    src={formData.frontView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                                
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear LH:
+                        {formData.rearLH ? (
+                            <>
+                                <img
+                                    src={formData.rearLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                              
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear RH:
+                        {formData.rearRH ? (
+                            <>
+                                <img
+                                    src={formData.rearRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo:
+                        {formData.MajorDamages1 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages1}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                             
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 2:
+                        {formData.MajorDamages2 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages2}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 3:
+                        {formData.MajorDamages3 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages3}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 4:
+                        {formData.MajorDamages4 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages4}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                                
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 5:
+                        {formData.MajorDamages5 ? (
+                            <>
+                                <img
+                                    src={formData.MajorDamages5}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                               
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+
+                </div>
             <div class="header-container">
                 <h3 class="bigtitle">Data Uploaded by Advocate</h3>
             </div>
             <div className='form-row'>
                 <label className="form-field">
-                    bailerDetails:
-                    <textarea className='inputField' name="bailerDetails" value={formData.bailerDetails} readOnly />
+                    Company Representative:
+                    <input type="text" style={{ marginTop: '10px' }} className='inputField' readOnly value={formData.companyRepresentative} />
                 </label>
                 <label className="form-field">
-                    companyRepresentative:
-                    <input type="text" className='inputField' name="companyRepresentative" value={formData.companyRepresentative} readOnly />
+                    Bailer Details:
+                    {
+                        formData.bailerDetails ? 
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Bailer Details Available
+                            </button> :
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Bailer Details Not Available
+                            </button>
+                    }
+
+                </label>
+
+                <label className="form-field">
+                    FIR Copy:
+                    {
+                        formData.firCopy ? 
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                FIR Copy Available
+                            </button> :
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                FIR Copy Not Available
+                            </button>
+                    }
                 </label>
                 <label className="form-field">
-                    firCopy:
-                    <textarea name="partsArrangement" className='inputField' value={formData.firCopy} readOnly />
-                </label>
-                <label className="form-field">
-                    releaseOrderCopy:
-                    <input type="text" className='inputField' name="releaseOrderCopy" value={formData.releaseOrderCopy} readOnly />
+                    Release Order Copy:
+                    {
+                        formData.releaseOrderCopy ? 
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Copy Available
+                            </button> :
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Copy Not Available
+                            </button>
+                    }
                 </label>
 
             </div>
             <div className='form-row'>
                 <label className="form-field">
-                    indemnityBondCopy:
-                    <input type="text" className='inputField' name="indemnityBondCopy" value={formData.indemnityBondCopy} readOnly />
+                    indemnity Bond Copy:
+                    {
+                        formData.indemnityBondCopy ? 
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Copy Available
+                            </button> :
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Copy Not Available
+                            </button>
+                    }
                 </label>
                 <label className="form-field">
                     petitionCopy:
-                    <input type="text" className='inputField' name="petitionCopy" value={formData.petitionCopy} readOnly />
+                    {
+                        formData.petitionCopy ? 
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Copy Available
+                            </button> :
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Copy Not Available
+                            </button>
+                    }
                 </label>
                 <label className="form-field">
                     policeReportCopy:
-                    <input type="text" className='inputField' name="policeReportCopy" value={formData.policeReportCopy} readOnly />
+                    {
+                        formData.policeReportCopy ? 
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Available
+                            </button> :
+                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
+                                Release Order Not Available
+                            </button>
+                    }
                 </label>
                 <label className="form-field">
                     Feedback:
@@ -106,17 +358,17 @@ function AdvocateResponse() {
             </div>
             {action === "reject" && (
                 <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
-                        Reason to Reject:
+                    Reason to Reject:
                     <label>
-                        <textarea name="reasonOfReject" className='inputField'value={formData.reasonOfReject}
+                        <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
                             onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
                         />
-                    <button
-                        type="button"
-                        onClick={() => { onSubmit('reject'); }}
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft:"50px", marginTop:"20px"}}>
-                        Submit
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => { onSubmit('reject'); }}
+                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}>
+                            Submit
+                        </button>
                     </label>
 
                 </div>

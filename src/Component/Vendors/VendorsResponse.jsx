@@ -108,11 +108,11 @@ const VendorResponse = () => {
           <h3 class="bigtitle">Vendor Response Overview</h3>
         </div>
 
-      <div style={{ padding: '20px', marginTop: '20px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+      <div style={{ padding: '20px', marginTop: '20px',marginBottom:"30px", boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <div>
           {data.map((vehicle, vehicleIndex) => (
-            <div key={vehicle.AccidentVehicleCode}>
-
+            <div key={vehicle.AccidentVehicleCode} style={{marginTop:"50px"}}>
+              <hr />
                <h2 className='title1'>Customer Name: {vehicle.CustomerName}    |    Vehicle Number: {vehicle.vehicleNumber}</h2>
               
               <table style={{marginLeft:"30px"}}>
@@ -207,14 +207,14 @@ const VendorResponse = () => {
                   ) : (
                     vehicle.advocateData.map((item, index) => (
                       <tr key={index}>
-                        <td>{item.FIRCopy || '---'}</td>
+                         <td>{item.FIRCopy || '---'}</td>
                         <td>{item.companyRepresentative || '---'}</td>
-                        <td>{item.POA || '---'}</td>
-                        <td>{item.petitionCopy || '---'}</td>
-                        <td>{item.policeReportCopy || '---'}</td>
-                        <td>{item.indemnityBondCopy || '---'}</td>
-                        <td>{item.bailerDetails || '---'}</td>
-                        <td>{item.releaseOrderCopy || '---'}</td>
+                        <td>{item.POA ? "uploaded" :'---'}</td>
+                        <td>{item.petitionCopy ? "uploaded" :'---'}</td>
+                        <td>{item.policeReportCopy ? "uploaded" :'---'}</td>
+                        <td>{item.indemnityBondCopy ? "uploaded" :'---'}</td>
+                        <td>{item.bailerDetails ? "uploaded" :'---'}</td>
+                        <td>{item.releaseOrderCopy ? "uploaded" :'---'}</td>
                         <td>
                 <button onClick={() => viewAdvocate(item)} className='view-button'>View</button>
               </td>
@@ -245,13 +245,13 @@ const VendorResponse = () => {
                   ) : (
                     vehicle.workshopData.map((item, index) => (
                       <tr key={index}>
-                        <td>{item.payment || '---'}</td>
-                        <td>{item.vehicleHandover || '---'}</td>
-                        <td>{item.estimateGiven || '---'}</td>
-                        <td>{item.agreementCPA || '---'}</td>
-                        <td>{item.deadlineSheet || '---'}</td>
-                        <td>{item.supplementryEstimate || '---'}</td>
-                        <td>{item.preApproval || '---'}</td>
+                        <td>{item.payment  ? "uploaded" :'---'}</td>
+                        <td>{item.vehicleHandover  ? "uploaded" :'---'}</td>
+                        <td>{item.estimateGiven  ? "uploaded" :'---'}</td>
+                        <td>{item.agreementCPA  ? "uploaded" :'---'}</td>
+                        <td>{item.deadlineSheet  ? "uploaded" :'---'}</td>
+                        <td>{item.supplementryEstimate  ? "uploaded" :'---'}</td>
+                        <td>{item.preApproval  ? "uploaded" :'---'}</td>
                         <td>
                 <button onClick={() => viewWorkshop(item)} className='view-button'>View</button>
               </td>

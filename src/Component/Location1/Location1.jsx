@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Location1.css';
 import "../ImageUpload/ImageUpload.css";
 import axios from 'axios';
@@ -11,10 +11,14 @@ import Stack from '@mui/material/Stack';
 import Input from '@mui/material/Input';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
+import Snackbar from '@mui/material/Snackbar';
+
 
 
 function Location1({ vehicleData }) {
     console.log("vehicle", vehicleData)
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
@@ -39,10 +43,27 @@ function Location1({ vehicleData }) {
         MajorDamages5: null
     });
 
+    const photoRefs = {
+        frontLH: useRef(null),
+        frontRH: useRef(null),
+        rearLH: useRef(null),
+        rearRH: useRef(null),
+        frontView: useRef(null),
+        rearView: useRef(null),
+        ChassisNoView: useRef(null),
+        ClusterView: useRef(null),
+        MajorDamages1: useRef(null),
+        MajorDamages2: useRef(null),
+        MajorDamages3: useRef(null),
+        MajorDamages4: useRef(null),
+        MajorDamages5: useRef(null)
+    };
+
     const [formData, setFormData] = useState({
         manualLocation: ""
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [photoPreviews, setPhotoPreviews] = useState({});
     const [fileName, setFileName] = useState([]);
     const [showPhotos, setShowPhotos] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
@@ -135,55 +156,94 @@ function Location1({ vehicleData }) {
 
     const handleFileChange = (event, type) => {
         const file = event.target.files[0];
-        console.log("file", file)
-        console.log("FILESIZE",file.size)
-        const fileName = file.name;
-        if(file){
-        if (file && file.size < 102400) {
-            console.log("some",file.size)
+        if (file && file.size > 102400) {
+            console.log("File size should be less than 100 KB");
+            setAlertInfo({ show: true, message: "File size should be less than 100 KB", severity: 'error' });
+            if (photoRefs[type].current) {
+                photoRefs[type].current.value = "";
+            }
+        } else if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                setPhotos(prev => ({ ...prev, [type]: reader.result }));
-                setFileName(prev => ({ ...prev, [type]: fileName }));
+                setPhotos(prev => ({ ...prev, [type]: file }));
+                setPhotoPreviews(prev => ({ ...prev, [type]: reader.result }));
             };
+            console.log("PHOTO", photos)
             reader.readAsDataURL(file);
         }
-        else {
-            console.log("some",file.size)
-        setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
-}
-    }
-
     };
+
+    const validateForm = () => {
+        for (const [key, value] of Object.entries(formData)) {
+            if (key === 'frontLH' || key === 'frontRH' || key === 'rearLH' || key === 'rearRH' || key === 'rearView' || key === 'ChassisNoView' || key === 'ClusterView' || key === 'MajorDamages1' || key === 'MajorDamages2' || key === 'MajorDamages3' || key === 'MajorDamages4' || key === 'MajorDamages5') {
+                if (value === null || value === undefined || value.size === 0)
+                    return `Field '${key}' is required.`;
+            }
+            if (key === 'manualLocation' || latitude != null && longitude != null)
+                return '';
+
+            if (value === '') {
+                return `Field '${key}' is required.`;
+            }
+        }
+        return '';
+    }
 
     const handleRemovePhoto = (type) => {
         setPhotos(prev => ({ ...prev, [type]: null }));
         setFileName(prev => ({ ...prev, [type]: null }));
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setIsSubmitting(true);
+        console.log("some")
+        const validationMessage = validateForm();
+        if (validationMessage) {
+            setSnackbarMessage(validationMessage);
+            setOpenSnackbar(true);
+            return;
+        }
 
-        const accidentDataObject = { ...fileName, ...vehicleData, latitude, longitude, ...getData, ...formData, selectedOptions };
+        const accidentDataObject = { ...photos, ...vehicleData, latitude, longitude, ...getData, ...formData, selectedOptions };
+        console.log('Form data submitted:', accidentDataObject);
         console.log("AccidentData", accidentDataObject)
+        const formDataObj = new FormData();
+        for (const key in accidentDataObject) {
+            if (accidentDataObject[key]) {  // Check if the data is not undefined or null
+                if (accidentDataObject[key] instanceof File) {
+                    console.log("FILES")
+                    console.log("file", accidentDataObject[key])
+                    formDataObj.append(key, accidentDataObject[key], accidentDataObject[key].name);
+                } else {
+                    formDataObj.append(key, accidentDataObject[key]);
+                }
+            }
+        }
+
         try {
             try {
-                const response = await axios.post(`${backendUrl}/addVehicleInfo`, accidentDataObject);
-                if (response.data) {
-                    alert(`Your Accident File Number: ${response.data.data}`);
-                    console.log("response", response.data.data)
-                    setLocation('Photos submitted successfully!');
-                    navigate("../")
-                    setShowPhotos(false)
-                    setShowOptions(true)
-                } else {
-                    alert('Error: Accident file number was not received.');
+                console.log("FOMRDATA")
+                for (let pair of formDataObj.entries()) {
+                    console.log(`${pair[0]}:`, pair[1]);
                 }
-            } catch (error) {
-                console.error('Failed to submit accident data:', error);
-                alert('Failed to submit accident data. Please try again.');
-            }
+                const response = await axios({
+                    method: 'POST',
+                    url: `${backendUrl}/addVehicleInfo`,
+                    data: formDataObj,
+                    headers: {
+                        'Authorization': token
+                    }
+                });
+                console.log("response", response.data);
+                setSnackbarMessage("Form submitted successfully!");
+                setOpenSnackbar(true);
 
+            } catch (error) {
+                console.error("Error during form submission:", error);
+                setSnackbarMessage("Failed to submit the form.");
+                setOpenSnackbar(true);
+            }
         } catch (error) {
             console.error('Failed to submit photos:', error);
             setLocation('Error: Failed to submit photos.');
@@ -198,15 +258,15 @@ function Location1({ vehicleData }) {
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 <p style={{ textAlign: 'center' }}>OR</p>
                 {!location && (
-                <label className="form-field">
-                    <p style={{ marginBottom: "20px" }}> Manual Location :</p>
-                    <textarea
-                        name="manualLocation"
-                        value={FormData.manualLocation}
-                        onChange={handleChange}
-                    />
-                </label>
-            )}
+                    <label className="form-field">
+                        <p style={{ marginBottom: "20px" }}> Manual Location :</p>
+                        <textarea
+                            name="manualLocation"
+                            value={FormData.manualLocation}
+                            onChange={handleChange}
+                        />
+                    </label>
+                )}
                 {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
                 {alertInfo.show && (
                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
@@ -217,23 +277,27 @@ function Location1({ vehicleData }) {
                     <div key={type} className="photo-input-section">
                         <label>
                             {type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:
-                            <Input
+                            <input
                                 type="file"
-                                disableUnderline
-                                inputProps={{
-                                    accept: 'image/*',
-                                    capture: "camera"  // This prompts devices to offer taking a new picture with the camera
-                                }}
-
+                                ref={photoRefs[type]}
+                                accept="image/*"
+                                capture="camera"
                                 onChange={(e) => handleFileChange(e, type)}
                             />
                         </label>
-                        {photos[type] && (
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <img src={photos[type]} alt={`Upload preview ${type}`} style={{ width: 100, height: 100 }} />
-                                <Button variant="outlined" color="error" onClick={() => handleRemovePhoto(type)}>Remove</Button>
-                            </Stack>
+                        {photoPreviews[type] && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '20px' }}>
+                                <img src={photoPreviews[type]} alt={`Upload preview ${type}`} style={{ width: 100, height: 100 }} />
+                                <Button variant="contained" onClick={() => {
+                                    setPhotos(prev => ({ ...prev, [type]: null }));
+                                    setPhotoPreviews(prev => ({ ...prev, [type]: null }));
+                                    if (photoRefs[type].current) {
+                                        photoRefs[type].current.value = ""; // Reset the file input
+                                    }
+                                }}>Remove</Button>
+                            </div>
                         )}
+
                     </div>
                 ))}
 
@@ -267,6 +331,17 @@ function Location1({ vehicleData }) {
                         </div>
                     )}
                 </div>
+                <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={() => setOpenSnackbar(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+                        {snackbarMessage}
+                    </Alert>
+                </Snackbar>
+
 
                 <Button variant="contained" onClick={handleSubmit} disabled={isSubmitting}>
                     Submit Photos

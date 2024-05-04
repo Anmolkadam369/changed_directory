@@ -43,7 +43,6 @@ const CustomerMaster = () => {
     panCard: "",
     adharNo: '',
     adharCard: "",
-    agreement: "",
     rate: "",
     fleetSize: "",
     plan: '',
@@ -53,12 +52,11 @@ const CustomerMaster = () => {
   const GSTRef = useRef(null);
   const panRef = useRef(null);
   const adharCardRef = useRef(null);
-  const agreementRef = useRef(null);
   const fleetSizeRef = useRef(null);
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(formData)) {
-      if (key === 'panCard' || key === 'adharCard' || key === 'agreement' || key === 'GST') {
+      if (key === 'panCard' || key === 'adharCard' || key === 'GST') {
         if (value === null || value === undefined || (value && value.size === 0)) {
           return `Field '${key}' is required here.`;
         }
@@ -83,7 +81,7 @@ const CustomerMaster = () => {
         }
       }
 
-      if (key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+      if (key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
         if (value === '') return `Fields '${key}' is required.`;
       }
     }
@@ -106,7 +104,6 @@ const CustomerMaster = () => {
           GST: GSTRef,
           panCard: panRef,
           adharCard: adharCardRef,
-          agreement: agreementRef,
           fleetSize: fleetSizeRef
         };
 
@@ -359,17 +356,6 @@ const CustomerMaster = () => {
               // value={formData.adharCard}
               onChange={handleChange}
               ref={adharCardRef}
-              accept=".pdf,image/*"
-              required />
-          </label>
-          <label className="form-field">
-            Agreement :
-            <input
-              type='file'
-              name="agreement"
-              // value={formData.agreement}
-              onChange={handleChange}
-              ref={agreementRef}
               accept=".pdf,image/*"
               required />
           </label>
