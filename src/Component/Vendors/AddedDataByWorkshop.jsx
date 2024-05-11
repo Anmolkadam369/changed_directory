@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../EditAccidentVehicle/EditAccidentVehicle.css'
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +8,11 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function AddedDataByWorkshop() {
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
     const { id } = location.state || {};
     console.log("Received IDssss:", id);
@@ -19,6 +21,8 @@ function AddedDataByWorkshop() {
     const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
+    const [existingData, setExistingData] = useState([]);
+    console.log("existingData", existingData)
 
 
     useEffect(() => {
@@ -27,6 +31,7 @@ function AddedDataByWorkshop() {
             navigate("/");
         }
         getDataById(id);
+        if (id != null && userId != null) getExistingData(id, userId)
     }, [token, userId, navigate, id]);
 
     useEffect(() => {
@@ -79,6 +84,26 @@ function AddedDataByWorkshop() {
         setComingData(response.data.data[0])
     }
 
+    const getExistingData = async (id, userId) => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`);
+            setExistingData(response.data.data[0]);
+            console.log("getExistingData success", response);
+        } catch (error) {
+            console.error("Failed to fetch existing data", error.response || error);
+            if (error.response) {
+                console.log("Error data:", error.response.data);
+                console.log("Error status:", error.response.status);
+                console.log("Error headers:", error.response.headers);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    };
+
+
+
+
     const [formData, setFormData] = useState({
         vehicleInspection: "",
         workEstimate: "",
@@ -110,7 +135,7 @@ function AddedDataByWorkshop() {
                     deadlineSheet: deadlineSheet,
                     supplementryEstimate: supplementryEstimate,
                     preApproval: preApproval,
-                    allBillCopy:allBillCopy
+                    allBillCopy: allBillCopy
                 };
 
                 if (refs[name] && refs[name].current) {
@@ -267,10 +292,13 @@ function AddedDataByWorkshop() {
             }
         };
     }
-
+    const handleBack = () => {
+        navigate("../WorkshopDashboard")
+    }
     return (
         <div className='container'>
-              <div class='header-container'>
+            <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+            <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>
             </div>
 
@@ -281,7 +309,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="CustomerName"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.CustomerName}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -292,7 +320,7 @@ function AddedDataByWorkshop() {
                     Choosen Plan:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="choosenPlan"
                         value={formData.choosenPlan}
                         onChange={handleChange}
@@ -308,7 +336,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="chassisNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.chassisNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -319,7 +347,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="engineNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.engineNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -330,7 +358,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="make"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.make}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -341,7 +369,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="latitude"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.latitude || 0.0}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -354,7 +382,7 @@ function AddedDataByWorkshop() {
                     Longitude:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="longitude"
                         value={formData.longitude || 0.0}
                         onChange={handleChange}
@@ -366,7 +394,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="vehicleNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.vehicleNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -377,7 +405,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="accidentFileNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.accidentFileNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -388,7 +416,7 @@ function AddedDataByWorkshop() {
                     <input
                         type="text"
                         name="model"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.model}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -588,184 +616,304 @@ function AddedDataByWorkshop() {
 
 
             <div className='form-row'>
-                <label className="form-field">
-                    Payment:
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="payment"
-                        value={formData.payment}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label className="form-field">
-                    Vehicle Handover:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="vehicleHandover"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={vehicleHandover}
-                    />
-                </label>
-                <label className="form-field">
-                    Estimate Given:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="estimateGiven"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={estimateGiven}
-                    />
-                </label>
-                <label className="form-field">
-                    Agreement to CPA:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="agreementCPA"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={agreementCPA}
-                    />
-                </label>
-            </div>
 
-            <div className='form-row'>
-                <label className="form-field">
-                    Deadline Sheet:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="deadlineSheet"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={deadlineSheet}
-                    />
-                </label>
-                <label className="form-field">
-                    Supplementry Estimate:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="supplementryEstimate"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={supplementryEstimate}
-                    />
-                </label>
-                <label className="form-field">
-                    Surveyor Pre Approval On Both:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="preApproval"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={preApproval}
-                    />
-                </label>
-                <label className="form-field">
-                    1st Advanced payment (50% of Estimate):
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="firstAdvancedPayment"
-                        value={formData.firstAdvancedPayment}
-                        onChange={handleChange}
-                    />
-                </label>
-               
-            </div>
+                <div>
+                    <p className="form-field">Agreement to CPA:</p>
+                    {existingData?.agreementCPA ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Agreement CPA is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="agreementCPA"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={agreementCPA}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
 
-            <div className='form-row'>
-            <label className="form-field">
-                    Parts order Status:
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="partsOrderStatus"
-                        value={formData.partsOrderStatus}
-                        onChange={handleChange}
-                    />
-                </label>
-               
-                <label className="form-field">
-                    2nd Advanced payment (50% of Estimate):
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="secondAdvancedPayment"
-                        value={formData.secondAdvancedPayment}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label className="form-field">
-                    Driver Arrangment:
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="contactofDriver"
-                        value={formData.contactofDriver}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label className="form-field">
-                    Inspection And Trial:
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="driverFeedback"
-                        value={formData.driverFeedback}
-                        onChange={handleChange}
-                    />
-                </label>
+
+                <div>
+                    <p className="form-field">Vehicle Handover:</p>
+                    {existingData?.vehicleHandover ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Vehicle Handover is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="vehicleHandover"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={vehicleHandover}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Estimate Given:</p>
+                    {existingData?.estimateGiven ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Vehicle Handover is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="estimateGiven"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={estimateGiven}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
 
             </div>
 
             <div className='form-row'>
-                <label className="form-field">
-                    Final bills and payment :
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="allBillCopy"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={allBillCopy}
 
-                    />
-                </label>
-                <label className="form-field">
-                    Feedback :
-                    <input
-                        type="text"
-                        className='inputField'
-                        name="feedback"
-                        value={formData.feedback}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label className="form-field">
-                </label>
-                <label className="form-field">
-                </label>
+
+
+                <div>
+                    <p className="form-field">Deadline Sheet:</p>
+                    {existingData?.deadlineSheet ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Deadline Sheet is already uploaded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="deadlineSheet"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={deadlineSheet}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+                <div>
+
+                    <p className="form-field">Supplementary Estimate:</p>
+                    {existingData?.supplementryEstimate ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Supplementary Estimate is already uploaded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="supplementryEstimate"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={supplementryEstimate}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Surveyor Pre Approval On Both:</p>
+                    {existingData?.preApproval ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Pre Approval is already uploaded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="preApproval"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={preApproval}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+            </div>
+
+            <div className='form-row'>
+
+                <div>
+                    <p className="form-field">1st Advanced payment (50% of Estimate):</p>
+                    {existingData?.firstAdvancedPayment ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>1st Advanced payment is already recorded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="firstAdvancedPayment"
+                                value={formData.firstAdvancedPayment}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+                <div>
+                    <p className="form-field">Parts order Status:</p>
+                    {existingData?.partsOrderStatus ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Parts order Status is already uploaded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="partsOrderStatus"
+                                value={formData.partsOrderStatus}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+                <div>
+                    <p className="form-field">Final bills and payment :</p>
+                    {existingData?.allBillCopy ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>All bill copy is already recorded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="allBillCopy"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={allBillCopy}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
 
             </div>
-            {alertInfo.show && (
-          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-            {alertInfo.message}
-          </Alert>
-        )}
+
+            <div className='form-row'>
+
+                <div>
+                    <p className="form-field">Driver Arrangement:</p>
+                    {existingData?.contactofDriver ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Driver arrangement details are already recorded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="contactofDriver"
+                                value={formData.contactofDriver}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+
+
+                <div>
+                    <p className="form-field">Inspection And Trial:</p>
+                    {existingData?.driverFeedback ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Inspection and trial feedback is already recorded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="driverFeedback"
+                                value={formData.driverFeedback}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+                <div>
+                    <p className="form-field">2nd Advanced payment (50% of Estimate):</p>
+                    {existingData?.secondAdvancedPayment ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>2nd Advanced payment is already recorded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="secondAdvancedPayment"
+                                value={formData.secondAdvancedPayment}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+            </div>
+
+            <div className='form-row'>
+                <div>
+                    <p className="form-field">Payment:</p>
+                    {existingData?.payment ? (
+                        <label className="form-field">
+                            <p className='notUploaded1'>Payment is already existed</p>
+                        </label>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="payment"
+                                value={formData.payment}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Feedback:</p>
+                    {existingData?.feedback ? (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>Feedback is already recorded</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="feedback"
+                                value={formData.feedback}
+                                onChange={handleChange}
+                                style={{ width: '100%' }}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div></div>
+                <div></div>
+
+            </div>
+
+
+
+
+            {
+                alertInfo.show && (
+                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                        {alertInfo.message}
+                    </Alert>
+                )
+            }
 
             <div style={{ textAlign: 'center' }}>
-          <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
-            Submit
-          </button>
-        </div>
-        </div>
+                <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+                    Submit
+                </button>
+            </div>
+        </div >
 
     );
 }

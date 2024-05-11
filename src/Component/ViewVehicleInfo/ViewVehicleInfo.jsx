@@ -68,8 +68,8 @@ const ViewVehicleInfo = () => {
   return (
     <div>
       <h3 className='bigtitle'>Register View / Edit</h3>
-      <div className='responsive-table'>
-        <table style={{ width: '100%', marginLeft: '20px', borderCollapse: 'collapse' }}>
+      <div className='register-responsive-table'>
+        <table style={{ width: '100%', marginLeft: '20px', borderCollapse: 'collapse', marginBottom:'90px' }}>
           <thead>
             <tr>
               <th>Sr. No.</th>

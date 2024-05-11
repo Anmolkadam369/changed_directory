@@ -7,6 +7,10 @@ import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -675,6 +679,9 @@ const VehicleClaimEdit = () => {
     const editable = () => {
         setIsReadOnly(!IsReadOnly)
     }
+    const handleBack = () => {
+        navigate("../Admin")
+    }
 
     return (
         <div className='container'>
@@ -684,7 +691,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Date & Time:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="dateTime"
                             value={accidentData.dateTime}
@@ -695,7 +702,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         System Generated - Vehicle No.:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="systemGenerated"
                             value={accidentData.systemGenerated}
@@ -706,7 +713,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Time (Railway):
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="railwayTime"
                             value={accidentData.railwayTime}
@@ -717,7 +724,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Accident Place - State:
                         <select
-                            className='inputField'
+                            className='inputField form-control'
                             name="state"
                             onChange={handleChange}
                             disabled={isLoadingStates}
@@ -734,7 +741,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Accident Place - City:
                         <select
-                            className='inputField'
+                            className='inputField form-control'
                             name="district"
                             value={accidentData.district}
                             onChange={handleChange}
@@ -750,7 +757,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Accident Date:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="accidentDate"
                             value={accidentData.accidentDate}
@@ -761,7 +768,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Reason of Accident:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="reason"
                             value={accidentData.reason}
                             onChange={handleChange}
@@ -776,7 +783,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Insured By:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="insuredBy"
                             value={accidentData.insuredBy}
                             onChange={handleChange}
@@ -788,7 +795,7 @@ const VehicleClaimEdit = () => {
                         Intimated Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="intimatedDate"
                             value={accidentData.intimatedDate}
                             onChange={handleChange}
@@ -800,7 +807,7 @@ const VehicleClaimEdit = () => {
                         Intimation Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="intimationUpload"
                             value={accidentData.intimationUpload}
                             onChange={handleChange}
@@ -811,7 +818,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Policy Number:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="policyNo"
                             value={accidentData.policyNo}
                             onChange={handleChange}
@@ -825,7 +832,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Driver Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="driverName"
                             value={accidentData.driverName}
                             onChange={handleChange}
@@ -836,7 +843,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         D/L No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="DLNo"
                             value={accidentData.DLNo}
                             onChange={handleChange}
@@ -848,7 +855,7 @@ const VehicleClaimEdit = () => {
                         D/L Number Validity:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="DLNoValidity"
                             value={accidentData.DLNoValidity}
                             onChange={handleChange}
@@ -859,7 +866,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Date Of Birth:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="DOB"
                             value={accidentData.DOB}
                             onChange={handleChange}
@@ -873,7 +880,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Police Station:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="policeStation"
                             value={accidentData.policeStation}
                             onChange={handleChange}
@@ -884,7 +891,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         FIR No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="FIRNo"
                             value={accidentData.FIRNo}
                             onChange={handleChange}
@@ -896,7 +903,7 @@ const VehicleClaimEdit = () => {
                         FIR Date:
                         <input
                             type="date"
-                            className='inputField'
+                            className='inputField form-control'
                             name="firDate"
                             value={accidentData.firDate}
                             onChange={handleChange}
@@ -908,7 +915,7 @@ const VehicleClaimEdit = () => {
                         FIR Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="firUpload"
                             value={accidentData.firUpload}
                             onChange={handleChange}
@@ -921,7 +928,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Advocate Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="advocateName"
                             value={accidentData.advocateName}
                             onChange={handleChange}
@@ -933,7 +940,7 @@ const VehicleClaimEdit = () => {
                         Advocate Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="advocateNo"
                             value={accidentData.advocateNo}
                             onChange={handleChange}
@@ -946,7 +953,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Court Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="courtName"
                             value={accidentData.courtName}
                             onChange={handleChange}
@@ -958,7 +965,7 @@ const VehicleClaimEdit = () => {
                         Release Order Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="releaseUpload"
                             value={accidentData.releaseUpload}
                             onChange={handleChange}
@@ -972,7 +979,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Spot Surveyor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="surveyorName"
                             value={accidentData.surveyorName}
                             onChange={handleChange}
@@ -984,7 +991,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="surveyorNo"
                             value={accidentData.surveyorNo}
                             onChange={handleChange}
@@ -998,7 +1005,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateOfSurvey"
                             value={accidentData.dateOfSurvey}
                             onChange={handleChange}
@@ -1009,7 +1016,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="remarksSurveyor"
                             value={accidentData.remarksSurveyor}
                             onChange={handleChange}
@@ -1022,7 +1029,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Material Surveyor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="materialSurveyorName"
                             value={accidentData.materialSurveyorName}
                             onChange={handleChange}
@@ -1034,7 +1041,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="materialSurveyorNo"
                             value={accidentData.materialSurveyorNo}
                             onChange={handleChange}
@@ -1048,7 +1055,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateOfMaterialSurvey"
                             value={accidentData.dateOfMaterialSurvey}
                             onChange={handleChange}
@@ -1059,7 +1066,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="remarksMaterialSurvey"
                             value={accidentData.remarksMaterialSurvey}
                             onChange={handleChange}
@@ -1072,7 +1079,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Final Surveyor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="finalSurveyorName"
                             value={accidentData.finalSurveyorName}
                             onChange={handleChange}
@@ -1084,7 +1091,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="FinalSurveyorNo"
                             value={accidentData.FinalSurveyorNo}
                             onChange={handleChange}
@@ -1098,7 +1105,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateOfFinalSurvey"
                             value={accidentData.dateOfFinalSurvey}
                             onChange={handleChange}
@@ -1109,7 +1116,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="remarksFinalSurvey"
                             value={accidentData.remarksFinalSurvey}
                             onChange={handleChange}
@@ -1122,7 +1129,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Investigator Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigatorName"
                             value={accidentData.investigatorName}
                             onChange={handleChange}
@@ -1134,7 +1141,7 @@ const VehicleClaimEdit = () => {
                         Investigator Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigatorNo"
                             value={accidentData.investigatorNo}
                             onChange={handleChange}
@@ -1148,7 +1155,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigationDate"
                             value={accidentData.investigationDate}
                             onChange={handleChange}
@@ -1159,7 +1166,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigatorRemarks"
                             value={accidentData.investigatorRemarks}
                             onChange={handleChange}
@@ -1173,7 +1180,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Company Representative Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="representativeName"
                             value={accidentData.representativeName}
                             onChange={handleChange}
@@ -1185,7 +1192,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="representativeNo"
                             value={accidentData.representativeNo}
                             onChange={handleChange}
@@ -1199,7 +1206,7 @@ const VehicleClaimEdit = () => {
                         Representative Report Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="reportUpload"
                             value={accidentData.reportUpload}
                             onChange={handleChange}
@@ -1211,7 +1218,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Repaired On Spot Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateRepairedOnSpot"
                             value={accidentData.dateRepairedOnSpot}
                             onChange={handleChange}
@@ -1224,7 +1231,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Material Transshiped in Vehicle No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="transshippedVehicleNo"
                             value={accidentData.transshippedVehicleNo}
                             onChange={handleChange}
@@ -1236,7 +1243,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Transshiped Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="transshippedDate"
                             value={accidentData.transshippedDate}
                             onChange={handleChange}
@@ -1249,7 +1256,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Vehicle Reported on Final Destination:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="reportedFinalDestination"
                             value={accidentData.reportedFinalDestination}
                             onChange={handleChange}
@@ -1261,7 +1268,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Reported on Final Destination:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="reportedFinalDestinationDate"
                             value={accidentData.reportedFinalDestinationDate}
                             onChange={handleChange}
@@ -1275,7 +1282,7 @@ const VehicleClaimEdit = () => {
                         Deadline Date:
                         <input
                             type="date"
-                            className='inputField'
+                            className='inputField form-control'
                             name="deadLineDate"
                             value={accidentData.deadLineDate}
                             onChange={handleChange}
@@ -1287,7 +1294,7 @@ const VehicleClaimEdit = () => {
                         Actual Ready Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="readyDate"
                             value={accidentData.readyDate}
                             onChange={handleChange}
@@ -1301,7 +1308,7 @@ const VehicleClaimEdit = () => {
                         Re-Inspection Date:
                         <input
                             type="date"
-                            className='inputField'
+                            className='inputField form-control'
                             name="reInspectionDate"
                             value={accidentData.reInspectionDate}
                             onChange={handleChange}
@@ -1313,7 +1320,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Finally Released:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="finallyReleasedDate"
                             value={accidentData.finallyReleasedDate}
                             onChange={handleChange}
@@ -1328,7 +1335,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Total Days From Accident:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="totalDaysFromAccident"
                             value={accidentData.totalDaysFromAccident}
                             onChange={handleChange}
@@ -1339,7 +1346,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Total Days In WorkShop:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="daysInWorkShop"
                             value={accidentData.daysInWorkShop}
                             onChange={handleChange}
@@ -1352,7 +1359,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Deadline TAT:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="deadlineTAT"
                             value={accidentData.deadlineTAT}
                             onChange={handleChange}
@@ -1368,7 +1375,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Docket Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="docketName"
                             value={accidentData.docketName}
                             onChange={handleChange}
@@ -1379,7 +1386,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Docket Date:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="docketDate"
                             value={accidentData.docketDate}
                             onChange={handleChange}
@@ -1392,7 +1399,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Origin:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="origin"
                             value={accidentData.origin}
                             onChange={handleChange}
@@ -1402,7 +1409,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Destination:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="destination"
                             value={accidentData.destination}
                             onChange={handleChange}
@@ -1418,7 +1425,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Consignor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="consignor"
                             value={accidentData.consignor}
                             onChange={handleChange}
@@ -1429,7 +1436,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Consignee Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="consignee"
                             value={accidentData.consignee}
                             onChange={handleChange}
@@ -1441,7 +1448,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Invoice Number:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="invoiceNo"
                             value={accidentData.invoiceNo}
                             onChange={handleChange}
@@ -1452,7 +1459,7 @@ const VehicleClaimEdit = () => {
                         Invoice Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="invoiceDate"
                             value={accidentData.invoiceDate}
                             onChange={handleChange}
@@ -1468,7 +1475,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Material:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="material"
                             value={accidentData.material}
                             onChange={handleChange}
@@ -1479,7 +1486,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Package:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="package"
                             value={accidentData.package}
                             onChange={handleChange}
@@ -1492,7 +1499,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Weight:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="weight"
                             value={accidentData.weight}
                             onChange={handleChange}
@@ -1503,7 +1510,7 @@ const VehicleClaimEdit = () => {
                         Invoice Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="invoiceDate"
                             value={accidentData.invoiceDate}
                             onChange={handleChange}
@@ -1548,7 +1555,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="RCdoc"
                                     value={accidentData.RCdoc}
                                     onChange={handleChange}
@@ -1561,7 +1568,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="RCDate"
                                         value={accidentData.RCnoDate}
                                         onChange={handleChange}
@@ -1570,7 +1577,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="RCassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.RCassignedTo}
@@ -1580,7 +1587,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="RCremark"
                                         placeholder="Remark"
                                         value={accidentData.RCremark}
@@ -1620,7 +1627,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="insurancedoc"
                                     value={accidentData.insurancedoc}
                                     onChange={handleChange}
@@ -1633,7 +1640,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="insuranceDate"
                                         value={accidentData.insurancenoDate}
                                         onChange={handleChange}
@@ -1642,7 +1649,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="insuranceassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.insuranceassignedTo}
@@ -1652,7 +1659,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="insuranceremark"
                                         placeholder="Remark"
                                         value={accidentData.insuranceremark}
@@ -1692,7 +1699,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="fitnessdoc"
                                     value={accidentData.fitnessdoc}
                                     onChange={handleChange}
@@ -1705,7 +1712,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="fitnessDate"
                                         value={accidentData.fitnessnoDate}
                                         onChange={handleChange}
@@ -1714,7 +1721,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="fitnessassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.fitnessassignedTo}
@@ -1724,7 +1731,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="fitnessremark"
                                         placeholder="Remark"
                                         value={accidentData.fitnessremark}
@@ -1764,7 +1771,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="nationalPermit1Yeardoc"
                                     value={accidentData.nationalPermit1Yeardoc}
                                     onChange={handleChange}
@@ -1777,7 +1784,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit1YearDate"
                                         value={accidentData.nationalPermit1YearnoDate}
                                         onChange={handleChange}
@@ -1786,7 +1793,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit1YearassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.nationalPermit1YearassignedTo}
@@ -1796,7 +1803,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit1Yearremark"
                                         placeholder="Remark"
                                         value={accidentData.nationalPermit1Yearremark}
@@ -1836,7 +1843,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="nationalPermit5Yeardoc"
                                     value={accidentData.nationalPermit5Yeardoc}
                                     onChange={handleChange}
@@ -1849,7 +1856,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit5YearDate"
                                         value={accidentData.nationalPermit5YearnoDate}
                                         onChange={handleChange}
@@ -1858,7 +1865,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit5YearassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.nationalPermit5YearassignedTo}
@@ -1868,7 +1875,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit5Yearremark"
                                         placeholder="Remark"
                                         value={accidentData.nationalPermit5Yearremark}
@@ -1908,7 +1915,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="taxTokendoc"
                                     value={accidentData.taxTokendoc}
                                     onChange={handleChange}
@@ -1921,7 +1928,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="taxTokenDate"
                                         value={accidentData.taxTokennoDate}
                                         onChange={handleChange}
@@ -1930,7 +1937,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="taxTokenassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.taxTokenassignedTo}
@@ -1940,7 +1947,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="taxTokenremark"
                                         placeholder="Remark"
                                         value={accidentData.taxTokenremark}
@@ -1980,7 +1987,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="DLicencedoc"
                                     value={accidentData.DLicencedoc}
                                     onChange={handleChange}
@@ -1993,7 +2000,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLicenceDate"
                                         value={accidentData.DLicencenoDate}
                                         onChange={handleChange}
@@ -2002,7 +2009,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLicenceassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.DLicenceassignedTo}
@@ -2012,7 +2019,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLicenceremark"
                                         placeholder="Remark"
                                         value={accidentData.DLicenceremark}
@@ -2052,7 +2059,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="DLVerdoc"
                                     value={accidentData.DLVerdoc}
                                     onChange={handleChange}
@@ -2065,7 +2072,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLVerDate"
                                         value={accidentData.DLVernoDate}
                                         onChange={handleChange}
@@ -2074,7 +2081,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLVerassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.DLVerassignedTo}
@@ -2084,7 +2091,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLVerremark"
                                         placeholder="Remark"
                                         value={accidentData.DLVerremark}
@@ -2124,7 +2131,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="LRdoc"
                                     value={accidentData.LRdoc}
                                     onChange={handleChange}
@@ -2137,7 +2144,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="LRDate"
                                         value={accidentData.LRnoDate}
                                         onChange={handleChange}
@@ -2146,7 +2153,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="LRassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.LRassignedTo}
@@ -2156,7 +2163,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="LRremark"
                                         placeholder="Remark"
                                         value={accidentData.LRremark}
@@ -2196,7 +2203,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="PUCdoc"
                                     value={accidentData.PUCdoc}
                                     onChange={handleChange}
@@ -2209,7 +2216,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="PUCDate"
                                         value={accidentData.PUCnoDate}
                                         onChange={handleChange}
@@ -2218,7 +2225,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="PUCassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.PUCassignedTo}
@@ -2228,7 +2235,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="PUCremark"
                                         placeholder="Remark"
                                         value={accidentData.PUCremark}
@@ -2268,7 +2275,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="policeReportdoc"
                                     value={accidentData.policeReportdoc}
                                     onChange={handleChange}
@@ -2281,7 +2288,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="policeReportDate"
                                         value={accidentData.policeReportnoDate}
                                         onChange={handleChange}
@@ -2290,7 +2297,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="policeReportassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.policeReportassignedTo}
@@ -2300,7 +2307,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="policeReportremark"
                                         placeholder="Remark"
                                         value={accidentData.policeReportremark}
@@ -2340,7 +2347,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="intimationdoc"
                                     value={accidentData.intimationdoc}
                                     onChange={handleChange}
@@ -2353,7 +2360,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="intimationDate"
                                         value={accidentData.intimationnoDate}
                                         onChange={handleChange}
@@ -2362,7 +2369,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="intimationassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.intimationassignedTo}
@@ -2372,7 +2379,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="intimationremark"
                                         placeholder="Remark"
                                         value={accidentData.intimationremark}
@@ -2412,7 +2419,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="spotSurveydoc"
                                     value={accidentData.spotSurveydoc}
                                     onChange={handleChange}
@@ -2425,7 +2432,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotSurveyDate"
                                         value={accidentData.spotSurveynoDate}
                                         onChange={handleChange}
@@ -2434,7 +2441,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotSurveyassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.spotSurveyassignedTo}
@@ -2444,7 +2451,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotSurveyremark"
                                         placeholder="Remark"
                                         value={accidentData.spotSurveyremark}
@@ -2484,7 +2491,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="spotReportdoc"
                                     value={accidentData.spotReportdoc}
                                     onChange={handleChange}
@@ -2497,7 +2504,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotReportDate"
                                         value={accidentData.spotReportnoDate}
                                         onChange={handleChange}
@@ -2506,7 +2513,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotReportassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.spotReportassignedTo}
@@ -2516,7 +2523,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotReportremark"
                                         placeholder="Remark"
                                         value={accidentData.spotReportremark}
@@ -2556,7 +2563,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="estimateGivendoc"
                                     value={accidentData.estimateGivendoc}
                                     onChange={handleChange}
@@ -2569,7 +2576,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="estimateGivenDate"
                                         value={accidentData.estimateGivennoDate}
                                         onChange={handleChange}
@@ -2578,7 +2585,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="estimateGivenassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.estimateGivenassignedTo}
@@ -2588,7 +2595,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="estimateGivenremark"
                                         placeholder="Remark"
                                         value={accidentData.estimateGivenremark}
@@ -2628,7 +2635,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="advancePaymentdoc"
                                     value={accidentData.advancePaymentdoc}
                                     onChange={handleChange}
@@ -2641,7 +2648,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="advancePaymentDate"
                                         value={accidentData.advancePaymentnoDate}
                                         onChange={handleChange}
@@ -2650,7 +2657,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="advancePaymentassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.advancePaymentassignedTo}
@@ -2660,7 +2667,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="advancePaymentremark"
                                         placeholder="Remark"
                                         value={accidentData.advancePaymentremark}
@@ -2701,7 +2708,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="finalsurveyInitialdoc"
                                     value={accidentData.finalsurveyInitialdoc}
                                     onChange={handleChange}
@@ -2714,7 +2721,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalsurveyInitialDate"
                                         value={accidentData.finalsurveyInitialnoDate}
                                         onChange={handleChange}
@@ -2723,7 +2730,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalsurveyInitialassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.finalsurveyInitialassignedTo}
@@ -2733,7 +2740,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalsurveyInitialremark"
                                         placeholder="Remark"
                                         value={accidentData.finalsurveyInitialremark}
@@ -2774,7 +2781,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="finalSurvey2nddoc"
                                     value={accidentData.finalSurvey2nddoc}
                                     onChange={handleChange}
@@ -2787,7 +2794,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalSurvey2ndDate"
                                         value={accidentData.finalSurvey2ndnoDate}
                                         onChange={handleChange}
@@ -2796,7 +2803,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalSurvey2ndassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.finalSurvey2ndassignedTo}
@@ -2806,7 +2813,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalSurvey2ndremark"
                                         placeholder="Remark"
                                         value={accidentData.finalSurvey2ndremark}
@@ -2846,7 +2853,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="workApprovaldoc"
                                     value={accidentData.workApprovaldoc}
                                     onChange={handleChange}
@@ -2859,7 +2866,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="workApprovalDate"
                                         value={accidentData.workApprovalnoDate}
                                         onChange={handleChange}
@@ -2868,7 +2875,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="workApprovalassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.workApprovalassignedTo}
@@ -2878,7 +2885,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="workApprovalremark"
                                         placeholder="Remark"
                                         value={accidentData.workApprovalremark}
@@ -2918,7 +2925,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="reinspectiondoc"
                                     value={accidentData.reinspectiondoc}
                                     onChange={handleChange}
@@ -2931,7 +2938,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="reinspectionDate"
                                         value={accidentData.reinspectionnoDate}
                                         onChange={handleChange}
@@ -2940,7 +2947,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="reinspectionassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.reinspectionassignedTo}
@@ -2950,7 +2957,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="reinspectionremark"
                                         placeholder="Remark"
                                         value={accidentData.reinspectionremark}
@@ -2990,7 +2997,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="finalBilldoc"
                                     value={accidentData.finalBilldoc}
                                     onChange={handleChange}
@@ -3003,7 +3010,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalBillDate"
                                         value={accidentData.finalBillnoDate}
                                         onChange={handleChange}
@@ -3012,7 +3019,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalBillassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.finalBillassignedTo}
@@ -3022,7 +3029,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalBillremark"
                                         placeholder="Remark"
                                         value={accidentData.finalBillremark}
@@ -3062,7 +3069,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="paymentBalancedoc"
                                     value={accidentData.paymentBalancedoc}
                                     onChange={handleChange}
@@ -3075,7 +3082,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="paymentBalanceDate"
                                         value={accidentData.paymentBalancenoDate}
                                         onChange={handleChange}
@@ -3084,7 +3091,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="paymentBalanceassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.paymentBalanceassignedTo}
@@ -3094,7 +3101,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="paymentBalanceremark"
                                         placeholder="Remark"
                                         value={accidentData.paymentBalanceremark}
@@ -3134,7 +3141,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="settelMentdoc"
                                     value={accidentData.settelMentdoc}
                                     onChange={handleChange}
@@ -3147,7 +3154,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="settelMentDate"
                                         value={accidentData.settelMentnoDate}
                                         onChange={handleChange}
@@ -3156,7 +3163,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="settelMentassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.settelMentassignedTo}
@@ -3166,7 +3173,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="settelMentremark"
                                         placeholder="Remark"
                                         value={accidentData.settelMentremark}
@@ -3207,7 +3214,7 @@ const VehicleClaimEdit = () => {
                             <div className="form-field">
                                 <input
                                     type="file"
-                                    className='inputField'
+                                    className='inputField form-control'
                                     name="claimFormdoc"
                                     value={accidentData.claimFormdoc}
                                     onChange={handleChange}
@@ -3220,7 +3227,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="date"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="claimFormDate"
                                         value={accidentData.claimFormnoDate}
                                         onChange={handleChange}
@@ -3229,7 +3236,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="claimFormassignedTo"
                                         placeholder="Assigned to whom"
                                         value={accidentData.claimFormassignedTo}
@@ -3239,7 +3246,7 @@ const VehicleClaimEdit = () => {
                                 <div className="form-field">
                                     <input
                                         type="text"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="claimFormremark"
                                         placeholder="Remark"
                                         value={accidentData.claimFormremark}
@@ -3286,6 +3293,7 @@ const VehicleClaimEdit = () => {
             </form> */}
 
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
+            <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
                 <div class='header-container'>
                     <h2 className='bigtitle'>Accident Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
@@ -3294,7 +3302,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Accident File No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="accidentFileNo"
                             value={accidentData.accidentFileNo}
@@ -3305,7 +3313,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Date & Time:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="dateTime"
                             value={accidentData.dateTime}
@@ -3318,7 +3326,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         System Generated - Vehicle No.:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="systemGenerated"
                             value="System Generated"
@@ -3329,7 +3337,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Time (Railway):
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="text"
                             name="railwayTime"
                             value={accidentData.railwayTime}
@@ -3339,7 +3347,11 @@ const VehicleClaimEdit = () => {
 
                         />
                     </label>
-                    <label className="form-field">
+                  
+
+                </div>
+                <div className="form-row">
+                <label className="form-field">
                         Accident Place - State:
                         <select
                             className="inputField"
@@ -3354,13 +3366,10 @@ const VehicleClaimEdit = () => {
                             ))}
                         </select>
                     </label>
-
-                </div>
-                <div className="form-row">
                     <label className="form-field">
                         Accident Place - City:
                         <select
-                            className='inputField'
+                            className='inputField form-control'
                             name="district"
                             value={accidentData.district}
                             onChange={handleChange}
@@ -3375,7 +3384,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Accident Date:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             type="date"
                             name="accidentDate"
                             value={accidentData.accidentDate}
@@ -3387,7 +3396,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Reason of Accident:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="reason"
                             value={accidentData.reason}
                             onChange={handleChange}
@@ -3407,7 +3416,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Insured By:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="insuredBy"
                             value={accidentData.insuredBy}
                             onChange={handleChange}
@@ -3420,7 +3429,7 @@ const VehicleClaimEdit = () => {
                         Intimated Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="intimatedDate"
                             value={accidentData.intimatedDate}
                             onChange={handleChange}
@@ -3441,7 +3450,7 @@ const VehicleClaimEdit = () => {
                             <input
                                 type="file"
                                 name="intimationUpload"
-                                className='inputField'
+                                className='inputField form-control'
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={intimationUpload}
@@ -3453,7 +3462,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Policy Number:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="policyNo"
                             value={accidentData.policyNo}
                             onChange={handleChange}
@@ -3471,7 +3480,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Driver Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="driverName"
                             value={accidentData.driverName}
                             onChange={handleChange}
@@ -3482,7 +3491,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         D/L No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="DLNo"
                             value={accidentData.DLNo}
                             onChange={handleChange}
@@ -3494,7 +3503,7 @@ const VehicleClaimEdit = () => {
                         D/L Number Validity:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="DLNoValidity"
                             value={accidentData.DLNoValidity}
                             onChange={handleChange}
@@ -3506,7 +3515,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Date Of Birth:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="DOB"
                             value={accidentData.DOB}
                             onChange={handleChange}
@@ -3523,7 +3532,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Police Station:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="policeStation"
                             value={accidentData.policeStation}
                             onChange={handleChange}
@@ -3533,7 +3542,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         FIR No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="FIRNo"
                             value={accidentData.FIRNo}
                             onChange={handleChange}
@@ -3544,7 +3553,7 @@ const VehicleClaimEdit = () => {
                         FIR Date:
                         <input
                             type="date"
-                            className='inputField'
+                            className='inputField form-control'
                             name="firDate"
                             value={accidentData.firDate}
                             onChange={handleChange}
@@ -3564,7 +3573,7 @@ const VehicleClaimEdit = () => {
                             <input
                                 type="file"
                                 name="firUpload"
-                                className='inputField'
+                                className='inputField form-control'
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={firUpload}
@@ -3572,23 +3581,24 @@ const VehicleClaimEdit = () => {
                             />
                         )}
                     </label>
-                    <label className="form-field">
+
+                </div>
+                <div className="form-row">
+                <label className="form-field">
                         Advocate's Name :
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="advocateName"
                             value={accidentData.advocateName}
                             onChange={handleChange}
                             readOnly={IsReadOnly}
                         />
                     </label>
-                </div>
-                <div className="form-row">
                     <label className="form-field">
                         Advocate Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="advocateNo"
                             value={accidentData.advocateNo}
                             onChange={handleChange}
@@ -3600,7 +3610,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Court Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="courtName"
                             value={accidentData.courtName}
                             onChange={handleChange}
@@ -3611,7 +3621,7 @@ const VehicleClaimEdit = () => {
                         Release Order Upload:
                         <input
                             type='text'
-                            className='inputField'
+                            className='inputField form-control'
                             name="releaseUpload"
                             value={accidentData.releaseUpload}
                             onChange={handleChange}
@@ -3631,7 +3641,7 @@ const VehicleClaimEdit = () => {
                             <input
                                 type="file"
                                 name="POA"
-                                className='inputField'
+                                className='inputField form-control'
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={POA}
@@ -3641,6 +3651,9 @@ const VehicleClaimEdit = () => {
 
                     </label>
                     <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+
 
                 </div>
 
@@ -3652,7 +3665,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Spot Surveyor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="surveyorName"
                             value={accidentData.surveyorName}
                             onChange={handleChange}
@@ -3664,7 +3677,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="surveyorNo"
                             value={accidentData.surveyorNo}
                             onChange={handleChange}
@@ -3678,7 +3691,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateOfSurvey"
                             value={accidentData.dateOfSurvey}
                             onChange={handleChange}
@@ -3690,7 +3703,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="remarksSurveyor"
                             value={accidentData.remarksSurveyor}
                             onChange={handleChange}
@@ -3704,7 +3717,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Material Surveyor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="materialSurveyorName"
                             value={accidentData.materialSurveyorName}
                             onChange={handleChange}
@@ -3717,7 +3730,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="materialSurveyorNo"
                             value={accidentData.materialSurveyorNo}
                             onChange={handleChange}
@@ -3732,7 +3745,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateOfMaterialSurvey"
                             value={accidentData.dateOfMaterialSurvey}
                             onChange={handleChange}
@@ -3745,7 +3758,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="remarksMaterialSurvey"
                             value={accidentData.remarksMaterialSurvey}
                             onChange={handleChange}
@@ -3760,7 +3773,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Final Surveyor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="finalSurveyorName"
                             value={accidentData.finalSurveyorName}
                             onChange={handleChange}
@@ -3773,7 +3786,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="FinalSurveyorNo"
                             value={accidentData.FinalSurveyorNo}
                             onChange={handleChange}
@@ -3788,7 +3801,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateOfFinalSurvey"
                             value={accidentData.dateOfFinalSurvey}
                             onChange={handleChange}
@@ -3801,7 +3814,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="remarksFinalSurvey"
                             value={accidentData.remarksFinalSurvey}
                             onChange={handleChange}
@@ -3815,7 +3828,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Investigator Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigatorName"
                             value={accidentData.investigatorName}
                             onChange={handleChange}
@@ -3828,7 +3841,7 @@ const VehicleClaimEdit = () => {
                         Investigator Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigatorNo"
                             value={accidentData.investigatorNo}
                             onChange={handleChange}
@@ -3843,7 +3856,7 @@ const VehicleClaimEdit = () => {
                         Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigationDate"
                             value={accidentData.investigationDate}
                             onChange={handleChange}
@@ -3856,7 +3869,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Remarks:
                         <textarea
-                            className='inputField'
+                            className='inputField form-control'
                             name="investigatorRemarks"
                             value={accidentData.investigatorRemarks}
                             onChange={handleChange}
@@ -3875,7 +3888,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Company Representative Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="representativeName"
                             value={accidentData.representativeName}
                             onChange={handleChange}
@@ -3888,7 +3901,7 @@ const VehicleClaimEdit = () => {
                         Contact No:
                         <input
                             type='tel'
-                            className='inputField'
+                            className='inputField form-control'
                             name="representativeNo"
                             value={accidentData.representativeNo}
                             onChange={handleChange}
@@ -3911,7 +3924,7 @@ const VehicleClaimEdit = () => {
                             <input
                                 type="file"
                                 name="reportUpload"
-                                className='inputField'
+                                className='inputField form-control'
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={reportUpload}
@@ -3924,7 +3937,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Repaired On Spot Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="dateRepairedOnSpot"
                             value={accidentData.dateRepairedOnSpot}
                             onChange={handleChange}
@@ -3937,7 +3950,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Material Transshiped in Vehicle No:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="transshippedVehicleNo"
                             value={accidentData.transshippedVehicleNo}
                             onChange={handleChange}
@@ -3952,7 +3965,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Transshiped Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="transshippedDate"
                             value={accidentData.transshippedDate}
                             onChange={handleChange}
@@ -3967,7 +3980,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Vehicle Reported on Final Destination:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="reportedFinalDestination"
                             value={accidentData.reportedFinalDestination}
                             onChange={handleChange}
@@ -3980,7 +3993,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Reported on Final Destination:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="reportedFinalDestinationDate"
                             value={accidentData.reportedFinalDestinationDate}
                             onChange={handleChange}
@@ -4002,7 +4015,7 @@ const VehicleClaimEdit = () => {
                             <input
                                 type="file"
                                 name="companyRepresentativeAdhar"
-                                className='inputfield'
+                                className='inputfield form-control'
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={companyRepresentativeAdhar}
@@ -4024,7 +4037,7 @@ const VehicleClaimEdit = () => {
                         Deadline Date:
                         <input
                             type="date"
-                            className='inputField'
+                            className='inputField form-control'
                             name="deadLineDate"
                             value={accidentData.deadLineDate}
                             onChange={handleChange}
@@ -4038,7 +4051,7 @@ const VehicleClaimEdit = () => {
                         Actual Ready Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="readyDate"
                             value={accidentData.readyDate}
                             onChange={handleChange}
@@ -4054,7 +4067,7 @@ const VehicleClaimEdit = () => {
                         Re-Inspection Date:
                         <input
                             type="date"
-                            className='inputField'
+                            className='inputField form-control'
                             name="reInspectionDate"
                             value={accidentData.reInspectionDate}
                             onChange={handleChange}
@@ -4068,7 +4081,7 @@ const VehicleClaimEdit = () => {
                         Vehicle Finally Released:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="finallyReleasedDate"
                             value={accidentData.finallyReleasedDate}
                             onChange={handleChange}
@@ -4090,7 +4103,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Total Days From Accident:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="totalDaysFromAccident"
                             value={accidentData.totalDaysFromAccident}
                             onChange={handleChange}
@@ -4102,7 +4115,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Total Days In WorkShop:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="daysInWorkShop"
                             value={accidentData.daysInWorkShop}
                             onChange={handleChange}
@@ -4116,7 +4129,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Deadline TAT:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="deadlineTAT"
                             value={accidentData.deadlineTAT}
                             onChange={handleChange}
@@ -4137,7 +4150,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Docket Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="docketName"
                             value={accidentData.docketName}
                             onChange={handleChange}
@@ -4149,7 +4162,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Docket Date:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="docketDate"
                             value={accidentData.docketDate}
                             onChange={handleChange}
@@ -4164,7 +4177,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Origin:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="origin"
                             value={accidentData.origin}
                             onChange={handleChange}
@@ -4175,7 +4188,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Destination:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="destination"
                             value={accidentData.destination}
                             onChange={handleChange}
@@ -4192,7 +4205,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Consignor Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="consignor"
                             value={accidentData.consignor}
                             onChange={handleChange}
@@ -4204,7 +4217,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Consignee Name:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="consignee"
                             value={accidentData.consignee}
                             onChange={handleChange}
@@ -4218,7 +4231,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Invoice Number:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="invoiceNo"
                             value={accidentData.invoiceNo}
                             onChange={handleChange}
@@ -4230,7 +4243,7 @@ const VehicleClaimEdit = () => {
                         Invoice Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="invoiceDate"
                             value={accidentData.invoiceDate}
                             onChange={handleChange}
@@ -4249,7 +4262,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Material:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="material"
                             value={accidentData.material}
                             onChange={handleChange}
@@ -4261,7 +4274,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Package:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="package"
                             value={accidentData.package}
                             onChange={handleChange}
@@ -4275,7 +4288,7 @@ const VehicleClaimEdit = () => {
                     <label className="form-field">
                         Weight:
                         <input
-                            className='inputField'
+                            className='inputField form-control'
                             name="weight"
                             value={accidentData.weight}
                             onChange={handleChange}
@@ -4287,7 +4300,7 @@ const VehicleClaimEdit = () => {
                         Invoice Date:
                         <input
                             type='date'
-                            className='inputField'
+                            className='inputField form-control'
                             name="invoiceDate"
                             value={accidentData.invoiceDate}
                             onChange={handleChange}
@@ -4345,7 +4358,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4361,7 +4374,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCDate"
                                             value={accidentData.RCnoDate}
                                             onChange={handleChange}
@@ -4372,7 +4385,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.RCassignedTo}
@@ -4382,7 +4395,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCremark"
                                             placeholder="Remark"
                                             value={accidentData.RCremark}
@@ -4430,7 +4443,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insurancedoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4446,7 +4459,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insuranceDate"
                                             value={accidentData.insurancenoDate}
                                             onChange={handleChange}
@@ -4457,7 +4470,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insuranceassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.insuranceassignedTo}
@@ -4467,7 +4480,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insuranceremark"
                                             placeholder="Remark"
                                             value={accidentData.insuranceremark}
@@ -4514,7 +4527,7 @@ const VehicleClaimEdit = () => {
                                         )
                                     ) : (
                                         <input
-                                            className='inputField'
+                                            className='inputField form-control'
                                             type="file"
                                             name="fitnessdoc"
                                             onChange={handleChange}
@@ -4531,7 +4544,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="fitnessDate"
                                             value={accidentData.fitnessnoDate}
                                             onChange={handleChange}
@@ -4542,7 +4555,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="fitnessassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.fitnessassignedTo}
@@ -4552,7 +4565,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="fitnessremark"
                                             placeholder="Remark"
                                             value={accidentData.fitnessremark}
@@ -4600,7 +4613,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1Yeardoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4617,7 +4630,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1YearDate"
                                             value={accidentData.nationalPermit1YearnoDate}
                                             onChange={handleChange}
@@ -4628,7 +4641,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1YearassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.nationalPermit1YearassignedTo}
@@ -4638,7 +4651,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1Yearremark"
                                             placeholder="Remark"
                                             value={accidentData.nationalPermit1Yearremark}
@@ -4686,7 +4699,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5Yeardoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4702,7 +4715,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5YearDate"
                                             value={accidentData.nationalPermit5YearnoDate}
                                             onChange={handleChange}
@@ -4713,7 +4726,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5YearassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.nationalPermit5YearassignedTo}
@@ -4723,7 +4736,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5Yearremark"
                                             placeholder="Remark"
                                             value={accidentData.nationalPermit5Yearremark}
@@ -4774,7 +4787,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokendoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4790,7 +4803,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokenDate"
                                             value={accidentData.taxTokennoDate}
                                             onChange={handleChange}
@@ -4801,7 +4814,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokenassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.taxTokenassignedTo}
@@ -4811,7 +4824,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokenremark"
                                             placeholder="Remark"
                                             value={accidentData.taxTokenremark}
@@ -4859,7 +4872,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicencedoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4875,7 +4888,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicenceDate"
                                             value={accidentData.DLicencenoDate}
                                             onChange={handleChange}
@@ -4886,7 +4899,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicenceassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.DLicenceassignedTo}
@@ -4896,7 +4909,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicenceremark"
                                             placeholder="Remark"
                                             value={accidentData.DLicenceremark}
@@ -4944,7 +4957,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -4960,7 +4973,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerDate"
                                             value={accidentData.DLVernoDate}
                                             onChange={handleChange}
@@ -4971,7 +4984,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.DLVerassignedTo}
@@ -4981,7 +4994,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerremark"
                                             placeholder="Remark"
                                             value={accidentData.DLVerremark}
@@ -5029,7 +5042,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5045,7 +5058,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRDate"
                                             value={accidentData.LRnoDate}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
@@ -5055,7 +5068,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.LRassignedTo}
@@ -5065,7 +5078,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRremark"
                                             placeholder="Remark"
                                             value={accidentData.LRremark}
@@ -5113,7 +5126,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5129,7 +5142,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCDate"
                                             value={accidentData.PUCnoDate}
                                             onChange={handleChange}
@@ -5140,7 +5153,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.PUCassignedTo}
@@ -5150,7 +5163,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCremark"
                                             placeholder="Remark"
                                             value={accidentData.PUCremark}
@@ -5201,7 +5214,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5218,7 +5231,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportDate"
                                             value={accidentData.policeReportnoDate}
                                             onChange={handleChange}
@@ -5229,7 +5242,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.policeReportassignedTo}
@@ -5239,7 +5252,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportremark"
                                             placeholder="Remark"
                                             value={accidentData.policeReportremark}
@@ -5287,7 +5300,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5303,7 +5316,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationDate"
                                             value={accidentData.intimationnoDate}
                                             onChange={handleChange}
@@ -5314,7 +5327,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.intimationassignedTo}
@@ -5324,7 +5337,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationremark"
                                             placeholder="Remark"
                                             value={accidentData.intimationremark}
@@ -5372,7 +5385,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveydoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5389,7 +5402,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveyDate"
                                             value={accidentData.spotSurveynoDate}
                                             onChange={handleChange}
@@ -5400,7 +5413,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveyassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.spotSurveyassignedTo}
@@ -5410,7 +5423,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveyremark"
                                             placeholder="Remark"
                                             value={accidentData.spotSurveyremark}
@@ -5458,7 +5471,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5474,7 +5487,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportDate"
                                             value={accidentData.spotReportnoDate}
                                             onChange={handleChange}
@@ -5485,7 +5498,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.spotReportassignedTo}
@@ -5495,7 +5508,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportremark"
                                             placeholder="Remark"
                                             value={accidentData.spotReportremark}
@@ -5543,7 +5556,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivendoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5559,7 +5572,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivenDate"
                                             value={accidentData.estimateGivennoDate}
                                             onChange={handleChange}
@@ -5570,7 +5583,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivenassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.estimateGivenassignedTo}
@@ -5580,7 +5593,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivenremark"
                                             placeholder="Remark"
                                             value={accidentData.estimateGivenremark}
@@ -5631,7 +5644,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5648,7 +5661,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentDate"
                                             value={accidentData.advancePaymentnoDate}
                                             onChange={handleChange}
@@ -5659,7 +5672,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.advancePaymentassignedTo}
@@ -5669,7 +5682,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentremark"
                                             placeholder="Remark"
                                             value={accidentData.advancePaymentremark}
@@ -5717,7 +5730,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5733,7 +5746,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialDate"
                                             value={accidentData.finalsurveyInitialnoDate}
                                             onChange={handleChange}
@@ -5744,7 +5757,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.finalsurveyInitialassignedTo}
@@ -5754,7 +5767,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialremark"
                                             placeholder="Remark"
                                             value={accidentData.finalsurveyInitialremark}
@@ -5802,7 +5815,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2nddoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5818,7 +5831,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2ndDate"
                                             value={accidentData.finalSurvey2ndnoDate}
                                             onChange={handleChange}
@@ -5829,7 +5842,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2ndassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.finalSurvey2ndassignedTo}
@@ -5839,7 +5852,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2ndremark"
                                             placeholder="Remark"
                                             value={accidentData.finalSurvey2ndremark}
@@ -5887,7 +5900,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovaldoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5904,7 +5917,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovalDate"
                                             value={accidentData.workApprovalnoDate}
                                             onChange={handleChange}
@@ -5915,7 +5928,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovalassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.workApprovalassignedTo}
@@ -5925,7 +5938,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovalremark"
                                             placeholder="Remark"
                                             value={accidentData.workApprovalremark}
@@ -5973,7 +5986,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectiondoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -5989,7 +6002,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectionDate"
                                             value={accidentData.reinspectionnoDate}
                                             onChange={handleChange}
@@ -6000,7 +6013,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectionassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.reinspectionassignedTo}
@@ -6010,7 +6023,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectionremark"
                                             placeholder="Remark"
                                             value={accidentData.reinspectionremark}
@@ -6061,7 +6074,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBilldoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -6077,7 +6090,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBillDate"
                                             value={accidentData.finalBillnoDate}
                                             onChange={handleChange}
@@ -6088,7 +6101,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBillassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.finalBillassignedTo}
@@ -6098,7 +6111,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBillremark"
                                             placeholder="Remark"
                                             value={accidentData.finalBillremark}
@@ -6146,7 +6159,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalancedoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -6162,7 +6175,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalanceDate"
                                             value={accidentData.paymentBalancenoDate}
                                             onChange={handleChange}
@@ -6173,7 +6186,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalanceassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.paymentBalanceassignedTo}
@@ -6183,7 +6196,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalanceremark"
                                             placeholder="Remark"
                                             value={accidentData.paymentBalanceremark}
@@ -6231,7 +6244,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -6247,7 +6260,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentDate"
                                             value={accidentData.settelMentnoDate}
                                             onChange={handleChange}
@@ -6258,7 +6271,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.settelMentassignedTo}
@@ -6268,7 +6281,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentremark"
                                             placeholder="Remark"
                                             value={accidentData.settelMentremark}
@@ -6316,7 +6329,7 @@ const VehicleClaimEdit = () => {
                                     ) : (
                                         <input
                                             type="file"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormdoc"
                                             onChange={handleChange}
                                             accept=".pdf,image/*"
@@ -6332,7 +6345,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormDate"
                                             value={accidentData.claimFormnoDate}
                                             onChange={handleChange}
@@ -6343,7 +6356,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.claimFormassignedTo}
@@ -6353,7 +6366,7 @@ const VehicleClaimEdit = () => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormremark"
                                             placeholder="Remark"
                                             value={accidentData.claimFormremark}

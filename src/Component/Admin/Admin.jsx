@@ -19,6 +19,9 @@ import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdat
 import VendorResponse from '../Vendors/VendorsResponse';
 import claimproassist from '../../Assets/claimproassist.jpg'
 import backendUrl from "../../environment";
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Admin = () => {
 
@@ -65,7 +68,6 @@ const Admin = () => {
         setVendorResponsing(false);
     };
 
-
     const vendorData = [10, 5, 15, 20];
     const vendorLabels = ['Advocate', 'Crane', 'Mechanic', 'Workshops'];
 
@@ -76,6 +78,7 @@ const Admin = () => {
     const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
@@ -95,6 +98,17 @@ const Admin = () => {
         if (userId !== '') findUserById(userId);
     }, [token, userId, navigate]);
 
+    useEffect(() => {
+        const handleResize = () => {
+            console.log("size", window.innerWidth)
+            if (window.innerWidth > 768) setIsSidebarOpen(true);
+            else setIsSidebarOpen(false);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const findUserById = async (id) => {
         console.log("HEY", `${backendUrl}/api/findById/${id}`)
         const response = await axios.get(`${backendUrl}/api/findById/${id}`);
@@ -103,138 +117,152 @@ const Admin = () => {
         setGetData(response.data.data[0])
     }
 
-    
+    function toggleSidebar() {
+        setIsSidebarOpen(!isSidebarOpen);
+    }
+
 
     return (
         <div className="admin-page">
-            <aside className='sidebar'>
-                <ul>
-                <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px'}} />
-                    
-                    <li onClick={() => {
-                        setShowCustomerOptions(!showCustomerOptions);
-                        resetStates();
-                        setStartingPage(true);
-                    }}>
-                        Dashboard</li>
+            {isSidebarOpen ? (
+                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                    {window.innerWidth < 768 && (
+                        <div className="close-btn" onClick={toggleSidebar}>×</div>
+                    )}
                     <ul>
-                        <li onClick={(e) => {
-                            setShowVendorOptions(!showVendorOptions);
-                            resetStates();
-                            setShowAddVendor(true);
-                            e.stopPropagation();
-                        }}>Vendor
-                            {showVendorOptions && (
-                                <ul className='submenu'>
-                                    <li onClick={(e) => {
-                                        resetStates();
-                                        setShowAddVendor(true);
-                                        e.stopPropagation();
-                                    }}>Add Vendor</li>
-                                </ul>
-                            )}
-                        </li>
-                    </ul>
-                    <ul>
-                        <li onClick={(e) => {
-                            e.stopPropagation();
+                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft: "8px" }} />
+
+                        <li onClick={() => {
                             setShowCustomerOptions(!showCustomerOptions);
                             resetStates();
-                            setShowAddCustomer(true);
-                        }}>Customer
-                            {showCustomerOptions && (
-                                <ul className='submenu'>
-                                    <li onClick={(e) => {
-                                        resetStates();
-                                        e.stopPropagation();
-                                        setShowAddCustomer(true);
-                                    }}>Add Customer</li>
-                                </ul>
-                            )}
-                        </li>
-                    </ul>
-                    <ul>
-                        <li onClick={(e) => {
-                            e.stopPropagation();
-                            setShowVehicleInfo(!showVehicleInfo);
-                            resetStates();
-                            setShowVehicleClaim(true);
-                        }}>Vehicle Reported
-                            {showVehicleInfo && (
-                                <ul className='submenu'>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setShowVehicleClaim(true);
-                                    }}>Register Update</li>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setaddImages(true);
-                                    }}>Current Update</li>
-                                </ul>
-                            )}
-                        </li>
-                    </ul>
-
-                    <ul>
-                        <li onClick={(e) => {
-                            e.stopPropagation();
-                            setShowReportsOptions(!showReportsOptions);
-                            resetStates();
-                            setShowViewVendor(true);
+                            setStartingPage(true);
                         }}>
-                            Reports
-                            {showReportsOptions && (
-                                <ul className="submenu">
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setShowViewVendor(true);
-                                    }}>View Vendor</li>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setShowViewCustomer(true);
-                                    }}>View Customer</li>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setShowVehicleClaimView(true);
-                                    }}>View Register</li>
-                                </ul>
-                            )}
-                        </li>
+                            Dashboard</li>
+                        <ul>
+                            <li onClick={(e) => {
+                                setShowVendorOptions(!showVendorOptions);
+                                resetStates();
+                                setShowAddVendor(true);
+                                e.stopPropagation();
+                            }}>Vendor
+                                {showVendorOptions && (
+                                    <ul className='submenu'>
+                                        <li onClick={(e) => {
+                                            resetStates();
+                                            setShowAddVendor(true);
+                                            e.stopPropagation();
+                                        }}>Add Vendor</li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                setShowCustomerOptions(!showCustomerOptions);
+                                resetStates();
+                                setShowAddCustomer(true);
+                            }}>Customer
+                                {showCustomerOptions && (
+                                    <ul className='submenu'>
+                                        <li onClick={(e) => {
+                                            resetStates();
+                                            e.stopPropagation();
+                                            setShowAddCustomer(true);
+                                        }}>Add Customer</li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                setShowVehicleInfo(!showVehicleInfo);
+                                resetStates();
+                                setShowVehicleClaim(true);
+                            }}>Vehicle Reported
+                                {showVehicleInfo && (
+                                    <ul className='submenu'>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowVehicleClaim(true);
+                                        }}>Register Update</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setaddImages(true);
+                                        }}>Current Update</li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                setShowReportsOptions(!showReportsOptions);
+                                resetStates();
+                                setShowViewVendor(true);
+                            }}>
+                                Reports
+                                {showReportsOptions && (
+                                    <ul className="submenu">
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowViewVendor(true);
+                                        }}>View Vendor</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowViewCustomer(true);
+                                        }}>View Customer</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowVehicleClaimView(true);
+                                        }}>View Register</li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+
+
+                        <ul>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                setShowAssignedVehicleReport(!showAssignedVehicleReport);
+                                resetStates();
+                                setaccidendVehicle(true);
+                            }}>Assigned Vehicles
+                                {showAssignedVehicleReport && (
+                                    <div className='submenu'>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setaccidendVehicle(true);
+                                        }}>Assign Vendors</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setVendorResponsing(true);
+                                        }}>Vendor Response</li>
+                                    </div>
+                                )}
+                            </li>
+                        </ul>
                     </ul>
+                </aside>
+            ) : (
+                <div>
+                    {window.innerWidth < 768 && (
+                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon/></div>
+                    )}
+                </div>
+            )}
 
-
-                    <ul>
-                        <li onClick={(e) => {
-                            e.stopPropagation();
-                            setShowAssignedVehicleReport(!showAssignedVehicleReport);
-                            resetStates();
-                            setaccidendVehicle(true);
-                        }}>Assigned Vehicles
-                            {showAssignedVehicleReport && (
-                                <div className='submenu'>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setaccidendVehicle(true);
-                                    }}>Assign Vendors</li>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        resetStates();
-                                        setVendorResponsing(true);
-                                    }}>Vendor Response</li>
-                                </div>
-                            )}
-                        </li>
-                    </ul>
-                </ul>
-            </aside>
-
-            <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
+            <main className="content" style={{paddingLeft: "0px", marginLeft: '0px' }}>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: "50px" }}>
                     <div>
                         <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
@@ -283,7 +311,9 @@ const Admin = () => {
                 {
                     startingPage &&
                     <div>
-                        <h1 className='titles'>Administration</h1>
+                        <div class="header-container">
+                            <h3 class="bigtitle">Administration</h3>
+                        </div>
                         <h2 className="heading-box">
                             Vendor Details
                         </h2>

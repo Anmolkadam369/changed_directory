@@ -47,14 +47,14 @@
     border: none;
     border-radius: 4px;
     background-color: #4CAF50;
-    color: white;
+    color: black;
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 20px;
   }
   
   .Customer-master-form button:hover {
-    background-color: #45a049;
+    background-color: #d1ddd2;
   }
   
   .Customer-master-form .required {

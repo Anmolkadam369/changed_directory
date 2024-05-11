@@ -90,3 +90,24 @@
   margin-left:10px;        /* Optional: changes the color to make it less prominent */
   margin-bottom:5px;
 }
+/* Styling for buttons and dropdowns */
+.green-dropdown .btn-secondary {
+  background-color: #f1f1f1; /* Light gray color, previously set as a placeholder for green */
+  border-color: black; /* Matching border color */
+}
+
+.green-dropdown .dropdown-menu {
+  width: 200px; /* Set width for dropdown menu */
+}
+
+/* Styling for input fields within a label that has 'input-group' class */
+.input-group .form-control {
+  background-color: #fff; /* Set background color for input */
+  border: 1px solid #ccc; /* Match the dropdown border style */
+  width: 300px; /* Match the width of the dropdown */
+}
+
+.input-group .form-control[readonly] {
+  background-color: #e9ecef; /* Slightly different background for readonly fields */
+  color: #495057; /* Text color for readonly fields */
+}

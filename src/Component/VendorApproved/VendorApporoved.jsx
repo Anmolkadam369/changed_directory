@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "../CustomerApporoved/CustomerApproved.css"
 import '../AccidentVehicle/AccidentVehicle.css'
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -69,12 +70,12 @@ const VendorApproved = () => {
     <div>
       <h3 className='bigtitle'>Vendor View / Edit</h3>
       <div className='responsive-table'>
-      <table style={{marginTop:"30px", marginBottom:"50px", marginLeft:"20px", marginRight:'40px'}}>
+      <table style={{ width: '90%', marginLeft:"20px", borderCollapse: 'collapse' ,marginBottom:"90px"}}>
         <thead>
           <tr>
             <th>Sr. No.</th>
             <th>Vendors Name</th>
-            <th>Venodor Email</th>
+            <th>Vendor Email</th>
             <th>Vendor Type</th>
             <th>Edited By</th>
             <th>View</th>

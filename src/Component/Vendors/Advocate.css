@@ -82,6 +82,7 @@
       background-color: #f9f9f9; /* Light grey background */
       min-height: 100vh; /* Minimum height is 100% of the viewport height */
       box-sizing: border-box; /* Include padding and border in the width and height calculations */
+      overflow-x: auto;
   }
     
     .dashboard-header h1 {

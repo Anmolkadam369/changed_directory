@@ -37,7 +37,7 @@ const CustomerApproved = () => {
     <div>
       <h3 className='bigtitle'>Customer View / Edit</h3>
       <div className='responsive-table'>
-      <table style={{ width: '90%', marginLeft:"20px", borderCollapse: 'collapse' }}>
+      <table style={{ width: '90%', marginLeft:"20px", borderCollapse: 'collapse' ,marginBottom:"90px"}}>
         <thead>
           <tr>
             <th>Sr. No.</th>

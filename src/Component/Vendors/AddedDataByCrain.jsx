@@ -8,9 +8,11 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function AddedDataByCrain() {
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
     const { id } = location.state || {};
     console.log("Received IDssss:", id);
@@ -19,6 +21,7 @@ function AddedDataByCrain() {
     const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
+    const [existingData, setExistingData] = useState([]);
 
 
     useEffect(() => {
@@ -27,6 +30,7 @@ function AddedDataByCrain() {
             navigate("/");
         }
         getDataById(id);
+        getExistingData(id, userId)
     }, [token, userId, navigate, id]);
 
     useEffect(() => {
@@ -79,15 +83,32 @@ function AddedDataByCrain() {
         setComingData(response.data.data[0])
     }
 
+    const getExistingData = async (id, userId) => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`);
+            setExistingData(response.data.data[0]);
+            console.log("getExistingData success", response);
+        } catch (error) {
+            console.error("Failed to fetch existing data", error.response || error);
+            if (error.response) {
+                console.log("Error data:", error.response.data);
+                console.log("Error status:", error.response.status);
+                console.log("Error headers:", error.response.headers);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    };
+
     const [formData, setFormData] = useState({
-        vehicleInspection: "", 
+        vehicleInspection: "",
         workEstimate: "",
-        recoveryVanEstimate: "", 
-        vehicleHandover: "", 
-        advancedPayment: "", 
+        recoveryVanEstimate: "",
+        vehicleHandover: "",
+        advancedPayment: "",
         vehicleTakeOver: "",
-        balancePayment:"",
-        feedback:""
+        balancePayment: "",
+        feedback: ""
     });
 
     const handleChange = (event) => {
@@ -103,12 +124,12 @@ function AddedDataByCrain() {
         event.preventDefault();
         console.log('formData', formData, id, userId);
         try {
-            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData),{
+            const response = await axios.post(`${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`, JSON.stringify(formData), {
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'
-                  }
-                })
+                }
+            })
             console.log("response", response.data.status);
             if (response.data.message === "data inserted successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
@@ -121,12 +142,15 @@ function AddedDataByCrain() {
             console.error('Error response:', error.response);
             const errorMessage = error.response?.data || 'An error occurred';
             setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-          }
+        }
     };
 
-
+    const handleBack = () => {
+        navigate("../CrainDashboard")
+    }
     return (
         <div className='container'>
+             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>
             </div>
@@ -138,7 +162,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="CustomerName"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.CustomerName}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -149,7 +173,7 @@ function AddedDataByCrain() {
                     Choosen Plan:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="choosenPlan"
                         value={formData.choosenPlan}
                         onChange={handleChange}
@@ -165,7 +189,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="chassisNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.chassisNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -176,7 +200,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="engineNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.engineNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -187,7 +211,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="make"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.make}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -198,7 +222,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="latitude"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.latitude || 0.0}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -211,7 +235,7 @@ function AddedDataByCrain() {
                     Longitude:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="longitude"
                         value={formData.longitude || 0.0}
                         onChange={handleChange}
@@ -223,7 +247,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="vehicleNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.vehicleNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -234,7 +258,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="accidentFileNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.accidentFileNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -245,7 +269,7 @@ function AddedDataByCrain() {
                     <input
                         type="text"
                         name="model"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.model}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -445,99 +469,147 @@ function AddedDataByCrain() {
 
 
             <div className='form-row'>
+                <div>
+                    <p className="form-field">Vehicle Inspection Remarks :</p>
+                    {existingData?.vehicleInspection ? (
+                        <p className='notUploaded1'>Vehicle Inspection is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <textarea
+                                className='inputField form-control'
+                                name="vehicleInspection"
+                                value={formData.vehicleInspection}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    )}
+                </div>
+
+
+                <div>
+                    <p className="form-field">work Estimate:</p>
+                    {existingData?.workEstimate ? (
+                        <p className='notUploaded1'>work Estimate is already existed</p>
+                    ) : (
                 <label className="form-field">
-                    Vehicle Inspection Remarks:
-                    <textarea
-                        className='inputField'
-                        name="vehicleInspection"
-                        value={formData.vehicleInspection}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label className="form-field">
-                    Work Estimate:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="workEstimate"
                         value={formData.workEstimate}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+            </div>
+
+            <div>
+            <p className="form-field">Recovery Van Estimate:</p>
+                    {existingData?.recoveryVanEstimate ? (
+                        <p className='notUploaded1'>Recovery Van Estimate is already existed</p>
+                    ) : (
                 <label className="form-field">
-                    Recovery Van Estimate:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="recoveryVanEstimate"
                         value={formData.recoveryVanEstimate}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+                </div>
+
+                <div>
+                <p className="form-field">Vehicle Handover:</p>
+                    {existingData?.vehicleHandover ? (
+                        <p className='notUploaded1'>Vehicle Handover is already existed</p>
+                    ) : (
                 <label className="form-field">
-                    Vehcle Hand Over:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="vehicleHandover"
                         value={formData.vehicleHandover}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+                </div>
             </div>
 
             <div className='form-row'>
-            <label className="form-field">
-                    Advanced Payment:
+                <div>
+                <p className="form-field">Advanced Payment:</p>
+                    {existingData?.advancedPayment ? (
+                        <p className='notUploaded1'>Advanced Payment is already existed</p>
+                    ) : (
+                <label className="form-field">
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="advancedPayment"
                         value={formData.advancedPayment}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+                </div>
+
+                <div>
+                <p className="form-field">Vehicle TakeOver:</p>
+                    {existingData?.vehicleTakeOver ? (
+                        <p className='notUploaded1'>Vehicle TakeOver is already existed</p>
+                    ) : (
                 <label className="form-field">
-                    Vehicle Take Over:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="vehicleTakeOver"
                         value={formData.vehicleTakeOver}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+                </div>
+
+                <div>
+                <p className="form-field">Balance Payment:</p>
+                    {existingData?.balancePayment ? (
+                        <p className='notUploaded1'>Balance Payment is already existed</p>
+                    ) : (
                 <label className="form-field">
-                    Balance Payment:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="balancePayment"
                         value={formData.balancePayment}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+                </div>
+
+                <div>
+                <p className="form-field">Feedback:</p>
+                    {existingData?.Feedback ? (
+                        <p className='notUploaded1'>Feedback is already existed</p>
+                    ) : (
                 <label className="form-field">
-                    Feedback:
                     <textarea
-                        className='inputField'
+                        className='inputField form-control'
                         name="feedback"
                         value={formData.feedback}
                         onChange={handleChange}
                     />
-                </label>
+                </label>)}
+                </div>
             </div>
             {alertInfo.show && (
-          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-            {alertInfo.message}
-          </Alert>
-        )}
+                <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                    {alertInfo.message}
+                </Alert>
+            )}
 
-<div style={{ textAlign: 'center' }}>
-          <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
-            Submit
-          </button>
-        </div>
+            <div style={{ textAlign: 'center' }}>
+                <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+                    Submit
+                </button>
+            </div>
         </div>
     );
 }

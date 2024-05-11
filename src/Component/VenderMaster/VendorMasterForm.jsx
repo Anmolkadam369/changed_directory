@@ -12,6 +12,7 @@ import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const VendorMasterForm = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -63,7 +64,7 @@ const VendorMasterForm = () => {
           GST: GSTRef,
           panCard: panRef,
           adharCard: adharCardRef,
-         
+
         };
 
         if (refs[name] && refs[name].current) {
@@ -108,6 +109,7 @@ const VendorMasterForm = () => {
     return '';
   };
 
+  console.log("firm", formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!e.target.checkValidity()) {
@@ -156,6 +158,16 @@ const VendorMasterForm = () => {
       console.error("Error during form submission:", error);
     }
   };
+  const [showDropdown, setShowDropdown] = useState(false);
+  const handleSelect = (event, value) => {
+    event.preventDefault(); // Prevent default link behavior
+    setFormData({
+      ...formData,
+      vendorType: value
+    });
+    setShowDropdown(false); // Close dropdown after selection
+  };
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   return (
     <div>
@@ -167,7 +179,7 @@ const VendorMasterForm = () => {
         </div>
 
         <div className="form-row">
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             System Date:
             <input
               type="date"
@@ -175,10 +187,12 @@ const VendorMasterForm = () => {
               value={formData.systemDate}
               onChange={handleChange}
               readOnly
+              className="form-control"
             />
           </label>
 
-          <label className="form-field">
+
+          <label className="form-field input-group mb-3">
             Vendor Location:
             <input
               type="text"
@@ -186,19 +200,22 @@ const VendorMasterForm = () => {
               placeholder='Customer Location'
               value={formData.cusLocation}
               onChange={handleChange}
+              className="form-control"
             />
           </label>
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             Vendor Code:
             <input
               type="text"
               name="vendorCode"
               placeholder='SYSTEM GENERATED'
               value={formData.vendorCode}
+              className="form-control"
+
               readOnly
             />
           </label>
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             Vendor Name:
             <input
               type="text"
@@ -206,29 +223,40 @@ const VendorMasterForm = () => {
               placeholder='Vendor Name'
               value={formData.vendorName}
               onChange={handleChange}
+              className="form-control"
               required
             />
           </label>
         </div>
 
         <div className='form-row'>
-          <label className="form-field">
-            Vendor Type:
-            <select name="vendorType" value={formData.vendorType} onChange={handleChange} required>
-              <option value="">Select</option>
-              <option value="advocate">Advocate</option>
-              <option value="crain">Crain</option>
-              <option value="machanic">Machnic</option>
-              <option value="workshop">Workshop</option>
-            </select>
-          </label>
+
+
+          <div className="dropdown green-dropdown form-field">
+            <button
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              onClick={toggleDropdown}
+            >
+              {formData.vendorType || "Select Vendor Type"}
+            </button>
+            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crain</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Machanic</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+            </ul>
+          </div>
           <label className="form-field">
             Address  :
-            <textarea name="address" value={formData.address} onChange={handleChange} required placeholder='Address' />
+            <textarea name="address" value={formData.address} onChange={handleChange} required className="form-control" placeholder='Address' />
           </label>
           <label className="form-field">
             Vendor City  :
-            <input type='text' name="vendorCity" value={formData.vendorCity} onChange={handleChange} placeholder='Vendor City' required />
+            <input type='text' name="vendorCity" value={formData.vendorCity} className="form-control" onChange={handleChange} placeholder='Vendor City' required />
           </label>
           <label className="form-field">
             Pincode:
@@ -241,6 +269,7 @@ const VendorMasterForm = () => {
               required
               pattern="\d{6}"
               title="Pincode must be 6 digits"
+              className="form-control"
             />
           </label>
         </div>
@@ -258,6 +287,7 @@ const VendorMasterForm = () => {
               required
               pattern="\d{10}|(\d{3}[-\s]?\d{3}[-\s]?\d{4})"
               title="Phone number must be 10 digits"
+              className="form-control"
             />
           </label>
           <label className="form-field">
@@ -271,6 +301,8 @@ const VendorMasterForm = () => {
               required
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               title="Please enter a valid email address."
+              className="form-control"
+
             />
           </label>
           <label className="form-field">
@@ -281,6 +313,8 @@ const VendorMasterForm = () => {
               value={formData.contactPerson}
               onChange={handleChange}
               placeholder='Contact Person Name'
+              className="form-control"
+
               required />
           </label>
           <label className="form-field">
@@ -293,6 +327,7 @@ const VendorMasterForm = () => {
               placeholder='Contact Person Phone'
               required
               pattern="\d{10}|(\d{3}[-\s]?\d{3}[-\s]?\d{4})"
+              className="form-control"
               title="Phone number must be 10 digits" />
           </label>
         </div>
@@ -309,6 +344,8 @@ const VendorMasterForm = () => {
               required
               pattern="\d{10}|(\d{3}[-\s]?\d{3}[-\s]?\d{4}) "
               title="Phone number must be 10 digits"
+              className="form-control"
+
             />
           </label>
           <label className="form-field">
@@ -319,6 +356,8 @@ const VendorMasterForm = () => {
               placeholder='Pan Card Number'
               value={formData.panNo}
               onChange={handleChange}
+              className="form-control"
+
               required />
           </label>
           <label className="form-field">
@@ -328,6 +367,8 @@ const VendorMasterForm = () => {
               name="panCard"
               onChange={handleChange}
               accept=".pdf,image/*"
+              className="form-control"
+
               ref={panRef}
               required />
           </label>
@@ -339,6 +380,8 @@ const VendorMasterForm = () => {
               placeholder='Adhar Card Number'
               value={formData.adharNo}
               onChange={handleChange}
+              className="form-control"
+
               required />
           </label>
         </div>
@@ -353,6 +396,8 @@ const VendorMasterForm = () => {
               onChange={handleChange}
               accept=".pdf,image/*"
               ref={adharCardRef}
+              className="form-control"
+
               required />
           </label>
 
@@ -364,6 +409,8 @@ const VendorMasterForm = () => {
               placeholder='Rate Per KM'
               value={formData.rate}
               onChange={handleChange}
+              className="form-control"
+
               required />
           </label>
           <label className="form-field">
@@ -374,11 +421,11 @@ const VendorMasterForm = () => {
               placeholder='GST Number'
               value={formData.GSTNo}
               onChange={handleChange}
+              className="form-control"
+
               required />
           </label>
-        </div>
 
-        <div className='form-row'>
           <label className="form-field">
             GSTIN :
             <input
@@ -388,7 +435,8 @@ const VendorMasterForm = () => {
               onChange={handleChange}
               accept=".pdf,image/*"
               ref={GSTRef}
-              style={{ width: '250px' }}
+              className="form-control"
+
               required />
           </label>
         </div>

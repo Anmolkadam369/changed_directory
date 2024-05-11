@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './User.css';
+// import './User.css';
+import "../Admin/Admin.css";
 import axios from 'axios';
 import { useNavigate, Outlet } from 'react-router-dom';
 import VendorMasterForm from '../VenderMaster/VendorMasterForm';
@@ -21,6 +22,7 @@ import { Alert } from '@mui/material';
 import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
+import MenuIcon from '@mui/icons-material/Menu';
 
 
 
@@ -29,6 +31,7 @@ const User = () => {
     const [showUserId, setShowUserId] = useState(false);
     const [getData, setGetData] = useState({});
     console.log("GETDATA", getData)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const user = {
         name: "John Doe",
@@ -103,206 +106,230 @@ const User = () => {
 
     };
 
+    useEffect(() => {
+        const handleResize = () => {
+            console.log("size", window.innerWidth)
+            if (window.innerWidth > 768) setIsSidebarOpen(true);
+            else setIsSidebarOpen(false);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    function toggleSidebar() {
+        setIsSidebarOpen(!isSidebarOpen);
+    }
+
     return (
         <div className="admin-page">
-            <aside className="sidebar">
-                <ul>
-                <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px'}} />
-
-                    <li onClick={() => {
-                        setShowCustomerOptions(!showCustomerOptions)
-                        setShowAddVehicle(false);
-                        setStartingPage(true);
-                        setMyAccidentVehicle(false)
-                        setSendLocation(false)
-                    }}>Dashboard</li>
+            {isSidebarOpen ? (
+                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                    {window.innerWidth < 768 && (
+                        <div className="close-btn" onClick={toggleSidebar}>×</div>
+                    )}
                     <ul>
-                        <li onClick={(e) => {
-                            setShowAddVehicleOptions(!showAddVehicleOptions)
-                            setShowAddVehicle(true);
-                            setStartingPage(false);
+                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft: "10px" }} />
+
+                        <li onClick={() => {
+                            setShowCustomerOptions(!showCustomerOptions)
+                            setShowAddVehicle(false);
+                            setStartingPage(true);
                             setMyAccidentVehicle(false)
                             setSendLocation(false)
-                            e.stopPropagation();
+                        }}>Dashboard</li>
+                        <ul>
+                            <li onClick={(e) => {
+                                setShowAddVehicleOptions(!showAddVehicleOptions)
+                                setShowAddVehicle(true);
+                                setStartingPage(false);
+                                setMyAccidentVehicle(false)
+                                setSendLocation(false)
+                                e.stopPropagation();
 
-                        }}>Adding Vehicle
-                            {showAddVehicleOptions && (
-                                <ul className='submenu'>
-                                    <li onClick={(e) => {
-                                        setShowAddVehicle(true);
-                                        setStartingPage(false);
-                                        setMyAccidentVehicle(false)
-                                        setSendLocation(false)
-                                        e.stopPropagation();
-                                    }}>
-                                        Search Vehicle
-                                    </li>
-                                </ul>
-                            )}
-                        </li>
-                    </ul>
-
-                    
-                    <ul>
-                        <li onClick={(e) => {
-                            setShowReportsOptions(!showReportsOptions)
-                            setShowAddVehicle(false);
-                            setStartingPage(false);
-                            setMyAccidentVehicle(true)
-                            setSendLocation(false)
-                            e.stopPropagation();
-                        }}>Reports
-                            {showReportsOptions && (
-                                <ul className='submenu'>
-                                    <li onClick={(e) => {
-                                        setShowAddVehicle(false);
-                                        setStartingPage(false);
-                                        setMyAccidentVehicle(true)
-                                        setSendLocation(false)
-                                        e.stopPropagation();
-                                    }}>
-                                        My Vehicle
-                                    </li>
-                                </ul>
-                            )}
-                        </li>
-                    </ul>
-                </ul>
-            </aside>
-            <div className="admin-page">
-                <main className="content" style={{marginLeft:'0px'}}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' }}>
-                        <div>
-                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px', marginTop:"40px" }}
-                                onClick={() => setShowUserId(!showUserId)} />
-                            {showUserId && (
-                                <div style={{
-                                    marginLeft: '10px',
-                                    padding: '15px',
-                                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                                    backgroundColor: 'white',
-                                    borderRadius: '8px',
-                                    display: 'flex',
-                                    flexDirection: 'column', // Change to column for vertical stacking
-                                    alignItems: 'flex-start', // Align items to the start of the flex-direction
-                                    gap: '10px' // Adds space between the elements inside the flex container
-                                }}>
-                                    <span style={{
-                                        fontSize: '14px', // Slightly larger font size for better readability
-                                        color: 'grey'
-                                    }}>
-                                        User Name : {getData.CustomerName} <br /><br />
-                                        Type : {getData.CustomerType}
-                                    </span>
-                                    <button
-                                        onClick={handleSignOutClick}
-                                        style={{
-                                            padding: '8px 15px',
-                                            fontSize: '14px',
-                                            color: 'white',
-                                            backgroundColor: '#007bff',
-                                            border: 'none',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer',
-                                            outline: 'none',
-                                            width: '100%',
-                                            textAlign: 'center'
+                            }}>Adding Vehicle
+                                {showAddVehicleOptions && (
+                                    <ul className='submenu'>
+                                        <li onClick={(e) => {
+                                            setShowAddVehicle(true);
+                                            setStartingPage(false);
+                                            setMyAccidentVehicle(false)
+                                            setSendLocation(false)
+                                            e.stopPropagation();
                                         }}>
-                                        Sign Out
-                                    </button>
-                                    <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
-                                </div>
-                            )}
+                                            Search Vehicle
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
 
 
-                        </div>
-                    </div>
-
-
-                    {
-                        startingPage &&
-                        <div>
+                        <ul>
+                            <li onClick={(e) => {
+                                setShowReportsOptions(!showReportsOptions)
+                                setShowAddVehicle(false);
+                                setStartingPage(false);
+                                setMyAccidentVehicle(true)
+                                setSendLocation(false)
+                                e.stopPropagation();
+                            }}>Reports
+                                {showReportsOptions && (
+                                    <ul className='submenu'>
+                                        <li onClick={(e) => {
+                                            setShowAddVehicle(false);
+                                            setStartingPage(false);
+                                            setMyAccidentVehicle(true)
+                                            setSendLocation(false)
+                                            e.stopPropagation();
+                                        }}>
+                                            My Vehicle
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+                    </ul>
+                </aside>
+            ) : (
+                <div>
+                    {window.innerWidth < 768 && (
+                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
+                    )}
+                </div>
+            )}
+            <main className="content" style={{ marginLeft: '0px' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' }}>
+                    <div>
+                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px', marginTop: "40px" }}
+                            onClick={() => setShowUserId(!showUserId)} />
+                        {showUserId && (
                             <div style={{
-                                textAlign: 'center',
-                                backgroundColor: '#4CAF50', // Choose your color
-                                color: 'white', // Choose text color
-                                padding: '20px 0', // Vertical padding and no horizontal padding
-                                marginBottom: '30px', // Space below the header
+                                marginLeft: '10px',
+                                padding: '15px',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                                backgroundColor: 'white',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                flexDirection: 'column', // Change to column for vertical stacking
+                                alignItems: 'flex-start', // Align items to the start of the flex-direction
+                                gap: '10px' // Adds space between the elements inside the flex container
                             }}>
-                                <h1 style={{ fontSize: "170%" }}>User - {getData.CustomerName} </h1>
-                                <hr style={{
-                                    border: '0',
-                                    height: '2px', // Thickness of the hr
-                                    backgroundColor: '#fff', // Same as the text color for consistency
-                                    maxWidth: '50%', // Width of the hr
-                                    margin: '0 auto', // Center the hr
-                                }} />
+                                <span style={{
+                                    fontSize: '14px', // Slightly larger font size for better readability
+                                    color: 'grey'
+                                }}>
+                                    User Name : {getData.CustomerName} <br /><br />
+                                    Type : {getData.CustomerType}
+                                </span>
+                                <button
+                                    onClick={handleSignOutClick}
+                                    style={{
+                                        padding: '8px 15px',
+                                        fontSize: '14px',
+                                        color: 'white',
+                                        backgroundColor: '#007bff',
+                                        border: 'none',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer',
+                                        outline: 'none',
+                                        width: '100%',
+                                        textAlign: 'center'
+                                    }}>
+                                    Sign Out
+                                </button>
+                                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
+                            </div>
+                        )}
+
+
+                    </div>
+                </div>
+
+
+                {
+                    startingPage &&
+                    <div>
+                        <div style={{
+                            textAlign: 'center',
+                            backgroundColor: '#4CAF50', // Choose your color
+                            color: 'white', // Choose text color
+                            padding: '20px 0', // Vertical padding and no horizontal padding
+                            marginBottom: '30px', // Space below the header
+                        }}>
+                            <h1 style={{ fontSize: "170%" }}>User - {getData.CustomerName} </h1>
+                            <hr style={{
+                                border: '0',
+                                height: '2px', // Thickness of the hr
+                                backgroundColor: '#fff', // Same as the text color for consistency
+                                maxWidth: '50%', // Width of the hr
+                                margin: '0 auto', // Center the hr
+                            }} />
+                        </div>
+
+                        <h2 className='heading-box'>
+                            Vehicles Details
+                        </h2>
+
+                        <section className="dashboard-summary">
+                            <div className="summary-item">
+                                <h2>4</h2>
+                                <p>Repairing Pending</p>
+                            </div>
+                            <div className="summary-item">
+                                <h2>10</h2>
+                                <p>Repaired Vehicles</p>
+                            </div>
+                            <div className="summary-item">
+                                <h2>100</h2>
+                                <p>Registered Vehicles</p>
                             </div>
 
-                            <h2 className='heading-box'>
-                                Vehicles Details
-                            </h2>
+                        </section>
 
-                            <section className="dashboard-summary">
-                                <div className="summary-item">
-                                    <h2>4</h2>
-                                    <p>Repairing Pending</p>
-                                </div>
-                                <div className="summary-item">
-                                    <h2>10</h2>
-                                    <p>Repaired Vehicles</p>
-                                </div>
-                                <div className="summary-item">
-                                    <h2>100</h2>
-                                    <p>Registered Vehicles</p>
-                                </div>
+                        <section className="charts-section">
+                            <div className="chart-container">
+                                <h2>Vendor Details</h2>
+                                <PieChartComponent chartData={vendorData} chartLabels={vendorLabels} />
+                            </div>
+                            <div className="chart-container">
+                                <h2>Customer Details</h2>
+                                <PieChartComponent chartData={customerData} chartLabels={customerLabels} />
+                            </div>
+                        </section>
+                    </div>
+                }
+                {
+                    showAddVehicle ? (
+                        <>
+                            {!vehicleData && <Registration onVehicleData={handleVehicleData} />}
+                            {alertInfo.show && (
+                                <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                    {alertInfo.message}
+                                </Alert>
+                            )}
+                            {/* {vehicleData && getData && <Location vehicleData={vehicleData} />} */}
+                            {vehicleData && getData && vehicleData.choosenPlan && <Location1 vehicleData={vehicleData} />}
 
-                            </section>
+                        </>
+                    ) : null
+                }
 
-                            <section className="charts-section">
-                                <div className="chart-container">
-                                    <h2>Vendor Details</h2>
-                                    <PieChartComponent chartData={vendorData} chartLabels={vendorLabels} />
-                                </div>
-                                <div className="chart-container">
-                                    <h2>Customer Details</h2>
-                                    <PieChartComponent chartData={customerData} chartLabels={customerLabels} />
-                                </div>
-                            </section>
-                        </div>
-                    }
-                    {
-                        showAddVehicle ? (
-                            <>
-                                {!vehicleData && <Registration onVehicleData={handleVehicleData} />}
-                                {alertInfo.show && (
-                                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                                        {alertInfo.message}
-                                    </Alert>
-                                )}
-                                {/* {vehicleData && getData && <Location vehicleData={vehicleData} />} */}
-                                {vehicleData && getData && vehicleData.choosenPlan && <Location1 vehicleData={vehicleData} />}
-
-                            </>
-                        ) : null
-                    }
-
-                    {/* {
+                {/* {
                         sendLocation ? (
                             <>
                                 {vehicleData.choosenPlan && <Location1 vehicleData={vehicleData} />}
                             </>
                         ) : null} */}
 
-                    {
-                        myAccidentVehicle &&
-                        <AccidentVehicleUser />
-                    }
+                {
+                    myAccidentVehicle &&
+                    <AccidentVehicleUser />
+                }
 
 
 
-                </main>
-            </div>
+            </main>
 
         </div>
     );

@@ -38,7 +38,7 @@ body, html {
 
 .admin-page .sidebar li {
   position: relative;
-  padding: 10px 20px;
+  padding: 10px 20px; 
   cursor: pointer;
   transition: background 0.3s ease;
   white-space: nowrap;
@@ -58,7 +58,7 @@ body, html {
 
 .admin-page .sidebar li.active > .submenu,
 .admin-page .sidebar li:hover > .submenu {
-  display: block; 
+  display: block;   
 }
 
 .admin-page .sidebar .submenu li {
@@ -75,7 +75,7 @@ body, html {
 .admin-page .content {
   margin-left: 160px; /* make room for the sidebar */
   padding: 20px;
-  background: transparent;
+  /* background: transparent; */
   /* min-height: 100vh; full view height */
   transition: margin-left 0.5s; /* animate the transition */
   width: calc(100% - 240px); /* remaining width */
@@ -112,19 +112,88 @@ body, html {
 }
 
 @media screen and (max-width: 768px) {
-  .admin-page .sidebar,
-  .admin-page .sidebar.collapsed + .content,
-  .admin-page .sidebar.collapsed + .content + footer {
-    width: 100%; 
-    margin-left: 0; /* no margin needed */
-    left: 0; /* align to the left */
+  .admin-page .sidebar {
+    width: 25px; /* Set the width of the sidebar to 250px, or adjust as needed */
+    height: 100%; /* Full height to cover the entire screen vertically */
+    position: fixed;
+     /* if i keep it relative then the content is also shown and sidebar too*/
+    top: 0;
+    left: 0; /* Align to the left */
+    display: flex; /* Using flexbox */
+    flex-direction: column; /* Align children (ul, li) vertically */
+    overflow-y: auto; /* Enable scrolling if content overflows vertically */
+    z-index: 1000; /* Ensure sidebar stays on top of other content */
+    background: #333; /* Sidebar background color */
+    color: white; /* Text color for sidebar */
+    transition: none; /* No transition effect is necessary */
   }
-  .admin-page .content .centered,
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
+  }
+  .menu-btn {
+    display: none; /* Hidden by default */
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+    z-index: 1001; /* Ensure it's visible above other content */
+  }
+
+  /* Show the menu button when sidebar is hidden */
+  .admin-page .menu-btn.show {
+    display: block;
+  }
+
+  .admin-page .sidebar ul {
+    width: 100%; 
+    flex-direction: column;
+  }
+
+  .admin-page .sidebar li {
+    text-align: left; /* Align text to the left */
+    width: 100%; /* Each li takes full width of the sidebar */
+    padding: 0;
+    margin-left: 5px;
+    margin-top: 5px;
+    padding-top:10px;
+    padding-bottom: 10px;
+  }
+
+  .admin-page .sidebar .submenu {
+    position: static; /* Submenus appear within the flow of the document */
+    /* width: 100%; */
+    display: none; /* Hidden by default */
+  }
+
+  .admin-page .sidebar li.active > .submenu,
+  .admin-page .sidebar li:hover > .submenu {
+    display: block;   
+    margin-top: 10px;
+  }
+
+  /* Content adjustments when sidebar is visible */
+  .admin-page .content {
+    margin-left: 250px; 
+    width: calc(100% - 250px);
+  }
+
   .admin-page footer {
-    width: calc(100% - 40px); /* Adjust based on padding or desired spacing */
-    margin: 0 auto;
+    position: fixed;
+    left: 250px; /* Align the footer with the content area */
+    width: calc(100% - 250px); /* Footer width matches the content area */
+    bottom: 0; /* Position at the bottom */
   }
 }
+
+
+
 
 .admin-page .content header {
   background: #4CAF50;
@@ -190,7 +259,7 @@ body, html {
   .admin-page .sidebar.collapsed + .content + footer,
   .admin-page footer {
     margin-left: 0;
-    width: 100%;
+    width: 40%;
   }
   .admin-page .content {
     margin-left: 0;

@@ -48,7 +48,7 @@ import MachanicResponse from './Component/ViewVendorResponse/MachanicResponse';
 import CraineResponse from './Component/ViewVendorResponse/CraineResponse';
 import AdvocateResponse from './Component/ViewVendorResponse/AdvocateResponse';
 import WorkshopResponse from './Component/ViewVendorResponse/WorkshopResponse';
-
+import ActualVendorResponse from './Component/Vendors/ActualVendorResponse';
 
 //testing
 import Testing from './Component/Aaaaaaaaaaa/Testing';
@@ -109,6 +109,8 @@ function App() {
           <Route path='/CraineResponse' element={<CraineResponse/>}/>
           <Route path='/AdvocateResponse' element={<AdvocateResponse/>}/>
           <Route path='/WorkshopResponse' element={<WorkshopResponse/>}/>
+          <Route path='/ActualVendorResponse' element={<ActualVendorResponse/>}/>
+
 
           <Route path='/Testing' element={<Testing/>}/>
 

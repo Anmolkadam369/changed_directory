@@ -8,7 +8,8 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
-
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function AddedDataByMachanic() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -20,6 +21,7 @@ function AddedDataByMachanic() {
     const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
+    const [existingData, setExistingData] = useState([]);
 
 
     useEffect(() => {
@@ -28,6 +30,7 @@ function AddedDataByMachanic() {
             navigate("/");
         }
         getDataById(id);
+        getExistingData(id, userId);
     }, [token, userId, navigate, id]);
 
     useEffect(() => {
@@ -77,6 +80,22 @@ function AddedDataByMachanic() {
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
+    const getExistingData = async (id, userId) => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`);
+            setExistingData(response.data.data[0]);
+            console.log("getExistingData success", response);
+        } catch (error) {
+            console.error("Failed to fetch existing data", error.response || error);
+            if (error.response) {
+                console.log("Error data:", error.response.data);
+                console.log("Error status:", error.response.status);
+                console.log("Error headers:", error.response.headers);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    };
 
     const [formData, setFormData] = useState({
         VehicleInspection: "",
@@ -123,9 +142,13 @@ function AddedDataByMachanic() {
         }
     };
 
+    const handleBack = () => {
+        navigate("../MachanicDashboard")
+    }
 
     return (
         <div className='container'>
+             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>
             </div>
@@ -137,7 +160,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="CustomerName"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.CustomerName}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -148,7 +171,7 @@ function AddedDataByMachanic() {
                     Choosen Plan:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="choosenPlan"
                         value={formData.choosenPlan}
                         onChange={handleChange}
@@ -164,7 +187,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="chassisNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.chassisNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -175,7 +198,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="engineNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.engineNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -186,7 +209,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="make"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.make}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -197,7 +220,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="latitude"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.latitude || 0.0}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -210,7 +233,7 @@ function AddedDataByMachanic() {
                     Longitude:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="longitude"
                         value={formData.longitude || 0.0}
                         onChange={handleChange}
@@ -222,7 +245,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="vehicleNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.vehicleNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -233,7 +256,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="accidentFileNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.accidentFileNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -244,7 +267,7 @@ function AddedDataByMachanic() {
                     <input
                         type="text"
                         name="model"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.model}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -445,67 +468,95 @@ function AddedDataByMachanic() {
 
 
             <div className='form-row'>
+                <div>
                 <label className="form-field">
                     Vehicle Inspection Remarks:
+                    {existingData?.VehicleInspection ? (
+                        <p className='notUploaded1'>Vehicle Inspection is already existed</p>
+                    ) : (
                     <textarea
-                        className='inputField'
+                        className='inputField form-control'
                         name="vehicleInspection"
-                        value={formData.vehicleInspection}
+                        value={formData.VehicleInspection}
                         onChange={handleChange}
-                    />
+                    />)}
                 </label>
+                </div>
+                <div>
                 <label className="form-field">
                     Labour Estimate:
+                    {existingData?.labourEstimate ? (
+                        <p className='notUploaded1'>Labour Estimate is already existed</p>
+                    ) : (
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="labourEstimate"
                         value={formData.labourEstimate}
                         onChange={handleChange}
-                    />
+                    />)}
                 </label>
+                </div>
+                <div>
                 <label className="form-field">
-                    Parts Arrangment:
+                    Parts Arrangement:
+                    {existingData?.partsArrangement ? (
+                        <p className='notUploaded1'>Parts Arrangement is already existed</p>
+                    ) : (
                     <textarea
-                        name="partsArrangment"
-                        className='inputField'
-                        value={formData.partsArrangment}
+                        name="partsArrangement" // corrected spelling from 'Arrangment' to 'Arrangement'
+                        className='inputField form-control'
+                        value={formData.partsArrangement}
                         onChange={handleChange}
-                    />
+                    />)}
                 </label>
+                </div>
+                <div>
                 <label className="form-field">
                     Trial:
+                    {existingData?.trial ? (
+                        <p className='notUploaded1'>Trial is already existed</p>
+                    ) : (
                     <textarea
                         name="trial"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.trial}
                         onChange={handleChange}
-                    />
+                    />)}
                 </label>
+                </div>
             </div>
             <div className='form-row'>
-            <label className="form-field">
+                <label className="form-field">
                     Payment:
-                    <textarea
-                        name="payment"
-                        className='inputField'
-                        value={formData.payment}
-                        onChange={handleChange}
-                    />
+                    {existingData?.payment ? (
+                        <p className='notUploaded1'>Payment is already existed</p>
+                    ) : (
+                        <textarea
+                            name="payment"
+                            className='inputField form-control'
+                            value={formData.payment}
+                            onChange={handleChange}
+                        />
+                    )}
                 </label>
                 <label className="form-field">
-                    Feedback:   
-                    <textarea
-                        name="feedback"
-                        className='inputField'
-                        value={formData.feedback}
-                        onChange={handleChange}
-                    />
+                    Feedback:
+                    {existingData?.feedback ? (
+                        <p className='notUploaded1'>Feedback is already existed</p>
+                    ) : (
+                        <textarea
+                            name="feedback"
+                            className='inputField form-control'
+                            value={formData.feedback}
+                            onChange={handleChange}
+                        />
+                    )}
                 </label>
                 <label className="form-field"></label>
                 <label className="form-field"></label>
-
             </div>
+
             {alertInfo.show && (
                 <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
                     {alertInfo.message}

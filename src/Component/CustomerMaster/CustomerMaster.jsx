@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -23,7 +24,7 @@ const CustomerMaster = () => {
   const today = new Date().toISOString().split('T')[0];
   const [isRetail, setIsRetail] = useState(false);
   const [isFleetOwner, setIsFleetOwner] = useState(false);
-
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const [formData, setFormData] = useState({
     systemDate: today,
@@ -48,6 +49,17 @@ const CustomerMaster = () => {
     plan: '',
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "", year: "", type: "", application: "", GVW: "", ULW: "", InsuranceName: "", choosenPlan: ""
   });
+
+  const handleSelect = (event, value) => {
+    event.preventDefault();
+    setFormData({
+      ...formData,
+      choosenPlan: value
+    });
+    setShowDropdown(false);
+  };
+
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
@@ -138,7 +150,7 @@ const CustomerMaster = () => {
       }
     }
   };
-
+console.log("FORm", formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationMessage = validateForm();
@@ -190,48 +202,55 @@ const CustomerMaster = () => {
           <span class="mandatory-note">All fields are mandatory</span>
         </div>
         <div className='form-row'>
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             System Date:
             <input
               type="date"
               name="systemDate"
               value={formData.systemDate}
               onChange={handleChange}
+              className="form-control"
               readOnly
             />
           </label>
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             Customer Location:
             <input
               type="text"
               name="cusLocation"
               value={formData.cusLocation}
               onChange={handleChange}
+              className="form-control"
+
             />
           </label>
-          <label className="form-field">
+          <label className="form-field input-group mb-3 ">
             Customer Code: {/* This might not be editable if it's system generated */}
             <input
               type="text"
               name="CustomerCode"
               value={formData.CustomerCode}
+              className="form-control"
               readOnly
             />
           </label>
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             Customer Name:
             <input
               type="text"
               name="CustomerName"
               value={formData.CustomerName}
               onChange={handleChange}
+              className="form-control"
               required
             />
           </label>
         </div>
 
         <div className='form-row'>
-          <label className="form-field">
+
+          
+          <label className="form-field input-group mb-3">
             Customer Type:
             <select name="CustomerType" value={formData.CustomerType} onChange={handleChange} required>
               <option value="">Select</option>
@@ -239,13 +258,14 @@ const CustomerMaster = () => {
               <option value="fleetOwner">Fleet Owner</option>
             </select>
           </label>
+
           <label className="form-field">
             Address  :
-            <textarea name="address" value={formData.address} onChange={handleChange} required />
+            <textarea name="address" value={formData.address} className="form-control" onChange={handleChange} required />
           </label>
           <label className="form-field">
             Customer City  :
-            <input type='text' name="CustomerCity" value={formData.CustomerCity} onChange={handleChange} required />
+            <input type='text' name="CustomerCity" value={formData.CustomerCity}  className="form-control" onChange={handleChange} required />
           </label>
           <label className="form-field">
             Pincode:
@@ -254,6 +274,7 @@ const CustomerMaster = () => {
               name="pincode"
               value={formData.pincode}
               onChange={handleChange}
+              className="form-control"
               required
               pattern="\d{6}"
               title="Pincode must be 6 digits"
@@ -269,6 +290,7 @@ const CustomerMaster = () => {
               name="CustomerPhone"
               value={formData.CustomerPhone}
               onChange={handleChange}
+              className="form-control"
               required
               pattern="\d{10}"
               title="Phone number must be 10 digits"
@@ -281,6 +303,7 @@ const CustomerMaster = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              className="form-control"
               required
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               title="Please enter a valid email address."
@@ -293,6 +316,7 @@ const CustomerMaster = () => {
               name="contactPerson"
               value={formData.contactPerson}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
           <label className="form-field">
@@ -302,6 +326,7 @@ const CustomerMaster = () => {
               name="contactPersonNum"
               value={formData.contactPersonNum}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
         </div>
@@ -314,6 +339,7 @@ const CustomerMaster = () => {
               name="contactPersonNum2"
               value={formData.contactPersonNum2}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
           <label className="form-field">
@@ -323,6 +349,7 @@ const CustomerMaster = () => {
               name="panNo"
               value={formData.panNo}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
           <label className="form-field">
@@ -332,6 +359,7 @@ const CustomerMaster = () => {
               name="panCard"
               // value={formData.panCard}
               onChange={handleChange}
+              className="form-control"
               ref={panRef}
               accept=".pdf,image/*"
               required />
@@ -343,6 +371,7 @@ const CustomerMaster = () => {
               name="adharNo"
               value={formData.adharNo}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
         </div>
@@ -356,6 +385,7 @@ const CustomerMaster = () => {
               // value={formData.adharCard}
               onChange={handleChange}
               ref={adharCardRef}
+              className="form-control"
               accept=".pdf,image/*"
               required />
           </label>
@@ -366,6 +396,7 @@ const CustomerMaster = () => {
               name="rate"
               value={formData.rate}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
           <label className="form-field">
@@ -375,11 +406,10 @@ const CustomerMaster = () => {
               name="GSTNo"
               value={formData.GSTNo}
               onChange={handleChange}
+              className="form-control"
               required />
           </label>
-        </div>
 
-        <div className='form-row'>
           <label className="form-field">
             GSTIN :
             <input
@@ -389,17 +419,35 @@ const CustomerMaster = () => {
               ref={GSTRef}
               onChange={handleChange}
               accept=".pdf,image/*"
+              className="form-control"
               required />
           </label>
-          <label className="form-field">
-            Plan Choose:
-            <select name="choosenPlan" value={formData.choosenPlan} onChange={handleChange} required>
-              <option value="">Select</option>
-              <option value="pro">Pro</option>
-              <option value="plus">Plus</option>
-              <option value="advanced">Advanced</option>
-            </select>
-          </label>
+        </div>
+
+        <div className='form-row'>
+
+        <div className="dropdown green-dropdown form-field">
+      <button
+        className="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded={showDropdown}
+        onClick={toggleDropdown}
+      >
+        {formData.choosenPlan || "Select Plan"}
+      </button>
+      <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "pro")}>Pro Plan</a></li>
+        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "plus")}>Plus Plan</a></li>
+        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advanced")}>Advanced Plan</a></li>
+      </ul>
+    </div>
+    <label className="form-field"></label>
+    <label className="form-field"></label>
+    <label className="form-field"></label>
+
+
         </div>
 
         <div>

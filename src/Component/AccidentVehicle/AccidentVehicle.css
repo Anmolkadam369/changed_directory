@@ -1,19 +1,50 @@
 .responsive-table {
   overflow-x: auto;  /* Allows table to scroll horizontally */
-  width: calc(100% - 40px);
+  width: 100%; /* Ensures that the container fits the width of its parent */
 }
 
 @media (max-width: 768px) {
   .responsive-table table {
-    width: auto; /* Allows table to shrink and expand as needed */
+    width: auto; /* Ensures the table can expand beyond the screen width */
   }
   
   .responsive-table th, .responsive-table td {
-    padding: 8px; /* Reduce padding on smaller screens */
+    padding: 8px; /* Reduces padding on smaller screens */
   }
 
   /* Optional: Hide less important columns on smaller screens */
   .responsive-table th:nth-child(3), .responsive-table td:nth-child(3) {
+    display: none;
+  }
+  .responsive-table th:nth-child(4), .responsive-table td:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 8px; /* Reduces padding on smaller screens */
+  }
+}
+@media (max-width: 768px) {
+  .register-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .register-responsive-table th, .register-responsive-table td {
+    padding: 8px; /* Reduces padding on smaller screens */
+  }
+  .register-responsive-table th:nth-child(3), .register-responsive-table td:nth-child(3) {
+    display: none;
+  }
+  .register-responsive-table th:nth-child(4), .register-responsive-table td:nth-child(4) {
+    display: none;
+  }
+  .register-responsive-table th:nth-child(5), .register-responsive-table td:nth-child(5) {
     display: none;
   }
 }
@@ -47,7 +78,7 @@ table {
 table,
 th,
 td {
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
 
 th,
@@ -57,7 +88,7 @@ td {
 }
 
 th {
-  background:rgb(78, 223, 78);
+  background:rgb(169 187 169);
   color: white;
   text-align: center;
 

@@ -73,47 +73,47 @@ const AccidentVehicle = () => {
     console.log("myId", id)
     navigate("../EditAccidentVehicle", { state: { id } });
   }
-  
+
   return (
     <div>
-        <div class="header-container">
-          <h3 class="bigtitle">Assign Vendor to Accident Vehicle</h3>
-        </div>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginLeft:"30px" }}>
-        <thead>
-          <tr>
-            <th>Sr. No.</th>
-            <th>User Name</th>
-            <th>Accident File Number</th>
-            <th>Choosen Plan</th>
-            <th>Selected Options</th>
-            {/* <th>Services</th> */}
-            <th>View</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
+      <h3 class="bigtitle">Assign Vendor to Accident Vehicle</h3>
+      <div className='responsive-table'>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginLeft: "30px" }}>
+          <thead>
             <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>All Vehicles are assigned To Vendors...</td>
-            </tr>
-          ) : (
-            data.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.CustomerName}</td>
-                <td>{item.accidentFileNo}</td>
-                <td>{item.choosenPlan}</td>
-                <td>{item && item.selectedOptions }</td>
-                <td>
-                <button onClick={() => view(item.AccidentVehicleCode)} className='view-button'>View here</button>
-              </td>
+              <th>Sr. No.</th>
+              <th>User Name</th>
+              <th>Accident File Number</th>
+              <th>Choosen Plan</th>
+              <th>Selected Options</th>
+              {/* <th>Services</th> */}
+              <th>View</th>
 
+            </tr>
+          </thead>
+          <tbody>
+            {data.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>All Vehicles are assigned To Vendors...</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              data.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{index + 1}</td>
+                  <td>{item.CustomerName}</td>
+                  <td>{item.accidentFileNo}</td>
+                  <td>{item.choosenPlan}</td>
+                  <td>{item && item.selectedOptions}</td>
+                  <td>
+                    <button onClick={() => view(item.AccidentVehicleCode)} className='view-button'>View here</button>
+                  </td>
+
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 

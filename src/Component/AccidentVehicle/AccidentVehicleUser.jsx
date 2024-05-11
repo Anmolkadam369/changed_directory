@@ -11,6 +11,7 @@ import backendUrl from '../../environment';
 
 
 
+
 const AccidentVehicleUser = () => {
 
   const [data, setData] = useState([]);
@@ -83,103 +84,139 @@ const AccidentVehicleUser = () => {
       setData(response.data.data)
     }
   };
+  const [showDropdown, setShowDropdown] = useState(false);
+  const handleSelect = (event, value) => {
+    event.preventDefault(); // Prevent default link behavior
+    setFormData({
+      ...formData,
+      vendorType: value
+    });
+    setShowDropdown(false); // Close dropdown after selection
+  };
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-  
   console.log("dddddddddddddddddddd", data.data)
   return (
-    <div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-        <div style={{ marginBottom: '10px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+      <div style={{ marginBottom: '10px' }}>
         <div class="header-container">
-        <h3 class="bigtitle">My Vehicles Cases</h3>
-      </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label>Vehicle No:
-              <input
-                type='text'
-                name="VehicleNo"
-                style={{ width: '100%', padding: '8px' }}
-                value={formData.VehicleNo}
-                onChange={handleChange}
-                required />
-            </label>
+          <h3 class="bigtitle">My Vehicles Cases</h3>
+        </div>
+
+        <div className="form-row">
+
+          <label className="form-field input-group mb-3">
+            Vehicle No:
+            <input
+              type="text"
+              name="VehicleNo"
+              placeholder='Vehicle No'
+              class="form-label"
+              value={formData.VehicleNo}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
+
+          <label className="form-field input-group mb-3">
+            Accident File No:
+            <input
+              type="text"
+              name="accidentFileNo"
+              placeholder='Accident File No'
+              class="form-label"
+              value={formData.accidentFileNo}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
+
+          <label className="form-field input-group mb-3">
+            Loss Type:
+            <input
+              type="text"
+              name="lossType"
+              placeholder='Loss Type'
+              class="form-label"
+              value={formData.lossType}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
+
+          <label className="form-field input-group mb-3">
+            Service Type:
+            <input
+              type="text"
+              name="serviceType"
+              placeholder='Service Type'
+              class="form-label"
+              value={formData.serviceType}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
+
+        </div>
+
+        <div className="form-row">
+          <div className="dropdown green-dropdown form-field">
+            Select Option :
+            <button
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              onClick={toggleDropdown}
+              style={{ color: 'black', marginTop: '5px' }}
+            >
+              {formData.vendorType || "Select Vendor Type"}
+            </button>
+            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crain</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Machanic</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+            </ul>
           </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label>Accident File No:
-              <input
-                type='text'
-                name="accidentFileNo"
-                style={{ width: '100%', padding: '8px' }}
-                value={formData.accidentFileNo}
-                onChange={handleChange}
-                required />
-            </label>
-          </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label>Loss Type:
-              <input
-                type='text'
-                name="lossType"
-                style={{ width: '100%', padding: '8px' }}
-                value={formData.lossType}
-                onChange={handleChange}
-                required />
-            </label>
-          </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label>Service Type:
-              <input
-                type='text'
-                name="serviceType"
-                style={{ width: '100%', padding: '8px' }}
-                value={formData.serviceType}
-                onChange={handleChange}
-                required />
-            </label>
-          </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label>Vendor Type:
-              <select
-                name="vendorType"
-                style={{ width: '100%', padding: '8px' }}
-                value={formData.vendorType}
-                onChange={handleChange}
-                required>
-                <option value="">--select option--</option>
-                <option value="crane/hydra">Crane/Hydra</option>
-                <option value="advocate">Advocate</option>
-                <option value="workshop">Workshop</option>
-                <option value="mechanic">Mechanic</option>
-              </select>
-            </label>
-          </div>
-          <div style={{ marginBottom: '15px' }}>
-            <label>From Date:
-              <input
-                type='date'
-                name="fromDate"
-                style={{ width: '100%', padding: '8px' }}
-                value={formData.fromDate}
-                onChange={handleChange}
-                required />
+
+          <label className="form-field input-group mb-3">
+            From Date:
+            <input
+              type="date"
+              name="fromDate"
+              value={formData.fromDate}
+              onChange={handleChange}
+              readOnly
+              className="form-control"
+            />
+          </label>
+
+          <label className="form-field input-group mb-3">
             To Date:
             <input
-              type='date'
+              type="date"
               name="toDate"
-              style={{ width: '100%', padding: '8px' }}
               value={formData.toDate}
               onChange={handleChange}
-              required />
-            </label>
-          </div>
+              readOnly
+              className="form-control"
+            />
+          </label>
+
         </div>
       </div>
 
       <div className=''></div>
 
       <div className='responsive-table'>
-        <table style={{ width: '100%', marginLeft:"40px", borderCollapse: 'collapse' }}>
+        <table style={{ width: '100%',borderCollapse: 'collapse' }}>
           <thead>
             <tr>
               <th>Sr. No.</th>

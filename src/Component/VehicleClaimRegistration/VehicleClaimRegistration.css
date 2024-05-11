@@ -175,6 +175,17 @@ input[type="radio"] {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.notUploaded1 {
+  padding: 5px;     /* reduced from 10px to 5px for smaller internal padding */
+  font-size: 14px;  /* adding font-size for smaller text, adjust as needed */
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 
 .modal-background {
   position: fixed;

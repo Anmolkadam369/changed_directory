@@ -81,7 +81,7 @@ const AccidentVehicleRegUpdate = () => {
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>No New Case To Register...</td>
+<td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No New Case To Register...</td>
             </tr>
           ) : (
             data.map((item, index) => (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "../Admin/Admin.css"
 import './Advocate.css';
 import axios from 'axios';
 import { useNavigate, Outlet } from 'react-router-dom';
@@ -24,6 +25,7 @@ import AssignedVehicleMachanic from './AssignedVehiclesMachanic';
 import AssignedVehicleCrain from './AssignedVehiclesCrain';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
+import MenuIcon from '@mui/icons-material/Menu';
 
 const CrainHydra = () => {
 
@@ -64,6 +66,7 @@ const CrainHydra = () => {
     const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
@@ -91,11 +94,31 @@ const CrainHydra = () => {
         setGetData(response.data.data[0])
     }
 
+    useEffect(() => {
+        const handleResize = () => {
+            console.log("size", window.innerWidth)
+            if (window.innerWidth > 768) setIsSidebarOpen(true);
+            else setIsSidebarOpen(false);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+
+    function toggleSidebar() {
+        setIsSidebarOpen(!isSidebarOpen);
+    }
+
     return (
         <div className="admin-page">
-            <aside className="sidebar">
+           {isSidebarOpen ?( 
+           <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+             {window.innerWidth < 768 && (
+                        <div className="close-btn" onClick={toggleSidebar}>×</div>
+                    )}
                 <ul>
-                    <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px' }} />
+                    <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px' , marginLeft:"10px"}} />
 
                     <li onClick={() => {
                         setShowCustomerOptions(!showCustomerOptions)
@@ -124,12 +147,18 @@ const CrainHydra = () => {
                     </ul>
 
                 </ul>
-            </aside>
+            </aside>):(
+                <div>
+                {window.innerWidth < 768 && (
+                    <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon/></div>
+                )}
+            </div>
+            )}
             <div className="admin-page">
                 <main className="content" style={{marginLeft:'0px'}}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' }}>
                         <div>
-                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
+                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' , marginTop:"50px"}}
                                 onClick={() => setShowUserId(!showUserId)} />
                             {showUserId && (
                                 <div style={{

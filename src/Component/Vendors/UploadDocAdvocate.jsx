@@ -8,7 +8,8 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import { Alert } from '@mui/material';
-
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function UploadDocAdvocate() {
     const location = useLocation();
@@ -19,7 +20,11 @@ function UploadDocAdvocate() {
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
+    const [existingData, setExistingData] = useState([]);
+
     const [IsReadOnly, setIsReadOnly] = useState(true);
+    console.log("LID", id, "some", userId);
+
 
     useEffect(() => {
         console.log("token", token, userId);
@@ -27,6 +32,7 @@ function UploadDocAdvocate() {
             navigate("/");
         }
         getDataById(id);
+        getExistingData(id, userId)
     }, [token, userId, navigate, id]);
 
     useEffect(() => {
@@ -72,6 +78,23 @@ function UploadDocAdvocate() {
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
+
+    const getExistingData = async (id, userId) => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`);
+            setExistingData(response.data.data[0]);
+            console.log("getExistingData success", response);
+        } catch (error) {
+            console.error("Failed to fetch existing data", error.response || error);
+            if (error.response) {
+                console.log("Error data:", error.response.data);
+                console.log("Error status:", error.response.status);
+                console.log("Error headers:", error.response.headers);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    };
 
     const [formData, setFormData] = useState({
         accidentFileNo: "",
@@ -232,11 +255,13 @@ function UploadDocAdvocate() {
         };
     }
     console.log("formdata", formData)
-
+    const handleBack = () => {
+        navigate("../advocateDashboard")
+    }
 
     return (
         <div className='container'>
-            
+             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>
             </div>
@@ -247,7 +272,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="CustomerName"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.CustomerName}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -258,7 +283,7 @@ function UploadDocAdvocate() {
                     Choosen Plan:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="choosenPlan"
                         value={formData.choosenPlan}
                         onChange={handleChange}
@@ -274,7 +299,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="chassisNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.chassisNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -285,7 +310,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="engineNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.engineNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -296,7 +321,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="make"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.make}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -307,7 +332,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="latitude"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.latitude}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -315,13 +340,12 @@ function UploadDocAdvocate() {
                 </label>
             </div>
 
-
             <div className='form-row'>
                 <label className="form-field">
                     Longitude:
                     <input
                         type="text"
-                        className='inputField'
+                        className='inputField form-control'
                         name="longitude"
                         value={formData.longitude}
                         onChange={handleChange}
@@ -333,7 +357,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="accidentFileNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.accidentFileNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -344,7 +368,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="accidentFileNo"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.accidentFileNo}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -355,7 +379,7 @@ function UploadDocAdvocate() {
                     <input
                         type="text"
                         name="model"
-                        className='inputField'
+                        className='inputField form-control'
                         value={formData.model}
                         onChange={handleChange}
                         readOnly={IsReadOnly}
@@ -555,110 +579,164 @@ function UploadDocAdvocate() {
 
 
             <div className='form-row'>
-                <label className="form-field">
-                    FIR Copy:
-                    <input
-                        type="file"
-                        name="firCopy"
-                        onChange={handleChange}
-                        className='inputField'
-                        accept=".pdf,image/*"
-                        ref={firCopy}
-                    />
-                </label>
-                <label className="form-field">
-                    POA (Power Of Attorney):
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="POA"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={POA}
-                    />
-                </label>
-                <label className="form-field">
-                    Petition Copy:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="petitionCopy"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={petitionCopy}
-                    />
-                </label>
-                <label className="form-field">
-                    Police Report Copy:
-                    <input
-                        type="file"
-                        className='inputField'
-                        name="policeReportCopy"
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={policeReportCopy}
-                    />
-                </label>
-            </div>
-            <div className='form-row'>
-                <label className="form-field">
-                    Bailer Details:
-                    <input
-                        type="file"
-                        name="bailerDetails"
-                        className='inputField'
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={bailerDetails}
-                    />
-                </label>
-                <label className="form-field">
-                    Release Order Details:
-                    <input
-                        type="file"
-                        name="releaseOrderCopy"
-                        className='inputField'
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={releaseOrderCopy}
-                    />
-                </label>
-                <label className="form-field">
-                    Release Order Upload:
-                    <input
-                        type="file"
-                        name="releaseUpload"
-                        className='inputField'
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={releaseUpload}
-                    />
-                </label>
-                <label className="form-field">
-                    FeedBack:
-                    <textarea
-                        name="feedback"
-                        className='inputField'
-                        value={formData.feedback}
-                        onChange={handleChange}
-                    />
-                </label>
-            </div>
-            <div className='form-row'>
-                <label className="form-field">
-                    Indimnity Bond Copy:
-                    <input
-                        type="file"
-                        name="indemnityBondCopy"
-                        className='inputField'
-                        onChange={handleChange}
-                        accept=".pdf,image/*"
-                        ref={indemnityBondCopy}
-                    />
-                </label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
+                <div>
+                    <p className="form-field">FIR Copy:</p>
+                    {existingData?.firCopy ? (
+                        <p className='notUploaded1'>FIR Copy is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                name="firCopy"
+                                onChange={handleChange}
+                                className='inputField form-control'
+                                accept=".pdf,image/*"
+                                ref={firCopy}
+                            />
+                        </label>
+                    )}
+                </div>
+                <div>
+                    <p className="form-field">POA (Power Of Attorney):</p>
+                    {existingData?.POA ? (
+                        <p className='notUploaded1'>POA is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="POA"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={POA}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Petition Copy:</p>
+                    {existingData?.petitionCopy ? (
+                        <p className='notUploaded1'>Petition Copy is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="petitionCopy"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={petitionCopy}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Police Report Copy:</p>
+                    {existingData?.policeReportCopy ? (
+                        <p className='notUploaded1'>Police Report is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                className='inputField form-control'
+                                name="policeReportCopy"
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={policeReportCopy}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Bailer Details:</p>
+                    {existingData?.bailerDetails ? (
+                        <p className='notUploaded1'>Bailer Details is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                name="bailerDetails"
+                                className='inputField form-control'
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={bailerDetails}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Release Order Details:</p>
+                    {existingData?.releaseOrderCopy ? (
+                        <p className='notUploaded1'>Release Order Copy is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                name="releaseOrderCopy"
+                                className='inputField form-control'
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={releaseOrderCopy}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Release Order Upload:</p>
+                    {existingData?.releaseUpload ? (
+                        <p className='notUploaded1'>Release Upload is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                name="releaseUpload"
+                                className='inputField form-control'
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={releaseUpload}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Feedback:</p>
+                    {existingData?.feedback ? (
+                        <p className='notUploaded1'>Feedback is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <textarea
+                                name="feedback"
+                                className='inputField form-control'
+                                value={formData.feedback}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    )}
+                </div>
+
+                <div>
+                    <p className="form-field">Indemnity Bond Copy:</p>
+                    {existingData?.indemnityBondCopy ? (
+                        <p className='notUploaded1'>Indemnity Bond Copy is already existed</p>
+                    ) : (
+                        <label className="form-field">
+                            <input
+                                type="file"
+                                name="indemnityBondCopy"
+                                className='inputField form-control'
+                                onChange={handleChange}
+                                accept=".pdf,image/*"
+                                ref={indemnityBondCopy}
+                            />
+                        </label>
+                    )}
+                </div>
 
             </div>
 

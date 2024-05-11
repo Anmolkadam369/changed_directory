@@ -9,6 +9,9 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import backendUrl from '../../environment';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const VendorMasterEdit = () => {
   const location = useLocation();
@@ -205,10 +208,14 @@ const VendorMasterEdit = () => {
   const editable = () => {
     setIsReadOnly(!IsReadOnly)
   }
+  const handleBack = () => {
+    navigate("../Admin")
+}
   return (
     <div>
 
-      <form onSubmit={handleSubmit} className="Customer-master-form">
+      <form onSubmit={handleSubmit} className="Customer-master-form" style={{marginBottom:"50px"}}>
+        <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
         <div>
           <h3 className='bigtitle' >Vendor Master Edits</h3>
 
@@ -228,7 +235,7 @@ const VendorMasterEdit = () => {
 
 
         <div className="form-row">
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             System Date:
             <input
               type="date"
@@ -236,9 +243,10 @@ const VendorMasterEdit = () => {
               value={formData.systemDate}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
             />
           </label>
-          <label className="form-field">
+          <label className="form-field input-group mb-3">
             Customer Location:
             <input
               type="text"
@@ -246,6 +254,8 @@ const VendorMasterEdit = () => {
               value={formData.cusLocation}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
+
             />
           </label>
           <label className="form-field">
@@ -254,7 +264,7 @@ const VendorMasterEdit = () => {
               type="text"
               name="vendorCode"
               value={formData.vendorCode}
-              readOnly
+              className="form-control"
             />
           </label>
           <label className="form-field">
@@ -265,6 +275,7 @@ const VendorMasterEdit = () => {
               value={formData.vendorName}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required
             />
           </label>
@@ -273,7 +284,7 @@ const VendorMasterEdit = () => {
         <div className='form-row'>
           <label className="form-field">
             Vendor Type:
-            <select name="vendorType" value={formData.vendorType} onChange={handleChange} required>
+            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control"  required>
               <option value="">Select</option>
               <option value="advocate">Advocate</option>
               <option value="crain">Crain</option>
@@ -283,13 +294,13 @@ const VendorMasterEdit = () => {
           </label>
           <label className="form-field">
             Address  :
-
             <textarea
               name="address"
               value={formData.address}
               onChange={handleChange}
               required
               readOnly={IsReadOnly}
+              className="form-control"
             />
           </label>
           <label className="form-field">
@@ -300,6 +311,7 @@ const VendorMasterEdit = () => {
               value={formData.vendorCity}
               onChange={handleChange}
               required
+              className="form-control"
               readOnly={IsReadOnly} />
           </label>
           <label className="form-field">
@@ -313,6 +325,7 @@ const VendorMasterEdit = () => {
               pattern="\d{6}"
               title="Pincode must be 6 digits"
               readOnly={IsReadOnly}
+              className="form-control"
             />
           </label>
         </div>
@@ -329,6 +342,7 @@ const VendorMasterEdit = () => {
               pattern="\d{10}"
               title="Phone number must be 10 digits"
               readOnly={IsReadOnly}
+              className="form-control"
             />
           </label>
           <label className="form-field">
@@ -342,6 +356,7 @@ const VendorMasterEdit = () => {
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               title="Please enter a valid email address."
               readOnly={IsReadOnly}
+              className="form-control"
             />
           </label>
           <label className="form-field">
@@ -353,6 +368,7 @@ const VendorMasterEdit = () => {
               onChange={handleChange}
               required
               readOnly={IsReadOnly}
+              className="form-control"
             />
           </label>
           <label className="form-field">
@@ -363,6 +379,7 @@ const VendorMasterEdit = () => {
               value={formData.contactPersonNum}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required />
           </label>
         </div>
@@ -376,6 +393,7 @@ const VendorMasterEdit = () => {
               value={formData.contactPersonNum2}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required />
           </label>
           <label className="form-field">
@@ -386,6 +404,7 @@ const VendorMasterEdit = () => {
               value={formData.panNo}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required />
           </label>
 
@@ -393,7 +412,7 @@ const VendorMasterEdit = () => {
             PAN Card:
             {IsReadOnly ? (
               formData.panCard ? (
-                <img src={formData.panCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.panCard} alt="PAN Card" />
               ) : (
                 <p>No PAN Card uploaded</p>
               )
@@ -405,6 +424,8 @@ const VendorMasterEdit = () => {
                 accept=".pdf,image/*"
                 ref={panRef}
                 required
+              className="form-control"
+
               />
             )}
           </label>
@@ -417,6 +438,7 @@ const VendorMasterEdit = () => {
               value={formData.adharNo}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required />
           </label>
         </div>
@@ -426,7 +448,7 @@ const VendorMasterEdit = () => {
             Adhar Card:
             {IsReadOnly ? (
               formData.adharCard ? (
-                <img src={formData.adharCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.adharCard} alt="Adhar Card"/>
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
@@ -437,6 +459,7 @@ const VendorMasterEdit = () => {
                 onChange={handleChange}
                 accept=".pdf,image/*"
                 ref={adharCardRef}
+              className="form-control"
                 required
               />
             )}
@@ -445,7 +468,7 @@ const VendorMasterEdit = () => {
             Agreement :
             {IsReadOnly ? (
               formData.agreement ? (
-                <img src={formData.agreement} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.agreement} alt="Agreement" style={{ maxWidth: '100px', display: 'block' }} />
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
@@ -456,6 +479,7 @@ const VendorMasterEdit = () => {
                 onChange={handleChange}
                 accept=".pdf,image/*"
                 ref={agreementRef}
+              className="form-control"
                 required
               />
             )}
@@ -468,6 +492,7 @@ const VendorMasterEdit = () => {
               value={formData.rate}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required />
           </label>
           <label className="form-field">
@@ -478,6 +503,7 @@ const VendorMasterEdit = () => {
               value={formData.GSTNo}
               onChange={handleChange}
               readOnly={IsReadOnly}
+              className="form-control"
               required />
           </label>
         </div>
@@ -487,7 +513,7 @@ const VendorMasterEdit = () => {
             GSTIN :
             {IsReadOnly ? (
               formData.GST ? (
-                <img src={formData.GST} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.GST} alt="GSTIN" style={{ maxWidth: '100px', display: 'block' }} />
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
@@ -499,9 +525,14 @@ const VendorMasterEdit = () => {
                 accept=".pdf,image/*"
                 ref={GSTRef}
                 required
+                className="form-control"
               />
             )}
           </label>
+          <label className="form-field"></label>
+          <label className="form-field"></label>
+          <label className="form-field"></label>
+
         </div>
 
         <div style={{ textAlign: 'center' }}>

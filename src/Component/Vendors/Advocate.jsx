@@ -22,6 +22,7 @@ import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import AssignedVehicleAdvocate from './AssignedVehiclesAdvocate';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Advocate = () => {
 
@@ -44,7 +45,7 @@ const Advocate = () => {
     const [showReportsOptions, setShowReportsOptions] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [startingPage, setStartingPage] = useState(true);
-    const [myAccidentVehicle, setMyAccidentVehicle] = useState(true);
+    const [myAccidentVehicle, setMyAccidentVehicle] = useState(false);
 
     const vendorData = [10, 4];
     const vendorLabels = ['resolved', 'pending'];
@@ -56,6 +57,7 @@ const Advocate = () => {
     const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
@@ -83,13 +85,31 @@ const Advocate = () => {
         setGetData(response.data.data[0])
     }
 
+    useEffect(() => {
+        const handleResize = () => {
+            console.log("size", window.innerWidth)
+            if (window.innerWidth > 768) setIsSidebarOpen(true);
+            else setIsSidebarOpen(false);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    function toggleSidebar() {
+        setIsSidebarOpen(!isSidebarOpen);
+    }
 
 
     return (
         <div className="admin-page">
-            <aside className="sidebar">
+            {isSidebarOpen ?( 
+                       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+{window.innerWidth < 768 && (
+                        <div className="close-btn" onClick={toggleSidebar}>×</div>
+                    )}
                 <ul>
-                    <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px' }} />
+                    <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft:"10px" }} />
 
                     <li onClick={() => {
                         setShowCustomerOptions(!showCustomerOptions)
@@ -118,7 +138,13 @@ const Advocate = () => {
                     </ul>
 
                 </ul>
-            </aside>
+            </aside>):(
+                              <div>
+                              {window.innerWidth < 768 && (
+                                  <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon/></div>
+                              )}
+                          </div>
+            )}
             <div className="admin-page">
                 <main className="content" style={{marginLeft:'0px'}}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' , marginTop:"40px"}}>
@@ -163,8 +189,6 @@ const Advocate = () => {
                                     <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
                                 </div>
                             )}
-
-
                         </div>
                     </div>
 

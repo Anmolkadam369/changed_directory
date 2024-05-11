@@ -170,3 +170,13 @@ form .pass-link a:hover,
 form .signup-link a:hover{
   text-decoration: underline;
 }
+.image-section {
+  display: none; /* Hide by default, assuming mobile-first approach */
+}
+
+/* This media query applies to devices with a width of 768 pixels or more */
+@media (min-width: 768px) {
+  .image-section {
+    display: block; /* Show the image section on laptop/desktop screens */
+  }
+}

@@ -1,16 +1,24 @@
 .responsive-table {
   overflow-x: auto;  /* Allows table to scroll horizontally */
+  width: 100%; /* Ensures that the container fits the width of its parent */
 }
 
 @media (max-width: 768px) {
   .responsive-table table {
-    width: auto; /* Allows table to shrink and expand as needed */
+    width: auto; /* Ensures the table can expand beyond the screen width */
   }
   
   .responsive-table th, .responsive-table td {
-    padding: 8px; /* Reduce padding on smaller screens */
+    padding: 8px; /* Reduces padding on smaller screens */
   }
 
+  /* Optional: Hide less important columns on smaller screens */
+  .responsive-table th:nth-child(3), .responsive-table td:nth-child(3) {
+    display: none;
+  }
+  .responsive-table th:nth-child(4), .responsive-table td:nth-child(4) {
+    display: none;
+  }
 }
 
 

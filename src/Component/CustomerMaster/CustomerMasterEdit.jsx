@@ -8,6 +8,8 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const CustomerMasterEdit = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -209,7 +211,9 @@ const CustomerMasterEdit = () => {
   const editable = () => {
     setIsReadOnly(!IsReadOnly)
   }
-
+  const handleBack = () => {
+    navigate("../Admin")
+}
 
 
   const handleSubmit = async (e) => {
@@ -263,6 +267,8 @@ const CustomerMasterEdit = () => {
     <div >
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
+      <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+
         <div class='header-container'>
           <h2 className='bigtitle'>Customer Master Edit</h2>
           <span class="mandatory-note">All fields are mandatory</span>
@@ -283,6 +289,7 @@ const CustomerMasterEdit = () => {
             Customer Location:
             <input
               type="text"
+              className="form-control"
               name="cusLocation"
               value={formData.cusLocation}
               onChange={handleChange}
@@ -293,6 +300,7 @@ const CustomerMasterEdit = () => {
             Customer Code:
             <input
               type="text"
+              className="form-control"
               name="CustomerCode"
               value={formData.CustomerCode}
               readOnly
@@ -302,6 +310,7 @@ const CustomerMasterEdit = () => {
             Customer Name:
             <input
               type="text"
+              className="form-control"
               name="CustomerName"
               value={formData.CustomerName}
               onChange={handleChange}
@@ -322,11 +331,13 @@ const CustomerMasterEdit = () => {
           </label>
           <label className="form-field">
             Address  :
-            <textarea name="address" value={formData.address} onChange={handleChange} required readOnly={IsReadOnly} />
+            <textarea
+            className="form-control" name="address" value={formData.address} onChange={handleChange} required readOnly={IsReadOnly} />
           </label>
           <label className="form-field">
             Customer City  :
-            <input type='text' name="CustomerCity" value={formData.CustomerCity} onChange={handleChange} required readOnly={IsReadOnly} />
+            <input type='text'
+            className="form-control" name="CustomerCity" value={formData.CustomerCity} onChange={handleChange} required readOnly={IsReadOnly} />
           </label>
           <label className="form-field">
             Pincode:
@@ -374,6 +385,7 @@ const CustomerMasterEdit = () => {
             Contact Person:
             <input
               type='text'
+              className="form-control"
               name="contactPerson"
               value={formData.contactPerson}
               onChange={handleChange}
@@ -384,6 +396,7 @@ const CustomerMasterEdit = () => {
             Contact Person Number :
             <input
               type='text'
+              className="form-control"
               name="contactPersonNum"
               value={formData.contactPersonNum}
               onChange={handleChange}
@@ -397,6 +410,7 @@ const CustomerMasterEdit = () => {
             Contact Person Number 2 :
             <input
               type='text'
+              className="form-control"
               name="contactPersonNum2"
               value={formData.contactPersonNum2}
               onChange={handleChange}
@@ -407,6 +421,7 @@ const CustomerMasterEdit = () => {
             PAN Number:
             <input
               type='text'
+              className="form-control"
               name="panNo"
               value={formData.panNo}
               readOnly={IsReadOnly}
@@ -414,16 +429,17 @@ const CustomerMasterEdit = () => {
               required />
           </label>
           <label className="form-field">
-            PAN Card:
+            pan Card:
             {IsReadOnly ? (
               formData.panCard ? (
                 <img src={formData.panCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
               ) : (
-                <p>No PAN Card uploaded</p>
+                <p>No pan Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
+                className="form-control"
                 name="panCard"
                 onChange={handleChange}
                 accept=".pdf,image/*"
@@ -436,6 +452,7 @@ const CustomerMasterEdit = () => {
             Adhar Number :
             <input
               type='text'
+              className="form-control"
               name="adharNo"
               value={formData.adharNo}
               onChange={handleChange}
@@ -449,13 +466,14 @@ const CustomerMasterEdit = () => {
             Adhar Card:
             {IsReadOnly ? (
               formData.adharCard ? (
-                <img src={formData.adharCard} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.adharCard} alt="Adhar Card" style={{ maxWidth: '100px', display: 'block' }} />
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
+                className="form-control"
                 name="adharCard"
                 onChange={handleChange}
                 accept=".pdf,image/*"
@@ -468,13 +486,14 @@ const CustomerMasterEdit = () => {
             Agreement :
             {IsReadOnly ? (
               formData.agreement ? (
-                <img src={formData.agreement} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.agreement} alt="Agreement" style={{ maxWidth: '100px', display: 'block' }} />
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
+                className="form-control"
                 name="agreement"
                 onChange={handleChange}
                 accept=".pdf,image/*"
@@ -487,26 +506,25 @@ const CustomerMasterEdit = () => {
             GST Number:
             <input
               type='text'
+              className="form-control"
               name="GSTNo"
               value={formData.GSTNo}
               onChange={handleChange}
               readOnly={IsReadOnly}
               required />
           </label>
-        </div>
-
-        <div className='form-row'>
-        <label className="form-field">
+          <label className="form-field">
             GSTIN :
             {IsReadOnly ? (
               formData.GST ? (
-                <img src={formData.GST} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                <img src={formData.GST} alt="GSTIN" style={{ maxWidth: '100px', display: 'block' }} />
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
+                className="form-control"
                 name="GST"
                 onChange={handleChange}
                 accept=".pdf,image/*"
@@ -515,6 +533,11 @@ const CustomerMasterEdit = () => {
               />
             )}
           </label>
+
+        </div>
+
+        <div className='form-row'>
+
         </div>
         <div>
           {isFleetOwner && (
@@ -528,6 +551,7 @@ const CustomerMasterEdit = () => {
                   Plan:
                   <input
                     type='text'
+                    className="form-control"
                     name="plan"
                     value={formData.plan}
                     onChange={handleChange}
@@ -538,6 +562,7 @@ const CustomerMasterEdit = () => {
                   Fleet Size :
                   <input
                     type='file'
+                    className="form-control"
                     name="fleetSize"
                     // value={formData.fleetSize}
                     onChange={handleChange}
@@ -559,6 +584,7 @@ const CustomerMasterEdit = () => {
                 Vehical Number:
                 <input
                   type='text'
+                  className="form-control"
                   name="vehicleNo"
                   value={formData.vehicleNo}
                   onChange={handleChange}
@@ -570,6 +596,7 @@ const CustomerMasterEdit = () => {
                 Chassis Number:
                 <input
                   type='text'
+                  className="form-control"
                   name="chassisNo"
                   value={formData.chassisNo}
                   onChange={handleChange}
@@ -581,6 +608,7 @@ const CustomerMasterEdit = () => {
                 Engine Number:
                 <input
                   type='text'
+                  className="form-control"
                   name="engineNo"
                   value={formData.engineNo}
                   onChange={handleChange}
@@ -595,6 +623,7 @@ const CustomerMasterEdit = () => {
                 Make:
                 <input
                   type='text'
+                  className="form-control"
                   name="make"
                   value={formData.make}
                   onChange={handleChange}
@@ -606,6 +635,7 @@ const CustomerMasterEdit = () => {
                 Model:
                 <input
                   type='text'
+                  className="form-control"
                   name="model"
                   value={formData.model}
                   readOnly={IsReadOnly}
@@ -617,6 +647,7 @@ const CustomerMasterEdit = () => {
                 Year:
                 <input
                   type='text'
+                  className="form-control"
                   name="year"
                   value={formData.year}
                   onChange={handleChange}
@@ -631,6 +662,7 @@ const CustomerMasterEdit = () => {
                 Type:
                 <input
                   type='text'
+                  className="form-control"
                   name="type"
                   value={formData.type}
                   readOnly={IsReadOnly}
@@ -642,6 +674,7 @@ const CustomerMasterEdit = () => {
                 Application:
                 <input
                   type='text'
+                  className="form-control"
                   name="application"
                   value={formData.application}
                   onChange={handleChange}
