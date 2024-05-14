@@ -50,6 +50,9 @@ import AdvocateResponse from './Component/ViewVendorResponse/AdvocateResponse';
 import WorkshopResponse from './Component/ViewVendorResponse/WorkshopResponse';
 import ActualVendorResponse from './Component/Vendors/ActualVendorResponse';
 
+import DailyWorkshop from './Component/Vendors/DailyWorkshop';
+import HandoverToWorkshop from './Component/Vendors/HandoverToWorkshop';
+
 //testing
 import Testing from './Component/Aaaaaaaaaaa/Testing';
 function App() {                              
@@ -111,6 +114,8 @@ function App() {
           <Route path='/WorkshopResponse' element={<WorkshopResponse/>}/>
           <Route path='/ActualVendorResponse' element={<ActualVendorResponse/>}/>
 
+          <Route path='/DailyWorkshop' element={<DailyWorkshop/>}/>
+          <Route path='/HandoverToWorkshop' element={<HandoverToWorkshop/>}/>
 
           <Route path='/Testing' element={<Testing/>}/>
 

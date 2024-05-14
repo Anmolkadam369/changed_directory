@@ -88,3 +88,22 @@
     margin-top: 10px;
     margin-bottom : 10px;
   }
+
+  /* Overlay styles when zoomed in */
+.overlay {
+  position: fixed; /* Overlay is positioned over the whole screen */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  align-items: center; /* Center the content vertically */
+  justify-content: center; /* Center the content horizontally */
+  z-index: 10; 
+}
+
+/* Hides the scrollbar to prevent scrolling when overlay is active */
+body.overlay-active {
+  overflow: hidden;
+}

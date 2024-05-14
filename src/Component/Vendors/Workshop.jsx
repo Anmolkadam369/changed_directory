@@ -112,8 +112,8 @@ const Workshop = () => {
 
                     <li onClick={() => {
                         setShowCustomerOptions(!showCustomerOptions)
-                        setStartingPage(true); // Hide Starting Page
-                        setMyAccidentVehicle(false)
+                        setMyAccidentVehicle(false);
+                        setStartingPage(true);
                     }}>Dashboard</li>
                 <ul>
                     <li onClick={(e) => {

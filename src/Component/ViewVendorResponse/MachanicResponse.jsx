@@ -188,7 +188,8 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
-
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function MachanicResponse() {
     const location = useLocation();
@@ -243,8 +244,14 @@ function MachanicResponse() {
         }
     };
 
+    const handleBack = () => {
+        navigate("../Admin")
+    }
+
     return (
         <div className='container'>
+      <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+
                          <div class='header-container'>
                     <h2 className='bigtitle'>Accident Images</h2>
                 </div>

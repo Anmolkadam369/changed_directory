@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './VehicleClaimRegistration.css'; // Ensure this path is correct
+import './VehicleClaimRegistration.css'; 
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';

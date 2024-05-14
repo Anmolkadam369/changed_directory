@@ -72,7 +72,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Error response:', error.response);
-      const errorMessage = error.response?.message || 'An error occurred';
+      const errorMessage = error.response.data.message || 'An error occurred';
       setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
     }
   };
@@ -96,7 +96,7 @@ const Login = () => {
     backgroundSize: 'cover',
     backgroundPosition: 'center'
 
-    
+
   };
 
 
@@ -138,7 +138,7 @@ const Login = () => {
   };
 
   const buttonStyle = {
-    backgroundColor: '#007bff',
+    backgroundColor: '#0e4823ff',
     color: 'white',
     border: 'none',
     padding: '15px 20px',
@@ -166,7 +166,7 @@ const Login = () => {
     <div style={containerStyle}>
       <div className="image-section" style={imageSectionStyle} />
       <div style={loginContainerStyle}>
-        <h1 style={{ fontSize: "35px", color: "blue", textAlign:"center"}}>Claim Pro Assist</h1>
+        <h1 style={{ fontSize: "35px", color: "#0e4823ff", textAlign: "center" }}>Claim Pro Assist</h1>
         <form style={formStyle} onSubmit={handleSubmit}>
           <div style={inputGroupStyle}>
             <label htmlFor="username">Username</label>
@@ -176,29 +176,29 @@ const Login = () => {
               name="username"
               required
               style={inputStyle}
-              onChange={handleUsernameChange} 
+              onChange={handleUsernameChange}
               value={username}
             />
           </div>
           <div style={inputGroupStyle}>
-      <label htmlFor="password">Password</label>
-      <Input
-      style={inputStyle2}
-        id="password"
-        type={showPassword ? 'text' : 'password'}
-        value={password}
-        onChange={handlePasswordChange}
-        endAdornment={
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={togglePasswordVisibility}
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        }
-      />
+            <label htmlFor="password">Password</label>
+            <Input
+              style={inputStyle2}
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={handlePasswordChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
 
             {alertInfo.show && (
               <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>

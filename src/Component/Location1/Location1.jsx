@@ -27,6 +27,7 @@ function Location1({ vehicleData }) {
     const [longitude, setLongitude] = useState("");
     const [location, setLocation] = useState(null);
     const [getData, setGetData] = useState({});
+    const [showServices, setShowServices] = useState(true);
     const [photos, setPhotos] = useState({
         frontLH: null,
         frontRH: null,
@@ -251,6 +252,10 @@ function Location1({ vehicleData }) {
         }
     };
 
+    const handleSkip = () => {
+        setShowServices(!showServices);  // Hide the services div and show the message
+    };
+
 
     return (
         <div className="photo-upload-container">
@@ -258,12 +263,13 @@ function Location1({ vehicleData }) {
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 <p style={{ textAlign: 'center' }}>OR</p>
                 {!location && (
-                    <label className="form-field">
+                    <label className="form-field input-group mb-3">
                         <p style={{ marginBottom: "20px" }}> Manual Location :</p>
                         <textarea
                             name="manualLocation"
                             value={FormData.manualLocation}
                             onChange={handleChange}
+                            className="form-control"
                         />
                     </label>
                 )}
@@ -303,33 +309,58 @@ function Location1({ vehicleData }) {
 
 
                 <div style={{
-                    margin: '20px',
                     padding: '20px',
-                    backgroundColor: '#f9f9f9',
+                    backgroundColor: 'rgb(233 223 223)',
                     borderRadius: '8px',
                     boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}>
-                    {choosenPlan && (
-                        <div>
-                            <h3 style={{ color: '#333', marginBottom: '15px' }}>Select Your Services</h3>
-                            {optionstoshow.map((option, index) => (
-                                <label key={index} style={{
-                                    display: 'block',
-                                    marginBottom: '10px',
-                                    fontSize: '16px',
-                                    color: '#666'
+
+
+                        {showServices ? (
+                            choosenPlan ? (
+                                <div style={{ position: 'relative', color: '#333', marginBottom: '15px' }}>
+                                <h3>Select Your Services</h3>
+                                {optionstoshow.map((option, index) => (
+                                    <label key={index} style={{
+                                        display: 'block',
+                                        marginBottom: '10px',
+                                        fontSize: '16px',
+                                        color: '#666'
+                                    }}>
+                                        {option.charAt(0).toUpperCase() + option.slice(1)}
+                                        <input
+                                            type="checkbox"
+                                            style={{ marginRight: '10px', marginLeft: "10px" }}
+                                            checked={selectedOptions.includes(option)}
+                                            onChange={() => handleCheckboxChange(option)}
+                                        />
+                                    </label>
+                                ))}
+                                <button onClick={handleSkip} style={{ 
+                                    position: 'absolute', 
+                                    top: '0', 
+                                    right: '0', 
+                                    padding: '5px 10px', 
+                                    border: 'none', 
+                                    borderRadius: '4px', 
+                                    cursor: 'pointer', 
+                                    backgroundColor: ' rgb(62 55 0 / 17%)', 
+                                    color: 'white' 
                                 }}>
-                                    {option.charAt(0).toUpperCase() + option.slice(1)}:
-                                    <input
-                                        type="checkbox"
-                                        style={{ marginRight: '10px' }}
-                                        checked={selectedOptions.includes(option)}
-                                        onChange={() => handleCheckboxChange(option)}
-                                    />
-                                </label>
-                            ))}
-                        </div>
-                    )}
+                                    Skip
+                                </button>
+                            </div>
+                            
+                            ) : (
+                                <p>We will provide the best services, don't worry!</p>
+                            )
+                        ) : (
+                            <div>
+                            <h4 style={{color:"blue"}}>We will provide the best services, don't worry!</h4>
+                            <button onClick={handleSkip} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: ' rgb(62 55 0 / 17%)', color: 'white', marginTop:"10px" }}>i want to select</button>
+                            </div>
+                        )}
+
                 </div>
                 <Snackbar
                     open={openSnackbar}

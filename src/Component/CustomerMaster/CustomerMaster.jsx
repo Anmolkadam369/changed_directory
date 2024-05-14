@@ -9,6 +9,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import demoexcel from '../../Assets/demoexcel.png'
 
 const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -25,6 +26,7 @@ const CustomerMaster = () => {
   const [isRetail, setIsRetail] = useState(false);
   const [isFleetOwner, setIsFleetOwner] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   const [formData, setFormData] = useState({
     systemDate: today,
@@ -60,6 +62,7 @@ const CustomerMaster = () => {
   };
 
   const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const toggleZoom = () => setIsZoomed(!isZoomed);
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
@@ -79,12 +82,7 @@ const CustomerMaster = () => {
 
     for (const [key, value] of Object.entries(formData)) {
 
-      if (formData['CustomerType'] === 'fleetOwner') {
-        if (!formData['plan']) {
-          return "Field 'plan' is required in fleetOwner.";
-        }
-
-      } else if (formData['CustomerType'] === 'retail') {
+ if (formData['CustomerType'] === 'retail') {
         const requiredFields = ['vehicleNo', 'chassisNo', 'engineNo', 'make', 'model', 'year', 'type', 'application', 'GVW', 'ULW', 'InsuranceName'];
         for (const field of requiredFields) {
           if (!formData[field]) {
@@ -103,26 +101,46 @@ const CustomerMaster = () => {
       return 'Please enter a valid email address.';
     }
 
-    return ''; // If all checks pass, return an empty string
+    return '';
   };
 
   const handleChange = (e) => {
     const { name, type, files } = e.target;
+    const value = e.target.value;  // Added to define 'value'
     if (type === 'file') {
       if (files[0] && files[0].size > 102400) {
-        console.log("SOM    ")
         setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
+        if (name == 'fleetSize' && value !== "") {
+          if (files[0].type !== 'application/vnd.ms-excel' && files[0].type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            setAlertInfo({ show: true, message: "should be only excel file!!!", severity: 'error' });
+          }
+          setFormData(prevState => ({
+            ...prevState,
+            plan: '',
+            vehicleNo: '',
+            chassisNo: '',
+            engineNo: '',
+            make: '',
+            model: '',
+            year: '',
+            type: '',
+            application: '',
+            GVW: '',
+            ULW: '',
+            InsuranceName: '',
+          }));
+        }
         const refs = {
           GST: GSTRef,
           panCard: panRef,
           adharCard: adharCardRef,
           fleetSize: fleetSizeRef
         };
-
+  
         if (refs[name] && refs[name].current) {
           refs[name].current.value = "";
         }
-
+  
         setFormData(prevState => ({
           ...prevState,
           [name]: null
@@ -134,7 +152,6 @@ const CustomerMaster = () => {
         [name]: files[0]
       }));
     } else {
-      const { value } = e.target;
       setFormData(prevState => ({
         ...prevState,
         [name]: value
@@ -150,7 +167,9 @@ const CustomerMaster = () => {
       }
     }
   };
-console.log("FORm", formData)
+  
+
+  console.log("FORm", formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationMessage = validateForm();
@@ -249,7 +268,7 @@ console.log("FORm", formData)
 
         <div className='form-row'>
 
-          
+
           <label className="form-field input-group mb-3">
             Customer Type:
             <select name="CustomerType" value={formData.CustomerType} onChange={handleChange} required>
@@ -265,7 +284,7 @@ console.log("FORm", formData)
           </label>
           <label className="form-field">
             Customer City  :
-            <input type='text' name="CustomerCity" value={formData.CustomerCity}  className="form-control" onChange={handleChange} required />
+            <input type='text' name="CustomerCity" value={formData.CustomerCity} className="form-control" onChange={handleChange} required />
           </label>
           <label className="form-field">
             Pincode:
@@ -426,26 +445,26 @@ console.log("FORm", formData)
 
         <div className='form-row'>
 
-        <div className="dropdown green-dropdown form-field">
-      <button
-        className="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded={showDropdown}
-        onClick={toggleDropdown}
-      >
-        {formData.choosenPlan || "Select Plan"}
-      </button>
-      <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "pro")}>Pro Plan</a></li>
-        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "plus")}>Plus Plan</a></li>
-        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advanced")}>Advanced Plan</a></li>
-      </ul>
-    </div>
-    <label className="form-field"></label>
-    <label className="form-field"></label>
-    <label className="form-field"></label>
+          <div className="dropdown green-dropdown form-field">
+            <button
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded={showDropdown}
+              onClick={toggleDropdown}
+            >
+              {formData.choosenPlan || "Select Plan"}
+            </button>
+            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "pro")}>Pro Plan</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "plus")}>Plus Plan</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advanced")}>Advanced Plan</a></li>
+            </ul>
+          </div>
+          <label className="form-field"></label>
+          <label className="form-field"></label>
+          <label className="form-field"></label>
 
 
         </div>
@@ -460,158 +479,169 @@ console.log("FORm", formData)
               </div>
               <div className='form-row'>
                 <label className="form-field">
-                  Plan:
-                  <input
-                    type='text'
-                    name="plan"
-                    value={formData.plan}
-                    onChange={handleChange}
-                    required />
-                </label>
-                <label className="form-field">
-                  Fleet Size:
+                  Fleet : (only Excel files should be inserted)
                   <input
                     type='file'
                     name="fleetSize"
                     ref={fleetSizeRef}
                     onChange={handleChange}
+                    className="form-control"
                     required />
                 </label>
+                <div className={isZoomed ? "overlay" : ""}>
+                  <label className="form-field" onClick={toggleZoom}>
+                  have a look how structure looks : 
+                    <img
+                      src={demoexcel}
+                      alt="Dashboard Icon"
+                      style={{
+                        height: isZoomed ? '90%' : '45px',
+                        width: isZoomed ? '90%' : '80%',
+                        marginRight: '8px',
+                        marginLeft: "8px",
+                        transition: 'transform 0.3s ease', 
+                        cursor: 'pointer' 
+                      }}
+                    />
+                  </label>
+                </div>
+
+
               </div>
             </div>
           )}
 
         </div>
 
-        {isRetail &&(
+        {isRetail && (
           <div className="selected-container">
-          <div class="header-container">
-            <h3 class="bigtitle">Retail Owner</h3>
-            <span class="mandatory-note">All fields are mandatory</span>
-          </div>
-          <div>
-            <div className='form-row'>
-              <label className="form-field">
-                Vehical Number:
-                <input
-                  type='text'
-                  name="vehicleNo"
-                  value={formData.vehicleNo}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-              <label className="form-field">
-                Chassis Number:
-                <input
-                  type='text'
-                  name="chassisNo"
-                  value={formData.chassisNo}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-              <label className="form-field">
-                Engine Number:
-                <input
-                  type='text'
-                  name="engineNo"
-                  value={formData.engineNo}
-                  onChange={handleChange}
-                  required />
-              </label>
-
+            <div class="header-container">
+              <h3 class="bigtitle">Retail Owner</h3>
+              <span class="mandatory-note">All fields are mandatory</span>
             </div>
+            <div>
+              <div className='form-row'>
+                <label className="form-field">
+                  Vehical Number:
+                  <input
+                    type='text'
+                    name="vehicleNo"
+                    value={formData.vehicleNo}
+                    onChange={handleChange}
+                    required />
+                </label>
 
-            <div className='form-row'>
-              <label className="form-field">
-                Make:
-                <input
-                  type='text'
-                  name="make"
-                  value={formData.make}
-                  onChange={handleChange}
-                  required />
-              </label>
+                <label className="form-field">
+                  Chassis Number:
+                  <input
+                    type='text'
+                    name="chassisNo"
+                    value={formData.chassisNo}
+                    onChange={handleChange}
+                    required />
+                </label>
 
-              <label className="form-field">
-                Model:
-                <input
-                  type='text'
-                  name="model"
-                  value={formData.model}
-                  onChange={handleChange}
-                  required />
-              </label>
+                <label className="form-field">
+                  Engine Number:
+                  <input
+                    type='text'
+                    name="engineNo"
+                    value={formData.engineNo}
+                    onChange={handleChange}
+                    required />
+                </label>
 
-              <label className="form-field">
-                Year:
-                <input
-                  type='text'
-                  name="year"
-                  value={formData.year}
-                  onChange={handleChange}
-                  required />
-              </label>
+              </div>
 
+              <div className='form-row'>
+                <label className="form-field">
+                  Make:
+                  <input
+                    type='text'
+                    name="make"
+                    value={formData.make}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+                <label className="form-field">
+                  Model:
+                  <input
+                    type='text'
+                    name="model"
+                    value={formData.model}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+                <label className="form-field">
+                  Year:
+                  <input
+                    type='text'
+                    name="year"
+                    value={formData.year}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+              </div>
+
+              <div className='form-row'>
+                <label className="form-field">
+                  Type:
+                  <input
+                    type='text'
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+                <label className="form-field">
+                  Application:
+                  <input
+                    type='text'
+                    name="application"
+                    value={formData.application}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+                <label className="form-field">
+                  GVW:
+                  <input
+                    type='text'
+                    name="GVW"
+                    value={formData.GVW}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+              </div>
+
+              <div className='form-row'>
+                <label className="form-field">
+                  ULW:
+                  <input
+                    type='text'
+                    name="ULW"
+                    value={formData.ULW}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+                <label className="form-field">
+                  InsuranceName:
+                  <input
+                    type='text'
+                    name="InsuranceName"
+                    value={formData.InsuranceName}
+                    onChange={handleChange}
+                    required />
+                </label>
+
+              </div>
             </div>
-
-            <div className='form-row'>
-              <label className="form-field">
-                Type:
-                <input
-                  type='text'
-                  name="type"
-                  value={formData.type}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-              <label className="form-field">
-                Application:
-                <input
-                  type='text'
-                  name="application"
-                  value={formData.application}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-              <label className="form-field">
-                GVW:
-                <input
-                  type='text'
-                  name="GVW"
-                  value={formData.GVW}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-            </div>
-
-            <div className='form-row'>
-              <label className="form-field">
-                ULW:
-                <input
-                  type='text'
-                  name="ULW"
-                  value={formData.ULW}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-              <label className="form-field">
-                InsuranceName:
-                <input
-                  type='text'
-                  name="InsuranceName"
-                  value={formData.InsuranceName}
-                  onChange={handleChange}
-                  required />
-              </label>
-
-            </div>
-          </div>
           </div>
         )}
 
@@ -623,8 +653,8 @@ console.log("FORm", formData)
 
 
         <div style={{ textAlign: 'center' }}>
-          <button type="submit" 
-          style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+          <button type="submit"
+            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
           >
             Submit
           </button>

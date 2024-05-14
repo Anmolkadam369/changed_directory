@@ -99,8 +99,6 @@ const VendorMasterEdit = () => {
   const adharCardRef = useRef(null);
   const agreementRef = useRef(null);
 
-
-
   const handleChange = (e) => {
     const { name, type, files } = e.target;
     if (type === 'file') {

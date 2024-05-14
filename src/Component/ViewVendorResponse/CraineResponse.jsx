@@ -6,7 +6,8 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
-
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function CraineResponse() {
     const location = useLocation();
@@ -62,8 +63,14 @@ function CraineResponse() {
         }
     };
 
+    const handleBack = () => {
+        navigate("../Admin")
+    }
+
+
     return (
         <div className='container'>
+      <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
 
 <div class='header-container'>
                     <h2 className='bigtitle'>Accident Images</h2>

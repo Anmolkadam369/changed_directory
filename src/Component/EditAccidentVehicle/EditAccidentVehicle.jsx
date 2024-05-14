@@ -8,6 +8,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function EditAccidentVehicle() {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -197,12 +199,15 @@ function EditAccidentVehicle() {
     console.log("machanic", formData.machanic)
     console.log("crain", formData.crain)
 
+    const handleBack = () => {
+        navigate("../Admin")
+    }
 
     return (
         <div style={{marginTop:"40px"}}>    
         <div className='container'>
-                <h1 className='bigtitle'>EDIT ACCIDENT VEHICLE (UPDATING)</h1>
-
+        <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+                <h1 className='bigtitle'>Assign Vendors To Customer</h1>
 
             <div className='form-row'>
 

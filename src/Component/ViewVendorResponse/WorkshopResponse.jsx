@@ -6,6 +6,8 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function WorkshopResponse() {
     const location = useLocation();
@@ -23,16 +25,16 @@ function WorkshopResponse() {
 
         driverFeedback: "",
         estimateGiven: "",
-        feedback:"",
-        firstAdvancedPayment:"",
+        feedback: "",
+        firstAdvancedPayment: "",
 
-        partsOrderStatus:"",
-        payment:"",
-        preApproval:"",
-        secondAdvancedPayment:"",
+        partsOrderStatus: "",
+        payment: "",
+        preApproval: "",
+        secondAdvancedPayment: "",
 
-        supplementryEstimate:"",
-        vehicleHandover:"",
+        supplementryEstimate: "",
+        vehicleHandover: "",
         reasonOfReject: ""
 
     };
@@ -70,201 +72,207 @@ function WorkshopResponse() {
         }
     };
 
+    const handleBack = () => {
+        navigate("../Admin")
+    }
+
     return (
         <div className='container'>
-                         <div class='header-container'>
-                    <h2 className='bigtitle'>Accident Images</h2>
-                </div>
+            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
 
-                <div className="form-row">
-                    <label className="form-field">
-                        Chassis Number:
-                        {formData.ChassisNoView ? (
-                            <>
-                                <img
-                                    src={formData.ChassisNoView}
-                                    alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                               
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        Cluster Number:
-                        {formData.ClusterView ? (
-                            <>
-                                <img
-                                    src={formData.ClusterView}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        FrontLH Number:
-                        {formData.frontLH ? (
-                            <>
-                                <img
-                                    src={formData.frontLH}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                             
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        frontRH:
-                        {formData.frontRH ? (
-                            <>
-                                <img
-                                    src={formData.frontRH}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        front View:
-                        {formData.frontView ? (
-                            <>
-                                <img
-                                    src={formData.frontView}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                                
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        rear LH:
-                        {formData.rearLH ? (
-                            <>
-                                <img
-                                    src={formData.rearLH}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                              
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        rear RH:
-                        {formData.rearRH ? (
-                            <>
-                                <img
-                                    src={formData.rearRH}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                               
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        Major Damage Photo:
-                        {formData.MajorDamages1 ? (
-                            <>
-                                <img
-                                    src={formData.MajorDamages1}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                             
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        Major Damage Photo 2:
-                        {formData.MajorDamages2 ? (
-                            <>
-                                <img
-                                    src={formData.MajorDamages2}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                               
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        Major Damage Photo 3:
-                        {formData.MajorDamages3 ? (
-                            <>
-                                <img
-                                    src={formData.MajorDamages3}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                               
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        Major Damage Photo 4:
-                        {formData.MajorDamages4 ? (
-                            <>
-                                <img
-                                    src={formData.MajorDamages4}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                                
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
-                    <label className="form-field">
-                        Major Damage Photo 5:
-                        {formData.MajorDamages5 ? (
-                            <>
-                                <img
-                                    src={formData.MajorDamages5}
-                                    alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                />
-                               
-                            </>
-                        ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                        )}
-                    </label>
+            <div class='header-container'>
+                <h2 className='bigtitle'>Accident Images</h2>
+            </div>
 
-                </div>
+            <div className="form-row">
+                <label className="form-field">
+                    Chassis Number:
+                    {formData.ChassisNoView ? (
+                        <>
+                            <img
+                                src={formData.ChassisNoView}
+                                alt="Front LH"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Cluster Number:
+                    {formData.ClusterView ? (
+                        <>
+                            <img
+                                src={formData.ClusterView}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    FrontLH Number:
+                    {formData.frontLH ? (
+                        <>
+                            <img
+                                src={formData.frontLH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    frontRH:
+                    {formData.frontRH ? (
+                        <>
+                            <img
+                                src={formData.frontRH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    front View:
+                    {formData.frontView ? (
+                        <>
+                            <img
+                                src={formData.frontView}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    rear LH:
+                    {formData.rearLH ? (
+                        <>
+                            <img
+                                src={formData.rearLH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    rear RH:
+                    {formData.rearRH ? (
+                        <>
+                            <img
+                                src={formData.rearRH}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo:
+                    {formData.MajorDamages1 ? (
+                        <>
+                            <img
+                                src={formData.MajorDamages1}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 2:
+                    {formData.MajorDamages2 ? (
+                        <>
+                            <img
+                                src={formData.MajorDamages2}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 3:
+                    {formData.MajorDamages3 ? (
+                        <>
+                            <img
+                                src={formData.MajorDamages3}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 4:
+                    {formData.MajorDamages4 ? (
+                        <>
+                            <img
+                                src={formData.MajorDamages4}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+                <label className="form-field">
+                    Major Damage Photo 5:
+                    {formData.MajorDamages5 ? (
+                        <>
+                            <img
+                                src={formData.MajorDamages5}
+                                alt="Chassis Number"
+                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                            />
+
+                        </>
+                    ) : (
+                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                    )}
+                </label>
+
+            </div>
             <div class="header-container">
                 <h3 class="bigtitle">Data Uploaded by Workshop</h3>
             </div>
             <div className='form-row'>
                 <label className="form-field">
-                agreement CPA:
+                    agreement CPA:
                     {
-                        formData.agreementCPA ? 
+                        formData.agreementCPA ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 agreement CPA Available
                             </button> :
@@ -274,9 +282,9 @@ function WorkshopResponse() {
                     }
                 </label>
                 <label className="form-field">
-                All Bill Copy:
+                    All Bill Copy:
                     {
-                        formData.allBillCopy ? 
+                        formData.allBillCopy ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 All Bill Copy Available
                             </button> :
@@ -286,9 +294,9 @@ function WorkshopResponse() {
                     }
                 </label>
                 <label className="form-field">
-                Deadline Sheet:
+                    Deadline Sheet:
                     {
-                        formData.deadlineSheet ? 
+                        formData.deadlineSheet ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 Deadline Sheet Available
                             </button> :
@@ -298,14 +306,14 @@ function WorkshopResponse() {
                     }
                 </label>
                 <label className="form-field">
-                First Advanced Payment:
+                    First Advanced Payment:
                     {
-                        formData.firstAdvancedPayment ? 
+                        formData.firstAdvancedPayment ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                               First Advanced Payment Available
+                                First Advanced Payment Available
                             </button> :
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                               First Advanced Payment Not Available
+                                First Advanced Payment Not Available
                             </button>
                     }
                 </label>
@@ -318,9 +326,9 @@ function WorkshopResponse() {
                     <input type="text" className='inputField' name="driverFeedback" value={formData.driverFeedback} readOnly />
                 </label>
                 <label className="form-field">
-                Estimate Given:
+                    Estimate Given:
                     {
-                        formData.estimateGiven ? 
+                        formData.estimateGiven ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 Estimate Given Available
                             </button> :
@@ -331,7 +339,7 @@ function WorkshopResponse() {
 
                 </label>
                 <label className="form-field">
-                feedback:
+                    feedback:
                     <input type="text" className='inputField' name="feedback" value={formData.feedback} readOnly />
                 </label>
                 <label className="form-field">
@@ -346,13 +354,13 @@ function WorkshopResponse() {
                     <input type="text" className='inputField' name="partsOrderStatus" value={formData.partsOrderStatus} readOnly />
                 </label>
                 <label className="form-field">
-                payment:
+                    payment:
                     <input type="text" className='inputField' name="payment" value={formData.payment} readOnly />
                 </label>
                 <label className="form-field">
-                Pre Approval:
+                    Pre Approval:
                     {
-                        formData.preApproval ? 
+                        formData.preApproval ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 Pre Approval Available
                             </button> :
@@ -371,7 +379,7 @@ function WorkshopResponse() {
                 <label className="form-field">
                     Supplementry Estimate:
                     {
-                        formData.supplementryEstimate ? 
+                        formData.supplementryEstimate ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 Bailer Details Available
                             </button> :
@@ -381,9 +389,9 @@ function WorkshopResponse() {
                     }
                 </label>
                 <label className="form-field">
-                vehicle Handover:
+                    vehicle Handover:
                     {
-                        formData.vehicleHandover ? 
+                        formData.vehicleHandover ?
                             <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
                                 Vehicle Handover Available
                             </button> :
@@ -399,17 +407,17 @@ function WorkshopResponse() {
             </div>
             {action === "reject" && (
                 <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
-                        Reason to Reject:
+                    Reason to Reject:
                     <label>
-                        <textarea name="reasonOfReject" className='inputField'value={formData.reasonOfReject}
+                        <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
                             onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
                         />
-                    <button
-                        type="button"
-                        onClick={() => { onSubmit('reject'); }}
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft:"50px", marginTop:"20px"}}>
-                        Submit
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => { onSubmit('reject'); }}
+                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}>
+                            Submit
+                        </button>
                     </label>
 
                 </div>

@@ -74,8 +74,10 @@ const ActualVendorResponse = () => {
                 {data.map((vehicle, vehicleIndex) => (
 
                     <div key={vehicle.AccidentVehicleCode}>
+            <h2 class="title1">Mechanic Data</h2>
+
                         <div className='responsive-table'>
-                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "30px" }}>
                                 <thead>
                                     <tr>
                                         <th>Vehicle Inspection</th>
@@ -109,9 +111,9 @@ const ActualVendorResponse = () => {
                             </table>
                         </div>
 
-
+                        <h2 class="title1">Craine Data</h2>
                         <div className='responsive-table'>
-                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "30px" }}>
                                 <thead>
                                     <tr>
                                         <th>Vehicle Inspection</th>
@@ -145,8 +147,9 @@ const ActualVendorResponse = () => {
                             </table>
                         </div>
 
+                        <h2 class="title1">Advocate Data</h2>
                         <div className='responsive-table'>
-                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "30px" }}>
                                 <thead>
                                     <tr>
                                         <th>Power Of Attorney</th>
@@ -180,6 +183,7 @@ const ActualVendorResponse = () => {
                             </table>
                         </div>
 
+                        <h2 class="title1">Workshop Data</h2>
                         <div className='responsive-table'>
                             <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                 <thead>
