@@ -91,7 +91,7 @@ const ActualVendorResponse = () => {
                                 <tbody>
                                     {vehicle.machanicData.length === 0 ? (
                                         <tr>
-                                            <td colSpan="6" style={{ textAlign: 'center' }}>No Response from this vendor...</td>
+                                            <td colSpan="6" style={{ textAlign: 'center', fontWeight: "bold"  }}>No Response from this vendor...</td>
                                         </tr>
                                     ) : (
                                         vehicle.machanicData.map((item, index) => (
@@ -127,7 +127,7 @@ const ActualVendorResponse = () => {
                                 <tbody>
                                     {vehicle.craineData.length === 0 ? (
                                         <tr>
-                                            <td colSpan="8" style={{ textAlign: 'center' }}>No Response from this vendor...</td>
+                                            <td colSpan="8" style={{ textAlign: 'center', fontWeight: "bold"  }}>No Response from this vendor...</td>
                                         </tr>
                                     ) : (
                                         vehicle.craineData.map((item, index) => (
@@ -163,7 +163,7 @@ const ActualVendorResponse = () => {
                                 <tbody>
                                     {vehicle.advocateData.length === 0 ? (
                                         <tr>
-                                            <td colSpan="9" style={{ textAlign: 'center' }}>All Vehicles are assigned To Vendors...</td>
+                                            <td colSpan="9" style={{ textAlign: 'center', fontWeight: "bold"  }}>All Vehicles are assigned To Vendors...</td>
                                         </tr>
                                     ) : (
                                         vehicle.advocateData.map((item, index) => (
@@ -199,7 +199,7 @@ const ActualVendorResponse = () => {
                                 <tbody>
                                     {vehicle.workshopData.length === 0 ? (
                                         <tr>
-                                            <td colSpan="9" style={{ textAlign: 'center' }}>All Vehicles are assigned To Vendors...</td>
+                                            <td colSpan="9" style={{ textAlign: 'center', fontWeight: "bold"  }}>All Vehicles are assigned To Vendors...</td>
                                         </tr>
                                     ) : (
                                         vehicle.workshopData.map((item, index) => (

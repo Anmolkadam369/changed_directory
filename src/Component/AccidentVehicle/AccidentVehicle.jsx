@@ -94,7 +94,7 @@ const AccidentVehicle = () => {
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>All Vehicles are assigned To Vendors...</td>
+                <td colSpan="6" style={{ textAlign: "center",fontWeight: "bold" }}>All Vehicles are assigned To Vendors...</td>
               </tr>
             ) : (
               data.map((item, index) => (

@@ -130,7 +130,7 @@ const Admin = () => {
                         <div className="close-btn" onClick={toggleSidebar}>×</div>
                     )}
                     <ul>
-                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft: "8px" }} />
+                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '50px', width: '80px', marginRight: '8px' }} />
 
                         <li onClick={() => {
                             setShowCustomerOptions(!showCustomerOptions);

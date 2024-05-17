@@ -83,7 +83,12 @@ const VendorApproved = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {data.length === 0 ? (
+            <tr>
+              <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+            </tr>
+          ) : (
+          data.map((item, index) => (
             <tr key={item.id}>
               <td>{index + 1}</td>
               <td>{item.vendorName}</td>
@@ -95,7 +100,8 @@ const VendorApproved = () => {
               </td>
 
             </tr>
-          ))}
+          ))
+          )}
         </tbody>
       </table>
       </div>

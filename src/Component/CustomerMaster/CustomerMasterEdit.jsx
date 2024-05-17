@@ -47,10 +47,10 @@ const CustomerMasterEdit = () => {
         contactPersonNum2: comingData.contactPersonNum2 || "",
         cusLocation: comingData.cusLocation || "",
         panNo: comingData.panNo || "",
-        panCard : comingData.panCard || "",
+        panCard: comingData.panCard || "",
         adharNo: comingData.adharNo || "",
-        adharCard : comingData.adharCard || "",
-        agreement : comingData.agreement || "",
+        adharCard: comingData.adharCard || "",
+        agreement: comingData.agreement || "",
         fleetSize: comingData.fleetSize || "",
         plan: comingData.plan || "",
         vehicleNo: comingData.vehicleNo || "",
@@ -213,7 +213,7 @@ const CustomerMasterEdit = () => {
   }
   const handleBack = () => {
     navigate("../Admin")
-}
+  }
 
 
   const handleSubmit = async (e) => {
@@ -267,7 +267,7 @@ const CustomerMasterEdit = () => {
     <div >
 
       <form onSubmit={handleSubmit} className="Customer-master-form">
-      <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+        <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
 
         <div class='header-container'>
           <h2 className='bigtitle'>Customer Master Edit</h2>
@@ -332,12 +332,12 @@ const CustomerMasterEdit = () => {
           <label className="form-field">
             Address  :
             <textarea
-            className="form-control" name="address" value={formData.address} onChange={handleChange} required readOnly={IsReadOnly} />
+              className="form-control" name="address" value={formData.address} onChange={handleChange} required readOnly={IsReadOnly} />
           </label>
           <label className="form-field">
             Customer City  :
             <input type='text'
-            className="form-control" name="CustomerCity" value={formData.CustomerCity} onChange={handleChange} required readOnly={IsReadOnly} />
+              className="form-control" name="CustomerCity" value={formData.CustomerCity} onChange={handleChange} required readOnly={IsReadOnly} />
           </label>
           <label className="form-field">
             Pincode:
@@ -462,7 +462,7 @@ const CustomerMasterEdit = () => {
         </div>
 
         <div className='form-row'>
-        <label className="form-field">
+          <label className="form-field">
             Adhar Card:
             {IsReadOnly ? (
               formData.adharCard ? (
@@ -486,7 +486,15 @@ const CustomerMasterEdit = () => {
             Agreement :
             {IsReadOnly ? (
               formData.agreement ? (
-                <img src={formData.agreement} alt="Agreement" style={{ maxWidth: '100px', display: 'block' }} />
+                <>
+                  {/* <img src={formData.agreement} style={{ maxWidth: '100px', display: 'block' }} /> */}
+                  <p style={{fontWeight:'bold', marginTop:"20px"}}>Click To Download
+                    <a href={formData.agreement} className="docx-link" style={{ marginLeft:"10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                      Download
+                    </a>
+                  </p>
+
+                </>
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
@@ -502,6 +510,7 @@ const CustomerMasterEdit = () => {
               />
             )}
           </label>
+
           <label className="form-field">
             GST Number:
             <input

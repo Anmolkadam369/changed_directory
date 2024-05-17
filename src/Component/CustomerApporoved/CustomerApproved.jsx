@@ -52,7 +52,7 @@ const CustomerApproved = () => {
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
+              <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
             </tr>
           ) : (
             data.map((item, index) => (

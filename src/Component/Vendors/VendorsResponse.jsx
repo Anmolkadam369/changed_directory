@@ -54,15 +54,15 @@ const VendorResponse = () => {
                 <tbody>
                   {data.length === 0 ? (
                     <tr>
-                      <td colSpan="6" style={{ textAlign: 'center' }}>No Response from this vendor...</td>
+                      <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from this vendor...</td>
                     </tr>
                   ) : (
                     data.map((vehicle, index) => (
                       <tr key={vehicle.AccidentVehicleCode} >
-                        <td style={{ textAlign: 'center' }}>{vehicle.CustomerName || '---'}</td>
-                        <td style={{ textAlign: 'center' }}>{vehicle.vehicleNumber || '---'}</td>
+                        <td>{vehicle.CustomerName || '---'}</td>
+                        <td>{vehicle.vehicleNumber || '---'}</td>
                         <td>
-                          <div style={{display:'flex',justifyContent:"center", alignItems:'center'}}>
+                          <div>
                       <button onClick={() => view(vehicle)} className='view-button' >View</button>
                       </div>
                         </td>

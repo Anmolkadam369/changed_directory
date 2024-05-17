@@ -466,18 +466,26 @@ const VendorMasterEdit = () => {
             Agreement :
             {IsReadOnly ? (
               formData.agreement ? (
-                <img src={formData.agreement} alt="Agreement" style={{ maxWidth: '100px', display: 'block' }} />
+                <>
+                  {/* <img src={formData.agreement} style={{ maxWidth: '100px', display: 'block' }} /> */}
+                  <p style={{fontWeight:'bold', marginTop:"20px"}}>Click To Download
+                    <a href={formData.agreement} className="docx-link" style={{ marginLeft:"10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                      Download
+                    </a>
+                  </p>
+
+                </>
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
+                className="form-control"
                 name="agreement"
                 onChange={handleChange}
                 accept=".pdf,image/*"
                 ref={agreementRef}
-              className="form-control"
                 required
               />
             )}
