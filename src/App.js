@@ -53,6 +53,7 @@ import ActualVendorResponse from './Component/Vendors/ActualVendorResponse';
 import DailyWorkshop from './Component/Vendors/DailyWorkshop';
 import HandoverToWorkshop from './Component/Vendors/HandoverToWorkshop';
 
+import Dashboard from './Component/Dashboard/Dashboard';
 //testing
 import Testing from './Component/Aaaaaaaaaaa/Testing';
 function App() {                              
@@ -117,7 +118,7 @@ function App() {
           <Route path='/DailyWorkshop' element={<DailyWorkshop/>}/>
           <Route path='/HandoverToWorkshop' element={<HandoverToWorkshop/>}/>
 
-          <Route path='/Testing' element={<Testing/>}/>
+          <Route path='/Dashboard' element={<Dashboard/>}/>
 
 
         </Routes>

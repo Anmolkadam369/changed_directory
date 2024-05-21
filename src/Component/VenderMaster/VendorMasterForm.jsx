@@ -12,11 +12,14 @@ import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
+import { ClipLoader } from 'react-spinners';
+
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 const VendorMasterForm = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
@@ -112,9 +115,11 @@ const VendorMasterForm = () => {
   console.log("firm", formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!e.target.checkValidity()) {
       e.target.reportValidity();
       setAlertInfo({ show: true, message: `${e.target.key} should be in correct format`, severity: 'error' });
+      setIsLoading(false);
       return;
     }
     const validationMessage = validateForm();
@@ -150,12 +155,16 @@ const VendorMasterForm = () => {
         }
       });
       console.log("response", response.data);
+      setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
       setTimeout(() => {
         navigate("../Admin");
       }, 2000);
     } catch (error) {
       console.error("Error during form submission:", error);
+      const errorMessage = error.response?.data || 'An error occurred';
+      setIsLoading(false);
+      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
     }
   };
   const [showDropdown, setShowDropdown] = useState(false);
@@ -448,9 +457,18 @@ const VendorMasterForm = () => {
         )}
 
         <div style={{ textAlign: 'center' }}>
-          <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#0e4823ff', color: 'white' }}>
-            Submit
+          <button type="submit"
+            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+            disabled={isLoading} // Disable button while loading
+          >
+            {isLoading ? 'Submitting...' : 'Submit'}
           </button>
+          {isLoading && (
+            <div style={{ marginTop: '10px' }}>
+              <ClipLoader color="#4CAF50" loading={isLoading} />
+              <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+            </div>
+          )}
         </div>
 
       </form>

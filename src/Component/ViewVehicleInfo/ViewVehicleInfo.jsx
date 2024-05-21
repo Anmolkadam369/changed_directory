@@ -6,9 +6,15 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
 import backendUrl from '../../environment';
+import Button from '@mui/material/Button';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const ViewVehicleInfo = () => {
   const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
@@ -64,6 +70,38 @@ const ViewVehicleInfo = () => {
     console.log("response", response.data.data);
     setData(response.data.data)
   };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const startPage = Math.max(1, currentPage - 1);
+  const endPage = Math.min(totalPages, currentPage + 1);
+  const pageNumbers = [];
+
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
@@ -75,38 +113,51 @@ const ViewVehicleInfo = () => {
               <th>Sr. No.</th>
               <th>Reason</th>
               <th>intimated Date</th>
-              <th>Accident No</th>
               <th>District</th>
               <th>Insured By</th>
+              <th>Accident No</th>
               <th>View</th>
 
             </tr>
           </thead>
           <tbody>
-            {data.length === 0 ? (
+            {currentItems.length === 0 ? (
             <tr>
               <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
             </tr>
           ) : (
             
-            data.map((item, index) => (
+            currentItems.map((item, index) => (
               <tr key={item.id}>
-                <td>{index + 1}</td>
+                <td>{indexOfFirstItem + index + 1}</td>
                 <td>{item.reason || "---"}</td>
                 <td>{item.intimatedDate || "---"}</td>
-                <td>{item.accidentFileNo || "---"}</td>
                 <td>{item.district || "---"}</td>
                 <td>{item.insuredBy || "---"}</td>
+                <td>{item.accidentFileNo || "---"}</td>
                 <td>
                   <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
                 </td>
-
-
               </tr>
             ))
             )}
           </tbody>
         </table>
+      </div>
+      <div className='pagination'>
+        <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
+          <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
+          {pageNumbers.map((pageNumber) => (
+            <Button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              className={currentPage === pageNumber ? 'active' : ''}
+            >
+              {pageNumber}
+            </Button>
+          ))}
+          <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
+        </ButtonGroup>
       </div>
     </div>
   );

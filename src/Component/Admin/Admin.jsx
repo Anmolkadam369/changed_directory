@@ -22,6 +22,7 @@ import backendUrl from "../../environment";
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import Dashboard from '../Dashboard/Dashboard';
 
 const Admin = () => {
 
@@ -120,6 +121,15 @@ const Admin = () => {
     function toggleSidebar() {
         setIsSidebarOpen(!isSidebarOpen);
     }
+
+    const getStyle = (startingPage) => {
+        if (startingPage) {
+          return { paddingLeft: "0px", marginLeft: '0px', backgroundColor: '#1a0c0c' };
+        } else {
+          return { paddingLeft: "0px", marginLeft: '0px' };
+        }
+      };
+      
 
 
     return (
@@ -235,7 +245,7 @@ const Admin = () => {
                                 setShowAssignedVehicleReport(!showAssignedVehicleReport);
                                 resetStates();
                                 setaccidendVehicle(true);
-                            }}>Assigned Vehicles
+                            }}>Assigned Vehicle
                                 {showAssignedVehicleReport && (
                                     <div className='submenu'>
                                         <li onClick={(e) => {
@@ -257,41 +267,53 @@ const Admin = () => {
             ) : (
                 <div>
                     {window.innerWidth < 768 && (
-                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon/></div>
+                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
                     )}
                 </div>
             )}
 
-            <main className="content" style={{paddingLeft: "0px", marginLeft: '0px' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: "50px" }}>
+            <main className="content"  style={{ paddingLeft: "0px", marginLeft: '0px' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
                     <div>
                         <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
                             onClick={() => setShowUserId(!showUserId)} />
                         {showUserId && (
                             <div style={{
-                                marginRight: '10px',
+                                position: 'absolute', // Makes the div float
+                                top: '50px', // Adjust this value to position it properly below the trigger element
+                                right: '0',
+                                width: '200px', // Set a fixed width for better control
                                 padding: '15px',
-                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                                backgroundColor: 'white',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
+                                backgroundColor: '#fff',
                                 borderRadius: '8px',
                                 display: 'flex',
-                                flexDirection: 'column', // Change to column for vertical stacking
+                                flexDirection: 'column',
                                 alignItems: 'flex-start',
-                                gap: '10px' // Adds space between the elements inside the flex container
+                                zIndex: 1000
                             }}>
-                                <span style={{
-                                    fontSize: '14px', // Slightly larger font size for better readability
-                                    color: 'grey'
+                                <div style={{
+                                    marginBottom: '10px',
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    color: '#333'
                                 }}>
-                                    User Name : {getData.username} <br /><br />
-                                    User Id : {getData.randomId}
+                                    User Information
+                                </div>
+                                <span style={{
+                                    fontSize: '14px',
+                                    color: '#555',
+                                    marginBottom: '10px'
+                                }}>
+                                    User Name: {getData.username} <br />
+                                    User Id: {getData.randomId}
                                 </span>
                                 <button
                                     onClick={handleSignOutClick}
                                     style={{
-                                        padding: '8px 15px',
+                                        padding: '10px 20px',
                                         fontSize: '14px',
-                                        color: 'white',
+                                        color: '#fff',
                                         backgroundColor: '#007bff',
                                         border: 'none',
                                         borderRadius: '5px',
@@ -308,61 +330,10 @@ const Admin = () => {
                     </div>
                 </div>
 
+
                 {
                     startingPage &&
-                    <div>
-                        <div class="header-container">
-                            <h3 class="bigtitle">Administration</h3>
-                        </div>
-                        <h2 className="heading-box">
-                            Vendor Details
-                        </h2>
-
-                        <section className="dashboard-summary">
-                            <div className="summary-item">
-                                <h2>195</h2>
-                                <p>Registered Vendors</p>
-                            </div>
-                            <div className="summary-item">
-                                <h2>150</h2>
-                                <p>Active Vendors</p>
-                            </div>
-                            <div className="summary-item">
-                                <h2>75</h2>
-                                <p>Pending Orders</p>
-                            </div>
-                        </section>
-
-                        <h2 className="heading-box">
-                            Customer Details
-                        </h2>
-
-                        <section className="dashboard-summary">
-                            <div className="summary-item">
-                                <h2>195</h2>
-                                <p>Registered Customers</p>
-                            </div>
-                            <div className="summary-item">
-                                <h2>100</h2>
-                                <p>Active Customers</p>
-                            </div>
-                            <div className="summary-item">
-                                <h2>75</h2>
-                                <p>Pending Orders</p>
-                            </div>
-                        </section>
-
-                        <section className="charts-section">
-                            <div className="chart-container">
-                                <h2>Vendor Details</h2>
-                                <PieChartComponent chartData={vendorData} chartLabels={vendorLabels} />
-                            </div>
-                            <div className="chart-container">
-                                <h2>Customer Details</h2>
-                                <PieChartComponent chartData={customerData} chartLabels={customerLabels} />
-                            </div>
-                        </section>
-                    </div>
+                    <Dashboard />
                 }
 
                 {

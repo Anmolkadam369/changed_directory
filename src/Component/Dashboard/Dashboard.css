@@ -1,0 +1,315 @@
+/* Existing styles */
+.dashboard {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.header {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .logo {
+  font-size: 1.5rem;
+  color: #0d0101;
+}
+
+.main-content {
+  padding: 2rem;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.summary-item {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 23%;
+  text-align: center;
+}
+
+.summary-item h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.summary-item p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.statistics {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 250px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  height: 190px;
+  background: #d8e0e7;
+}
+.stat-item2 {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 250px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  height: 190px;
+  background: #d8e0e7;
+}
+
+.stat-item h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.stat-item p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.charts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.chart-item {
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: lightgrey;
+}
+
+.chart-title {
+  margin-bottom: 50px;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.chart-subtitle {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.chart-container {
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.chart-item h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.small-image {
+  width: 80px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.other-content{
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-container {
+  background: lightblue;
+  padding: 10px;
+  border-radius: 8px;
+  width: 200%;
+}
+
+.timeline-item {
+  margin-bottom: 20px;
+}
+
+.timeline-date {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.timeline-description {
+  font-size: 14px;
+}
+
+.cityCss {
+  background-color: lightgray;
+  width: 400px;
+  margin-left: 20px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* Media queries for responsive design */
+
+@media (max-width: 1024px) {
+  .summary {
+      flex-direction: column;
+      align-items: center;
+  }
+  .other-content{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .summary-item {
+      width: 80%;
+      margin-bottom: 1rem;
+  }
+
+  .statistics {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .stat-item {
+      width: 80%;
+  }
+
+  .stat-item2 {
+    width: 80%;
+}
+  .charts {
+      flex-direction: column;
+  }
+
+  .chart-item {
+      width: 100%;
+      min-width: unset;
+  }
+
+  .timeline-container {
+      display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+      padding: 1rem;
+  }
+
+  .stat-item {
+      width: 100%;
+      margin-right: 0;
+  }
+
+  .stat-item2 {
+    width: 100%;
+    margin-right: 0;
+}
+  .chart-item {
+      padding: 1rem;
+  }
+
+  .timeline-container {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+      padding: 1rem;
+  }
+
+  .header {
+     
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header .logo {
+    font-size: 1.2rem;
+}
+
+.summary-item {
+    width: 100%;
+}
+
+.stat-item {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.stat-item2 {
+  width: 80%;
+  margin-bottom: 1rem;
+}
+
+.chart-item {
+    padding: 1rem;
+    width: 100%;
+}
+
+.timeline-container {
+  display: none;
+}
+
+.cityCss {
+  background-color: lightgray;
+  width: 300px;
+  /* margin-left: 20px; */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.statistics, .charts {
+    flex-direction: column;
+    /* align-items: center; */
+    align-items: flex-start;
+}
+}
+
+/* 
+<div>
+<div className="stat-item" style={{ marginTop: '20px'}}>
+    <img src={customerImage} className="small-image" alt="Vendor Types" />
+    <h3>Number of Customer</h3>
+    <p>{vendorData.length}</p>
+</div>
+
+<div className="stat-item" style={{ marginTop: '20px' }}>
+    <img src={complaints} className="small-image" alt="Vendor Types" />
+    <h3>Number Of Complaints</h3>
+    <p>{allAccidentVehicleData.length}</p>
+</div>
+</div> */

@@ -1,5 +1,5 @@
 .responsive-table {
-  overflow-x: auto;  /* Allows table to scroll horizontally */
+  overflow-x: auto; /* Allows table to scroll horizontally */
   width: 100%; /* Ensures that the container fits the width of its parent */
 }
 
@@ -21,6 +21,7 @@
   }
 }
 
+/* Additional Media Queries for other specific tables if needed */
 @media (max-width: 768px) {
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -30,6 +31,7 @@
     padding: 8px; /* Reduces padding on smaller screens */
   }
 }
+
 @media (max-width: 768px) {
   .register-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -38,6 +40,9 @@
   .register-responsive-table th, .register-responsive-table td {
     padding: 8px; /* Reduces padding on smaller screens */
   }
+  /* .register-responsive-table th:nth-child(2), .register-responsive-table td:nth-child(2) {
+    display: none;
+  } */
   .register-responsive-table th:nth-child(3), .register-responsive-table td:nth-child(3) {
     display: none;
   }
@@ -49,15 +54,53 @@
   }
 }
 
+
 .bigtitle {
   font-size: 25px;
   font-weight: bold;
   margin-bottom: 30px;
   margin-top: 30px;
   margin-left: 30px;
-  text-align: center;
-
+  /* text-align: center; */
 }
+.dashboardTitle {
+  font-size: 25px;
+  font-weight: bold;
+  /* margin-top: 30px; */
+  margin-left: 60px;
+  /* text-align: center; */
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: rgb(0, 0, 0);
+}
+
+.pagination button:hover {
+  background-color: #007bff;
+  color: rgb(0, 0, 0);
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 
 
 
@@ -217,3 +260,18 @@ input[type='date'] {
   cursor: default;
 }
 
+.allvendor-response {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom:90px;
+  margin-left: 40px;
+
+}
+@media (max-width: 768px) {
+  .allvendor-response {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom:90px;
+    margin-left: 0px;
+  }
+}

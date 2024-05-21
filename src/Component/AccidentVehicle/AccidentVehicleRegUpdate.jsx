@@ -64,7 +64,7 @@ const AccidentVehicleRegUpdate = () => {
     navigate("../VehicleClaim", { state: { id } });
   }
 
-  return (
+  return ( 
     <div>
       <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
       <table style={{ width: '90%', marginLeft: "30px", marginRight: "30px" }}>

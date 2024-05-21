@@ -129,7 +129,7 @@ const AssignedVehicleWorkshop = () => {
   return (
     <div>
 
-      <div class='form-container'>
+      <div class='Customer-master-form' style={{marginLeft:"0px"}}>
         <div class="header-container">
           <h3 class="bigtitle">Assigned Vehicles To Workshop</h3>
         </div>
@@ -243,17 +243,16 @@ const AssignedVehicleWorkshop = () => {
 
       </div>
       <div className="register-responsive-table">
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '90px' }}>
+        <table className='allvendor-response'>
           <thead>
             <tr>
               <th>Sr. No.</th>
-              <th>Accident File No</th>
-              <th>AccidentVehicleCode</th>
-              <th>assignedBy</th>
+              <th>Acc. File No</th>
+              <th>assigned By</th>
               <th>Rejection Reason</th>
-              <th>Accepted By Admin</th>
-              <th>View/Upload Document</th>
-              <th>Upload Daily Images</th>
+              <th>Accept By Admin</th>
+              <th>View Doc</th>
+              <th>Upload Daily Image</th>
 
 
             </tr>
@@ -268,7 +267,6 @@ const AssignedVehicleWorkshop = () => {
                 <tr key={item.id} >
                   <td>{index + 1}</td>
                   <td>{item.accidentFileNo}</td>
-                  <td>{item.AccidentVehicleCode}</td>
                   <td>{item.assignedBy}</td>
 
                   <td style={{ textAlign: 'center' }}>

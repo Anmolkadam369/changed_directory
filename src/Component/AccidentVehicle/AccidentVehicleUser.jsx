@@ -97,9 +97,8 @@ const AccidentVehicleUser = () => {
 
   console.log("dddddddddddddddddddd", data.data)
   return (
-
-    <div style={{ display: 'flex', flexDirection: 'column', padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-      <div style={{ marginBottom: '10px' }}>
+    <div>
+      <div class='Customer-master-form' style={{ marginLeft: "0px" }}>
         <div class="header-container">
           <h3 class="bigtitle">My Vehicles Cases</h3>
         </div>
@@ -213,10 +212,9 @@ const AccidentVehicleUser = () => {
         </div>
       </div>
 
-      <div className=''></div>
 
       <div className='responsive-table'>
-        <table style={{ width: '100%',borderCollapse: 'collapse' }}>
+        <table className='allvendor-response'>
           <thead>
             <tr>
               <th>Sr. No.</th>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -26,6 +26,9 @@ const Login = () => {
   const [token, setToken] = useRecoilState(tokenState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showPassword, setShowPassword] = useState(false);
+  const [fontSize, setFontSize] = useState("35px");
+
+
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -77,113 +80,113 @@ const Login = () => {
     }
   };
 
-  const containerStyle = {
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 360) {
+        setFontSize("20px"); // Adjust the font size as needed to fit the text in one line
+      } else {
+        setFontSize("30px");
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Set the initial font size
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
+
+  const backgroundStyle = {
+    height: '100vh',
+    backgroundImage: `url(${trucks1})`, // Add the correct path to your image
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh',
-    margin: '0 auto',
-    maxWidth: '1200px',
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-    borderRadius: '8px',
-    overflow: 'hidden'
   };
-
-  const imageSectionStyle = {
-    flex: 1,
-    height: '100%', // Make sure the div has a height
-    backgroundImage: `url(${trucks1})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center'
-
-
-  };
-
 
   const loginContainerStyle = {
-    flex: 1,
-    padding: '2rem 3rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    paddingTop: '50px',
+    paddingBottom: '50px',
+    paddingLeft:"20px",
+    paddingRight :"20px",
+    borderRadius: '10px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    maxWidth: '400px',
     width: '100%',
-    margin: "10px"
+    margin:'10px'
   };
 
-  const inputGroupStyle = {
-    width: '100%',
+  const formGroupStyle = {
     marginBottom: '20px',
   };
 
-  const inputStyle = {
-    width: '100%', // Reset to 100% to prevent overflow
-    padding: '15px 10px', // Increased vertical padding for a better touch feel
-    // border: '2px solid #ccc',
-    borderRadius: '5px',
-    boxSizing: 'border-box',
-    fontSize: '16px',
-    margin: '10px 0',
-    background: 'lightgrey' // Slightly more transparent than the container
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '15px',
+    fontSize: '1em', // Adjust font size
   };
-  const inputStyle2 = {
-    width: '100%', // Reset to 100% to prevent overflow
-    padding: '8px 2px', // Increased vertical padding for a better touch feel
-    // border: '2px solid #ccc',
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px',
+    border: '1px solid #ccc',
     borderRadius: '5px',
-    boxSizing: 'border-box',
-    fontSize: '16px',
-    margin: '10px 0',
-    background: 'lightgrey' // Slightly more transparent than the container
+    backgroundColor: 'transparent',
+  };
+
+  const buttonContainerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '40px',
   };
 
   const buttonStyle = {
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
     backgroundColor: '#0e4823ff',
     color: 'white',
-    border: 'none',
-    padding: '15px 20px',
-    textTransform: 'uppercase',
-    borderRadius: '5px',
     cursor: 'pointer',
-    width: '100%', // Reset to 100% to maintain layout consistency
-    fontSize: '18px',
-    letterSpacing: '1px',
-    outline: 'none',
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)' // Adds subtle shadow for depth
+    fontSize: '16px',
   };
 
-  const formStyle = {
-    width: '100%', // Ensures the form takes the full width of its container
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px' // Adds padding around the form elements inside the container
+  const buttonHoverStyle = {
+    backgroundColor: '#0056b3',
   };
-
+  const headerStyle = {
+    fontSize,
+    color: "#0e4823ff",
+    textAlign: "center",
+    marginBottom: '50px'
+  };
 
   return (
-    <div style={containerStyle}>
-      <div className="image-section" style={imageSectionStyle} />
+    <div style={backgroundStyle}>
       <div style={loginContainerStyle}>
-        <h1 style={{ fontSize: "35px", color: "#0e4823ff", textAlign: "center" }}>Claim Pro Assist</h1>
-        <form style={formStyle} onSubmit={handleSubmit}>
-          <div style={inputGroupStyle}>
-            <label htmlFor="username">Username</label>
+        <h1 style={headerStyle}>Claim Pro Assist</h1>
+        <form onSubmit={handleSubmit}>
+        <div style={formGroupStyle}>
+            <label htmlFor="username" style={labelStyle}>Username</label>
             <input
+              style={inputStyle}
               type="text"
               id="username"
               name="username"
               required
-              style={inputStyle}
               onChange={handleUsernameChange}
               value={username}
             />
           </div>
-          <div style={inputGroupStyle}>
-            <label htmlFor="password">Password</label>
+          <div style={formGroupStyle}>
+            <label htmlFor="password" style={labelStyle}>Password</label>
             <Input
-              style={inputStyle2}
+              style={inputStyle}
               id="password"
               type={showPassword ? 'text' : 'password'}
               value={password}
@@ -199,14 +202,24 @@ const Login = () => {
                 </InputAdornment>
               }
             />
-
-            {alertInfo.show && (
-              <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                {alertInfo.message}
-              </Alert>
-            )}
           </div>
-          <Button style={buttonStyle} onClick={handleSubmit}>Login</Button>
+          {alertInfo.show && (
+            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+              {alertInfo.message}
+            </Alert>
+          )}
+
+
+<div style={buttonContainerStyle}>
+            <Button
+              style={buttonStyle}
+              onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}
+              onMouseOut={e => e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor}
+              onClick={handleSubmit}
+            >
+              Login
+            </Button>
+          </div>
         </form>
       </div>
     </div>

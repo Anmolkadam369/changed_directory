@@ -199,35 +199,47 @@ const User = () => {
                 </div>
             )}
             <main className="content" style={{ marginLeft: '0px' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
                     <div>
-                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px', marginTop: "40px" }}
+                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
                             onClick={() => setShowUserId(!showUserId)} />
                         {showUserId && (
                             <div style={{
-                                marginLeft: '10px',
+                                position: 'absolute', // Makes the div float
+                                top: '50px', // Adjust this value to position it properly below the trigger element
+                                right: '0',
+                                width: '200px', // Set a fixed width for better control
                                 padding: '15px',
-                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                                backgroundColor: 'white',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
+                                backgroundColor: '#fff',
                                 borderRadius: '8px',
                                 display: 'flex',
-                                flexDirection: 'column', // Change to column for vertical stacking
-                                alignItems: 'flex-start', // Align items to the start of the flex-direction
-                                gap: '10px' // Adds space between the elements inside the flex container
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                zIndex: 1000
                             }}>
-                                <span style={{
-                                    fontSize: '14px', // Slightly larger font size for better readability
-                                    color: 'grey'
+                                <div style={{
+                                    marginBottom: '10px',
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    color: '#333'
                                 }}>
-                                    User Name : {getData.CustomerName} <br /><br />
-                                    Type : {getData.CustomerType}
+                                    User Information
+                                </div>
+                                <span style={{
+                                    fontSize: '14px',
+                                    color: '#555',
+                                    marginBottom: '10px'
+                                }}>
+                                    User Name: {getData.CustomerName} <br />
+                                    User Id: {getData.CustomerType}
                                 </span>
                                 <button
                                     onClick={handleSignOutClick}
                                     style={{
-                                        padding: '8px 15px',
+                                        padding: '10px 20px',
                                         fontSize: '14px',
-                                        color: 'white',
+                                        color: '#fff',
                                         backgroundColor: '#007bff',
                                         border: 'none',
                                         borderRadius: '5px',
@@ -241,8 +253,6 @@ const User = () => {
                                 <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
                             </div>
                         )}
-
-
                     </div>
                 </div>
 

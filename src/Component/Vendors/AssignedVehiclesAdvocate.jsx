@@ -118,7 +118,7 @@ const AssignedVehicleAdvocate = () => {
   return (
     <div>
 
-      <div class='form-container'>
+      <div class='Customer-master-form' style={{marginLeft:"0px"}}>
         <div class="header-container">
           <h3 class="bigtitle">Assigned Vehicles To Advocate</h3>
         </div>
@@ -232,16 +232,16 @@ const AssignedVehicleAdvocate = () => {
 
       </div>
       <div className="register-responsive-table">
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom:'90px' }}>
+      <table className='allvendor-response'>
           <thead>
             <tr>
               <th>Sr. No.</th>
-              <th>Accident File No</th>
-              <th>AccidentVehicleCode</th>
-              <th>assignedBy</th>
+              <th>Acc. File No</th>
+              <th>Accident Vehicle Code</th>
+              <th>assigned By</th>
               <th>Rejection Reason</th>
-              <th>Accepted By Admin</th>
-              <th>View/Upload Document</th>
+              <th>Accept By Admin</th>
+              <th>View Doc</th>
 
 
             </tr>

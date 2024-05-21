@@ -10,10 +10,12 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import demoexcel from '../../Assets/demoexcel.png'
+import { ClipLoader } from 'react-spinners';
 
 const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
   useEffect(() => {
@@ -46,7 +48,8 @@ const CustomerMaster = () => {
     panCard: "",
     adharNo: '',
     adharCard: "",
-    rate: "",
+    rate: "N/A",
+    GSTNo:"",
     fleetSize: "",
     plan: '',
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "", year: "", type: "", application: "", GVW: "", ULW: "", InsuranceName: "", choosenPlan: ""
@@ -172,9 +175,11 @@ const CustomerMaster = () => {
   console.log("FORm", formData)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const validationMessage = validateForm();
     if (validationMessage) {
       setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+      setIsLoading(false);
       return;
     }
     console.log('Form data submitted:', formData);
@@ -204,10 +209,12 @@ const CustomerMaster = () => {
         }
       })
       console.log("response", response.data);
+    setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
     } catch (error) {
       console.error('Error response:', error.response);
       const errorMessage = error.response?.data || 'An error occurred';
+    setIsLoading(false);
       setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
     }
   };
@@ -220,6 +227,7 @@ const CustomerMaster = () => {
           <h3 class="bigtitle">Customer Master</h3>
           <span class="mandatory-note">All fields are mandatory</span>
         </div>
+
         <div className='form-row'>
           <label className="form-field input-group mb-3">
             System Date:
@@ -409,16 +417,6 @@ const CustomerMaster = () => {
               required />
           </label>
           <label className="form-field">
-            Rate/KM :
-            <input
-              type='text'
-              name="rate"
-              value={formData.rate}
-              onChange={handleChange}
-              className="form-control"
-              required />
-          </label>
-          <label className="form-field">
             GST Number:
             <input
               type='text'
@@ -441,10 +439,7 @@ const CustomerMaster = () => {
               className="form-control"
               required />
           </label>
-        </div>
-
-        <div className='form-row'>
-
+          
           <div className="dropdown green-dropdown form-field">
             <button
               className="btn btn-secondary dropdown-toggle"
@@ -462,13 +457,7 @@ const CustomerMaster = () => {
               <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advanced")}>Advanced Plan</a></li>
             </ul>
           </div>
-          <label className="form-field"></label>
-          <label className="form-field"></label>
-          <label className="form-field"></label>
-
-
         </div>
-
         <div>
 
           {isFleetOwner && (
@@ -652,13 +641,20 @@ const CustomerMaster = () => {
         )}
 
 
-        <div style={{ textAlign: 'center' }}>
-          <button type="submit"
-            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-          >
-            Submit
-          </button>
-        </div>
+<div style={{ textAlign: 'center' }}>
+        <button type="submit"
+          style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+          disabled={isLoading} // Disable button while loading
+        >
+          {isLoading ? 'Submitting...' : 'Submit'}
+        </button>
+        {isLoading && (
+          <div style={{ marginTop: '10px' }}>
+            <ClipLoader color="#4CAF50" loading={isLoading} />
+            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+          </div>
+        )}
+      </div>
       </form>
     </div>
   );

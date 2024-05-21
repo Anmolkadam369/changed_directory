@@ -84,8 +84,8 @@ const AccidentVehicle = () => {
               <th>Sr. No.</th>
               <th>User Name</th>
               <th>Accident File Number</th>
-              <th>Choosen Plan</th>
               <th>Selected Options</th>
+              <th>Choosen Plan</th>
               {/* <th>Services</th> */}
               <th>View</th>
 
@@ -102,8 +102,8 @@ const AccidentVehicle = () => {
                   <td>{index + 1}</td>
                   <td>{item.CustomerName}</td>
                   <td>{item.accidentFileNo}</td>
-                  <td>{item.choosenPlan}</td>
                   <td>{item && item.selectedOptions}</td>
+                  <td>{item.choosenPlan}</td>
                   <td>
                     <button onClick={() => view(item.AccidentVehicleCode)} className='view-button'>View here</button>
                   </td>

@@ -7,6 +7,7 @@ import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
+import './vendorResponse.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function WorkshopResponse() {
@@ -77,12 +78,11 @@ function WorkshopResponse() {
     }
 
     return (
-        <div className='container'>
+        <form className="vendor-response-form" style={{marginBottom:"50px"}}>
+
             <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
 
-            <div class='header-container'>
                 <h2 className='bigtitle'>Accident Images</h2>
-            </div>
 
             <div className="form-row">
                 <label className="form-field">
@@ -445,7 +445,7 @@ function WorkshopResponse() {
                 </button>
             </div>
 
-        </div>
+        </form>
     );
 }
 

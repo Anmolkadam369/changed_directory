@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import './vendorResponse.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -69,12 +70,11 @@ function CraineResponse() {
 
 
     return (
-        <div className='container'>
+        <form className="vendor-response-form" style={{marginBottom:"50px"}}>
+
       <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
 
-<div class='header-container'>
                     <h2 className='bigtitle'>Accident Images</h2>
-                </div>
 
                 <div className="form-row">
                     <label className="form-field">
@@ -339,7 +339,7 @@ function CraineResponse() {
                 </button>
             </div>
 
-        </div>
+        </form>
     );
 }
 
