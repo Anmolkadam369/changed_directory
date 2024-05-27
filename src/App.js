@@ -54,14 +54,19 @@ import DailyWorkshop from './Component/Vendors/DailyWorkshop';
 import HandoverToWorkshop from './Component/Vendors/HandoverToWorkshop';
 
 import Dashboard from './Component/Dashboard/Dashboard';
+import ContactUs from './Component/ContactUs/ContactUs';
+import Notification from './Component/Firebase/Notification';
 //testing
-import Testing from './Component/Aaaaaaaaaaa/Testing';
+
 function App() {                              
   return (
 <Router>
       <div>
         <Routes>
           <Route exact path='/' element={<Home />} />
+          <Route path='/Dashboard' element={<Dashboard/>}/>
+          <Route path='/ContactUs' element={<ContactUs/>}/>
+          
           <Route exact path='/LoginPage' element={<LoginPage />} />
           <Route path='/Register' element={<Registration />}/>
           <Route path='/Location' element={<Location />} />
@@ -117,8 +122,8 @@ function App() {
 
           <Route path='/DailyWorkshop' element={<DailyWorkshop/>}/>
           <Route path='/HandoverToWorkshop' element={<HandoverToWorkshop/>}/>
+          <Route path='/Notification' element={<Notification/>}/>
 
-          <Route path='/Dashboard' element={<Dashboard/>}/>
 
 
         </Routes>

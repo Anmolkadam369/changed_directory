@@ -116,7 +116,10 @@ function EditAccidentVehicle() {
         rearView: null,
         CustomerName: "",
         choosenPlan: "",
-        advocate: "", workshop: '', machanic: "", crain: ""
+        advocate: null, 
+        workshop: null,
+         machanic: null,
+          crain: null
 
     });
 
@@ -124,7 +127,7 @@ function EditAccidentVehicle() {
         const { name, value } = event.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: value || null
         }));
     };
     const validateForm = () => {
@@ -162,11 +165,11 @@ function EditAccidentVehicle() {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        const validationMessage = validateForm();
-        if (validationMessage) {
-            setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
-            return;
-        }
+        // const validationMessage = validateForm();
+        // if (validationMessage) {
+        //     setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+        //     return;
+        // }
         console.log('Form data submitted:', formData);
         console.log('Form data submitted:', userId);
 
@@ -341,7 +344,7 @@ function EditAccidentVehicle() {
                                     type='text'
                                     className='inputField'
                                     name="advocate"
-                                    value={formData.advocate}
+                                    value={formData.advocate || ""}
                                     onChange={handleChange}
                                     disabled={formData.advocate !== null && formData.advocate !== ""}
                                 >
@@ -356,7 +359,7 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="crain"
-                                    value={formData.crain}
+                                    value={formData.crain || ""}
                                     onChange={handleChange}
                                     disabled={formData.crain !== null && formData.crain !== ""}
                                 >
@@ -371,7 +374,7 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="machanic"
-                                    value={formData.machanic}
+                                    value={formData.machanic || ""}
                                     onChange={handleChange}
                                     disabled={formData.machanic !== null && formData.machanic !== ""}
                                 >
@@ -386,7 +389,7 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="workshop"
-                                    value={formData.workshop}
+                                    value={formData.workshop || ""}
                                     onChange={handleChange}
                                     disabled={formData.workshop !== null && formData.workshop !== ""}
                                 >
@@ -406,8 +409,8 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="crain"
-                                    value={formData.crain}
-                                    onChange={handleChange}
+                                    value={formData.crain   || ""  }
+                                 onChange={handleChange}
                                     disabled={formData.crain !== null && formData.crain !== ""}
                                 >
                                     <option value="">Select a Crain</option>
@@ -421,7 +424,7 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="machanic"
-                                    value={formData.machanic}
+                                    value={formData.machanic || ""}
                                     onChange={handleChange}
                                     disabled={formData.machanic !== null && formData.machanic !== ""}
                                 >
@@ -436,7 +439,7 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="workshop"
-                                    value={formData.workshop}
+                                    value={formData.workshop || ""}
                                     onChange={handleChange}
                                     disabled={formData.workshop !== null && formData.workshop !== ""}
                                 >
@@ -457,7 +460,7 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="workshop"
-                                    value={formData.workshop}
+                                    value={formData.workshop || ""}
                                     onChange={handleChange}
                                     disabled={formData.workshop !== null && formData.workshop !== ""}
                                 >

@@ -26,7 +26,7 @@ function Location2() {
                     <div className="location2-elem-3"></div>
                     <div className="location2-elem-2">
                         <span className="location2-elem-1">
-                            <p>Claim Pro Assist</p>
+                            <p>BVC ClaimPro Assist</p>
                         </span>
                     </div>
                 </div>

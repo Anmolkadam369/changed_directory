@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './VehicleClaimRegistration.css'; 
+import './VehicleClaimRegistration.css';
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -7,6 +7,7 @@ import { Alert } from '@mui/material';
 import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
 import backendUrl from '../../environment';
+import { ClipLoader } from 'react-spinners';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -24,7 +25,7 @@ const VehicleClaimRegistration = () => {
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
-
+    const [isLoading, setIsLoading] = useState(false);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [selectedState, setSelectedState] = useState('');
@@ -413,6 +414,7 @@ const VehicleClaimRegistration = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true)
         console.log('Form data submitted:', accidentData);
         const formDataObj = new FormData();
         for (const key in accidentData) {
@@ -440,11 +442,13 @@ const VehicleClaimRegistration = () => {
             });
             console.log("response", response.data);
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+            setIsLoading(false);
         }
         catch (error) {
             console.error('Error response:', error.response);
             const errorMessage = error.response?.data || 'An error occurred';
             setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            setIsLoading(false);
         }
     };
 
@@ -3524,7 +3528,19 @@ const VehicleClaimRegistration = () => {
 
 
                 <div style={{ textAlign: 'center' }}>
-                    <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }} onClick={handleSubmit}>Submit</button>
+                    <button type="submit"
+                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                        disabled={isLoading} // Disable button while loading
+                        onClick={handleSubmit}
+                    >
+                        {isLoading ? 'Submitting...' : 'Submit'}
+                    </button>
+                    {isLoading && (
+                        <div style={{ marginTop: '10px' }}>
+                            <ClipLoader color="#4CAF50" loading={isLoading} />
+                            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                        </div>
+                    )}
                 </div>
             </form>
         </div>

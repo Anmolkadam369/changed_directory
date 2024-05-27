@@ -101,7 +101,7 @@ const Dashboard = () => {
     });
 
     const [doughnutData, setDoughnutData] = useState({
-        labels: ['crain', 'advocate', 'workshop', 'machanic'],
+        labels: ['Crane', 'Advocate', 'Workshop', 'Mechanic'],
         datasets: [
             {
                 label: 'Vendors',
@@ -124,7 +124,7 @@ const Dashboard = () => {
     });
 
     const [doughnutData2, setDoughnutData2] = useState({
-        labels: ['fleetOwner', 'retail'],
+        labels: ['fleet-Owner', 'Retail'],
         datasets: [
             {
                 label: 'Vendors',

@@ -25,7 +25,7 @@ function UserIV() {
           <div className="useriv-eleFm-3"> </div>
           <div className="useriv-elem-2">
             <span className="useriv-elem-1">
-              <p>Claim Pro Assist </p>
+              <p>BVC ClaimPro Assist </p>
             </span>
           </div>
         </div>

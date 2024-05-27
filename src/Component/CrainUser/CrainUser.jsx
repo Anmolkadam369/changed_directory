@@ -28,7 +28,7 @@ function CrainUser() {
                     <div className="craneuser-elem-8"> </div>
                     <div className="craneuser-elem-2">
                         <span className="craneuser-elem-1">
-                            <p>Claim Pro Assist</p>
+                            <p>BVC ClaimPro Assist</p>
                         </span>
                     </div>
                     <div className="craneuser-elem-7">

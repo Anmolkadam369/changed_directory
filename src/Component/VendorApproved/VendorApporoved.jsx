@@ -11,22 +11,45 @@ import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import { ClipLoader } from 'react-spinners';
 
 const VendorApproved = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  let [itemsPerPage, setItemsPerPage] = useState(10)
+  const [isGenerated, setIsGenerated] = useState(false);
+  const [generatedExcel, setGeneratedExcel] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // let itemsPerPage = 10;
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     getData();
     // generateToken();   
-    console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
     }
   }, [token, userId, navigate]);
+  console.log("token", token, userId);
+
+  const generateFile = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`);
+      console.log("daa", response.data.data)
+      console.log("response", response.data.data);
+      setGeneratedExcel(response.data.data)
+      setIsLoading(false);
+      setIsGenerated(true);
+    } catch (error) {
+      setIsLoading(false);  // Ensure loading state is reset in case of error
+      console.error(error.message);
+    }
+  }
 
   async function generateToken() {
     try {
@@ -72,6 +95,16 @@ const VendorApproved = () => {
     setData(response.data.data)
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const handleSetItemPerPage = (e) => {
+    setItemsPerPage(e.target.value);
+  };
+  const filteredData = data.filter(item =>
+    item.vendorName && item.vendorName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -90,10 +123,8 @@ const VendorApproved = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startPage = Math.max(1, currentPage - 1);
   const endPage = Math.min(totalPages, currentPage + 1);
   const pageNumbers = [];
@@ -102,13 +133,60 @@ const VendorApproved = () => {
   }
 
 
+
+
   console.log("dddddddddddddddddddd", data.data)
 
 
-  
+
   return (
     <div>
-      <h3 className='bigtitle'>Vendor View / Edit</h3>
+      <div className="header-container-search">
+        <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Vendor View / Edit</h3>
+
+        <label className="form-field search-field">
+          Search by Vendor Name
+          <input
+            type='text'
+            placeholder="Search by Vendor Name"
+            className="form-control"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            required />
+        </label>
+        <label className="form-field search-field">
+          Number Of Items On Page
+          <input
+            type='text'
+            placeholder="Items Show on Page"
+            className="form-control"
+            value={itemsPerPage}
+            onChange={handleSetItemPerPage}
+            required />
+        </label>
+        <label className="form-field search-field">
+          {!isGenerated && (
+            <div
+              className="form-control generate-button"
+              onClick={generateFile}
+            >
+              {isLoading ? (
+                <ClipLoader color="#4CAF50" loading={isLoading} />
+              ) : (
+                'Generate Excel File' 
+              )}
+            </div>
+          )}
+          {isGenerated && (
+            <a
+              href={generatedExcel}
+              className="form-control download-link"
+            >
+              Download Excel File
+            </a>
+          )}
+        </label>
+      </div>
       <div className='responsive-table'>
         <table style={{ width: '90%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>

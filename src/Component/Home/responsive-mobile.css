@@ -115,10 +115,10 @@
         align-items: center;
     }
 
-    .home-elem-36 img, .home-elem-37 img {
+    .home-elem-36, .home-elem-37 {
         display: none;
-
     }
+    
 /* 
     .home-elem-37 {
         height: 270px;

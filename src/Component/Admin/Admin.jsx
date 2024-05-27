@@ -23,16 +23,13 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import Dashboard from '../Dashboard/Dashboard';
+import { getToken } from 'firebase/messaging';
+import { messaging } from '../Firebase/Firebase';
 
 const Admin = () => {
 
     const [showUserId, setShowUserId] = useState(false);
     const [getData, setGetData] = useState({});
-
-    const user = {
-        name: "John Doe",
-        id: "12345"
-    };
 
     let navigate = useNavigate();
 
@@ -80,6 +77,7 @@ const Admin = () => {
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [notificationSent, setNotificationSent] = useState(false);
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
@@ -90,6 +88,22 @@ const Admin = () => {
     };
 
     const handleCancelSignOut = () => { setModalOpen(false) };
+
+    async function requestPermission() {
+        const permission = await Notification.requestPermission();
+        if(permission === 'granted'){
+         const token = await getToken(messaging, {vapidKey :'BCSLSM0MqLiL4BjJrDEhYf6z8MlsxHkbGDRZjmtrdsbt352tsRknucbpSYRDQF2jGrd2zvQNnpqsBLcoVY7XyKg'} );
+         console.log("generated token=", token);
+         sendNotification(token);
+         setNotificationSent(true);
+        }
+        else if (permission === 'denied') alert('Notification permission denied.');
+     }   
+
+     useEffect(()=>{
+      requestPermission(); 
+    },[]);
+
     useEffect(() => {
         console.log("token", token, userId);
         if (token === "" || userId === "") {
@@ -110,6 +124,24 @@ const Admin = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const sendNotification = async (token) => {
+        const payload = {
+            token: token,
+        };
+    
+        try {
+            const response = await axios.post(`${backendUrl}/api/sendNotification`, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("sendNOTIFICATION", response.data);
+        } catch (error) {
+            console.error("Error during form submission:", error);
+        }
+    };
+    
+ 
     const findUserById = async (id) => {
         console.log("HEY", `${backendUrl}/api/findById/${id}`)
         const response = await axios.get(`${backendUrl}/api/findById/${id}`);
@@ -198,15 +230,39 @@ const Admin = () => {
                                             resetStates();
                                             setShowVehicleClaim(true);
                                         }}>Register Update</li>
-                                        <li onClick={(e) => {
-                                            e.stopPropagation();
-                                            resetStates();
-                                            setaddImages(true);
-                                        }}>Current Update</li>
+
                                     </ul>
                                 )}
                             </li>
                         </ul>
+
+
+
+
+                        <ul>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                setShowAssignedVehicleReport(!showAssignedVehicleReport);
+                                resetStates();
+                                setaccidendVehicle(true);
+                            }}>Assigned Vehicle
+                                {showAssignedVehicleReport && (
+                                    <div className='submenu'>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setaccidendVehicle(true);
+                                        }}>Assign Vendors</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setVendorResponsing(true);
+                                        }}>Vendor Response</li>
+                                    </div>
+                                )}
+                            </li>
+                        </ul>
+
 
                         <ul>
                             <li onClick={(e) => {
@@ -239,29 +295,7 @@ const Admin = () => {
                         </ul>
 
 
-                        <ul>
-                            <li onClick={(e) => {
-                                e.stopPropagation();
-                                setShowAssignedVehicleReport(!showAssignedVehicleReport);
-                                resetStates();
-                                setaccidendVehicle(true);
-                            }}>Assigned Vehicle
-                                {showAssignedVehicleReport && (
-                                    <div className='submenu'>
-                                        <li onClick={(e) => {
-                                            e.stopPropagation();
-                                            resetStates();
-                                            setaccidendVehicle(true);
-                                        }}>Assign Vendors</li>
-                                        <li onClick={(e) => {
-                                            e.stopPropagation();
-                                            resetStates();
-                                            setVendorResponsing(true);
-                                        }}>Vendor Response</li>
-                                    </div>
-                                )}
-                            </li>
-                        </ul>
+
                     </ul>
                 </aside>
             ) : (

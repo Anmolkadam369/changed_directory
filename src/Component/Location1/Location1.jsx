@@ -73,6 +73,7 @@ function Location1({ vehicleData }) {
     console.log("choosenpa", choosenPlan)
     const allOptions = ['advocate', 'workshop', 'onsite temperory repair', 'crain'];
     const [selectedOptions, setSelectedOptions] = useState([]);
+    
     const getOptionsToShow = () => {
         switch (choosenPlan) {
             case 'advanced':
@@ -157,8 +158,8 @@ function Location1({ vehicleData }) {
 
     const handleFileChange = (event, type) => {
         const file = event.target.files[0];
-        if (file && file.size > 102400) {
-            console.log("File size should be less than 100 KB");
+        if (file && file.size > 2097152) {
+            console.log("File size should be less than 2 MB!");
             setAlertInfo({ show: true, message: "File size should be less than 100 KB", severity: 'error' });
             if (photoRefs[type].current) {
                 photoRefs[type].current.value = "";
@@ -195,6 +196,8 @@ function Location1({ vehicleData }) {
         setFileName(prev => ({ ...prev, [type]: null }));
     };
 
+    const accidentDataObject = { ...photos, ...vehicleData, latitude, longitude, ...getData, ...formData, selectedOptions };
+console.log("accidentData", accidentDataObject)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -288,6 +291,7 @@ function Location1({ vehicleData }) {
                                 ref={photoRefs[type]}
                                 accept="image/*"
                                 capture="camera"
+                                className="form-control"
                                 onChange={(e) => handleFileChange(e, type)}
                             />
                         </label>
@@ -324,6 +328,7 @@ function Location1({ vehicleData }) {
                                     <label key={index} style={{
                                         display: 'block',
                                         marginBottom: '10px',
+                                        marginTop:"20px",
                                         fontSize: '16px',
                                         color: '#666'
                                     }}>

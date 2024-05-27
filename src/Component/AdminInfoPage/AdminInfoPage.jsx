@@ -12,7 +12,7 @@ function AdminInfoPage() {
                     <div className="adminformpage-elem-8"></div>
                     <div className="adminformpage-elem-2">
                         <span className="adminformpage-elem-1">
-                            <p>Claim Pro Assist</p>
+                            <p>BVC ClaimPro Assist</p>
                         </span>
                     </div>
                     <div className="adminformpage-elem-7">

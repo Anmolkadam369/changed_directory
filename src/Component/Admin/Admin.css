@@ -1,4 +1,4 @@
-/* Base and Reset Styles */
+a/* Base and Reset Styles */
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +14,7 @@ body, html {
 /* Sidebar Styles */
 .admin-page .sidebar {
   width: 100%; /* Extend the sidebar to full width */
-  height: 10%; /* Set a fixed height */
+  height: 8%; /* Set a fixed height */
   background: #020202;
   color: white;
   position: fixed;

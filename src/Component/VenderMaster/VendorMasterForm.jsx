@@ -14,6 +14,10 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
 
+const config = {
+  cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
+  ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+};
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 const VendorMasterForm = () => {
@@ -23,7 +27,16 @@ const VendorMasterForm = () => {
   const today = new Date().toISOString().split('T')[0];
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedState, setSelectedState] = useState('');
+  const [isLoadingStates, setIsLoadingStates] = useState(true);
+  const [isLoadingCities, setIsLoadingCities] = useState(true);
+
+
   useEffect(() => {
+    loadStates();
     console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
@@ -31,37 +44,71 @@ const VendorMasterForm = () => {
   }, [token, userId, navigate]);
   console.log("userIIIIIID", userId);
 
+  const loadStates = () => {
+    setIsLoadingStates(true);
+    fetch(`${config.cUrl}/states`, {
+      headers: { "X-CSCAPI-KEY": config.ckey }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setStates(data);
+        setIsLoadingStates(false);
+      })
+      .catch(error => {
+        console.error('Error loading states:', error);
+        setIsLoadingStates(false);
+      });
+  }
+
+  const loadCities = (stateCode) => {
+    setIsLoadingCities(true);
+    fetch(`${config.cUrl}/states/${stateCode}/cities`, {
+      headers: { "X-CSCAPI-KEY": config.ckey }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setCities(data);
+        setIsLoadingCities(false);
+      })
+      .catch(error => {
+        console.error('Error loading cities:', error);
+        setIsLoadingCities(false);
+      });
+  };
+
   const [formData, setFormData] = useState({
     systemDate: today,
     vendorCode: 'SYSTEM GENERATED',
     vendorName: '',
     vendorType: '',
     address: '',
-    vendorCity: '',
+    state: '',
+    district: "",
     pincode: '',
     vendorPhone: '',
     email: '',
     contactPerson: '',
     contactPersonNum: "",
     contactPersonNum2: '',
-    cusLocation: '',
     panNo: "",
     panCard: "info",
     adharNo: '',
     adharCard: "info",
-    rate: "",
+    rate: "" || "0",
     GSTNo: "",
     GST: "info"
   });
+
+  console.log("formdata", formData)
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
   const adharCardRef = useRef(null);
 
   const handleChange = (e) => {
-    const { name, type, files } = e.target;
+    const { name, type, files, value } = e.target;
     if (type === 'file') {
-      if (files[0] && files[0].size > 102400) {
+      if (files[0] && files[0].size > 2097152) {
         setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
         const refs = {
           GST: GSTRef,
@@ -84,7 +131,39 @@ const VendorMasterForm = () => {
         ...prevState,
         [name]: files[0]
       }));
-    } else {
+    }
+    else if (name === 'state') {
+      loadCities(value);
+      setFormData(prevState => ({ ...prevState, [name]: value }));
+    }
+    else if (name === "vendorPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
+      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "pincode" || name === "rate") {
+      const validValue = value.replace(/\D/g, '').slice(0, 6);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "vendorPhone") {
+      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "adharNo") {
+      const validValue = value.replace(/\D/g, '').slice(0, 12);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }  else {
       const { value } = e.target;
       setFormData(prevState => ({
         ...prevState,
@@ -113,6 +192,8 @@ const VendorMasterForm = () => {
   };
 
   console.log("firm", formData)
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -202,16 +283,36 @@ const VendorMasterForm = () => {
 
 
           <label className="form-field input-group mb-3">
-            Vendor Location:
-            <input
-              type="text"
-              name="cusLocation"
-              placeholder='Customer Location'
-              value={formData.cusLocation}
+            Accident Place - State:
+            <select
+              className='form-control'
+              name="state"
               onChange={handleChange}
-              className="form-control"
-            />
+              disabled={isLoadingStates}
+              value={formData.state}>
+              <option value="">Select State</option>
+              {states.map(state => (
+                <option key={state.iso2} value={state.iso2}>{state.name}</option>
+              ))}
+            </select>
           </label>
+
+          <label className="form-field input-group mb-3">
+            Accident Place - City:
+            <select
+              className='form-control'
+              name="district"
+              value={formData.district}
+              onChange={handleChange}
+              disabled={isLoadingCities || !formData.state}
+            >
+              <option value="">Select City</option>
+              {!cities.error && cities.map(city => (
+                <option key={city.iso2} value={city.iso2}>{city.name}</option>
+              ))}
+            </select>
+          </label>
+
           <label className="form-field input-group mb-3">
             Vendor Code:
             <input
@@ -224,6 +325,12 @@ const VendorMasterForm = () => {
               readOnly
             />
           </label>
+
+
+        </div>
+
+        <div className='form-row'>
+
           <label className="form-field input-group mb-3">
             Vendor Name:
             <input
@@ -236,10 +343,6 @@ const VendorMasterForm = () => {
               required
             />
           </label>
-        </div>
-
-        <div className='form-row'>
-
 
           <div className="dropdown green-dropdown form-field">
             <button
@@ -254,18 +357,14 @@ const VendorMasterForm = () => {
             </button>
             <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
               <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crain</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Machanic</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
               <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
             </ul>
           </div>
           <label className="form-field">
             Address  :
             <textarea name="address" value={formData.address} onChange={handleChange} required className="form-control" placeholder='Address' />
-          </label>
-          <label className="form-field">
-            Vendor City  :
-            <input type='text' name="vendorCity" value={formData.vendorCity} className="form-control" onChange={handleChange} placeholder='Vendor City' required />
           </label>
           <label className="form-field">
             Pincode:
@@ -294,11 +393,12 @@ const VendorMasterForm = () => {
               onChange={handleChange}
               placeholder='Vendor Phone No'
               required
-              pattern="\d{10}|(\d{3}[-\s]?\d{3}[-\s]?\d{4})"
-              title="Phone number must be 10 digits"
+              pattern="\d{10}"
+              title="Phone number must be exactly 10 digits"
               className="form-control"
             />
           </label>
+
           <label className="form-field">
             E-Mail:
             <input
@@ -311,9 +411,9 @@ const VendorMasterForm = () => {
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               title="Please enter a valid email address."
               className="form-control"
-
             />
           </label>
+
           <label className="form-field">
             Contact Person:
             <input
@@ -335,7 +435,7 @@ const VendorMasterForm = () => {
               onChange={handleChange}
               placeholder='Contact Person Phone'
               required
-              pattern="\d{10}|(\d{3}[-\s]?\d{3}[-\s]?\d{4})"
+              pattern="\d{10}"
               className="form-control"
               title="Phone number must be 10 digits" />
           </label>
@@ -351,7 +451,7 @@ const VendorMasterForm = () => {
               placeholder='Contact Person Phone'
               onChange={handleChange}
               required
-              pattern="\d{10}|(\d{3}[-\s]?\d{3}[-\s]?\d{4}) "
+              pattern="\d{10}"
               title="Phone number must be 10 digits"
               className="form-control"
 
@@ -366,8 +466,10 @@ const VendorMasterForm = () => {
               value={formData.panNo}
               onChange={handleChange}
               className="form-control"
-
-              required />
+              required
+              pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+              title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+            />
           </label>
           <label className="form-field">
             PAN Card :
@@ -377,21 +479,23 @@ const VendorMasterForm = () => {
               onChange={handleChange}
               accept=".pdf,image/*"
               className="form-control"
-
               ref={panRef}
+              capture="environment"
               required />
           </label>
           <label className="form-field">
-            Adhar Number :
+            Aadhaar Number:
             <input
               type='text'
               name="adharNo"
-              placeholder='Adhar Card Number'
+              placeholder='Aadhaar Card Number'
               value={formData.adharNo}
               onChange={handleChange}
               className="form-control"
-
-              required />
+              required
+              pattern="\d{12}"
+              title="Aadhaar number must be exactly 12 digits."
+            />
           </label>
         </div>
 
@@ -406,22 +510,12 @@ const VendorMasterForm = () => {
               accept=".pdf,image/*"
               ref={adharCardRef}
               className="form-control"
-
+              capture="environment"
               required />
           </label>
 
-          <label className="form-field">
-            Rate/KM :
-            <input
-              type='text'
-              name="rate"
-              placeholder='Rate Per KM'
-              value={formData.rate}
-              onChange={handleChange}
-              className="form-control"
 
-              required />
-          </label>
+
           <label className="form-field">
             GST Number:
             <input
@@ -431,8 +525,10 @@ const VendorMasterForm = () => {
               value={formData.GSTNo}
               onChange={handleChange}
               className="form-control"
-
-              required />
+              required
+              pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
+              title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
+            />
           </label>
 
           <label className="form-field">
@@ -445,9 +541,27 @@ const VendorMasterForm = () => {
               accept=".pdf,image/*"
               ref={GSTRef}
               className="form-control"
-
+              capture="environment"
               required />
           </label>
+
+          {formData.vendorType == "crain" && 
+         ( <label className="form-field">
+            Rate/KM :
+            <input
+              type='text'
+              name="rate"
+              placeholder='Rate Per KM'
+              value={formData.rate}
+              onChange={handleChange}
+              className="form-control"
+              title="Aadhaar number must be exactly 12 digits."
+              required />
+          </label>
+        )}
+        {formData.vendorType != "crain" && (
+          <label className="form-field"></label>
+        )}
         </div>
 
         {alertInfo.show && (

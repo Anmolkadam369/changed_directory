@@ -1,11 +1,10 @@
-import React, { useState ,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import './LoginPage.css';
-import download from '../../Assets/download.png';
-import { Alert } from '@mui/material';
+import { Alert, Checkbox, FormControlLabel } from '@mui/material';
 import backendUrl from '../../environment';
 import trucks1 from "../../Assets/trucks1.jpg";
 import Button from 'react-bootstrap/Button';
@@ -17,18 +16,32 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import claimproassist from "../../Assets/claimproassistwithoutName.jpg"
+
+
 
 const Login = () => {
   const navigate = useNavigate();
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [token, setToken] = useRecoilState(tokenState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showPassword, setShowPassword] = useState(false);
   const [fontSize, setFontSize] = useState("35px");
 
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("rememberedUsername");
+    const savedPassword = localStorage.getItem("rememberedPassword");
+    const rememberMeFlag = localStorage.getItem("rememberMe") === "true";
 
+    if (savedUsername && rememberMeFlag) {
+      setUsername(savedUsername);
+      setPassword(savedPassword);
+      setRememberMe(rememberMeFlag);
+    }
+  }, []);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -38,11 +51,15 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
+  };
+
   const togglePasswordVisibility = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setShowPassword(!showPassword);
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,12 +68,22 @@ const Login = () => {
         username,
         password,
       });
-      console.log("Response data:", response.data);
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
         setToken(response.data.token);
         setUserId(response.data.userId);
+
+        if (rememberMe) {
+          localStorage.setItem("rememberedUsername", username);
+          localStorage.setItem("rememberedPassword", password);
+          localStorage.setItem("rememberMe", true);
+        } else {
+          localStorage.removeItem("rememberedUsername");
+          localStorage.removeItem("rememberedPassword");
+          localStorage.removeItem("rememberMe");
+        }
+
         setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
 
         if (response.data.data.username === "admin" || response.data.data.username === "admin2") {
@@ -74,8 +101,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.error('Error response:', error.response);
-      const errorMessage = error.response.data.message || 'An error occurred';
+      const errorMessage = error.response?.data?.message || 'An error occurred';
       setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
     }
   };
@@ -83,23 +109,21 @@ const Login = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 360) {
-        setFontSize("20px"); // Adjust the font size as needed to fit the text in one line
+        setFontSize("20px");
       } else {
         setFontSize("30px");
       }
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Set the initial font size
+    handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-
-
   const backgroundStyle = {
     height: '100vh',
-    backgroundImage: `url(${trucks1})`, // Add the correct path to your image
+    backgroundImage: `url(${trucks1})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
@@ -112,13 +136,13 @@ const Login = () => {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     paddingTop: '50px',
     paddingBottom: '50px',
-    paddingLeft:"20px",
-    paddingRight :"20px",
+    paddingLeft: "20px",
+    paddingRight: "20px",
     borderRadius: '10px',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     maxWidth: '400px',
     width: '100%',
-    margin:'10px'
+    margin: '10px'
   };
 
   const formGroupStyle = {
@@ -128,7 +152,7 @@ const Login = () => {
   const labelStyle = {
     display: 'block',
     marginBottom: '15px',
-    fontSize: '1em', // Adjust font size
+    fontSize: '1em',
   };
 
   const inputStyle = {
@@ -159,19 +183,33 @@ const Login = () => {
   const buttonHoverStyle = {
     backgroundColor: '#0056b3',
   };
+
   const headerStyle = {
     fontSize,
     color: "#0e4823ff",
     textAlign: "center",
-    marginBottom: '50px'
+    // marginBottom: '50px'
+    marginLeft :"5px"
+  };
+  const headerContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '20px'
+  };
+  const imgStyle = {
+    width: '80px', // Adjust the width
+    height: 'auto',
   };
 
   return (
     <div style={backgroundStyle}>
       <div style={loginContainerStyle}>
-        <h1 style={headerStyle}>Claim Pro Assist</h1>
+      <div style={headerContainerStyle}>
+      <img src={claimproassist} style={imgStyle} alt="company logo" />
+        <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
+        </div>
         <form onSubmit={handleSubmit}>
-        <div style={formGroupStyle}>
+          <div style={formGroupStyle}>
             <label htmlFor="username" style={labelStyle}>Username</label>
             <input
               style={inputStyle}
@@ -203,14 +241,23 @@ const Login = () => {
               }
             />
           </div>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={rememberMe}
+                onChange={handleRememberMeChange}
+                name="rememberMe"
+                color="primary"
+              />
+            }
+            label="Remember Me"
+          />
           {alertInfo.show && (
             <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
               {alertInfo.message}
             </Alert>
           )}
-
-
-<div style={buttonContainerStyle}>
+          <div style={buttonContainerStyle}>
             <Button
               style={buttonStyle}
               onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}

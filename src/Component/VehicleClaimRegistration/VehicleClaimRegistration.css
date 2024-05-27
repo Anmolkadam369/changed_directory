@@ -103,7 +103,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .form-row {
-    flex-direction: column;
+    /* flex-direction: column; */
 
   }
 

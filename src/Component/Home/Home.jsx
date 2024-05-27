@@ -15,9 +15,14 @@ function Home() {
     const navigate = useNavigate();
 
     function navigateToVehiclePage() {
-        console.log("SOMe");
         navigate('./LoginPage');
     }
+
+    function navigateToContactUs() {
+        navigate('./ContactUs');
+    }
+
+
 
     return (
         <div className="home-elem-19">
@@ -25,7 +30,7 @@ function Home() {
                 <div className="home-elem-13">
                     <div className="home-elem-15">
                         <span className="home-elem-18">
-                            <p>Claim Pro Assist </p>
+                            <p>BVC ClaimPro Assist </p>
                         </span>
                     </div>
                     <div className="home-elem-16">
@@ -93,11 +98,13 @@ function Home() {
                         <p>Professional Assistance for Vehicle Accidents</p>
                     </span>
                     <span className="home-elem-26">
-                        <p>Claim Pro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>
+                        <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>
+                    </span>
+                    <span className="home-elem-26">
+                    <p>BVC ClaimPro Assist is providing services for you. Come and join your business with us and be relaxed.</p>
                     </span>
                     <div className="home-elem-27">
-                        <input type="email" placeholder="Enter your email" className="home-elem-28" required={true} />
-                        <button className="home-elem-29">
+                        <button className="home-elem-29" onClick={navigateToContactUs}>
                             <p>Start Now</p>
                         </button>
                     </div>
@@ -115,10 +122,10 @@ function Home() {
                     </div>
                     <div className="home-elem-35">
                         <span className="home-elem-36">
-                            <img src={trucks2}/>
+                            <img src={trucks2} />
                         </span>
                         <span className="home-elem-37">
-                            <img src={trucks1}/>
+                            <img src={trucks1} />
                         </span>
                     </div>
                     <div className="home-elem-38">
@@ -296,7 +303,7 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <div className="home-elem-112">
+            {/* <div className="home-elem-112">
                 <div className="home-elem-113">
                     <span className="home-elem-111 home-elem-111">
                         <p>Real experiences from real people.</p>
@@ -378,7 +385,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
             <div className="home-elem-156">
                 <div className="home-elem-157">
                     <span className="home-elem-154">
@@ -397,7 +404,7 @@ function Home() {
                             <p>How we manage the entire accident scene professionally?</p>
                         </span>
                         <span className="home-elem-151">
-                            <p>Get a detailed insight on how Claim Pro Assist arranges the accident scene professionally from advocates to cranes.</p>
+                            <p>Get a detailed insight on how BVC ClaimPro Assist arranges the accident scene professionally from advocates to cranes.</p>
                         </span>
                     </div>
                     <div className="home-elem-166">
@@ -426,7 +433,7 @@ function Home() {
             </div>
             <div className="home-elem-167">
                 <span className="home-elem-168">
-                    <p>Why not choose the Claim Pro Assist?</p>
+                    <p>Why not choose the BVC ClaimPro Assist?</p>
                 </span>
                 <span className="home-elem-169">
                     <p>Join our extended family and experience hassle-free, professional assistance during unwelcomed vehicle accidents.</p>
@@ -442,7 +449,7 @@ function Home() {
                 <div className="home-elem-185">
                     <div className="home-elem-176">
                         <span className="home-elem-173">
-                            <p>Claim Pro Assist</p>
+                            <p>BVC ClaimPro Assist</p>
                         </span>
                         <span className="home-elem-174">
                             <p>We are a dedicated team committed to provide prompt assistance during commercial vehicle accidents.</p>
@@ -454,28 +461,27 @@ function Home() {
                         </div>
                     </div>
                     <span className="home-elem-197">
-                        <img src="https://res.cloudinary.com/dbyioi2qq/q_auto/v1705838029/static/logo_page-0001jpg_1705838020_75147.jpg" alt="Claim Pro Assist Logo" />
+                        <img src="https://res.cloudinary.com/dbyioi2qq/q_auto/v1705838029/static/logo_page-0001jpg_1705838020_75147.jpg" alt="BVC ClaimPro Assist Logo" />
                     </span>
                     <div className="home-elem-184">
                         <span className="home-elem-177">
                             <p>Contact us</p>
                         </span>
-                        <span className="home-elem-178">
+
+                        {/* <span className="home-elem-178">
                             <p><br /></p>
-                        </span>
+                        </span> */}
                         <span className="home-elem-179">
-                            <p>1800-123-456</p>
+                            <p>+91 7800 78 4700</p>
                         </span>
-                        <button className="home-elem-175">
-                            <a href="#home-elem-167" className="link" target="_self">
-                                <p>Contact Us</p>
-                            </a>
+                        <button className="home-elem-175"  onClick={navigateToContactUs}>
+                            <p>Contact Us</p>
                         </button>
                     </div>
                 </div>
                 <div className="home-elem-187">
                     <span className="home-elem-186">
-                        <p>© 2023 Claim Pro Assist, we love our users!</p>
+                        <p>© 2023 BVC ClaimPro Assist, we love our users!</p>
                     </span>
                 </div>
             </div>

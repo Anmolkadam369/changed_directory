@@ -11,6 +11,11 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Modal from 'react-modal';
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import { ClipLoader } from 'react-spinners';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -23,7 +28,7 @@ const VehicleClaimEdit = () => {
     console.log("Received IDssss:", id);
     const [comingData, setComingData] = useState([]);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
-
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
@@ -37,6 +42,30 @@ const VehicleClaimEdit = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [IsReadOnly, setIsReadOnly] = useState(true);
 
+    const [totalDaysFromAccident, setTotalDaysFromAccident] = useState('');
+    const [totalDaysInWorkshop, setTotalDaysInWorkshop] = useState('');
+    const [calculatedDeadlineTAT, setCalculatedDeadlineTAT] = useState('');
+
+    const [isIntimationModalOpen, setIsIntimationModalOpen] = useState(false);
+    const [isFIRModalOpen, setIsFIRModalOpen] = useState(false);
+    const [isPOAModalOpen, setIsPOAModalOpen] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [isAdharModalOpen, setIsAdharModalOpen] = useState(false);
+
+
+    const openIntimationModal = () => setIsIntimationModalOpen(true);
+    const closeIntimationModal = () => setIsIntimationModalOpen(false);
+    const openFIRModal = () => setIsFIRModalOpen(true);
+    const closeFIRModal = () => setIsFIRModalOpen(false);
+    const openPOAModal = () => setIsPOAModalOpen(true);
+    const closePOAModal = () => setIsPOAModalOpen(false);
+    const openReportModal = () => setIsReportModalOpen(true);
+    const closeReportModal = () => setIsReportModalOpen(false);
+    const openAdharModal = () => setIsAdharModalOpen(true);
+    const closeAdharModal = () => setIsAdharModalOpen(false);
+
+
+
     useEffect(() => {
         loadStates();
         getDataById(id);
@@ -48,10 +77,11 @@ const VehicleClaimEdit = () => {
 
     const formatDateForInput = (dateString) => {
         if (!dateString) return ""; // Return an empty string if the date is not provided
-        const date = new Date(dateString);
-        return date.toISOString().slice(0, 10); // Converts to format: YYYY-MM-DD
+        const [year, month, day] = dateString.split('-');
+        return `${year}-${month}-${day}`; // Return the date in YYYY-MM-DD format
     };
 
+    const todayDate = new Date().toISOString().split('T')[0];
 
     useEffect(() => {
         if (comingData) {
@@ -81,6 +111,7 @@ const VehicleClaimEdit = () => {
                 advocateNo: comingData.advocateNo || "",
                 courtName: comingData.courtName || "",
                 POA: comingData.POA || "",
+                companyRepresentativeAdhar: comingData.companyRepresentativeAdhar || "",
 
                 surveyorName: comingData.surveyorName || "",
                 surveyorNo: comingData.surveyorNo || "",
@@ -101,7 +132,7 @@ const VehicleClaimEdit = () => {
                 representativeName: comingData.representativeName || "",
                 representativeNo: comingData.representativeNo || "",
                 reportUpload: comingData.reportUpload || "",
-                dateRepairedOnSpot: formatDateForInput(comingData.dateRepairedOnSpot),
+                dateRepairedOnSpot: comingData.dateRepairedOnSpot,
                 transshippedVehicleNo: comingData.transshippedVehicleNo || "",
                 transshippedDate: formatDateForInput(comingData.transshippedDate),
                 reportedFinalDestination: comingData.reportedFinalDestination || "",
@@ -261,7 +292,7 @@ const VehicleClaimEdit = () => {
 
                 settelMent: comingData.settelMent || "",
                 settelMentdoc: comingData.settelMentdoc || "",
-                settelMentDate: comingData.settelMentDate || "",
+                settelMentDate: formatDateForInput(comingData.settelMentDate) || "",
                 settelMentassignedTo: comingData.settelMentassignedTo || "",
                 settelMentremark: comingData.settelMentremark || "",
 
@@ -300,6 +331,7 @@ const VehicleClaimEdit = () => {
         advocateNo: "",
         courtName: "",
         releaseUpload: "",
+        POA: "",
         surveyorName: "",
         surveyorNo: "",
         dateOfSurvey: "",
@@ -316,6 +348,7 @@ const VehicleClaimEdit = () => {
         investigatorNo: "",
         investigationDate: "", //date
         investigatorRemarks: "",
+        companyRepresentativeAdhar: "",
 
         representativeName: "",
         representativeNo: "",
@@ -536,7 +569,7 @@ const VehicleClaimEdit = () => {
 
         if (type === 'file') {
             console.log("myfile")
-            if (files[0] && files[0].size > 102400) {
+            if (files[0] && files[0].size > 2097152) {
                 setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
                 const refs = {
                     intimationUpload: intimationUpload,
@@ -602,10 +635,13 @@ const VehicleClaimEdit = () => {
             setAccidentData(prev => ({ ...prev, [name]: value }));
         }
     }
+    console.log('submitted:', accidentData);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form data submitted:', accidentData);
+        setIsLoading(true)
         const formDataObj = new FormData();
         for (const key in accidentData) {
             if (accidentData[key]) {
@@ -633,6 +669,7 @@ const VehicleClaimEdit = () => {
             if (response) {
                 console.log("response", response.data);
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setIsLoading(false);
             }
         }
 
@@ -640,6 +677,7 @@ const VehicleClaimEdit = () => {
             console.error('Error response:', error.response);
             const errorMessage = error.response?.data || 'An error occurred';
             setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            setIsLoading(false);
         }
     };
 
@@ -672,6 +710,53 @@ const VehicleClaimEdit = () => {
     const paymentBalancedoc = useRef(null);
     const settelMentdoc = useRef(null);
     const claimFormdoc = useRef(null);
+
+
+    const calculateTotalDaysFromAccident = () => {
+        const { reInspectionDate, reportedFinalDestinationDate } = accidentData;
+        if (reInspectionDate && reportedFinalDestinationDate) {
+            const date1 = new Date(reInspectionDate);
+            const date2 = new Date(reportedFinalDestinationDate);
+            const timeDiff = Math.abs(date1 - date2);
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            setTotalDaysFromAccident(daysDiff);
+        } else {
+            setTotalDaysFromAccident('');
+        }
+    };
+
+    const calculateDaysInWorkshop = () => {
+        const { accidentDate, finallyReleasedDate } = accidentData;
+        if (accidentDate && finallyReleasedDate) {
+            const date1 = new Date(accidentDate);
+            const date2 = new Date(finallyReleasedDate);
+            const timeDiff = Math.abs(date1 - date2);
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            setTotalDaysInWorkshop(daysDiff);
+        } else {
+            setTotalDaysInWorkshop('');
+        }
+    };
+
+    const calculateDeadlineTAT = () => {
+        const { deadLineDate, dateOfFinalSurvey } = accidentData;
+        if (deadLineDate && dateOfFinalSurvey) {
+            const date1 = new Date(deadLineDate);
+            const date2 = new Date(dateOfFinalSurvey);
+            const timeDiff = Math.abs(date1 - date2);
+            console.log("TIMEDIF", timeDiff)
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            setCalculatedDeadlineTAT(daysDiff);
+        } else {
+            setCalculatedDeadlineTAT('');
+        }
+    };
+
+    useEffect(() => {
+        calculateTotalDaysFromAccident();
+        calculateDaysInWorkshop();
+        calculateDeadlineTAT();
+    }, [accidentData.accidentDate, accidentData.finallyReleasedDate, accidentData.dateOfFinalSurvey, accidentData.deadLineDate, accidentData.reInspectionDate, accidentData.reportedFinalDestinationDate]);
 
 
 
@@ -1570,7 +1655,7 @@ const VehicleClaimEdit = () => {
                                         type="date"
                                         className='inputField form-control'
                                         name="RCDate"
-                                        value={accidentData.RCnoDate}
+                                        value={accidentData.RCDate}
                                         onChange={handleChange}
                                     />
                                 </div>
@@ -3293,7 +3378,7 @@ const VehicleClaimEdit = () => {
             </form> */}
 
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
-            <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+                <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
                 <div class='header-container'>
                     <h2 className='bigtitle'>Accident Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
@@ -3347,11 +3432,11 @@ const VehicleClaimEdit = () => {
 
                         />
                     </label>
-                  
+
 
                 </div>
                 <div className="form-row">
-                <label className="form-field">
+                    <label className="form-field">
                         Accident Place - State:
                         <select
                             className="inputField"
@@ -3387,7 +3472,7 @@ const VehicleClaimEdit = () => {
                             className='inputField form-control'
                             type="date"
                             name="accidentDate"
-                            value={accidentData.accidentDate}
+                            value={accidentData.accidentDate ? accidentData.accidentDate.split('T')[0] : ''}
                             onChange={handleChange}
                             max={new Date().toISOString().split('T')[0]}
                             readOnly={IsReadOnly}
@@ -3442,15 +3527,33 @@ const VehicleClaimEdit = () => {
                         Intimation Upload:
                         {IsReadOnly ? (
                             accidentData.intimationUpload ? (
-                                <img src={accidentData.intimationUpload} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                                <>
+                                    <img
+                                        src={accidentData.intimationUpload}
+                                        alt="Intimation"
+                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                        onClick={openIntimationModal}
+                                    />
+                                    <Modal isOpen={isIntimationModalOpen} onRequestClose={closeIntimationModal} contentLabel="Intimation Modal">
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                            <IconButton href={accidentData.intimationUpload} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeIntimationModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </div>
+                                        <img src={accidentData.intimationUpload} alt="Intimation" style={{ width: '100%' }} />
+                                    </Modal>
+                                </>
                             ) : (
-                                <p className='notUploaded'>No intimation Card uploaded</p>
+                                <p className="notUploaded">No Intimation Card uploaded</p>
                             )
                         ) : (
                             <input
                                 type="file"
                                 name="intimationUpload"
-                                className='inputField form-control'
+                                className="inputField form-control"
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={intimationUpload}
@@ -3557,7 +3660,8 @@ const VehicleClaimEdit = () => {
                             name="firDate"
                             value={accidentData.firDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
+                            max={todayDate}
                             readOnly={IsReadOnly}
                         />
                     </label>
@@ -3565,7 +3669,25 @@ const VehicleClaimEdit = () => {
                         FIR Upload:
                         {IsReadOnly ? (
                             accidentData.firUpload ? (
-                                <img src={accidentData.firUpload} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                                <>
+                                    <img
+                                        src={accidentData.firUpload}
+                                        alt="FIR"
+                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                        onClick={openFIRModal}
+                                    />
+                                    <Modal isOpen={isFIRModalOpen} onRequestClose={closeFIRModal} contentLabel="FIR Modal">
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                            <IconButton href={accidentData.firUpload} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeFIRModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </div>
+                                        <img src={accidentData.firUpload} alt="FIR" style={{ width: '100%' }} />
+                                    </Modal>
+                                </>
                             ) : (
                                 <p className='notUploaded'>No FIR uploaded</p>
                             )
@@ -3584,7 +3706,7 @@ const VehicleClaimEdit = () => {
 
                 </div>
                 <div className="form-row">
-                <label className="form-field">
+                    <label className="form-field">
                         Advocate's Name :
                         <input
                             className='inputField form-control'
@@ -3633,7 +3755,25 @@ const VehicleClaimEdit = () => {
                         Power Of Attorney:
                         {IsReadOnly ? (
                             accidentData.POA ? (
-                                <img src={accidentData.POA} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                                <>
+                                    <img
+                                        src={accidentData.POA}
+                                        alt="POA"
+                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                        onClick={openPOAModal}
+                                    />
+                                    <Modal isOpen={isPOAModalOpen} onRequestClose={closePOAModal} contentLabel="POA Modal">
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                            <IconButton href={accidentData.POA} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closePOAModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </div>
+                                        <img src={accidentData.POA} alt="POA" style={{ width: '100%' }} />
+                                    </Modal>
+                                </>
                             ) : (
                                 <p className='notUploaded'> No POA uploaded</p>
                             )
@@ -3648,7 +3788,6 @@ const VehicleClaimEdit = () => {
                                 required
                             />
                         )}
-
                     </label>
                     <label className="form-field"></label>
                     <label className="form-field"></label>
@@ -3695,7 +3834,8 @@ const VehicleClaimEdit = () => {
                             name="dateOfSurvey"
                             value={accidentData.dateOfSurvey}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
+                            max={todayDate}
                             readOnly={IsReadOnly}
 
                         />
@@ -3749,7 +3889,8 @@ const VehicleClaimEdit = () => {
                             name="dateOfMaterialSurvey"
                             value={accidentData.dateOfMaterialSurvey}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
+                            max={todayDate}
                             readOnly={IsReadOnly}
 
                         />
@@ -3805,8 +3946,10 @@ const VehicleClaimEdit = () => {
                             name="dateOfFinalSurvey"
                             value={accidentData.dateOfFinalSurvey}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
+                            max={todayDate}
+
 
                         />
                     </label>
@@ -3860,8 +4003,9 @@ const VehicleClaimEdit = () => {
                             name="investigationDate"
                             value={accidentData.investigationDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
+                            max={todayDate}
 
                         />
                     </label>
@@ -3916,7 +4060,25 @@ const VehicleClaimEdit = () => {
                         Representative Report Upload:
                         {IsReadOnly ? (
                             accidentData.reportUpload ? (
-                                <img src={accidentData.reportUpload} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                                <>
+                                    <img
+                                        src={accidentData.reportUpload}
+                                        alt="Representative Report"
+                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                        onClick={openReportModal}
+                                    />
+                                    <Modal isOpen={isReportModalOpen} onRequestClose={closeReportModal} contentLabel="Representative Report Modal">
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                            <IconButton href={accidentData.reportUpload} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeReportModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </div>
+                                        <img src={accidentData.reportUpload} alt="Representative Report" style={{ width: '100%' }} />
+                                    </Modal>
+                                </>
                             ) : (
                                 <p className='notUploaded'>No Representative Report uploaded</p>
                             )
@@ -3941,8 +4103,10 @@ const VehicleClaimEdit = () => {
                             name="dateRepairedOnSpot"
                             value={accidentData.dateRepairedOnSpot}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
+                            max={todayDate}
+
 
                         />
                     </label>
@@ -3969,9 +4133,10 @@ const VehicleClaimEdit = () => {
                             name="transshippedDate"
                             value={accidentData.transshippedDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             pattern="\d{10}"
                             readOnly={IsReadOnly}
+                            max={todayDate}
 
                             title="Phone number must be 10 digits"
                         />
@@ -3997,8 +4162,9 @@ const VehicleClaimEdit = () => {
                             name="reportedFinalDestinationDate"
                             value={accidentData.reportedFinalDestinationDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
+                            max={todayDate}
 
                         />
                     </label>
@@ -4007,7 +4173,25 @@ const VehicleClaimEdit = () => {
                         Adhar Card of Company Representative:
                         {IsReadOnly ? (
                             accidentData.companyRepresentativeAdhar ? (
-                                <img src={accidentData.companyRepresentativeAdhar} alt="PAN Card" style={{ maxWidth: '100px', display: 'block' }} />
+                                <>
+                                    <img
+                                        src={accidentData.companyRepresentativeAdhar}
+                                        alt="Adhar Card"
+                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                        onClick={openAdharModal}
+                                    />
+                                    <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Adhar Card Modal">
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                            <IconButton href={accidentData.companyRepresentativeAdhar} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeAdharModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </div>
+                                        <img src={accidentData.companyRepresentativeAdhar} alt="Adhar Card" style={{ width: '100%' }} />
+                                    </Modal>
+                                </>
                             ) : (
                                 <p className='notUploaded'>No Adhar Card uploaded</p>
                             )
@@ -4015,7 +4199,7 @@ const VehicleClaimEdit = () => {
                             <input
                                 type="file"
                                 name="companyRepresentativeAdhar"
-                                className='inputfield form-control'
+                                className='inputField form-control'
                                 onChange={handleChange}
                                 accept=".pdf,image/*"
                                 ref={companyRepresentativeAdhar}
@@ -4041,9 +4225,9 @@ const VehicleClaimEdit = () => {
                             name="deadLineDate"
                             value={accidentData.deadLineDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
-
+                        // max={todayDate}
                         />
                     </label>
 
@@ -4055,9 +4239,10 @@ const VehicleClaimEdit = () => {
                             name="readyDate"
                             value={accidentData.readyDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             pattern="\d{10}"
                             readOnly={IsReadOnly}
+                            max={todayDate}
 
                             title="Phone number must be 10 digits"
                         />
@@ -4071,8 +4256,9 @@ const VehicleClaimEdit = () => {
                             name="reInspectionDate"
                             value={accidentData.reInspectionDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
+                            max={todayDate}
 
                         />
                     </label>
@@ -4085,9 +4271,9 @@ const VehicleClaimEdit = () => {
                             name="finallyReleasedDate"
                             value={accidentData.finallyReleasedDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            min={accidentData.accidentDate || todayDate}
                             readOnly={IsReadOnly}
-
+                            max={todayDate}
                         />
                     </label>
                     <label className="form-field"></label>
@@ -4105,10 +4291,8 @@ const VehicleClaimEdit = () => {
                         <input
                             className='inputField form-control'
                             name="totalDaysFromAccident"
-                            value={accidentData.totalDaysFromAccident}
-                            onChange={handleChange}
-                            readOnly={IsReadOnly}
-
+                            value={totalDaysFromAccident}
+                            readOnly={true}
                         />
                     </label>
 
@@ -4117,12 +4301,8 @@ const VehicleClaimEdit = () => {
                         <input
                             className='inputField form-control'
                             name="daysInWorkShop"
-                            value={accidentData.daysInWorkShop}
-                            onChange={handleChange}
-                            readOnly={IsReadOnly}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
+                            value={totalDaysInWorkshop}
+                            readOnly={true}
                         />
                     </label>
 
@@ -4131,7 +4311,7 @@ const VehicleClaimEdit = () => {
                         <input
                             className='inputField form-control'
                             name="deadlineTAT"
-                            value={accidentData.deadlineTAT}
+                            value={calculatedDeadlineTAT}
                             onChange={handleChange}
                             readOnly={IsReadOnly}
 
@@ -4376,7 +4556,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="RCDate"
-                                            value={accidentData.RCnoDate}
+                                            value={accidentData.RCDate}
+                                            readOnly={IsReadOnly}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4389,6 +4570,7 @@ const VehicleClaimEdit = () => {
                                             name="RCassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.RCassignedTo}
+                                            readOnly={IsReadOnly}
                                             onChange={handleChange}
                                         />
                                     </div>
@@ -4399,6 +4581,7 @@ const VehicleClaimEdit = () => {
                                             name="RCremark"
                                             placeholder="Remark"
                                             value={accidentData.RCremark}
+                                            readOnly={IsReadOnly}
                                             onChange={handleChange}
                                         />
                                     </div>
@@ -4461,7 +4644,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="insuranceDate"
-                                            value={accidentData.insurancenoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.insuranceDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4473,6 +4657,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="insuranceassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.insuranceassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4483,6 +4668,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="insuranceremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.insuranceremark}
                                             onChange={handleChange}
                                         />
@@ -4546,7 +4732,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="fitnessDate"
-                                            value={accidentData.fitnessnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.fitnessDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4558,6 +4745,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="fitnessassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.fitnessassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4568,6 +4756,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="fitnessremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.fitnessremark}
                                             onChange={handleChange}
                                         />
@@ -4632,7 +4821,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="nationalPermit1YearDate"
-                                            value={accidentData.nationalPermit1YearnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.nationalPermit1YearDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4644,6 +4834,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="nationalPermit1YearassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.nationalPermit1YearassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4654,6 +4845,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="nationalPermit1Yearremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.nationalPermit1Yearremark}
                                             onChange={handleChange}
                                         />
@@ -4662,6 +4854,11 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
+
+                </div>
+
+                <div className='form-row'>
+
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -4717,7 +4914,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="nationalPermit5YearDate"
-                                            value={accidentData.nationalPermit5YearnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.nationalPermit5YearDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4729,6 +4927,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="nationalPermit5YearassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.nationalPermit5YearassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4739,6 +4938,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="nationalPermit5Yearremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.nationalPermit5Yearremark}
                                             onChange={handleChange}
                                         />
@@ -4747,9 +4947,6 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -4805,7 +5002,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="taxTokenDate"
-                                            value={accidentData.taxTokennoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.taxTokenDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4817,6 +5015,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="taxTokenassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.taxTokenassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4827,6 +5026,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="taxTokenremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.taxTokenremark}
                                             onChange={handleChange}
                                         />
@@ -4890,7 +5090,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="DLicenceDate"
-                                            value={accidentData.DLicencenoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.DLicenceDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4902,6 +5103,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="DLicenceassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.DLicenceassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4912,6 +5114,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="DLicenceremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.DLicenceremark}
                                             onChange={handleChange}
                                         />
@@ -4975,7 +5178,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="DLVerDate"
-                                            value={accidentData.DLVernoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.DLVerDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -4987,6 +5191,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="DLVerassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.DLVerassignedTo}
                                             onChange={handleChange}
                                         />
@@ -4997,6 +5202,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="DLVerremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.DLVerremark}
                                             onChange={handleChange}
                                         />
@@ -5005,6 +5211,10 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
+
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5060,7 +5270,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="LRDate"
-                                            value={accidentData.LRnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.LRDate}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
                                             onChange={handleChange}
                                         />
@@ -5071,6 +5282,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="LRassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.LRassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5081,6 +5293,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="LRremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.LRremark}
                                             onChange={handleChange}
                                         />
@@ -5144,7 +5357,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="PUCDate"
-                                            value={accidentData.PUCnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.PUCDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5156,6 +5370,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="PUCassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.PUCassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5166,6 +5381,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="PUCremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.PUCremark}
                                             onChange={handleChange}
                                         />
@@ -5174,9 +5390,6 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5233,7 +5446,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="policeReportDate"
-                                            value={accidentData.policeReportnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.policeReportDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5245,6 +5459,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="policeReportassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.policeReportassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5255,6 +5470,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="policeReportremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.policeReportremark}
                                             onChange={handleChange}
                                         />
@@ -5318,7 +5534,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="intimationDate"
-                                            value={accidentData.intimationnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.intimationDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5330,6 +5547,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="intimationassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.intimationassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5340,6 +5558,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="intimationremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.intimationremark}
                                             onChange={handleChange}
                                         />
@@ -5348,6 +5567,11 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
+
+                </div>
+
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5404,7 +5628,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="spotSurveyDate"
-                                            value={accidentData.spotSurveynoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.spotSurveyDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5416,6 +5641,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="spotSurveyassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.spotSurveyassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5426,6 +5652,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="spotSurveyremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.spotSurveyremark}
                                             onChange={handleChange}
                                         />
@@ -5489,7 +5716,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="spotReportDate"
-                                            value={accidentData.spotReportnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.spotReportDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5501,6 +5729,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="spotReportassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.spotReportassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5511,6 +5740,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="spotReportremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.spotReportremark}
                                             onChange={handleChange}
                                         />
@@ -5574,7 +5804,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="estimateGivenDate"
-                                            value={accidentData.estimateGivennoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.estimateGivenDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5586,6 +5817,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="estimateGivenassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.estimateGivenassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5596,6 +5828,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="estimateGivenremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.estimateGivenremark}
                                             onChange={handleChange}
                                         />
@@ -5604,9 +5837,6 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5663,7 +5893,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="advancePaymentDate"
-                                            value={accidentData.advancePaymentnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.advancePaymentDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5675,6 +5906,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="advancePaymentassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.advancePaymentassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5685,6 +5917,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="advancePaymentremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.advancePaymentremark}
                                             onChange={handleChange}
                                         />
@@ -5693,6 +5926,10 @@ const VehicleClaimEdit = () => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className='form-row'>
+
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5748,7 +5985,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="finalsurveyInitialDate"
-                                            value={accidentData.finalsurveyInitialnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.finalsurveyInitialDate}
                                             onChange={handleChange}
                                         />
                                         min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
@@ -5760,6 +5998,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="finalsurveyInitialassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.finalsurveyInitialassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5770,6 +6009,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="finalsurveyInitialremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.finalsurveyInitialremark}
                                             onChange={handleChange}
                                         />
@@ -5833,7 +6073,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="finalSurvey2ndDate"
-                                            value={accidentData.finalSurvey2ndnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.finalSurvey2ndDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5845,6 +6086,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="finalSurvey2ndassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.finalSurvey2ndassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5855,6 +6097,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="finalSurvey2ndremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.finalSurvey2ndremark}
                                             onChange={handleChange}
                                         />
@@ -5919,7 +6162,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="workApprovalDate"
-                                            value={accidentData.workApprovalnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.workApprovalDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -5931,6 +6175,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="workApprovalassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.workApprovalassignedTo}
                                             onChange={handleChange}
                                         />
@@ -5941,6 +6186,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="workApprovalremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.workApprovalremark}
                                             onChange={handleChange}
                                         />
@@ -6004,7 +6250,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="reinspectionDate"
-                                            value={accidentData.reinspectionnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.reinspectionDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -6016,6 +6263,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="reinspectionassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.reinspectionassignedTo}
                                             onChange={handleChange}
                                         />
@@ -6026,6 +6274,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="reinspectionremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.reinspectionremark}
                                             onChange={handleChange}
                                         />
@@ -6092,7 +6341,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="finalBillDate"
-                                            value={accidentData.finalBillnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.finalBillDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -6104,6 +6354,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="finalBillassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.finalBillassignedTo}
                                             onChange={handleChange}
                                         />
@@ -6114,6 +6365,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="finalBillremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.finalBillremark}
                                             onChange={handleChange}
                                         />
@@ -6177,7 +6429,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="paymentBalanceDate"
-                                            value={accidentData.paymentBalancenoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.paymentBalanceDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -6189,6 +6442,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="paymentBalanceassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.paymentBalanceassignedTo}
                                             onChange={handleChange}
                                         />
@@ -6199,6 +6453,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="paymentBalanceremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.paymentBalanceremark}
                                             onChange={handleChange}
                                         />
@@ -6262,10 +6517,10 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="settelMentDate"
-                                            value={accidentData.settelMentnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.settelMentDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
                                         />
                                     </div>
                                     <div className="form-field">
@@ -6274,6 +6529,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="settelMentassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.settelMentassignedTo}
                                             onChange={handleChange}
                                         />
@@ -6284,6 +6540,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="settelMentremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.settelMentremark}
                                             onChange={handleChange}
                                         />
@@ -6347,7 +6604,8 @@ const VehicleClaimEdit = () => {
                                             type="date"
                                             className='inputField form-control'
                                             name="claimFormDate"
-                                            value={accidentData.claimFormnoDate}
+                                            readOnly={IsReadOnly}
+                                            value={accidentData.claimFormDate}
                                             onChange={handleChange}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
 
@@ -6359,6 +6617,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="claimFormassignedTo"
                                             placeholder="Assigned to whom"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.claimFormassignedTo}
                                             onChange={handleChange}
                                         />
@@ -6369,6 +6628,7 @@ const VehicleClaimEdit = () => {
                                             className='inputField form-control'
                                             name="claimFormremark"
                                             placeholder="Remark"
+                                            readOnly={IsReadOnly}
                                             value={accidentData.claimFormremark}
                                             onChange={handleChange}
                                         />
@@ -6388,30 +6648,37 @@ const VehicleClaimEdit = () => {
 
 
 
+                <div style={{ textAlign: 'center' }}>
+                    {!IsReadOnly && (
+                        <div>
+                            <button type="submit"
+                                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                                disabled={isLoading} // Disable button while loading
+                                onClick={handleSubmit}
+                            >
+                                {isLoading ? 'Submitting...' : 'Submit'}
+                            </button>
+                            {isLoading && (
+                                <div style={{ marginTop: '10px' }}>
+                                    <ClipLoader color="#4CAF50" loading={isLoading} />
+                                    <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
-                {!IsReadOnly && (
-                    <div style={{ textAlign: 'center' }}>
-                        <button
-                            type="submit"
-                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </button>
-                    </div>
-                )}
-
-                {IsReadOnly && (
-                    <div style={{ textAlign: 'center' }}>
-                        <button
-                            type="submit"
-                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                            onClick={editable}
-                        >
-                            EDIT
-                        </button>
-                    </div>
-                )}
+                    {IsReadOnly && (
+                        <div style={{ textAlign: 'center' }}>
+                            <button
+                                type="submit"
+                                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                                onClick={editable}
+                            >
+                                EDIT
+                            </button>
+                        </div>
+                    )}
+                </div>
             </form>
         </div>
     );

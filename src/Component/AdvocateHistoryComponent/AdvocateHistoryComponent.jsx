@@ -35,7 +35,7 @@ function AdvocateHistoryComponent() {
                     <div className="advocatehistorypage-elem-8"></div>
                     <div className="advocatehistorypage-elem-2">
                         <span className="advocatehistorypage-elem-1">
-                            <p>Claim Pro Assist</p>
+                            <p>BVC ClaimPro Assist</p>
                         </span>
                     </div>
                     <div className="advocatehistorypage-elem-7">

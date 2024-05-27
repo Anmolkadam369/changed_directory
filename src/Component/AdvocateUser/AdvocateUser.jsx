@@ -11,7 +11,7 @@ return (
         <div className="advocatepage-elem-8"></div>
         <div className="advocatepage-elem-2">
           <span className="advocatepage-elem-1">
-            <p>Claim Pro Assist</p>
+            <p>BVC ClaimPro Assist</p>
           </span>
         </div>
         <div className="advocatepage-elem-7">

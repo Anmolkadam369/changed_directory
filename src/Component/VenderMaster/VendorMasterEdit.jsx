@@ -12,6 +12,16 @@ import backendUrl from '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ClipLoader } from 'react-spinners';
+import Modal from 'react-modal';
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+
+const config = {
+  cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
+  ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+};
 
 const VendorMasterEdit = () => {
   const location = useLocation();
@@ -25,14 +35,50 @@ const VendorMasterEdit = () => {
   const [IsReadOnly, setIsReadOnly] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedState, setSelectedState] = useState('');
+  const [isLoadingStates, setIsLoadingStates] = useState(true);
+  const [isLoadingCities, setIsLoadingCities] = useState(true);
+
+  const [isPANModalOpen, setIsPANModalOpen] = useState(false);
+  const [isAdharModalOpen, setIsAdharModalOpen] = useState(false);
+  const [isGSTModalOpen, setIsGSTModalOpen] = useState(false);
 
   useEffect(() => {
+    loadStates();
     console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
     }
     getDataById(id);
   }, [token, userId, navigate, id]); // Removed comingData from dependencies
+
+  const openPANModal = () => {
+    setIsPANModalOpen(true);
+  };
+
+  const closePANModal = () => {
+    setIsPANModalOpen(false);
+  };
+
+  const openAdharModal = () => {
+    setIsAdharModalOpen(true);
+  };
+
+  const closeAdharModal = () => {
+    setIsAdharModalOpen(false);
+  };
+
+  const openGSTModal = () => {
+    setIsGSTModalOpen(true);
+  };
+
+  const closeGSTModal = () => {
+    setIsGSTModalOpen(false);
+  };
 
   useEffect(() => {
     if (comingData) {
@@ -42,14 +88,14 @@ const VendorMasterEdit = () => {
         vendorName: comingData.vendorName || "",
         vendorType: comingData.vendorType || "",
         address: comingData.address || "",
-        vendorCity: comingData.vendorCity || "",
+        district: comingData.district || "",
         pincode: comingData.pincode || "",
         vendorPhone: comingData.vendorPhone || "",
         email: comingData.email || "",
         contactPerson: comingData.contactPerson || "",
         contactPersonNum: comingData.contactPersonNum || "",
         contactPersonNum2: comingData.contactPersonNum2 || "",
-        cusLocation: comingData.cusLocation || "",
+        state: comingData.state || "",
         panNo: comingData.panNo || "",
         panCard: comingData.panCard || "",
         adharNo: comingData.adharNo || "",
@@ -63,6 +109,37 @@ const VendorMasterEdit = () => {
     }
   }, [comingData]);
 
+  const loadStates = () => {
+    setIsLoadingStates(true);
+    fetch(`${config.cUrl}/states`, {
+      headers: { "X-CSCAPI-KEY": config.ckey }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setStates(data);
+        setIsLoadingStates(false);
+      })
+      .catch(error => {
+        console.error('Error loading states:', error);
+        setIsLoadingStates(false);
+      });
+  }
+
+  const loadCities = (stateCode) => {
+    setIsLoadingCities(true);
+    fetch(`${config.cUrl}/states/${stateCode}/cities`, {
+      headers: { "X-CSCAPI-KEY": config.ckey }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setCities(data);
+        setIsLoadingCities(false);
+      })
+      .catch(error => {
+        console.error('Error loading cities:', error);
+        setIsLoadingCities(false);
+      });
+  };
 
   const [formData, setFormData] = useState({
     systemDate: today,
@@ -70,14 +147,14 @@ const VendorMasterEdit = () => {
     vendorName: '',
     vendorType: "",
     address: '',
-    vendorCity: "",
+    district: "",
     pincode: '',
     vendorPhone: '',
     email: '',
     contactPerson: '',
     contactPersonNum: "",
     contactPersonNum2: '',
-    cusLocation: '',
+    state: '',
     panNo: "",
     panCard: null,
     adharNo: "",
@@ -87,6 +164,7 @@ const VendorMasterEdit = () => {
     GSTNo: "",
     GST: null,
   });
+
   const getDataById = async (id) => {
     const response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
     console.log("daa", response.data.data)
@@ -100,9 +178,9 @@ const VendorMasterEdit = () => {
   const agreementRef = useRef(null);
 
   const handleChange = (e) => {
-    const { name, type, files } = e.target;
+    const { name, type, files, value } = e.target;
     if (type === 'file') {
-      if (files[0] && files[0].size > 102400) {
+      if (files[0] && files[0].size > 2097152) {
         setSnackbarMessage("File size should be less than 2 MB!");
         setOpenSnackbar(true);
         const refs = {
@@ -126,7 +204,40 @@ const VendorMasterEdit = () => {
         ...prevState,
         [name]: files[0]
       }));
-    } else {
+    }
+    else if (name === 'state') {
+      loadCities(value);
+      setFormData(prevState => ({ ...prevState, [name]: value }));
+    }
+    else if (name === "vendorPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
+      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "pincode" || name === "rate") {
+      const validValue = value.replace(/\D/g, '').slice(0, 6);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "vendorPhone") {
+      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "adharNo") {
+      const validValue = value.replace(/\D/g, '').slice(0, 12);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else {
       const { value } = e.target;
       setFormData(prevState => ({
         ...prevState,
@@ -141,6 +252,7 @@ const VendorMasterEdit = () => {
         if (value === null || value === undefined || value.size === 0)
           return `Field '${key}' is required.`;
       }
+      if (key === "rate") continue;
       if (value === '') {
         return `Field '${key}' is required.`;
       }
@@ -153,15 +265,17 @@ const VendorMasterEdit = () => {
 
     return '';
   };
-
+  console.log("FOEMRDD", formData)
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const validationMessage = validateForm();
     if (validationMessage) {
       setSnackbarMessage(validationMessage);
       setOpenSnackbar(true);
+      setIsLoading(false);
       return;
     }
     console.log('Form data submitted:', formData);
@@ -171,7 +285,11 @@ const VendorMasterEdit = () => {
         if (formData[key] instanceof File) {
           formDataObj.append(key, formData[key], formData[key].name);
         } else {
-          formDataObj.append(key, formData[key]);
+          if (key === 'rate' && formData[key] === "") {
+            formDataObj.append(key, "0");
+          } else {
+            formDataObj.append(key, formData[key]);
+          }
         }
       }
     }
@@ -193,6 +311,7 @@ const VendorMasterEdit = () => {
       console.log("response", response.data);
       setSnackbarMessage("Form submitted successfully!");
       setOpenSnackbar(true);
+      setIsLoading(false);
       setTimeout(() => {
         navigate("../Admin");
       }, 2000);
@@ -200,6 +319,7 @@ const VendorMasterEdit = () => {
       console.error("Error during form submission:", error);
       setSnackbarMessage("Failed to submit the form.");
       setOpenSnackbar(true);
+      setIsLoading(false);
     }
   };
 
@@ -208,12 +328,12 @@ const VendorMasterEdit = () => {
   }
   const handleBack = () => {
     navigate("../Admin")
-}
+  }
   return (
     <div>
 
-      <form onSubmit={handleSubmit} className="Customer-master-form" style={{marginBottom:"50px"}}>
-        <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+      <form onSubmit={handleSubmit} className="Customer-master-form" style={{ marginBottom: "50px" }}>
+        <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
         <div>
           <h3 className='bigtitle' >Vendor Master Edits</h3>
 
@@ -244,18 +364,39 @@ const VendorMasterEdit = () => {
               className="form-control"
             />
           </label>
-          <label className="form-field input-group mb-3">
-            Customer Location:
-            <input
-              type="text"
-              name="cusLocation"
-              value={formData.cusLocation}
-              onChange={handleChange}
-              readOnly={IsReadOnly}
-              className="form-control"
 
-            />
+          <label className="form-field input-group mb-3">
+            Accident Place - State:
+            <select
+              className='form-control'
+              name="state"
+              onChange={handleChange}
+              disabled={IsReadOnly || isLoadingStates}
+              value={formData.state}>
+              <option value="">Select State</option>
+              {states.map(state => (
+                <option key={state.iso2} value={state.iso2}>{state.name}</option>
+              ))}
+            </select>
           </label>
+
+          <label className="form-field input-group mb-3">
+            Accident Place - City:
+            <select
+              className='form-control'
+              name="district"
+              readOnly={IsReadOnly}
+              value={formData.district}
+              onChange={handleChange}
+              disabled={isLoadingCities || !formData.state}
+            >
+              <option value="">Select City</option>
+              {!cities.error && cities.map(city => (
+                <option key={city.iso2} value={city.iso2}>{city.name}</option>
+              ))}
+            </select>
+          </label>
+
           <label className="form-field">
             Vendor Code: {/* This might not be editable if it's system generated */}
             <input
@@ -265,6 +406,10 @@ const VendorMasterEdit = () => {
               className="form-control"
             />
           </label>
+
+        </div>
+
+        <div className='form-row'>
           <label className="form-field">
             Vendor Name:
             <input
@@ -277,16 +422,13 @@ const VendorMasterEdit = () => {
               required
             />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
             Vendor Type:
-            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control"  required>
+            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control" required disabled={IsReadOnly}>
               <option value="">Select</option>
               <option value="advocate">Advocate</option>
-              <option value="crain">Crain</option>
-              <option value="crain">Machnic</option>
+              <option value="crain">Crane</option>
+              <option value="machanic">Mechanic</option>
               <option value="workshop">Workshop</option>
             </select>
           </label>
@@ -301,17 +443,7 @@ const VendorMasterEdit = () => {
               className="form-control"
             />
           </label>
-          <label className="form-field">
-            Vendor City  :
-            <input
-              type='text'
-              name="vendorCity"
-              value={formData.vendorCity}
-              onChange={handleChange}
-              required
-              className="form-control"
-              readOnly={IsReadOnly} />
-          </label>
+
           <label className="form-field">
             Pincode:
             <input
@@ -319,16 +451,18 @@ const VendorMasterEdit = () => {
               name="pincode"
               value={formData.pincode}
               onChange={handleChange}
+              placeholder='Pincode'
               required
               pattern="\d{6}"
-              title="Pincode must be 6 digits"
               readOnly={IsReadOnly}
+              title="Pincode must be 6 digits"
               className="form-control"
             />
           </label>
         </div>
 
         <div className='form-row'>
+
           <label className="form-field">
             Vendor Phone No:
             <input
@@ -336,13 +470,15 @@ const VendorMasterEdit = () => {
               name="vendorPhone"
               value={formData.vendorPhone}
               onChange={handleChange}
+              placeholder='Vendor Phone No'
               required
-              pattern="\d{10}"
-              title="Phone number must be 10 digits"
               readOnly={IsReadOnly}
+              pattern="\d{10}"
+              title="Phone number must be exactly 10 digits"
               className="form-control"
             />
           </label>
+
           <label className="form-field">
             E-Mail:
             <input
@@ -350,13 +486,15 @@ const VendorMasterEdit = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder='E-Mail'
               required
+              readOnly={IsReadOnly}
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               title="Please enter a valid email address."
-              readOnly={IsReadOnly}
               className="form-control"
             />
           </label>
+
           <label className="form-field">
             Contact Person:
             <input
@@ -364,21 +502,24 @@ const VendorMasterEdit = () => {
               name="contactPerson"
               value={formData.contactPerson}
               onChange={handleChange}
-              required
-              readOnly={IsReadOnly}
+              placeholder='Contact Person Name'
               className="form-control"
-            />
+              required
+              readOnly={IsReadOnly} />
           </label>
           <label className="form-field">
-            Contact Person Number :
+            Contact Person Number:
             <input
-              type='text'
+              type='tel'
               name="contactPersonNum"
               value={formData.contactPersonNum}
               onChange={handleChange}
+              placeholder='Contact Person Phone'
+              required
               readOnly={IsReadOnly}
+              pattern="\d{10}"
               className="form-control"
-              required />
+              title="Phone number must be 10 digits" />
           </label>
         </div>
 
@@ -386,31 +527,56 @@ const VendorMasterEdit = () => {
           <label className="form-field">
             Contact Person Number 2 :
             <input
-              type='text'
+              type='tel'
               name="contactPersonNum2"
               value={formData.contactPersonNum2}
+              placeholder='Contact Person Phone'
               onChange={handleChange}
-              readOnly={IsReadOnly}
+              required
+              pattern="\d{10}"
+              title="Phone number must be 10 digits"
               className="form-control"
-              required />
+              readOnly={IsReadOnly}
+            />
           </label>
           <label className="form-field">
             PAN Number:
             <input
               type='text'
               name="panNo"
+              placeholder='Pan Card Number'
               value={formData.panNo}
               onChange={handleChange}
-              readOnly={IsReadOnly}
               className="form-control"
-              required />
+              required
+              pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+              title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+              readOnly={IsReadOnly}
+            />
           </label>
-
           <label className="form-field">
             PAN Card:
             {IsReadOnly ? (
               formData.panCard ? (
-                <img src={formData.panCard} alt="PAN Card" />
+                <>
+                  <img
+                    src={formData.panCard}
+                    alt="PAN Card"
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                    onClick={openPANModal}
+                  />
+                  <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                      <IconButton href={formData.panCard} download color="primary">
+                        <DownloadIcon />
+                      </IconButton>
+                      <IconButton onClick={closePANModal} color="secondary">
+                        <CloseIcon />
+                      </IconButton>
+                    </div>
+                    <img src={formData.panCard} alt="PAN Card" style={{ width: '100%' }} />
+                  </Modal>
+                </>
               ) : (
                 <p>No PAN Card uploaded</p>
               )
@@ -422,22 +588,25 @@ const VendorMasterEdit = () => {
                 accept=".pdf,image/*"
                 ref={panRef}
                 required
-              className="form-control"
-
+                className="form-control"
               />
             )}
           </label>
 
           <label className="form-field">
-            Adhar Number :
+            Aadhaar Number:
             <input
               type='text'
               name="adharNo"
+              placeholder='Aadhaar Card Number'
               value={formData.adharNo}
               onChange={handleChange}
-              readOnly={IsReadOnly}
               className="form-control"
-              required />
+              required
+              pattern="\d{12}"
+              title="Aadhaar number must be exactly 12 digits."
+              readOnly={IsReadOnly}
+            />
           </label>
         </div>
 
@@ -446,7 +615,25 @@ const VendorMasterEdit = () => {
             Adhar Card:
             {IsReadOnly ? (
               formData.adharCard ? (
-                <img src={formData.adharCard} alt="Adhar Card"/>
+                <>
+                  <img
+                    src={formData.adharCard}
+                    alt="Adhar Card"
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                    onClick={openAdharModal}
+                  />
+                  <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Adhar Card Modal">
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                      <IconButton href={formData.adharCard} download color="primary">
+                        <DownloadIcon />
+                      </IconButton>
+                      <IconButton onClick={closeAdharModal} color="secondary">
+                        <CloseIcon />
+                      </IconButton>
+                    </div>
+                    <img src={formData.adharCard} alt="Adhar Card" style={{ width: '100%' }} />
+                  </Modal>
+                </>
               ) : (
                 <p>No Adhar Card uploaded</p>
               )
@@ -457,7 +644,7 @@ const VendorMasterEdit = () => {
                 onChange={handleChange}
                 accept=".pdf,image/*"
                 ref={adharCardRef}
-              className="form-control"
+                className="form-control"
                 required
               />
             )}
@@ -467,13 +654,11 @@ const VendorMasterEdit = () => {
             {IsReadOnly ? (
               formData.agreement ? (
                 <>
-                  {/* <img src={formData.agreement} style={{ maxWidth: '100px', display: 'block' }} /> */}
-                  <p style={{fontWeight:'bold', marginTop:"20px"}}>Click To Download
-                    <a href={formData.agreement} className="docx-link" style={{ marginLeft:"10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                  <p style={{ fontWeight: 'bold', marginTop: "20px" }}>Click To Download
+                    <a href={formData.agreement} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
                       Download
                     </a>
                   </p>
-
                 </>
               ) : (
                 <p>No Adhar Card uploaded</p>
@@ -490,38 +675,47 @@ const VendorMasterEdit = () => {
               />
             )}
           </label>
-          <label className="form-field">
-            Rate/KM :
-            <input
-              type='text'
-              name="rate"
-              value={formData.rate}
-              onChange={handleChange}
-              readOnly={IsReadOnly}
-              className="form-control"
-              required />
-          </label>
+
           <label className="form-field">
             GST Number:
             <input
               type='text'
               name="GSTNo"
+              placeholder='GST Number'
               value={formData.GSTNo}
               onChange={handleChange}
-              readOnly={IsReadOnly}
               className="form-control"
-              required />
+              required
+              readOnly={IsReadOnly}
+              pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
+              title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
+            />
           </label>
-        </div>
-
-        <div className='form-row'>
           <label className="form-field">
-            GSTIN :
+            GSTIN:
             {IsReadOnly ? (
               formData.GST ? (
-                <img src={formData.GST} alt="GSTIN" style={{ maxWidth: '100px', display: 'block' }} />
+                <>
+                  <img
+                    src={formData.GST}
+                    alt="GSTIN"
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                    onClick={openGSTModal}
+                  />
+                  <Modal isOpen={isGSTModalOpen} onRequestClose={closeGSTModal} contentLabel="GSTIN Modal">
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                      <IconButton href={formData.GST} download color="primary">
+                        <DownloadIcon />
+                      </IconButton>
+                      <IconButton onClick={closeGSTModal} color="secondary">
+                        <CloseIcon />
+                      </IconButton>
+                    </div>
+                    <img src={formData.GST} alt="GSTIN" style={{ width: '100%' }} />
+                  </Modal>
+                </>
               ) : (
-                <p>No Adhar Card uploaded</p>
+                <p>No GST Card uploaded</p>
               )
             ) : (
               <input
@@ -535,21 +729,50 @@ const VendorMasterEdit = () => {
               />
             )}
           </label>
-          <label className="form-field"></label>
+        </div>
+
+        <div className='form-row'>
+
+          {formData.vendorType == "crain" &&
+            (<label className="form-field">
+              Rate/KM :
+              <input
+                type='text'
+                name="rate"
+                placeholder='Rate Per KM'
+                value={formData.rate}
+                onChange={handleChange}
+                className="form-control"
+                readOnly={IsReadOnly}
+                title="Aadhaar number must be exactly 12 digits."
+                required />
+            </label>
+            )}
+          {formData.vendorType != "crain" && (
+            <label className="form-field"></label>
+          )}
           <label className="form-field"></label>
           <label className="form-field"></label>
 
         </div>
 
         <div style={{ textAlign: 'center' }}>
-          {!IsReadOnly && (
-            <button
-              type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
+        {!IsReadOnly && (
+            <div>
+              <button type="submit"
+                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                disabled={isLoading} // Disable button while loading
+                onClick={handleSubmit}
+              >
+                {isLoading ? 'Submitting...' : 'Submit'}
+              </button>
+              {isLoading && (
+                <div style={{ marginTop: '10px' }}>
+                  <ClipLoader color="#4CAF50" loading={isLoading} />
+                  <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                </div>
+              )}
+            </div>
           )}
 
           {IsReadOnly && (

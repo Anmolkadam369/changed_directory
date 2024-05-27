@@ -12,18 +12,64 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import demoexcel from '../../Assets/demoexcel.png'
 import { ClipLoader } from 'react-spinners';
 
+const config = {
+  cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
+  ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+};
+
 const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedState, setSelectedState] = useState('');
+  const [isLoadingStates, setIsLoadingStates] = useState(true);
+  const [isLoadingCities, setIsLoadingCities] = useState(true);
+
   useEffect(() => {
+    loadStates();
     console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
     }
   }, [token, userId, navigate]);
+
+  const loadStates = () => {
+    setIsLoadingStates(true);
+    fetch(`${config.cUrl}/states`, {
+      headers: { "X-CSCAPI-KEY": config.ckey }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setStates(data);
+        setIsLoadingStates(false);
+      })
+      .catch(error => {
+        console.error('Error loading states:', error);
+        setIsLoadingStates(false);
+      });
+  }
+
+  const loadCities = (stateCode) => {
+    setIsLoadingCities(true);
+    fetch(`${config.cUrl}/states/${stateCode}/cities`, {
+      headers: { "X-CSCAPI-KEY": config.ckey }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setCities(data);
+        setIsLoadingCities(false);
+      })
+      .catch(error => {
+        console.error('Error loading cities:', error);
+        setIsLoadingCities(false);
+      });
+  };
+
   const today = new Date().toISOString().split('T')[0];
   const [isRetail, setIsRetail] = useState(false);
   const [isFleetOwner, setIsFleetOwner] = useState(false);
@@ -36,14 +82,14 @@ const CustomerMaster = () => {
     CustomerName: '',
     CustomerType: '',
     address: '',
-    CustomerCity: '',
+    district: '',
     pincode: '',
     CustomerPhone: '',
     email: '',
     contactPerson: '',
     contactPersonNum: "",
     contactPersonNum2: '',
-    cusLocation: '',
+    state: '',
     panNo: "",
     panCard: "",
     adharNo: '',
@@ -54,6 +100,8 @@ const CustomerMaster = () => {
     plan: '',
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "", year: "", type: "", application: "", GVW: "", ULW: "", InsuranceName: "", choosenPlan: ""
   });
+
+  console.log("FORMDATA", formData)
 
   const handleSelect = (event, value) => {
     event.preventDefault();
@@ -111,7 +159,7 @@ const CustomerMaster = () => {
     const { name, type, files } = e.target;
     const value = e.target.value;  // Added to define 'value'
     if (type === 'file') {
-      if (files[0] && files[0].size > 102400) {
+      if (files[0] && files[0].size > 2097152) {
         setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
         if (name == 'fleetSize' && value !== "") {
           if (files[0].type !== 'application/vnd.ms-excel' && files[0].type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
@@ -154,7 +202,34 @@ const CustomerMaster = () => {
         ...prevState,
         [name]: files[0]
       }));
-    } else {
+    }
+    else if (name === 'state') {
+      loadCities(value);
+      setFormData(prevState => ({ ...prevState, [name]: value }));
+    }
+     else if (name === "pincode") {
+      const validValue = value.replace(/\D/g, '').slice(0, 6);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "adharNo") {
+      const validValue = value.replace(/\D/g, '').slice(0, 12);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+    else if (name === "CustomerPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
+      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    }
+
+     else {
       setFormData(prevState => ({
         ...prevState,
         [name]: value
@@ -241,15 +316,34 @@ const CustomerMaster = () => {
             />
           </label>
           <label className="form-field input-group mb-3">
-            Customer Location:
-            <input
-              type="text"
-              name="cusLocation"
-              value={formData.cusLocation}
+            Accident Place - State:
+            <select
+              className='form-control'
+              name="state"
               onChange={handleChange}
-              className="form-control"
+              disabled={isLoadingStates}
+              value={formData.state}>
+              <option value="">Select State</option>
+              {states.map(state => (
+                <option key={state.iso2} value={state.iso2}>{state.name}</option>
+              ))}
+            </select>
+          </label>
 
-            />
+          <label className="form-field input-group mb-3">
+            Accident Place - City:
+            <select
+              className='form-control'
+              name="district"
+              value={formData.district}
+              onChange={handleChange}
+              disabled={isLoadingCities || !formData.state}
+            >
+              <option value="">Select City</option>
+              {!cities.error && cities.map(city => (
+                <option key={city.iso2} value={city.iso2}>{city.name}</option>
+              ))}
+            </select>
           </label>
           <label className="form-field input-group mb-3 ">
             Customer Code: {/* This might not be editable if it's system generated */}
@@ -261,7 +355,12 @@ const CustomerMaster = () => {
               readOnly
             />
           </label>
-          <label className="form-field input-group mb-3">
+
+        </div>
+
+        <div className='form-row'>
+
+        <label className="form-field input-group mb-3">
             Customer Name:
             <input
               type="text"
@@ -272,10 +371,6 @@ const CustomerMaster = () => {
               required
             />
           </label>
-        </div>
-
-        <div className='form-row'>
-
 
           <label className="form-field input-group mb-3">
             Customer Type:
@@ -290,10 +385,7 @@ const CustomerMaster = () => {
             Address  :
             <textarea name="address" value={formData.address} className="form-control" onChange={handleChange} required />
           </label>
-          <label className="form-field">
-            Customer City  :
-            <input type='text' name="CustomerCity" value={formData.CustomerCity} className="form-control" onChange={handleChange} required />
-          </label>
+
           <label className="form-field">
             Pincode:
             <input
@@ -301,10 +393,11 @@ const CustomerMaster = () => {
               name="pincode"
               value={formData.pincode}
               onChange={handleChange}
-              className="form-control"
+              placeholder='Pincode'
               required
               pattern="\d{6}"
               title="Pincode must be 6 digits"
+              className="form-control"
             />
           </label>
         </div>
@@ -316,6 +409,7 @@ const CustomerMaster = () => {
               type='tel'
               name="CustomerPhone"
               value={formData.CustomerPhone}
+              placeholder='Customer Phone No'
               onChange={handleChange}
               className="form-control"
               required
@@ -347,37 +441,49 @@ const CustomerMaster = () => {
               required />
           </label>
           <label className="form-field">
-            Contact Person Number :
+            Contact Person Number:
             <input
-              type='text'
+              type='tel'
               name="contactPersonNum"
               value={formData.contactPersonNum}
               onChange={handleChange}
+              placeholder='Contact Person Phone'
+              required
+              pattern="\d{10}"
               className="form-control"
-              required />
+              title="Phone number must be 10 digits" />
           </label>
         </div>
 
         <div className='form-row'>
-          <label className="form-field">
+        <label className="form-field">
             Contact Person Number 2 :
             <input
-              type='text'
+              type='tel'
               name="contactPersonNum2"
               value={formData.contactPersonNum2}
+              placeholder='Contact Person Phone'
               onChange={handleChange}
+              required
+              pattern="\d{10}"
+              title="Phone number must be 10 digits"
               className="form-control"
-              required />
+
+            />
           </label>
           <label className="form-field">
             PAN Number:
             <input
               type='text'
               name="panNo"
+              placeholder='Pan Card Number'
               value={formData.panNo}
               onChange={handleChange}
               className="form-control"
-              required />
+              required
+              pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+              title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+            />
           </label>
           <label className="form-field">
             PAN Card :
@@ -392,14 +498,18 @@ const CustomerMaster = () => {
               required />
           </label>
           <label className="form-field">
-            Adhar Number :
+            Aadhaar Number:
             <input
               type='text'
               name="adharNo"
+              placeholder='Aadhaar Card Number'
               value={formData.adharNo}
               onChange={handleChange}
               className="form-control"
-              required />
+              required
+              pattern="\d{12}"
+              title="Aadhaar number must be exactly 12 digits."
+            />
           </label>
         </div>
 
@@ -421,10 +531,14 @@ const CustomerMaster = () => {
             <input
               type='text'
               name="GSTNo"
+              placeholder='GST Number'
               value={formData.GSTNo}
               onChange={handleChange}
               className="form-control"
-              required />
+              required
+              pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
+              title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
+            />
           </label>
 
           <label className="form-field">
