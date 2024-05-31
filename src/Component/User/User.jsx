@@ -23,6 +23,7 @@ import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -123,6 +124,11 @@ const User = () => {
 
     return (
         <div className="admin-page">
+            <Helmet>
+                <title>User Page - Claimpro</title>
+                <meta name="description" content="User Page" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             {isSidebarOpen ? (
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
                     {window.innerWidth < 768 && (
@@ -199,7 +205,7 @@ const User = () => {
                 </div>
             )}
             <main className="content" style={{ marginLeft: '0px' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
                     <div>
                         <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
                             onClick={() => setShowUserId(!showUserId)} />

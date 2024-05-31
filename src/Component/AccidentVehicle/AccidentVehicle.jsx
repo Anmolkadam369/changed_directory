@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -76,6 +77,11 @@ const AccidentVehicle = () => {
 
   return (
     <div>
+            <Helmet>
+        <title>Accident Vehicle Service - Claimpro</title>
+        <meta name="description" content="Accident Vehicle Service ." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <h3 class="bigtitle">Assign Vendor to Accident Vehicle</h3>
       <div className='responsive-table'>
         <table style={{ width: '100%', borderCollapse: 'collapse', marginLeft: "30px" }}>

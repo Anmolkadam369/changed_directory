@@ -9,7 +9,7 @@ import './responsive-bp_1920.css'
 import { useNavigate } from 'react-router-dom';
 import trucks1 from '../../Assets/trucks1.jpg';
 import trucks2 from '../../Assets/trucks2.jpg';
-
+import { Helmet } from 'react-helmet';
 
 function Home() {
     const navigate = useNavigate();
@@ -22,10 +22,13 @@ function Home() {
         navigate('./ContactUs');
     }
 
-
-
     return (
         <div className="home-elem-19">
+      <Helmet>
+        <title>Accident Trucks Customer Service - Claimpro</title>
+        <meta name="description" content="Home Page for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
             <div className="home-elem-14">
                 <div className="home-elem-13">
                     <div className="home-elem-15">

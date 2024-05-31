@@ -10,6 +10,8 @@ import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
+
 
 function DailyWorkshop() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -69,9 +71,9 @@ function DailyWorkshop() {
             navigate("/");
         }
         getDataById(id);
-        console.log("comingData.accidentFileNo",comingData.accidentFileNo)
-        
-        if(comingData.accidentFileNo) getPreviousImages(comingData.accidentFileNo)
+        console.log("comingData.accidentFileNo", comingData.accidentFileNo)
+
+        if (comingData.accidentFileNo) getPreviousImages(comingData.accidentFileNo)
     }, [token, userId, navigate, id]);
 
     useEffect(() => {
@@ -117,36 +119,36 @@ function DailyWorkshop() {
     }, [comingData])
 
     const [formData, setFormData] = useState({
-        ...photos, 
-        todayDate:Date.now().toString(),
-        accidentFileNo:comingData.accidentFileNo,
-        customerName: comingData.CustomerName, 
-        vehicleNo : comingData.vehicleNo,
-        chassisNo: comingData.chassisNo 
+        ...photos,
+        todayDate: Date.now().toString(),
+        accidentFileNo: comingData.accidentFileNo,
+        customerName: comingData.CustomerName,
+        vehicleNo: comingData.vehicleNo,
+        chassisNo: comingData.chassisNo
     })
 
-    console.log("formDara",formData);
+    console.log("formDara", formData);
 
-    const getPreviousImages = async (accidentFileNo)=>{
+    const getPreviousImages = async (accidentFileNo) => {
         try {
             const response = await axios.get(`${backendUrl}/api/getImagesByAccidentFile/${accidentFileNo}`);
             console.log("getImagesByAccidentFile", response)
-        // setComingData(response.data.data[0])
+            // setComingData(response.data.data[0])
 
         } catch (error) {
-        console.error("Error fetching user data:", error);
+            console.error("Error fetching user data:", error);
         }
-    } 
+    }
 
     const getDataById = async (id) => {
-        try{
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
-        console.log("getAccidentVehicleInfo", response)
-        console.log("getAccidentVehicleInfo", response.data.data[0]);
-        setComingData(response.data.data[0])
-    } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
+        try {
+            const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
+            console.log("getAccidentVehicleInfo", response)
+            console.log("getAccidentVehicleInfo", response.data.data[0]);
+            setComingData(response.data.data[0])
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+        }
     }
 
     const handleFileChange = (event, type) => {
@@ -198,21 +200,21 @@ function DailyWorkshop() {
             ...photos,
             todayDate: todayDate,
             accidentFileNo: comingData.accidentFileNo,
-            customerName: comingData.CustomerName, 
+            customerName: comingData.CustomerName,
             vehicleNo: comingData.vehicleNo,
             chassisNo: comingData.chassisNo,
-            vendor:comingData.workshop,
+            vendor: comingData.workshop,
         }
-        console.log("complete",complete)
+        console.log("complete", complete)
 
-    
+
         const validationMessage = validateForm(complete);
         if (validationMessage) {
             setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
             setIsSubmitting(false);
             return;
         }
-    
+
         const formDataObj = new FormData();
         for (const key in complete) {
             if (complete[key]) {
@@ -225,9 +227,9 @@ function DailyWorkshop() {
         }
         for (let pair of formDataObj.entries()) {
             console.log(`${pair[0]}:`, pair[1]);
-          }
+        }
 
-          try {
+        try {
             const response = await axios({
                 method: 'POST',
                 url: `${backendUrl}/api/dailyImagesByWorkshop/${userId}`,
@@ -240,7 +242,7 @@ function DailyWorkshop() {
             if (response.data.message === "Images added successfully")
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
 
-          } catch (error) {
+        } catch (error) {
             console.error("Error during form submission:", error);
             if (error.response) {
                 console.error("Response data:", error.response.data);
@@ -250,10 +252,10 @@ function DailyWorkshop() {
             } else {
                 console.error("Error setting up request:", error.message);
             }
-          }
-    
+        }
+
         console.log('Complete FormData for Submission:', complete);
-    
+
         setIsSubmitting(false);  // Reset the submitting state after operations are complete
     };
     const handleBack = () => {
@@ -261,7 +263,12 @@ function DailyWorkshop() {
     }
     return (
         <div className='container'>
-            <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+            <Helmet>
+                <title>Daily Workshop Images - ClaimProAssist</title>
+                <meta name="description" content="Daily Workshop Images BVC Claimoro Asist" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
+            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>
             </div>
@@ -382,51 +389,51 @@ function DailyWorkshop() {
                 <h2 className='bigtitle'>Daily Image Upload - Workshop</h2>
             </div>
             <br />
-        <div className='form-row'>
+            <div className='form-row'>
 
-            <label className="form-field input-group mb-3">
-            Today's Date:
-            <input
-              type="date"
-              name="systemDate"
-              value={new Date().toISOString().split('T')[0]}
-              className="form-control"
-              readOnly
-            />
-          </label>
+                <label className="form-field input-group mb-3">
+                    Today's Date:
+                    <input
+                        type="date"
+                        name="systemDate"
+                        value={new Date().toISOString().split('T')[0]}
+                        className="form-control"
+                        readOnly
+                    />
+                </label>
 
-          <label className="form-field input-group mb-3"></label>
-          </div>
+                <label className="form-field input-group mb-3"></label>
+            </div>
 
             {Object.keys(photos).map((type, index) => (
-                    <div key={type} className="photo-input-section">
-                        <label>
-                            {type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:
-                            <input
-                                type="file"
-                                ref={photoRefs[type]}
-                                accept="image/*"
-                                capture="camera"
-                                className="form-control"
-                                onChange={(e) => handleFileChange(e, type)}
-                                style={{marginBottom:"20px"}}
-                            />
-                        </label>
-                        {photoPreviews[type] && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '20px' }}>
-                                <img src={photoPreviews[type]} alt={`Upload preview ${type}`} style={{ width: 100, height: 100 }} />
-                                <Button variant="contained" onClick={() => {
-                                    setPhotos(prev => ({ ...prev, [type]: null }));
-                                    setPhotoPreviews(prev => ({ ...prev, [type]: null }));
-                                    if (photoRefs[type].current) {
-                                        photoRefs[type].current.value = ""; // Reset the file input
-                                    }
-                                }}>Remove</Button>
-                            </div>
-                        )}
+                <div key={type} className="photo-input-section">
+                    <label>
+                        {type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:
+                        <input
+                            type="file"
+                            ref={photoRefs[type]}
+                            accept="image/*"
+                            capture="camera"
+                            className="form-control"
+                            onChange={(e) => handleFileChange(e, type)}
+                            style={{ marginBottom: "20px" }}
+                        />
+                    </label>
+                    {photoPreviews[type] && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '20px' }}>
+                            <img src={photoPreviews[type]} alt={`Upload preview ${type}`} style={{ width: 100, height: 100 }} />
+                            <Button variant="contained" onClick={() => {
+                                setPhotos(prev => ({ ...prev, [type]: null }));
+                                setPhotoPreviews(prev => ({ ...prev, [type]: null }));
+                                if (photoRefs[type].current) {
+                                    photoRefs[type].current.value = ""; // Reset the file input
+                                }
+                            }}>Remove</Button>
+                        </div>
+                    )}
 
-                    </div>
-                ))}
+                </div>
+            ))}
 
 
 

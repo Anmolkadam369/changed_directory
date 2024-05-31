@@ -12,6 +12,7 @@ import Input from '@mui/material/Input';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import Snackbar from '@mui/material/Snackbar';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -262,6 +263,11 @@ console.log("accidentData", accidentDataObject)
 
     return (
         <div className="photo-upload-container">
+                        <Helmet>
+                <title>Get Location of Accident Veehicle - Claimpro</title>
+                <meta name="description" content="Get Location of Accident Veehicle and photos of vehicle." />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <Stack spacing={2}>
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 <p style={{ textAlign: 'center' }}>OR</p>

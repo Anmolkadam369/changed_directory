@@ -6,6 +6,8 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
+import { Helmet } from 'react-helmet';
+
 
 const HandoverToWorkshop = () => {
 
@@ -173,7 +175,7 @@ const HandoverToWorkshop = () => {
         setHandoverData(prev => ({ ...prev, [name]: value }));
     }
 
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         // console.log('Form data submitted:', accidentData);
@@ -202,7 +204,7 @@ const HandoverToWorkshop = () => {
         //         }
         //     });
         //     console.log("response", response.data);
-            setAlertInfo({ show: true, message: "Data Successfully Added !!!", severity: 'success' });
+        setAlertInfo({ show: true, message: "Data Successfully Added !!!", severity: 'success' });
         // }
         // catch (error) {
         //     console.error('Error response:', error.response);
@@ -216,6 +218,11 @@ const HandoverToWorkshop = () => {
 
     return (
         <div className='container'>
+            <Helmet>
+                <title>Handover to workshop - claimproassist</title>
+                <meta name="description" content="Handover for workshop for BVC Claimpro Assist" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
                 <div class='header-container'>
                     <h2 className='bigtitle'>Hand Over Form</h2>
@@ -1856,7 +1863,7 @@ const HandoverToWorkshop = () => {
                     </div>
 
                 </div>
-                
+
                 {alertInfo.show && (
                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
                         {alertInfo.message}

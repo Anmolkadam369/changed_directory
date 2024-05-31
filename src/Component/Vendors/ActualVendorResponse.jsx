@@ -8,6 +8,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -67,6 +68,11 @@ const ActualVendorResponse = () => {
 
     return (
         <div style={{ padding: '0px', margin: '10px' }}>
+            <Helmet>
+                <title>Actual Vendor Response - Claimpro</title>
+                <meta name="description" content="Actual Vendor Response" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}>BACK</Button>
             <h3 className="bigtitle">Vendor Response</h3>
 
@@ -205,7 +211,7 @@ const ActualVendorResponse = () => {
                                                 <td>{item.payment ? <span style={{ fontWeight: 'bold' }}>uploaded</span> : '---'}</td>
                                                 <td>{item.estimateGiven ? <span style={{ fontWeight: 'bold' }}>uploaded</span> : '---'}</td>
                                                 <td>{item.deadlineSheet ? <span style={{ fontWeight: 'bold' }}>uploaded</span> : '---'}</td>
-                                                <td>{item.supplementryEstimate ? <span style={{ fontWeight: 'bold' }}>uploaded</span>: '---'}</td>
+                                                <td>{item.supplementryEstimate ? <span style={{ fontWeight: 'bold' }}>uploaded</span> : '---'}</td>
                                                 <td>{item.preApproval ? <span style={{ fontWeight: 'bold' }}>uploaded</span> : '---'}</td>
                                                 <td>
                                                     <button onClick={() => viewWorkshop(item)} className='view-button'>View</button>

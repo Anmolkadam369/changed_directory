@@ -11,6 +11,8 @@ import backendUrl from '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import demoexcel from '../../Assets/demoexcel.png'
 import { ClipLoader } from 'react-spinners';
+import { Helmet } from 'react-helmet';
+
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -295,7 +297,11 @@ const CustomerMaster = () => {
   };
   return (
     <div>
-
+      <Helmet>
+        <title>Customer Service - Claimpro</title>
+        <meta name="description" content="Customer Service form" />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
 
         <div class="header-container">

@@ -5,6 +5,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import axios from 'axios';
 import backendUrl from '../../environment';
 import { useRecoilValue } from 'recoil';
+import { Helmet } from 'react-helmet';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
 import craneadvocatemechanic from '../../Assets/camw.webp'; // Correct import path
@@ -17,7 +18,10 @@ import vendorResponseImg from '../../Assets/vendorResponse.webp'; // Correct imp
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+
 
 const Dashboard = () => {
     const [vendorData, setVendorData] = useState([]);
@@ -271,7 +275,11 @@ const Dashboard = () => {
     return (
         <div className="dashboard">
             <h1 className="dashboardTitle">Administration</h1>
-
+            <Helmet>
+                <title>Accident Dashboard - Claimpro</title>
+                <meta name="description" content="Dashboard for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <main className="main-content">
                 <div className='other-content'>
                     <div style={{ display: "relative" }}>
@@ -345,12 +353,12 @@ const Dashboard = () => {
                             </div>
                         ))}
                         </div> */}
+                    </div>
                 </div>
-                </div>
 
 
 
-    
+
                 <div className="statistics">
                     <div className="stat-item2">
                         <img src={registerComplaints} className="small-image" alt="Vendor Types" />

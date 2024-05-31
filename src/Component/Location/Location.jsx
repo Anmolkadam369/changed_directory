@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
+import { Helmet } from 'react-helmet';
 
 function Location({ vehicleData }) {
     console.log("vehicleData")
@@ -24,6 +25,11 @@ function Location({ vehicleData }) {
 
     return (
         <div>
+            <Helmet>
+                <title>Get Location of Accident Veehicle - Claimpro</title>
+                <meta name="description" content="Get Location of Accident Veehicle and photos of vehicle." />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <div className="vehicle-info-container">
                 <table className="vehicle-info-table">
                     <thead>

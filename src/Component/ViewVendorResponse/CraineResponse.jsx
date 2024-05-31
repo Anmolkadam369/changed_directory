@@ -9,6 +9,8 @@ import axios from 'axios';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
+
 
 function CraineResponse() {
     const location = useLocation();
@@ -71,6 +73,11 @@ function CraineResponse() {
 
     return (
         <form className="vendor-response-form" style={{marginBottom:"50px"}}>
+                  <Helmet>
+        <title>Crane Responses For Accident Vehicles - Claimpro</title>
+        <meta name="description" content="Crane Responses For Accident Vehicles for Bvc ClaimPro Assist" />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
 
       <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
 

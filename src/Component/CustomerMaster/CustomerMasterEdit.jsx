@@ -15,6 +15,7 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClipLoader } from 'react-spinners';
+import { Helmet } from 'react-helmet';
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -391,7 +392,11 @@ const CustomerMasterEdit = () => {
 
   return (
     <div >
-
+      <Helmet>
+        <title>Customer Info Edit - Claimpro</title>
+        <meta name="description" content="Edit the Customer Information." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
 

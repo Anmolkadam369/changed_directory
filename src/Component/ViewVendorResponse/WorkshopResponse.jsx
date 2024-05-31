@@ -9,6 +9,8 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import './vendorResponse.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
+
 
 function WorkshopResponse() {
     const location = useLocation();
@@ -78,11 +80,16 @@ function WorkshopResponse() {
     }
 
     return (
-        <form className="vendor-response-form" style={{marginBottom:"50px"}}>
+        <form className="vendor-response-form" style={{ marginBottom: "50px" }}>
+            <Helmet>
+                <title>Workshop Response For Service - Claimpro</title>
+                <meta name="description" content="Workshop Response For Service Bvc ClaimPro Assist" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
 
             <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
 
-                <h2 className='bigtitle'>Accident Images</h2>
+            <h2 className='bigtitle'>Accident Images</h2>
 
             <div className="form-row">
                 <label className="form-field">

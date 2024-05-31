@@ -10,6 +10,8 @@ import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
+
 
 function AddedDataByWorkshop() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -297,6 +299,11 @@ function AddedDataByWorkshop() {
     }
     return (
         <div className='container'>
+                  <Helmet>
+        <title>Added Data by Workshop - Claimpro</title>
+        <meta name="description" content="Added Data By Workshop BVC ClaimPro Assist" />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>

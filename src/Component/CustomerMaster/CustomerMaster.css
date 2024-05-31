@@ -26,7 +26,7 @@
   
   .Customer-master-form .form-field {
     flex: 1 1 22%; /* Adjust as needed to fit 4 items in a row */
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     margin-bottom: 20px; /* Space between rows */
   }

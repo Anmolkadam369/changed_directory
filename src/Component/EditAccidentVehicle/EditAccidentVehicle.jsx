@@ -10,6 +10,8 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
+
 
 function EditAccidentVehicle() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -85,7 +87,7 @@ function EditAccidentVehicle() {
         setComingData(response.data.data[0])
     }
     const getVendorInfo = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getVendor`);
+        const response = await axios.get(`${backendUrl}/api/getActiveVendor`);
         console.log("vendorInfo", response)
         console.log("response", response.data);
         setVendorData(response.data)
@@ -116,10 +118,10 @@ function EditAccidentVehicle() {
         rearView: null,
         CustomerName: "",
         choosenPlan: "",
-        advocate: null, 
+        advocate: null,
         workshop: null,
-         machanic: null,
-          crain: null
+        machanic: null,
+        crain: null
 
     });
 
@@ -208,7 +210,12 @@ function EditAccidentVehicle() {
 
     return (
         <div>
-            <div className="Customer-master-form" style={{marginBottom:"50px"}}>
+            <Helmet>
+                <title>Accident Vehicle Edit Form- Claimpro</title>
+                <meta name="description" content="Accident Vehicle Edit Form" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
+            <div className="Customer-master-form" style={{ marginBottom: "50px" }}>
                 <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
                 <h1 className='bigtitle'>Assign Vendors To Customer</h1>
 
@@ -409,8 +416,8 @@ function EditAccidentVehicle() {
                                 <select
                                     className='inputField'
                                     name="crain"
-                                    value={formData.crain   || ""  }
-                                 onChange={handleChange}
+                                    value={formData.crain || ""}
+                                    onChange={handleChange}
                                     disabled={formData.crain !== null && formData.crain !== ""}
                                 >
                                     <option value="">Select a Crain</option>

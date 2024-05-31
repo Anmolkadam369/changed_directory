@@ -12,8 +12,14 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
+import { Alert } from '@mui/material';
+import ConfirmationModal from '../ConfirmModel';
+import { Helmet } from 'react-helmet';
+
 
 const VendorApproved = () => {
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+  const [isModalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   let [itemsPerPage, setItemsPerPage] = useState(10)
@@ -26,6 +32,14 @@ const VendorApproved = () => {
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleConfirm = (vendorCode, isActive) => {
+    console.log("HANDOLEOCJDFSJFDSD")
+    deactive(vendorCode, isActive);
+    setModalOpen(false);
+  };
+
+  const handleCancel = () => { setModalOpen(false) };
 
   useEffect(() => {
     getData();
@@ -89,6 +103,20 @@ const VendorApproved = () => {
     navigate("../VendorMasterEdit", { state: { id } });
   }
 
+  const deactive = async (id, isActivate) => {
+    console.log("myId", id, isActivate)
+    console.log("isActivate", isActivate)
+    const response = await axios({
+      method: 'POST',
+      url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
+      headers: {
+        'Authorization': token
+      }
+    });
+    getData();
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
+  }
+
   const getData = async (e) => {
     const response = await axios.get(`${backendUrl}/api/getVendor`);
     console.log("response", response.data.data);
@@ -141,6 +169,11 @@ const VendorApproved = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Vendor Information - Claimpro</title>
+        <meta name="description" content="Vendor Information Claimpro." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks, vendor service, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <div className="header-container-search">
         <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Vendor View / Edit</h3>
 
@@ -173,7 +206,7 @@ const VendorApproved = () => {
               {isLoading ? (
                 <ClipLoader color="#4CAF50" loading={isLoading} />
               ) : (
-                'Generate Excel File' 
+                'Generate Excel File'
               )}
             </div>
           )}
@@ -187,6 +220,11 @@ const VendorApproved = () => {
           )}
         </label>
       </div>
+      {alertInfo.show && (
+        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+          {alertInfo.message}
+        </Alert>
+      )}
       <div className='responsive-table'>
         <table style={{ width: '90%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
@@ -197,6 +235,7 @@ const VendorApproved = () => {
               <th>Vendor Type</th>
               <th>Edited By</th>
               <th>View</th>
+              <th>Active/Deactive</th>
             </tr>
           </thead>
           <tbody>
@@ -214,6 +253,19 @@ const VendorApproved = () => {
                   <td>{item.EditedBy}</td>
                   <td>
                     <button onClick={() => view(item.id)} className='view-button'>View</button>
+                  </td>
+                  <td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          handleConfirm(item.vendorCode, item.isActive === "true" ? "false" : "true")
+                        }
+                        className="deactivate-button"
+                      >
+                        <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirm} onCancel={handleCancel} />
+                        {item.isActive === "true" ? "Deactivate" : "Activate"}
+                      </button>
+                    </td>
                   </td>
                 </tr>
               ))

@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
-
+import { Helmet } from 'react-helmet';
 
 
 const VendorResponse = () => {
@@ -38,6 +38,12 @@ const VendorResponse = () => {
   
   return (
     <div style={{ padding: '20px', margin: '20px' }}>
+      <Helmet>
+        <title>Vendor Response Overview - Claimpro</title>
+        <meta name="description" content="View and manage vendor responses for vehicle accidents. Keep track of customer names, vehicle numbers, and actions taken." />
+        <meta name="keywords" content="Vehicle Accidents, Customer Service, Claimpro, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
+
           <h3 class="bigtitle">Vendor Response Overview</h3>
 
         <div>

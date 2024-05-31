@@ -7,6 +7,7 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -16,6 +17,9 @@ const AssignedVehicleMachanic = () => {
   const [data, setData] = useState([]);
   console.log("DATAforAdvocate", data)
   const [GetDataOfUser, setGetDataOfUser] = useState([]);
+  const [vendorPersonal, setVendorPersonal] = useState([]);
+  console.log("vendorPersonal", vendorPersonal)
+  const [showPopup, setShowPopup] = useState(true);
 
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
@@ -41,8 +45,18 @@ const AssignedVehicleMachanic = () => {
           console.error("Failed to fetch assigned cases:", error);
         }
       };
+      const fetchVendor = async () => {
+        try {
+          const response = await axios.get(`${backendUrl}/api/getVendor/${GetDataOfUser.vendorCode}`);
+          console.log("response", response.data.data);
+          setVendorPersonal(response.data.data);
+        } catch (error) {
+          console.error("Failed to fetch assigned cases:", error);
+        }
+      };
 
       fetchAssignedCases();
+      fetchVendor()
     }
   }, [GetDataOfUser]); // Only re-run the effect if GetDataOfUser changes
 
@@ -116,120 +130,157 @@ const AssignedVehicleMachanic = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Assigned Vehicles to Mechanic - Claimpro</title>
+        <meta name="description" content="View and manage vehicles assigned to mechanics for repair and service. Track accident file numbers, vehicle codes, and more." />
+        <meta name="keywords" content="Assigned Vehicles, Mechanic, Vehicle Repair, Accident File, Vehicle Management, Claimpro" />
+      </Helmet>
 
-      <div class='Customer-master-form' style={{marginLeft:"0px"}}>
-      <div class="header-container">
-        <h3 class="bigtitle">Assigned Vehicles To Mechanic</h3>
+      <div style={{ position: 'relative' }}>
+        {GetDataOfUser.isActive === "false" && showPopup && (
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'lightgrey',
+            width: 'fit-content',
+            padding: '10px',
+            borderRadius: '10px',
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+          }}>
+            <button
+              onClick={() => setShowPopup(false)}
+              style={{
+                position: 'absolute',
+                top: '5px',
+                right: '5px',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '16px',
+                cursor: 'pointer'
+              }}
+            >
+              &times;
+            </button>
+            <h3 style={{ margin: '0 20px 0 0' }}>You Are Not Currently Active To Take The Appoinments</h3>
+          </div>
+        )}
       </div>
-      <div className="form-row">
 
-<label className="form-field input-group mb-3">
-  Vehicle No:
-  <input
-    type="text"
-    name="VehicleNo"
-    placeholder='Vehicle No'
-    class="form-label"
-    value={formData.VehicleNo}
-    onChange={handleChange}
-    className="form-control"
-    required
-  />
-</label>
+      <div class='Customer-master-form' style={{ marginLeft: "0px" }}>
+        <div class="header-container">
+          <h3 class="bigtitle">Assigned Vehicles To Mechanic</h3>
+        </div>
+        <div className="form-row">
 
-<label className="form-field input-group mb-3">
-  Accident File No:
-  <input
-    type="text"
-    name="accidentFileNo"
-    placeholder='Accident File No'
-    class="form-label"
-    value={formData.accidentFileNo}
-    onChange={handleChange}
-    className="form-control"
-    required
-  />
-</label>
+          <label className="form-field input-group mb-3">
+            Vehicle No:
+            <input
+              type="text"
+              name="VehicleNo"
+              placeholder='Vehicle No'
+              class="form-label"
+              value={formData.VehicleNo}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
 
-<label className="form-field input-group mb-3">
-  Loss Type:
-  <input
-    type="text"
-    name="lossType"
-    placeholder='Loss Type'
-    class="form-label"
-    value={formData.lossType}
-    onChange={handleChange}
-    className="form-control"
-    required
-  />
-</label>
+          <label className="form-field input-group mb-3">
+            Accident File No:
+            <input
+              type="text"
+              name="accidentFileNo"
+              placeholder='Accident File No'
+              class="form-label"
+              value={formData.accidentFileNo}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
 
-<label className="form-field input-group mb-3">
-  Service Type:
-  <input
-    type="text"
-    name="serviceType"
-    placeholder='Service Type'
-    class="form-label"
-    value={formData.serviceType}
-    onChange={handleChange}
-    className="form-control"
-    required
-  />
-</label>
+          <label className="form-field input-group mb-3">
+            Loss Type:
+            <input
+              type="text"
+              name="lossType"
+              placeholder='Loss Type'
+              class="form-label"
+              value={formData.lossType}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
 
-</div>
+          <label className="form-field input-group mb-3">
+            Service Type:
+            <input
+              type="text"
+              name="serviceType"
+              placeholder='Service Type'
+              class="form-label"
+              value={formData.serviceType}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </label>
 
-<div className="form-row">
-<div className="dropdown green-dropdown form-field">
-  Select Option :
-  <button
-    className="btn btn-secondary dropdown-toggle"
-    type="button"
-    id="dropdownMenuButton"
-    data-bs-toggle="dropdown"
-    aria-expanded="false"
-    onClick={toggleDropdown}
-    style={{ color: 'black', marginTop: '5px' }}
-  >
-    {formData.vendorType || "Select Vendor Type"}
-  </button>
-  <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crain</a></li>
-    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Machanic</a></li>
-    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-  </ul>
-</div>
+        </div>
 
-<label className="form-field input-group mb-3">
-  From Date:
-  <input
-    type="date"
-    name="fromDate"
-    value={formData.fromDate}
-    onChange={handleChange}
-    readOnly
-    className="form-control"
-  />
-</label>
+        <div className="form-row">
+          <div className="dropdown green-dropdown form-field">
+            Select Option :
+            <button
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              onClick={toggleDropdown}
+              style={{ color: 'black', marginTop: '5px' }}
+            >
+              {formData.vendorType || "Select Vendor Type"}
+            </button>
+            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crain</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Machanic</a></li>
+              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+            </ul>
+          </div>
 
-<label className="form-field input-group mb-3">
-  To Date:
-  <input
-    type="date"
-    name="toDate"
-    value={formData.toDate}
-    onChange={handleChange}
-    readOnly
-    className="form-control"
-  />
-</label>
+          <label className="form-field input-group mb-3">
+            From Date:
+            <input
+              type="date"
+              name="fromDate"
+              value={formData.fromDate}
+              onChange={handleChange}
+              readOnly
+              className="form-control"
+            />
+          </label>
 
-</div>
+          <label className="form-field input-group mb-3">
+            To Date:
+            <input
+              type="date"
+              name="toDate"
+              value={formData.toDate}
+              onChange={handleChange}
+              readOnly
+              className="form-control"
+            />
+          </label>
+
+        </div>
 
       </div>
+
 
 
       <div className="register-responsive-table">

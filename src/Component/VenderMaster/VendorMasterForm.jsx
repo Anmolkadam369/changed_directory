@@ -13,6 +13,9 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
+import { Helmet } from 'react-helmet';
+
+
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -261,7 +264,11 @@ const VendorMasterForm = () => {
 
   return (
     <div>
-
+      <Helmet>
+        <title>Vendor Details - Claimpro</title>
+        <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />
+        <meta name="keywords" content="Vehicle Accidents, vendor, vendor Information, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <div class="header-container">
           <h3 class="bigtitle">Vendor Master</h3>
@@ -301,14 +308,13 @@ const VendorMasterForm = () => {
             Accident Place - City:
             <select
               className='form-control'
-              name="district"
-              value={formData.district}
+              name="state"
               onChange={handleChange}
-              disabled={isLoadingCities || !formData.state}
-            >
-              <option value="">Select City</option>
-              {!cities.error && cities.map(city => (
-                <option key={city.iso2} value={city.iso2}>{city.name}</option>
+              disabled={isLoadingStates}
+              value={formData.state}>
+              <option value="">Select State</option>
+              {states.map(state => (
+                <option key={state.iso2} value={state.iso2}>{state.name}</option>
               ))}
             </select>
           </label>
@@ -364,7 +370,13 @@ const VendorMasterForm = () => {
           </div>
           <label className="form-field">
             Address  :
-            <textarea name="address" value={formData.address} onChange={handleChange} required className="form-control" placeholder='Address' />
+            <textarea 
+            name="address" 
+            value={formData.address} 
+            onChange={handleChange} 
+            required 
+            className="form-control" 
+            placeholder='Address' />
           </label>
           <label className="form-field">
             Pincode:
@@ -540,8 +552,8 @@ const VendorMasterForm = () => {
               onChange={handleChange}
               accept=".pdf,image/*"
               ref={GSTRef}
-              className="form-control"
               capture="environment"
+              className="form-control"
               required />
           </label>
 

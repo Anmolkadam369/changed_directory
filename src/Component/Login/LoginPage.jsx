@@ -17,6 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import claimproassist from "../../Assets/claimproassistwithoutName.jpg"
+import { Helmet } from 'react-helmet';
 
 
 
@@ -189,7 +190,7 @@ const Login = () => {
     color: "#0e4823ff",
     textAlign: "center",
     // marginBottom: '50px'
-    marginLeft :"5px"
+    marginLeft: "5px"
   };
   const headerContainerStyle = {
     display: 'flex',
@@ -203,10 +204,15 @@ const Login = () => {
 
   return (
     <div style={backgroundStyle}>
+      <Helmet>
+        <title> BVC claimPro assist Login - Claimpro</title>
+        <meta name="description" content="login for BVC ClaimPro Assist." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <div style={loginContainerStyle}>
-      <div style={headerContainerStyle}>
-      <img src={claimproassist} style={imgStyle} alt="company logo" />
-        <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
+        <div style={headerContainerStyle}>
+          <img src={claimproassist} style={imgStyle} alt="company logo" />
+          <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
         </div>
         <form onSubmit={handleSubmit}>
           <div style={formGroupStyle}>

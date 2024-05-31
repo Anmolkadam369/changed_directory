@@ -17,6 +17,8 @@ import Modal from 'react-modal';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
+import { Helmet } from 'react-helmet';
+
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -331,7 +333,11 @@ const VendorMasterEdit = () => {
   }
   return (
     <div>
-
+      <Helmet>
+        <title>Vendor Info Edit - Claimpro</title>
+        <meta name="description" content="Edit the Vendor Information." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form" style={{ marginBottom: "50px" }}>
         <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
         <div>

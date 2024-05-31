@@ -8,6 +8,8 @@ import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
+import { Helmet } from 'react-helmet';
+
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -469,6 +471,11 @@ const VehicleClaimRegistration = () => {
 
     return (
         <div className='container'>
+            <Helmet>
+                <title>Accident Vehicle Form - Claimpro</title>
+                <meta name="description" content="Accident Vehicle Form - BVC ClaimPro Assist" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
                 <div class='header-container'>
                     <h2 className='bigtitle'>Accident Images</h2>

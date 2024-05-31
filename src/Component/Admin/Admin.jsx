@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Admin.css';
 import axios from 'axios';
 import { useNavigate, Outlet } from 'react-router-dom';
@@ -23,8 +23,12 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import Dashboard from '../Dashboard/Dashboard';
-import { getToken } from 'firebase/messaging';
+import { getToken, onMessage } from 'firebase/messaging';
 import { messaging } from '../Firebase/Firebase';
+import EmployeeForm from '../EmployeeForm/EmployeeForm';
+import EmployeeApproved from '../EmployeeForm/EmployeeApproved';
+import Visitors from '../Visitors/Visitors';
+import { Helmet } from 'react-helmet';
 
 const Admin = () => {
 
@@ -38,6 +42,8 @@ const Admin = () => {
     const [showCustomerOptions, setShowCustomerOptions] = useState(false);
     const [showVehicleInfo, setShowVehicleInfo] = useState(false);
     const [showReportsOptions, setShowReportsOptions] = useState(false);
+    const [showEmployeeOptions, setShowEmployeeOptions] = useState(false);
+
     const [showAssignedVehicleReport, setShowAssignedVehicleReport] = useState(false);
 
     const [showAddVendor, setShowAddVendor] = useState(false);
@@ -46,10 +52,14 @@ const Admin = () => {
     const [showAddCustomer, setShowAddCustomer] = useState(false);
     const [showViewCustomer, setShowViewCustomer] = useState(false);
     const [showVehicleClaim, setShowVehicleClaim] = useState(false);
+    const [showAddEmployee, setShowAddEmployee] = useState(false);
     const [showVehicleClaimView, setShowVehicleClaimView] = useState(false);
     const [addImages, setaddImages] = useState(false);
     const [accidendVehicle, setaccidendVehicle] = useState(false);
     const [vendorResponsing, setVendorResponsing] = useState(false);
+    const [showEmployeeView, setShowEmployeeView] = useState(false);
+    const [visitorForm, setVisitorForm] = useState(false);
+    const [showVisitorForm, setShowVisitorForm] = useState(false);
 
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -64,6 +74,9 @@ const Admin = () => {
         setaddImages(false);
         setaccidendVehicle(false);
         setVendorResponsing(false);
+        setShowAddEmployee(false)
+        setShowEmployeeView(false);
+        setVisitorForm(false);
     };
 
     const vendorData = [10, 5, 15, 20];
@@ -89,20 +102,6 @@ const Admin = () => {
 
     const handleCancelSignOut = () => { setModalOpen(false) };
 
-    async function requestPermission() {
-        const permission = await Notification.requestPermission();
-        if(permission === 'granted'){
-         const token = await getToken(messaging, {vapidKey :'BCSLSM0MqLiL4BjJrDEhYf6z8MlsxHkbGDRZjmtrdsbt352tsRknucbpSYRDQF2jGrd2zvQNnpqsBLcoVY7XyKg'} );
-         console.log("generated token=", token);
-         sendNotification(token);
-         setNotificationSent(true);
-        }
-        else if (permission === 'denied') alert('Notification permission denied.');
-     }   
-
-     useEffect(()=>{
-      requestPermission(); 
-    },[]);
 
     useEffect(() => {
         console.log("token", token, userId);
@@ -124,24 +123,88 @@ const Admin = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const sendNotification = async (token) => {
-        const payload = {
-            token: token,
-        };
-    
-        try {
-            const response = await axios.post(`${backendUrl}/api/sendNotification`, payload, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            console.log("sendNOTIFICATION", response.data);
-        } catch (error) {
-            console.error("Error during form submission:", error);
-        }
+    const tokenRef = useRef(null);
+    const [lastMessageId, setLastMessageId] = useState(null);
+
+    const getCurrentTime = () => {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+        return `${hours}:${minutes}:${seconds}:${milliseconds}`;
     };
-    
- 
+
+    // const requestPermission = async () => {
+    //     try {
+    //         const permission = await Notification.requestPermission();
+    //         if (permission === 'granted') {
+    //             if (!tokenRef.current) {
+    //                 tokenRef.current = await getToken(messaging, { vapidKey: 'BCSLSM0MqLiL4BjJrDEhYf6z8MlsxHkbGDRZjmtrdsbt352tsRknucbpSYRDQF2jGrd2zvQNnpqsBLcoVY7XyKg' });
+    //                 console.log("Generated token:", tokenRef.current);
+    //             }
+    //             await sendNotification(tokenRef.current);
+    //         } else {
+    //             alert('Notification permission denied.');
+    //         }
+    //     } catch (error) {
+    //         console.error("Error requesting notification permission:", error);
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     requestPermission();
+    // }, []);
+
+    // const sendNotification = async (token) => {
+    //     const currentTime = getCurrentTime();
+
+    //     const payload = {
+    //         token,
+    //         notification: {
+    //             title: 'Page Refreshed',
+    //             body: `Notification on the time of ${currentTime} from app`,
+    //         },
+    //         data: {
+    //             messageId: `${new Date().getTime()}`, // Generate a unique message ID
+    //         },
+    //     };
+
+    //     console.log("Sending notification with payload:", payload);
+
+    //     try {
+    //         const response = await axios.post(`${backendUrl}/api/sendNotification`, payload, {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
+    //         console.log("Notification sent:", response.data);
+    //     } catch (error) {
+    //         console.error("Error sending notification:", error);
+    //         console.log("Error details:", error.response ? error.response.data : error.message);
+    //     }
+    // };
+
+    useEffect(() => {
+        onMessage(messaging, (payload) => {
+            console.log('Message received.', payload);
+
+            const receivedMessageId = payload.data?.messageId;
+            if (receivedMessageId && receivedMessageId !== lastMessageId) {
+                setLastMessageId(receivedMessageId);
+
+                const notificationTitle = payload.notification.title;
+                const notificationOptions = {
+                    body: payload.notification.body,
+                    // icon: '/firebase-logo.png'
+                };
+
+                new Notification(notificationTitle, notificationOptions);
+            }
+        });
+    }, [lastMessageId]);
+
+
     const findUserById = async (id) => {
         console.log("HEY", `${backendUrl}/api/findById/${id}`)
         const response = await axios.get(`${backendUrl}/api/findById/${id}`);
@@ -156,16 +219,21 @@ const Admin = () => {
 
     const getStyle = (startingPage) => {
         if (startingPage) {
-          return { paddingLeft: "0px", marginLeft: '0px', backgroundColor: '#1a0c0c' };
+            return { paddingLeft: "0px", marginLeft: '0px', backgroundColor: '#1a0c0c' };
         } else {
-          return { paddingLeft: "0px", marginLeft: '0px' };
+            return { paddingLeft: "0px", marginLeft: '0px' };
         }
-      };
-      
+    };
+
 
 
     return (
         <div className="admin-page">
+            <Helmet>
+                <title>Admin Page - Claimpro</title>
+                <meta name="description" content="Admin Page." />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             {isSidebarOpen ? (
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
                     {window.innerWidth < 768 && (
@@ -194,6 +262,11 @@ const Admin = () => {
                                             setShowAddVendor(true);
                                             e.stopPropagation();
                                         }}>Add Vendor</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowViewVendor(true);
+                                        }}>View Vendor</li>
                                     </ul>
                                 )}
                             </li>
@@ -212,6 +285,34 @@ const Admin = () => {
                                             e.stopPropagation();
                                             setShowAddCustomer(true);
                                         }}>Add Customer</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowViewCustomer(true);
+                                        }}>View Customer</li>
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                setShowEmployeeOptions(!showEmployeeOptions);
+                                resetStates();
+                                setShowAddEmployee(true);
+                            }}>Employee
+                                {showEmployeeOptions && (
+                                    <ul className='submenu'>
+                                        <li onClick={(e) => {
+                                            resetStates();
+                                            e.stopPropagation();
+                                            setShowAddEmployee(true);
+                                        }}>Add Employee</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowEmployeeView(true);
+                                        }}>View Employee</li>
                                     </ul>
                                 )}
                             </li>
@@ -230,7 +331,11 @@ const Admin = () => {
                                             resetStates();
                                             setShowVehicleClaim(true);
                                         }}>Register Update</li>
-
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setShowVehicleClaimView(true);
+                                        }}>View Register</li>
                                     </ul>
                                 )}
                             </li>
@@ -267,29 +372,18 @@ const Admin = () => {
                         <ul>
                             <li onClick={(e) => {
                                 e.stopPropagation();
-                                setShowReportsOptions(!showReportsOptions);
+                                setShowVisitorForm(!showVisitorForm);
                                 resetStates();
-                                setShowViewVendor(true);
-                            }}>
-                                Reports
-                                {showReportsOptions && (
-                                    <ul className="submenu">
+                                setVisitorForm(true);
+                            }}>Visitor's Form
+                                {showVisitorForm && (
+                                    <div className='submenu'>
                                         <li onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
-                                            setShowViewVendor(true);
-                                        }}>View Vendor</li>
-                                        <li onClick={(e) => {
-                                            e.stopPropagation();
-                                            resetStates();
-                                            setShowViewCustomer(true);
-                                        }}>View Customer</li>
-                                        <li onClick={(e) => {
-                                            e.stopPropagation();
-                                            resetStates();
-                                            setShowVehicleClaimView(true);
-                                        }}>View Register</li>
-                                    </ul>
+                                            setVisitorForm(true);
+                                        }}>Visitor Form</li>
+                                    </div>
                                 )}
                             </li>
                         </ul>
@@ -306,7 +400,7 @@ const Admin = () => {
                 </div>
             )}
 
-            <main className="content"  style={{ paddingLeft: "0px", marginLeft: '0px' }}>
+            <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
                     <div>
                         <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
@@ -382,6 +476,16 @@ const Admin = () => {
                     showAddCustomer &&
                     <CustomerMaster />
                 }
+
+                {
+                    visitorForm &&
+                    <Visitors />
+                }
+
+                {
+                    showAddEmployee &&
+                    <EmployeeForm />
+                }
                 {
                     showViewCustomer &&
                     <CustomerApproved />
@@ -393,6 +497,10 @@ const Admin = () => {
                 {
                     showVehicleClaimView &&
                     <ViewVehicleInfo />
+                }
+                {
+                    showEmployeeView &&
+                    <EmployeeApproved />
                 }
                 {
                     accidendVehicle &&

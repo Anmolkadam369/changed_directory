@@ -11,6 +11,8 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
+import { Helmet } from 'react-helmet';
+
 
 const ViewVehicleInfo = () => {
   const [data, setData] = useState([]);
@@ -148,6 +150,11 @@ const ViewVehicleInfo = () => {
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
+      <Helmet>
+        <title>Accident Vehicle Infomation - Claimpro</title>
+        <meta name="description" content="Accident Vehicle Infomation" />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
            <div className="header-container-search">
         <h3 className='bigtitle' style={{marginLeft:"5px"}}>Register View / Edit</h3>
 

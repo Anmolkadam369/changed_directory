@@ -10,6 +10,8 @@ import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
+
 
 function AddedDataByMachanic() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -148,7 +150,13 @@ function AddedDataByMachanic() {
 
     return (
         <div className='container'>
-             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
+            <Helmet>
+                <title>Mechanic Data Entry - Claimpro</title>
+                <meta name="description" content="Enter and manage mechanic data for vehicle inspections, labour estimates, parts arrangements, trials, and payments on Claimpro." />
+                <meta name="keywords" content="Mechanic Data Entry, Vehicle Inspection, Labour Estimate, Parts Arrangement, Trial, Payment, Claimpro" />
+            </Helmet>
+
+            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>
             </div>
@@ -469,61 +477,61 @@ function AddedDataByMachanic() {
 
             <div className='form-row'>
                 <div>
-                <label className="form-field">
-                    Vehicle Inspection Remarks:
-                    {existingData?.VehicleInspection ? (
-                        <p className='notUploaded1'>Vehicle Inspection is already existed</p>
-                    ) : (
-                    <textarea
-                        className='inputField form-control'
-                        name="vehicleInspection"
-                        value={formData.VehicleInspection}
-                        onChange={handleChange}
-                    />)}
-                </label>
+                    <label className="form-field">
+                        Vehicle Inspection Remarks:
+                        {existingData?.VehicleInspection ? (
+                            <p className='notUploaded1'>Vehicle Inspection is already existed</p>
+                        ) : (
+                            <textarea
+                                className='inputField form-control'
+                                name="vehicleInspection"
+                                value={formData.VehicleInspection}
+                                onChange={handleChange}
+                            />)}
+                    </label>
                 </div>
                 <div>
-                <label className="form-field">
-                    Labour Estimate:
-                    {existingData?.labourEstimate ? (
-                        <p className='notUploaded1'>Labour Estimate is already existed</p>
-                    ) : (
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="labourEstimate"
-                        value={formData.labourEstimate}
-                        onChange={handleChange}
-                    />)}
-                </label>
+                    <label className="form-field">
+                        Labour Estimate:
+                        {existingData?.labourEstimate ? (
+                            <p className='notUploaded1'>Labour Estimate is already existed</p>
+                        ) : (
+                            <input
+                                type="text"
+                                className='inputField form-control'
+                                name="labourEstimate"
+                                value={formData.labourEstimate}
+                                onChange={handleChange}
+                            />)}
+                    </label>
                 </div>
                 <div>
-                <label className="form-field">
-                    Parts Arrangement:
-                    {existingData?.partsArrangement ? (
-                        <p className='notUploaded1'>Parts Arrangement is already existed</p>
-                    ) : (
-                    <textarea
-                        name="partsArrangement" // corrected spelling from 'Arrangment' to 'Arrangement'
-                        className='inputField form-control'
-                        value={formData.partsArrangement}
-                        onChange={handleChange}
-                    />)}
-                </label>
+                    <label className="form-field">
+                        Parts Arrangement:
+                        {existingData?.partsArrangement ? (
+                            <p className='notUploaded1'>Parts Arrangement is already existed</p>
+                        ) : (
+                            <textarea
+                                name="partsArrangement" // corrected spelling from 'Arrangment' to 'Arrangement'
+                                className='inputField form-control'
+                                value={formData.partsArrangement}
+                                onChange={handleChange}
+                            />)}
+                    </label>
                 </div>
                 <div>
-                <label className="form-field">
-                    Trial:
-                    {existingData?.trial ? (
-                        <p className='notUploaded1'>Trial is already existed</p>
-                    ) : (
-                    <textarea
-                        name="trial"
-                        className='inputField form-control'
-                        value={formData.trial}
-                        onChange={handleChange}
-                    />)}
-                </label>
+                    <label className="form-field">
+                        Trial:
+                        {existingData?.trial ? (
+                            <p className='notUploaded1'>Trial is already existed</p>
+                        ) : (
+                            <textarea
+                                name="trial"
+                                className='inputField form-control'
+                                value={formData.trial}
+                                onChange={handleChange}
+                            />)}
+                    </label>
                 </div>
             </div>
             <div className='form-row'>

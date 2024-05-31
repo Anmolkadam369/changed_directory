@@ -10,6 +10,7 @@ import backendUrl from '../../environment';
 import { Alert } from '@mui/material';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Helmet } from 'react-helmet';
 
 function UploadDocAdvocate() {
     const location = useLocation();
@@ -261,6 +262,11 @@ function UploadDocAdvocate() {
 
     return (
         <div className='container'>
+            <Helmet>
+                <title>Upload Documents - Advocate - Claimpro</title>
+                <meta name="description" content="Upload and manage important documents for advocate services related to accident cases." />
+                <meta name="keywords" content="Upload Documents, Advocate, Accident Cases, FIR Copy, POA, Petition Copy, Police Report, Claimpro" />
+            </Helmet>
              <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
             <div class='header-container'>
                 <h2 className='bigtitle'>User Details</h2>

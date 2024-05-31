@@ -8,10 +8,10 @@ import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import trucks1 from "../../Assets/trucks3.jpg";
 // import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css';      
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
+import { Helmet } from 'react-helmet';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -23,6 +23,7 @@ const Login = () => {
     const [userId, setUserId] = useRecoilState(userIdState);
     const [showPassword, setShowPassword] = useState(false);
     const [fontSize, setFontSize] = useState("35px");
+    
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -158,22 +159,27 @@ const Login = () => {
         display: 'flex',
         alignItems: 'center',
         marginBottom: '20px'
-      };
+    };
 
-      const backButtonStyle = {
+    const backButtonStyle = {
         marginRight: '10px',
-      };
+    };
 
     const handleBack = () => {
         navigate("../")
     }
     return (
         <div style={backgroundStyle}>
+            <Helmet>
+                <title>Contact Form - Claimpro</title>
+                <meta name="description" content="Contact form for the query" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,customer form,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <div style={loginContainerStyle}>
-            <div style={headerContainerStyle}>
-          <Button startIcon={<ArrowBackIcon />} onClick={handleBack} style={backButtonStyle}/>
-          <h1 style={headerStyle}>Contact Us</h1>
-        </div>
+                <div style={headerContainerStyle}>
+                    <Button startIcon={<ArrowBackIcon />} onClick={handleBack} style={backButtonStyle} />
+                    <h1 style={headerStyle}>Contact Us</h1>
+                </div>
                 <form onSubmit={handleSubmit}>
                     <div style={formGroupStyle}>
                         <label htmlFor="fullName" style={labelStyle}>Full Name</label>

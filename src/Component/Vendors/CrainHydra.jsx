@@ -26,6 +26,7 @@ import AssignedVehicleCrain from './AssignedVehiclesCrain';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
+import { Helmet } from 'react-helmet';
 
 const CrainHydra = () => {
 
@@ -112,106 +113,112 @@ const CrainHydra = () => {
 
     return (
         <div className="admin-page">
-           {isSidebarOpen ?( 
-           <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
-             {window.innerWidth < 768 && (
+            <Helmet>
+                <title>Crain Hydra Dashboard - Claimpro</title>
+                <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Crain Hydra Dashboard." />
+                <meta name="keywords" content="Crain Hydra Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
+            </Helmet>
+
+            {isSidebarOpen ? (
+                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                    {window.innerWidth < 768 && (
                         <div className="close-btn" onClick={toggleSidebar}>×</div>
                     )}
-                <ul>
-                    <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px' , marginLeft:"10px"}} />
+                    <ul>
+                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft: "10px" }} />
 
-                    <li onClick={() => {
-                        setShowCustomerOptions(!showCustomerOptions)
-                        setStartingPage(true); // Hide Starting Page
-                        setMyAccidentVehicle(false)
-                    }}>Dashboard</li>
-                <ul>
-                    <li onClick={(e) => {
-                        setShowReportsOptions(!showReportsOptions)
-                        setStartingPage(false);
-                        setMyAccidentVehicle(true);
-                        e.stopPropagation();
-                    }}>Reports
-                    {showReportsOptions && (
-                        <ul  className='submenu' >
-
-                            <li onClick={() => {
+                        <li onClick={() => {
+                            setShowCustomerOptions(!showCustomerOptions)
+                            setStartingPage(true); // Hide Starting Page
+                            setMyAccidentVehicle(false)
+                        }}>Dashboard</li>
+                        <ul>
+                            <li onClick={(e) => {
+                                setShowReportsOptions(!showReportsOptions)
                                 setStartingPage(false);
-                                setMyAccidentVehicle(true)
-                            }}>
-                                Cases Assigned
+                                setMyAccidentVehicle(true);
+                                e.stopPropagation();
+                            }}>Reports
+                                {showReportsOptions && (
+                                    <ul className='submenu' >
+
+                                        <li onClick={() => {
+                                            setStartingPage(false);
+                                            setMyAccidentVehicle(true)
+                                        }}>
+                                            Cases Assigned
+                                        </li>
+                                    </ul>
+                                )}
                             </li>
                         </ul>
-                    )}
-                    </li>
-                    </ul>
 
-                </ul>
-            </aside>):(
+                    </ul>
+                </aside>) : (
                 <div>
-                {window.innerWidth < 768 && (
-                    <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon/></div>
-                )}
-            </div>
+                    {window.innerWidth < 768 && (
+                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
+                    )}
+                </div>
             )}
             <div className="admin-page">
-                <main className="content" style={{marginLeft:'0px'}}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
-                    <div>
-                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
-                            onClick={() => setShowUserId(!showUserId)} />
-                        {showUserId && (
-                            <div style={{
-                                position: 'absolute', // Makes the div float
-                                top: '50px', // Adjust this value to position it properly below the trigger element
-                                right: '0',
-                                width: '200px', // Set a fixed width for better control
-                                padding: '15px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
-                                backgroundColor: '#fff',
-                                borderRadius: '8px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-start',
-                                zIndex: 1000
-                            }}>
+                <main className="content" style={{ marginLeft: '0px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
+                        <div>
+                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
+                                onClick={() => setShowUserId(!showUserId)} />
+                            {showUserId && (
                                 <div style={{
-                                    marginBottom: '10px',
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    color: '#333'
+                                    position: 'absolute', // Makes the div float
+                                    top: '50px', // Adjust this value to position it properly below the trigger element
+                                    right: '0',
+                                    width: '200px', // Set a fixed width for better control
+                                    padding: '15px',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
+                                    backgroundColor: '#fff',
+                                    borderRadius: '8px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
+                                    zIndex: 1000
                                 }}>
-                                    User Information
-                                </div>
-                                <span style={{
-                                    fontSize: '14px',
-                                    color: '#555',
-                                    marginBottom: '10px'
-                                }}>
-                                    User Name: {getData.vendorName} <br />
-                                    User Id: {getData.id}
-                                </span>
-                                <button
-                                    onClick={handleSignOutClick}
-                                    style={{
-                                        padding: '10px 20px',
-                                        fontSize: '14px',
-                                        color: '#fff',
-                                        backgroundColor: '#007bff',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        outline: 'none',
-                                        width: '100%',
-                                        textAlign: 'center'
+                                    <div style={{
+                                        marginBottom: '10px',
+                                        fontSize: '16px',
+                                        fontWeight: 'bold',
+                                        color: '#333'
                                     }}>
-                                    Sign Out
-                                </button>
-                                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
-                            </div>
-                        )}
+                                        User Information
+                                    </div>
+                                    <span style={{
+                                        fontSize: '14px',
+                                        color: '#555',
+                                        marginBottom: '10px'
+                                    }}>
+                                        User Name: {getData.vendorName} <br />
+                                        User Id: {getData.id}
+                                    </span>
+                                    <button
+                                        onClick={handleSignOutClick}
+                                        style={{
+                                            padding: '10px 20px',
+                                            fontSize: '14px',
+                                            color: '#fff',
+                                            backgroundColor: '#007bff',
+                                            border: 'none',
+                                            borderRadius: '5px',
+                                            cursor: 'pointer',
+                                            outline: 'none',
+                                            width: '100%',
+                                            textAlign: 'center'
+                                        }}>
+                                        Sign Out
+                                    </button>
+                                    <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
 
 
                     {
@@ -260,10 +267,10 @@ const CrainHydra = () => {
                             </section>
                         </div>
                     }
-   
+
                     {
                         myAccidentVehicle &&
-                        <AssignedVehicleCrain/>
+                        <AssignedVehicleCrain />
                     }
 
 

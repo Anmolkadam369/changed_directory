@@ -9,6 +9,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
+import { Helmet } from 'react-helmet';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function ImageUpload() {
@@ -129,7 +130,7 @@ function ImageUpload() {
                 setSnackbarMessage("Photos uploaded successfully!");
                 setTimeout(() => {
                     navigate("../Admin");
-                  }, 2000);
+                }, 2000);
             } else {
                 setSnackbarMessage("Failed to upload photos.");
             }
@@ -141,7 +142,7 @@ function ImageUpload() {
             setIsSubmitting(false);
         }
     };
-    
+
 
 
 
@@ -157,6 +158,11 @@ function ImageUpload() {
 
     return (
         <div className="Customer-master-form">
+            <Helmet>
+                <title>Accident Images Upload - Claimpro</title>
+                <meta name="description" content="Upload Accident Images" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+            </Helmet>
             <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
             <div className='header-container'>
                 <h2 className='bigtitle'>Daily Image Upload</h2>

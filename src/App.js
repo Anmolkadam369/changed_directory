@@ -56,6 +56,14 @@ import HandoverToWorkshop from './Component/Vendors/HandoverToWorkshop';
 import Dashboard from './Component/Dashboard/Dashboard';
 import ContactUs from './Component/ContactUs/ContactUs';
 import Notification from './Component/Firebase/Notification';
+
+
+import EmployeeForm from './Component/EmployeeForm/EmployeeForm';
+import EmployeeApproved from './Component/EmployeeForm/EmployeeApproved';
+import EmployeeFormEdit from './Component/EmployeeForm/EmployeeFormEdit';
+
+import Visitors from './Component/Visitors/Visitors';
+import Payment  from './Component/PaymentPage/Payment';
 //testing
 
 function App() {                              
@@ -123,6 +131,14 @@ function App() {
           <Route path='/DailyWorkshop' element={<DailyWorkshop/>}/>
           <Route path='/HandoverToWorkshop' element={<HandoverToWorkshop/>}/>
           <Route path='/Notification' element={<Notification/>}/>
+
+          <Route path='/EmployeeForm' element={<EmployeeForm/>}/>
+          <Route path='/EmployeeApproved' element={<EmployeeApproved/>}/>
+          <Route path='/EmployeeFormEdit' element={<EmployeeFormEdit/>}/>
+
+          <Route path='/Visitors' element={<Visitors/>}/>
+
+          <Route path='/Payment/:token' element={<Payment/>}/>
 
 
 

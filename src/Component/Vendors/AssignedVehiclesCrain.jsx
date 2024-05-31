@@ -7,6 +7,7 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -16,6 +17,7 @@ const AssignedVehicleCrain = () => {
   const [data, setData] = useState([]);
   console.log("DATAforAdvocate", data)
   const [GetDataOfUser, setGetDataOfUser] = useState([]);
+  const [showPopup, setShowPopup] = useState(true);
 
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
@@ -122,8 +124,45 @@ const AssignedVehicleCrain = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Assigned Vehicles to Crain Manager - Claimpro</title>
+        <meta name="description" content="View and manage vehicles assigned to Crain Manager for service. Track accident file numbers, vehicle codes, and more." />
+        <meta name="keywords" content="Assigned Vehicles, Crain Manager, Vehicle Service, Accident File, Vehicle Management, Claimpro" />
+      </Helmet>
 
-      <div class='Customer-master-form' style={{marginLeft:"0px"}}>
+
+
+      <div style={{ position: 'relative' }}>
+        {GetDataOfUser.isActive === "false" && showPopup && (
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'lightgrey',
+            width: 'fit-content',
+            padding: '10px',
+            borderRadius: '10px',
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+          }}>
+            <button
+              onClick={() => setShowPopup(false)}
+              style={{
+                position: 'absolute',
+                top: '5px',
+                right: '5px',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '16px',
+                cursor: 'pointer'
+              }}
+            >
+              &times;
+            </button>
+            <h3 style={{ margin: '0 20px 0 0' }}>You Are Not Currently Active To Take The Appoinments</h3>
+          </div>
+        )}
+      </div>
+      <div class='Customer-master-form' style={{ marginLeft: "0px" }}>
         <div class="header-container">
           <h3 class="bigtitle">Assigned Vehicles To Crain Manager</h3>
         </div>
@@ -237,7 +276,7 @@ const AssignedVehicleCrain = () => {
 
       </div>
       <div className="register-responsive-table">
-      <table className='allvendor-response'>
+        <table className='allvendor-response'>
           <thead>
             <tr>
               <th>Sr. No.</th>

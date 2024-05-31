@@ -7,6 +7,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import Modal from '../Location1/Modal'; // Import the modal component
+import { Helmet } from 'react-helmet';
 
 function Registration({ onVehicleData }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -15,6 +16,9 @@ function Registration({ onVehicleData }) {
     const [comingVehicleInfo, setComingVehicleInfo] = useState([]);
     const [comingVehicle, setComingVehicle] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+    const [getData, setGetData] = useState({});
+    const [showPopup, setShowPopup] = useState(true);
+
 
     console.log("comingData", comingVehicle)
 
@@ -32,7 +36,17 @@ function Registration({ onVehicleData }) {
         if (token === "" || userId === "") {
             navigate("/");
         }
+        findUserById(userId)
     }, [token, userId, navigate]);
+
+
+    const findUserById = async (id) => {
+        console.log("HEY", id)
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
+        console.log("daa", response.data)
+        console.log("reginstration data", response.data.data[0]);
+        setGetData(response.data.data[0])
+    }
 
     async function getVehicleData() {
         try {
@@ -64,6 +78,41 @@ function Registration({ onVehicleData }) {
     return (
         <div>
             <div className="Registrationdetails-elem-16">
+                <Helmet>
+                    <title>Customer Service Vehicle Number - Claimpro</title>
+                    <meta name="description" content="Customer Service Vehicle for BVC ClaimPro Assist to register the vehicle and get data about vehicle." />
+                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                </Helmet>
+                <div style={{ position: 'relative' }}>
+                    {getData.isActive === "false" && showPopup && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            background: 'lightgrey',
+                            width: 'fit-content',
+                            padding: '10px',
+                            borderRadius: '10px',
+                            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <button
+                                onClick={() => setShowPopup(false)}
+                                style={{
+                                    position: 'absolute',
+                                    top: '5px',
+                                    right: '5px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    fontSize: '16px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                &times;
+                            </button>
+                            <h3 style={{ margin: '0 20px 0 0' }}>You Are Not Currently Active To Take The Appoinments</h3>
+                        </div>
+                    )}
+                </div>
                 <div className="Registrationdetails-elem-15">
                     <div className="Registrationdetails-elem-14">
                         <span className="cd-paragraph-clean Registrationdetails-elem-7">
@@ -81,7 +130,9 @@ function Registration({ onVehicleData }) {
                                         className="Registrationdetails-elem-9"
                                         value={regNo}
                                         onChange={handleChange}
+                                        disabled={getData.isActive === "false"}
                                     />
+
                                 </div>
                             </div>
                         </div>

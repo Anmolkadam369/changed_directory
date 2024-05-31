@@ -7,6 +7,7 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -96,8 +97,16 @@ const AccidentVehicleUser = () => {
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   console.log("dddddddddddddddddddd", data.data)
+
+
+
   return (
     <div>
+      <Helmet>
+        <title>Register Accident Vehicle Information - Claimpro</title>
+        <meta name="description" content="Register Accident Vehicle Information for BVC ClaimPro Assist." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <div class='Customer-master-form' style={{ marginLeft: "0px" }}>
         <div class="header-container">
           <h3 class="bigtitle">My Vehicles Cases</h3>

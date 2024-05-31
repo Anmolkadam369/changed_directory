@@ -14,6 +14,9 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
+import { Alert } from '@mui/material';
+import ConfirmationModal from '../ConfirmModel';
+import { Helmet } from 'react-helmet';
 
 const CustomerApproved = () => {
   const [data, setData] = useState([]);
@@ -26,6 +29,16 @@ const CustomerApproved = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleConfirm = (vendorCode, isActive) => {
+    console.log("HANDOLEOCJDFSJFDSD")
+    deactive(vendorCode, isActive);
+    setModalOpen(false);
+  };
+
+  const handleCancel = () => { setModalOpen(false) };
 
 
 
@@ -51,6 +64,21 @@ const CustomerApproved = () => {
       console.error(error.message);
     }
   }
+
+  const deactive = async (id, isActivate) => {
+    console.log("myId", id, isActivate)
+    console.log("isActivate", isActivate)
+    const response = await axios({
+      method: 'POST',
+      url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
+      headers: {
+        'Authorization': token
+      }
+    });
+    getData();
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
+  }
+
 
   function view(id) {
     console.log("myId", id)
@@ -107,28 +135,33 @@ const CustomerApproved = () => {
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
-            <div className="header-container-search">
-        <h3 className='bigtitle' style={{marginLeft:"5px"}}>Customer View / Edit</h3>
+      <Helmet>
+        <title>Customer Table - Claimpro</title>
+        <meta name="description" content="Customer Table BVC claimPro Assist." />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
+      <div className="header-container-search">
+        <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Customer View / Edit</h3>
 
         <label className="form-field search-field">
-        Search by Customer Name
+          Search by Customer Name
           <input
-              type='text'
-              placeholder="Search by Customer Name"
-              className="form-control"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              required />
+            type='text'
+            placeholder="Search by Customer Name"
+            className="form-control"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            required />
         </label>
         <label className="form-field search-field">
           Number Of Items On Page
           <input
-              type='text'
-              placeholder="Items Show on Page"
-              className="form-control"
-              value={itemsPerPage}
-              onChange={handleSetItemPerPage}
-              required />
+            type='text'
+            placeholder="Items Show on Page"
+            className="form-control"
+            value={itemsPerPage}
+            onChange={handleSetItemPerPage}
+            required />
         </label>
         <label className="form-field search-field">
           {!isGenerated && (
@@ -139,7 +172,7 @@ const CustomerApproved = () => {
               {isLoading ? (
                 <ClipLoader color="#4CAF50" loading={isLoading} />
               ) : (
-                'Generate Excel File' 
+                'Generate Excel File'
               )}
             </div>
           )}
@@ -153,42 +186,59 @@ const CustomerApproved = () => {
           )}
         </label>
       </div>
-      <div className='responsive-table'>
-      <table style={{ width: '90%', marginLeft:"10px", borderCollapse: 'collapse' ,marginBottom:"90px"}}>
-        <thead>
-          <tr>
-            <th>Sr. No.</th>
-            <th>Customer Name</th>
-            <th>Email</th>
-            <th>Customer Type</th>
-            <th>Edited By</th>
-            <th>View</th>
 
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.length === 0 ? (
+      {alertInfo.show && (
+        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+          {alertInfo.message}
+        </Alert>
+      )}
+      <div className='responsive-table'>
+        <table style={{ width: '90%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+          <thead>
             <tr>
-              <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+              <th>Sr. No.</th>
+              <th>Customer Name</th>
+              <th>Email</th>
+              <th>Customer Type</th>
+              <th>Edited By</th>
+              <th>View</th>
+              <th>Active/Deactive</th>
             </tr>
-          ) : (
-            currentItems.map((item, index) => (
-              <tr key={item.id}>
-                <td>{indexOfFirstItem + index + 1}</td>
-                <td>{item.CustomerName}</td>
-                <td>{item.email}</td>
-                <td>{item.CustomerType}</td>
-                <td>{item.EditedBy}</td>
-                <td>
-                <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
-              </td>
+          </thead>
+          <tbody>
+            {currentItems.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
-    <div className='pagination'>
+            ) : (
+              currentItems.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{indexOfFirstItem + index + 1}</td>
+                  <td>{item.CustomerName}</td>
+                  <td>{item.email}</td>
+                  <td>{item.CustomerType}</td>
+                  <td>{item.EditedBy}</td>
+                  <td>
+                    <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() =>
+                        handleConfirm(item.CustomerCode, item.isActive === "true" ? "false" : "true")
+                      }
+                      className="deactivate-button"
+                    >
+                      <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirm} onCancel={handleCancel} />
+                      {item.isActive === "true" ? "Deactivate" : "Activate"}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className='pagination'>
         <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
           <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
           {pageNumbers.map((pageNumber) => (
