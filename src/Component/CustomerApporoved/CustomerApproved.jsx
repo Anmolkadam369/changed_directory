@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './CustomerApproved.css'
-import '../AccidentVehicle/AccidentVehicle.css'
+import './CustomerApproved.css';
+import '../AccidentVehicle/AccidentVehicle.css';
 
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCoffee, faHome, faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -24,27 +22,17 @@ const CustomerApproved = () => {
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
   const [currentPage, setCurrentPage] = useState(1);
-  let [itemsPerPage, setItemsPerPage] = useState(10)
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const [isModalOpen, setModalOpen] = useState(false);
-
-  const handleConfirm = (vendorCode, isActive) => {
-    console.log("HANDOLEOCJDFSJFDSD")
-    deactive(vendorCode, isActive);
-    setModalOpen(false);
-  };
-
-  const handleCancel = () => { setModalOpen(false) };
-
-
+  const [modalData, setModalData] = useState(null);
 
   useEffect(() => {
     getData();
-    console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
     }
@@ -54,20 +42,30 @@ const CustomerApproved = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(`${backendUrl}/api/customerDBToExcel/${userId}`);
-      console.log("daa", response.data.data)
-      console.log("response", response.data.data);
-      setGeneratedExcel(response.data.data)
+      setGeneratedExcel(response.data.data);
       setIsLoading(false);
       setIsGenerated(true);
     } catch (error) {
-      setIsLoading(false);  // Ensure loading state is reset in case of error
+      setIsLoading(false);
       console.error(error.message);
     }
-  }
+  };
+
+  const handleConfirm = (vendorCode, isActive) => {
+    deactive(vendorCode, isActive);
+    setModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setModalOpen(false);
+  };
+
+  const openModal = (item) => {
+    setModalData(item);
+    setModalOpen(true);
+  };
 
   const deactive = async (id, isActivate) => {
-    console.log("myId", id, isActivate)
-    console.log("isActivate", isActivate)
     const response = await axios({
       method: 'POST',
       url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
@@ -76,27 +74,26 @@ const CustomerApproved = () => {
       }
     });
     getData();
-    setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
-  }
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+  };
 
-
-  function view(id) {
-    console.log("myId", id)
+  const view = (id) => {
     navigate("../CustomerMasterEdit", { state: { id } });
-  }
+  };
 
-  const getData = async (e) => {
+  const getData = async () => {
     const response = await axios.get(`${backendUrl}/api/getCustomer`);
-    console.log("response", response.data.data);
-    setData(response.data.data)
+    setData(response.data.data);
   };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
   const handleSetItemPerPage = (e) => {
     setItemsPerPage(e.target.value);
   };
+
   const filteredData = data.filter(item =>
     item.CustomerName && item.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -130,15 +127,12 @@ const CustomerApproved = () => {
     pageNumbers.push(i);
   }
 
-
-
-  console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
       <Helmet>
         <title>Customer Table - Claimpro</title>
         <meta name="description" content="Customer Table BVC claimPro Assist." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
       </Helmet>
       <div className="header-container-search">
         <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Customer View / Edit</h3>
@@ -193,7 +187,7 @@ const CustomerApproved = () => {
         </Alert>
       )}
       <div className='responsive-table'>
-        <table style={{ width: '90%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+        <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
             <tr>
               <th>Sr. No.</th>
@@ -208,7 +202,7 @@ const CustomerApproved = () => {
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
               </tr>
             ) : (
               currentItems.map((item, index) => (
@@ -223,12 +217,9 @@ const CustomerApproved = () => {
                   </td>
                   <td>
                     <button
-                      onClick={() =>
-                        handleConfirm(item.CustomerCode, item.isActive === "true" ? "false" : "true")
-                      }
+                      onClick={() => openModal(item)}
                       className="deactivate-button"
                     >
-                      <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirm} onCancel={handleCancel} />
                       {item.isActive === "true" ? "Deactivate" : "Activate"}
                     </button>
                   </td>
@@ -253,9 +244,15 @@ const CustomerApproved = () => {
           <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
         </ButtonGroup>
       </div>
+      {modalData && (
+        <ConfirmationModal
+          isOpen={isModalOpen}
+          onConfirm={() => handleConfirm(modalData.CustomerCode, modalData.isActive === "true" ? "false" : "true")}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
-
 };
 
 export default CustomerApproved;

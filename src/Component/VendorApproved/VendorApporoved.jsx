@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import "../CustomerApporoved/CustomerApproved.css"
-import '../AccidentVehicle/AccidentVehicle.css'
+import "../CustomerApporoved/CustomerApproved.css";
+import '../AccidentVehicle/AccidentVehicle.css';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
@@ -16,96 +15,57 @@ import { Alert } from '@mui/material';
 import ConfirmationModal from '../ConfirmModel';
 import { Helmet } from 'react-helmet';
 
-
 const VendorApproved = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const [isModalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  let [itemsPerPage, setItemsPerPage] = useState(10)
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // let itemsPerPage = 10;
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleConfirm = (vendorCode, isActive) => {
-    console.log("HANDOLEOCJDFSJFDSD")
-    deactive(vendorCode, isActive);
-    setModalOpen(false);
-  };
-
-  const handleCancel = () => { setModalOpen(false) };
-
   useEffect(() => {
     getData();
-    // generateToken();   
     if (token === "" || userId === "") {
       navigate("/");
     }
   }, [token, userId, navigate]);
-  console.log("token", token, userId);
 
   const generateFile = async () => {
     try {
       setIsLoading(true);
       const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`);
-      console.log("daa", response.data.data)
-      console.log("response", response.data.data);
-      setGeneratedExcel(response.data.data)
+      setGeneratedExcel(response.data.data);
       setIsLoading(false);
       setIsGenerated(true);
     } catch (error) {
-      setIsLoading(false);  // Ensure loading state is reset in case of error
+      setIsLoading(false);
       console.error(error.message);
     }
-  }
+  };
 
-  async function generateToken() {
-    try {
-      const authUrl = 'https://staging.eko.in:25004/ekoapi/v1/pan/verify';
-      const authHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        "developer_key": "becbbce45f79c6f5109f848acd540567",
-        "secret-key": "MC6dKW278tBef+AuqL/5rW2K3WgOegF0ZHLW/FriZQw=",
-        "secret-key-timestamp": "1516705204593"
-      };
-      const authData = {
-        "pan_number": "JTQPK6202L",
-        "purpose": 1,
-        "purpose_desc": "to know customer",
-        "initiator_id": "9971771929",
-        "developer_key": "becbbce45f79c6f5109f848acd540567",
-        "secret-key": "MC6dKW278tBef+AuqL/5rW2K3WgOegF0ZHLW/FriZQw=",
-        "secret-key-timestamp": "1516705204593"
-      };
-      console.log(authData);
-      const authResponse = await axios.post(authUrl, authData, {
-        headers: authHeaders,
-      });
-      console.log("some")
-      console.log(authResponse.data);
-      const token = authResponse.data.access_token;
-      console.log('Access token', token);
+  const handleConfirm = async (vendorCode, isActive) => {
+    await deactive(vendorCode, isActive);
+    setModalOpen(false);
+  };
 
-      return token;
-    } catch (error) {
-      throw error.message;
-    }
-  }
+  const handleCancel = () => {
+    setModalOpen(false);
+  };
 
-  function view(id) {
-    console.log("myId", id)
-    navigate("../VendorMasterEdit", { state: { id } });
-  }
+  const openModal = (item) => {
+    setModalData(item);
+    setModalOpen(true);
+  };
 
   const deactive = async (id, isActivate) => {
-    console.log("myId", id, isActivate)
-    console.log("isActivate", isActivate)
     const response = await axios({
       method: 'POST',
       url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
@@ -114,21 +74,22 @@ const VendorApproved = () => {
       }
     });
     getData();
-    setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
-  }
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+  };
 
-  const getData = async (e) => {
+  const getData = async () => {
     const response = await axios.get(`${backendUrl}/api/getVendor`);
-    console.log("response", response.data.data);
-    setData(response.data.data)
+    setData(response.data.data);
   };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
   const handleSetItemPerPage = (e) => {
     setItemsPerPage(e.target.value);
   };
+
   const filteredData = data.filter(item =>
     item.vendorName && item.vendorName.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -149,6 +110,10 @@ const VendorApproved = () => {
     }
   };
 
+  const view=(id)=>{
+    navigate("../VendorMasterEdit", {state: {id}});
+  }
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -160,19 +125,12 @@ const VendorApproved = () => {
     pageNumbers.push(i);
   }
 
-
-
-
-  console.log("dddddddddddddddddddd", data.data)
-
-
-
   return (
     <div>
       <Helmet>
         <title>Vendor Information - Claimpro</title>
         <meta name="description" content="Vendor Information Claimpro." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks, vendor service, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks, vendor service, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
       </Helmet>
       <div className="header-container-search">
         <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Vendor View / Edit</h3>
@@ -190,7 +148,7 @@ const VendorApproved = () => {
         <label className="form-field search-field">
           Number Of Items On Page
           <input
-            type='text'
+            type='number'
             placeholder="Items Show on Page"
             className="form-control"
             value={itemsPerPage}
@@ -226,7 +184,7 @@ const VendorApproved = () => {
         </Alert>
       )}
       <div className='responsive-table'>
-        <table style={{ width: '90%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+        <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
             <tr>
               <th>Sr. No.</th>
@@ -241,7 +199,7 @@ const VendorApproved = () => {
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
               </tr>
             ) : (
               currentItems.map((item, index) => (
@@ -255,17 +213,12 @@ const VendorApproved = () => {
                     <button onClick={() => view(item.id)} className='view-button'>View</button>
                   </td>
                   <td>
-                    <td>
-                      <button
-                        onClick={() =>
-                          handleConfirm(item.vendorCode, item.isActive === "true" ? "false" : "true")
-                        }
-                        className="deactivate-button"
-                      >
-                        <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirm} onCancel={handleCancel} />
-                        {item.isActive === "true" ? "Deactivate" : "Activate"}
-                      </button>
-                    </td>
+                    <button
+                      onClick={() => openModal(item)}
+                      className="deactivate-button"
+                    >
+                      {item.isActive === "true" ? "Deactivate" : "Activate"}
+                    </button>
                   </td>
                 </tr>
               ))
@@ -288,10 +241,15 @@ const VendorApproved = () => {
           <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
         </ButtonGroup>
       </div>
+      {modalData && (
+        <ConfirmationModal
+          isOpen={isModalOpen}
+          onConfirm={() => handleConfirm(modalData.vendorCode, modalData.isActive === "true" ? "false" : "true")}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
-
-
 };
 
 export default VendorApproved;

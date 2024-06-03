@@ -49,9 +49,9 @@ function Home() {
                                 </a>
                             </span>
                             <span className="home-elem-10">
-                                <a href="#home-elem-59" className="link" target="_self">
+                                <span onClick={navigateToContactUs} style={{cursor:'pointer'}} >
                                     <p>Contact Us </p>
-                                </a>
+                                    </span>
                             </span>
                             <span className="home-elem-11">
                                 <a href="#home-elem-80" className="link" target="_self">

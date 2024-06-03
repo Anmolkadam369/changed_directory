@@ -295,3 +295,26 @@ body, html {
   text-align: center; /* Center the text */
   flex-basis: calc(33.333% - 20px); /* Take up a third of the container width, minus gap */
 }
+
+.dropdown-container {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 200px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-container.show {
+  opacity: 1;
+  transform: translateY(0);
+}

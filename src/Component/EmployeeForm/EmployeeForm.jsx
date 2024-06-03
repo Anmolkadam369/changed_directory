@@ -353,7 +353,7 @@ const EmployeeForm = () => {
                 <meta name="description" content="Employee Information - BVC Claimpro Assist" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
             </Helmet>
-            <form onSubmit={handleSubmit} style={{ marginLeft: '10px', padding: '20px' }} className="Customer-master-form">
+            <form onSubmit={handleSubmit} className="Customer-master-form">
                 <div class="header-container">
                     <h1 class="bigtitle" style={{ textAlign: 'center' }}>Employee Form</h1>
                 </div>
@@ -410,7 +410,7 @@ const EmployeeForm = () => {
 
                     <div className="dropdown green-dropdown form-field">
                         <button
-                            className="btn btn-secondary dropdown-toggle"
+                            className="form-field input-group mb-3"
                             type="button"
                             id="dropdownMenuButton"
                             data-bs-toggle="dropdown"
@@ -634,12 +634,12 @@ const EmployeeForm = () => {
                             value={formData.correspondingAddress}
                             onChange={handleChange}
                             className="form-control"
-                            placeholder='Permanent Address'
+                            placeholder='corresponding Address'
                         />
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className='form-row'>
                     <label className="form-field input-group mb-3">
                         Permanent Address:
                         <textarea
@@ -650,6 +650,7 @@ const EmployeeForm = () => {
                             placeholder='Permanent Address'
                         />
                     </label>
+
                     <label className="form-field input-group mb-3">
                         Country:
                         <input
@@ -660,6 +661,13 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
+                    <label className="form-field input-group mb-3"></label>
+                    <label className="form-field input-group mb-3"></label>
+
+                </div>
+
+                <div className="form-row">
+
                     <label className="form-field input-group mb-3">
                         State:
                         <select
@@ -689,6 +697,9 @@ const EmployeeForm = () => {
                             ))}
                         </select>
                     </label>
+                    <label className="form-field input-group mb-3"></label>
+                    <label className="form-field input-group mb-3"></label>
+
                 </div>
 
                 <div className="form-row">
@@ -1278,6 +1289,10 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
+
+                </div>
+
+                <div className="form-row">
                     <label className="form-field input-group mb-3">
                         PAN Front:
                         <input
@@ -1291,11 +1306,6 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-
-                </div>
-
-                <div className="form-row">
-
                     <label className="form-field input-group mb-3">
                         Matric Passing Certificate:
                         <input
@@ -1322,6 +1332,9 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
+                </div>
+
+                <div className="form-row">
                     <label className="form-field input-group mb-3">
                         Under Graduate Passing Certificate:
                         <input
@@ -1349,10 +1362,6 @@ const EmployeeForm = () => {
                         />
                     </label>
 
-                </div>
-
-                <div className="form-row">
-
                     <label className="form-field input-group mb-3">
                         Cancelled Cheque:
                         <input
@@ -1366,9 +1375,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3"></label>
-                    <label className="form-field input-group mb-3"></label>
-                    <label className="form-field input-group mb-3"></label>
+
 
                 </div>
 

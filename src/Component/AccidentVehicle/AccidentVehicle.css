@@ -156,7 +156,7 @@
 
 
 table {
-  max-width: 90%;
+  max-width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
@@ -169,14 +169,14 @@ td {
 
 th,
 td {
-  text-align: left;
+  text-align: center;
   padding: 8px;
 }
 
 th {
   background:rgb(169 187 169);
   color: white;
-  /* text-align: center; */
+  text-align: center;
 
 }
 

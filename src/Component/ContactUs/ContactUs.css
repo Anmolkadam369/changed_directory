@@ -78,3 +78,69 @@
     font-size: 1.5em;
     margin-top: 0;
 }
+
+@keyframes slideIn {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .slide-in {
+    animation: slideIn 1s ease-out forwards;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quotes-container {
+    animation: slideIn 1s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: rgb(15, 14, 14);
+    font-size: 24px;
+    text-align: center;
+    margin: 10px;
+    background: linear-gradient(135deg, rgba(210, 210, 9, 0.8) 25%, rgba(255, 255, 0, 0.5) 75%);
+    background-image: url('../../Assets/backgroundyellow.jpeg');
+    background-size: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quote {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color:white;
+  }
+  
+  .quote1 {
+    margin-bottom: 50px;
+    font-weight: bold;
+    font-size: 30px;
+    color:white;
+  }
+  
+
+  .buy_btn {
+    width: 100%;
+    height: 50px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 0 0 10px 10px;
+    background-color: #0a50b7;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .buy_btn:hover {
+    background-color: #073c86;
+  }

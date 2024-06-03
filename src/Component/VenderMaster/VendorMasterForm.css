@@ -102,7 +102,7 @@
 
 /* Styling for input fields within a label that has 'input-group' class */
 .input-group .form-control {
-  background-color: #fff; /* Set background color for input */
+  /* background-color: #fff; Set background color for input */
   border: 1px solid #ccc; /* Match the dropdown border style */
   width: 300px; /* Match the width of the dropdown */
 }

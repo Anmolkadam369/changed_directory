@@ -60,7 +60,7 @@ const Admin = () => {
     const [showEmployeeView, setShowEmployeeView] = useState(false);
     const [visitorForm, setVisitorForm] = useState(false);
     const [showVisitorForm, setShowVisitorForm] = useState(false);
-
+    const dropdownRef = useRef(null);
     const [isModalOpen, setModalOpen] = useState(false);
 
     const resetStates = () => {
@@ -184,25 +184,62 @@ const Admin = () => {
     //         console.log("Error details:", error.response ? error.response.data : error.message);
     //     }
     // };
+    // 
+    // useEffect(() => {
+    //     onMessage(messaging, (payload) => {
+    //         console.log('Message received.', payload);
+
+    //         const receivedMessageId = payload.data?.messageId;
+    //         if (receivedMessageId && receivedMessageId !== lastMessageId) {
+    //             setLastMessageId(receivedMessageId);
+
+    //             const notificationTitle = payload.notification.title;
+    //             const notificationOptions = {
+    //                 body: payload.notification.body,
+    //                 // icon: '/firebase-logo.png'
+    //             };
+
+    //             new Notification(notificationTitle, notificationOptions);
+    //         }
+    //     });
+    // }, [lastMessageId]);
+
+    const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
+    const effectRan = useRef(false);
+    const urlBase64ToUint8Array = base64String => {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    };
 
     useEffect(() => {
-        onMessage(messaging, (payload) => {
-            console.log('Message received.', payload);
+        if (effectRan.current === false) {
+            const sendLoginNotification = async () => {
+                try {
+                    console.log('Registering service worker...');
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('Service worker registered:', registration);
 
-            const receivedMessageId = payload.data?.messageId;
-            if (receivedMessageId && receivedMessageId !== lastMessageId) {
-                setLastMessageId(receivedMessageId);
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                    });
+                    console.log('Push Manager subscription:', subscription);
 
-                const notificationTitle = payload.notification.title;
-                const notificationOptions = {
-                    body: payload.notification.body,
-                    // icon: '/firebase-logo.png'
-                };
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
 
-                new Notification(notificationTitle, notificationOptions);
-            }
-        });
-    }, [lastMessageId]);
+                    // alert('Login notification sent successfully');
+                } catch (error) {
+                    console.error('Error sending login notification:', error);
+                }
+            };
+
+            sendLoginNotification();
+            effectRan.current = true;
+        }
+    }, []);
 
 
     const findUserById = async (id) => {
@@ -224,6 +261,24 @@ const Admin = () => {
             return { paddingLeft: "0px", marginLeft: '0px' };
         }
     };
+
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowUserId(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showUserId) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showUserId]);
 
 
 
@@ -406,20 +461,7 @@ const Admin = () => {
                         <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
                             onClick={() => setShowUserId(!showUserId)} />
                         {showUserId && (
-                            <div style={{
-                                position: 'absolute', // Makes the div float
-                                top: '50px', // Adjust this value to position it properly below the trigger element
-                                right: '0',
-                                width: '200px', // Set a fixed width for better control
-                                padding: '15px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
-                                backgroundColor: '#fff',
-                                borderRadius: '8px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-start',
-                                zIndex: 1000
-                            }}>
+                            <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
                                 <div style={{
                                     marginBottom: '10px',
                                     fontSize: '16px',

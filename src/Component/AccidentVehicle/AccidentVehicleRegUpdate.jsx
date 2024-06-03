@@ -73,7 +73,7 @@ const AccidentVehicleRegUpdate = () => {
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
       </Helmet>
       <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
-      <table style={{ width: '90%', marginLeft: "30px", marginRight: "30px" }}>
+      <table style={{ width: '100%', marginLeft: "10px", marginRight: "30px" }}>
         <thead>
           <tr>
             <th>Sr. No.</th>

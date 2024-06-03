@@ -49,9 +49,10 @@ const VendorResponse = () => {
         <div>
             <div style={{marginTop:"50px"}}>
                <div className='vendor-response-responsive-table'>
-               <table style={{ width: '90%', borderCollapse: 'collapse' ,marginBottom:"90px"}}>
+               <table style={{ width: '100%', borderCollapse: 'collapse' ,marginBottom:"90px"}}>
                 <thead>
                   <tr>
+                    <th>Sr. No</th>
                     <th>Customer Name</th>
                     <th>Vehicle Number</th>
                     <th>Action</th>
@@ -65,6 +66,7 @@ const VendorResponse = () => {
                   ) : (
                     data.map((vehicle, index) => (
                       <tr key={vehicle.AccidentVehicleCode} >
+                        <td>{index + 1}</td>
                         <td>{vehicle.CustomerName || '---'}</td>
                         <td>{vehicle.vehicleNumber || '---'}</td>
                         <td>

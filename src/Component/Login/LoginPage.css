@@ -180,3 +180,20 @@ form .signup-link a:hover{
     display: block; /* Show the image section on laptop/desktop screens */
   }
 }
+
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideIn 1s ease-out forwards;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}

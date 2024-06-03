@@ -16,10 +16,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import claimproassist from "../../Assets/claimproassistwithoutName.jpg"
+import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
 import { Helmet } from 'react-helmet';
-
-
 
 const Login = () => {
   const navigate = useNavigate();
@@ -140,10 +138,9 @@ const Login = () => {
     paddingLeft: "20px",
     paddingRight: "20px",
     borderRadius: '10px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     maxWidth: '400px',
     width: '100%',
-    margin: '10px'
+    margin: '10px',
   };
 
   const formGroupStyle = {
@@ -189,7 +186,6 @@ const Login = () => {
     fontSize,
     color: "#0e4823ff",
     textAlign: "center",
-    // marginBottom: '50px'
     marginLeft: "5px"
   };
   const headerContainerStyle = {
@@ -198,18 +194,18 @@ const Login = () => {
     marginBottom: '20px'
   };
   const imgStyle = {
-    width: '80px', // Adjust the width
+    width: '80px',
     height: 'auto',
   };
 
   return (
     <div style={backgroundStyle}>
       <Helmet>
-        <title> BVC claimPro assist Login - Claimpro</title>
+        <title>BVC claimPro assist Login - Claimpro</title>
         <meta name="description" content="login for BVC ClaimPro Assist." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
       </Helmet>
-      <div style={loginContainerStyle}>
+      <div className="slide-in" style={loginContainerStyle}>
         <div style={headerContainerStyle}>
           <img src={claimproassist} style={imgStyle} alt="company logo" />
           <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
@@ -265,7 +261,8 @@ const Login = () => {
           )}
           <div style={buttonContainerStyle}>
             <Button
-              style={buttonStyle}
+              // style={buttonStyle}
+              className='buy_btn'
               onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}
               onMouseOut={e => e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor}
               onClick={handleSubmit}

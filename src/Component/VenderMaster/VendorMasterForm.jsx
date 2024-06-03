@@ -352,7 +352,7 @@ const VendorMasterForm = () => {
 
           <div className="dropdown green-dropdown form-field">
             <button
-              className="btn btn-secondary dropdown-toggle"
+              className="form-field input-group mb-3"
               type="button"
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"

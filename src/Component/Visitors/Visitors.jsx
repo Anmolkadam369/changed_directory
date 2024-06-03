@@ -205,7 +205,8 @@ const Visitors = () => {
             editedFormData.VisitorAddress === "" ||
             editedFormData.email === "" ||
             editedFormData.phoneNo === "" ||
-            editedFormData.Reason === ""
+            editedFormData.Reason === "" ||
+            editedFormData.VisitorOut == ""
         ) {
             setAlertInfo({ show: true, message: 'Please fill all the details', severity: 'error' });
             return;
@@ -324,9 +325,9 @@ const Visitors = () => {
       </Helmet>
             {addVisitor && (<form onSubmit={handleSubmit} className="Customer-master-form">
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8f9fa', padding: '10px', marginBottom:"20px" }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', marginBottom:"20px" }}>
                     <h3 className="bigtitle">Visitors Form</h3>
-                    <button onClick={closeAddVisitor} style={{ padding: '10px 20px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+                    <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black' , background:"white"}}>
                         <CloseIcon />
                     </button>
                 </div>
@@ -346,24 +347,9 @@ const Visitors = () => {
 
                     <label className="form-field">
                         Entry Time:
-                        {!isClicked && (
-                            <div
-                                className="form-control generate-button"
-                                onClick={entryTime}
-                                required
-                            >
-                                {isLoading ? (
-                                    <ClipLoader color="#b3b3b3" loading={isLoading} />
-                                ) : (
-                                    'Entry Time'
-                                )}
-                            </div>
-                        )}
-                        {isClicked && (
                             <div className="form-control download-link">
                                 {formData.VisitorsEntry}
                             </div>
-                        )}
                     </label>
 
 
@@ -470,13 +456,11 @@ const Visitors = () => {
 
             </form>)}
 
-
-
             {showTable && (<div style={{ padding: '20px', margin: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8f9fa', padding: '10px' }}>
-                    <h3 className="bigtitle">Vendor Response Overview</h3>
-                    <button onClick={add} style={{ padding: '10px 20px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
-                        Add +
+                    <h3 className="bigtitle">Visitor's Form</h3>
+                    <button onClick={add} style={{ padding: '10px 20px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#796de5', color: 'white' }}>
+                        Add New Visitor
                     </button>
                 </div>
 
@@ -484,12 +468,14 @@ const Visitors = () => {
                 <div>
                     <div style={{ marginTop: "50px" }}>
                         <div className='vendor-response-responsive-table'>
-                            <table style={{ width: '90%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                 <thead>
                                     <tr>
+                                        <th>Sr. No</th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Phone No</th>
+                                        <th>Email Id</th>
                                         <th>Edit</th>
                                     </tr>
                                 </thead>
@@ -501,10 +487,11 @@ const Visitors = () => {
                                     ) : (
                                         data.map((person, index) => (
                                             <tr key={person} >
+                                                <td>{index+1}</td>
                                                 <td>{person.VisitorFirstName || '---'}</td>
                                                 <td>{person.VisitorLastName || '---'}</td>
                                                 <td>{person.phoneNo || '---'}</td>
-
+                                                <td>{person.email || '---'}</td>
                                                 <td>
                                                     <div>
                                                         <button onClick={() => view(person.visitorId)} className='view-button' >View</button>
@@ -521,9 +508,9 @@ const Visitors = () => {
             </div>)}
 
             {editVisitor && (<form className="Customer-master-form">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8f9fa', padding: '10px', marginBottom:"20px" }}>
-                    <h3 className="bigtitle">VisitorsEdit Form</h3>
-                    <button onClick={closeEditVisitor} style={{ padding: '10px 20px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', marginBottom:"20px" }}>
+                    <h3 className="bigtitle">Visitors Edit Form</h3>
+                    <button onClick={closeEditVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black' , background:"white"}}>
                         <CloseIcon />
                     </button>
                 </div>

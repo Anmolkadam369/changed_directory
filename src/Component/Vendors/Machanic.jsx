@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Advocate.css';
 import axios from 'axios';
 import { useNavigate, Outlet } from 'react-router-dom';
@@ -102,6 +102,45 @@ const Machanic = () => {
     function toggleSidebar() {
         setIsSidebarOpen(!isSidebarOpen);
     }
+
+    const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
+    const effectRan = useRef(false);
+    const urlBase64ToUint8Array = base64String => {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    };
+
+    useEffect(() => {
+        if (effectRan.current === false) {
+            const sendLoginNotification = async () => {
+                try {
+                    console.log('Registering service worker...');
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('Service worker registered:', registration);
+
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                    });
+                    console.log('Push Manager subscription:', subscription);
+
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
+
+                    // alert('Login notification sent successfully');
+                } catch (error) {
+                    console.error('Error sending login notification:', error);
+                }
+            };
+
+            sendLoginNotification();
+            effectRan.current = true;
+        }
+    }, []);
+
+
 
     return (
         <div className="admin-page">

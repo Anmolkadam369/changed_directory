@@ -161,7 +161,7 @@ const EmployeeApproved = () => {
         </label>
       </div>
       <div className='responsive-table'>
-        <table style={{ width: '90%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+        <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
             <tr>
               <th>Sr. No.</th>
