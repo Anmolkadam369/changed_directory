@@ -5,7 +5,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import axios from 'axios';
 import backendUrl from '../../environment';
 import { useRecoilValue } from 'recoil';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
 import craneadvocatemechanic from '../../Assets/camw.webp'; // Correct import path
@@ -18,6 +18,13 @@ import vendorResponseImg from '../../Assets/vendorResponse.webp'; // Correct imp
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { ClipLoader } from 'react-spinners';
+import Chart from '../Charts/Chart';
+import Featured from '../Charts/Featured';
+import visitorsImage from '../../Assets/visitorsImage.webp'
+import CustomerChart from '../Charts/CustomerChart';
+
+
 
 // ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -31,7 +38,10 @@ const Dashboard = () => {
     const [registeredAccidentVehicleData, setRegisteredAccidentVehicleData] = useState([]);
     const [remainingAssignedVendors, setRemainingAssignedVendors] = useState([]);
     const [vendorResponse, setVendorResponse] = useState([]);
-
+    const [visitors, setVisitors] = useState([]);
+    const [isGenerated, setIsGenerated] = useState(false);
+    const [generatedExcel, setGeneratedExcel] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const markerIcon = new L.Icon({
         iconUrl: require('leaflet/dist/images/marker-icon.png'),
@@ -147,8 +157,8 @@ const Dashboard = () => {
     });
 
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
 
     useEffect(() => {
         getVendorData();
@@ -158,6 +168,7 @@ const Dashboard = () => {
         reportedRegistersComplaints();
         AssignedVendorsRemaining();
         allVendorResponse();
+        allVisitors();
 
         if (token === '' || userId === '') {
             //   navigate('/');
@@ -271,95 +282,156 @@ const Dashboard = () => {
         setVendorResponse(response.data.data)
     };
 
+    const allVisitors = async (e) => {
+        const response = await axios.get(`${backendUrl}/api/visitors`);
+        setVisitors(response.data.data)
+    };
+
+
+    const generateFile = async () => {
+        try {
+            setIsLoading(true);
+            const response = await axios.get(`${backendUrl}/api/getWeeklyReports/${userId}`);
+            setGeneratedExcel(response.data.data);
+            setIsLoading(false);
+            setIsGenerated(true);
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error.message);
+        }
+    };
+
 
     return (
         <div className="dashboard">
-            <h1 className="dashboardTitle">Administration</h1>
             <Helmet>
                 <title>Accident Dashboard - Claimpro</title>
                 <meta name="description" content="Dashboard for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/Dashboard`} />
             </Helmet>
+            {/* <div className="header-container-search" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h1 className="dashboardTitle">Administration</h1>
+                <label className="form-field search-field" style={{ display: "flex", alignItems: "center" }}>
+                    {!isGenerated && (
+                        <div
+                            className="form-control generate-button"
+                            onClick={generateFile}
+                            style={{ marginLeft: "auto" }} // Aligns the button to the right
+                        >
+                            {isLoading ? (
+                                <ClipLoader color="#4CAF50" loading={isLoading} />
+                            ) : (
+                                'Last 7 Days Excel'
+                            )}
+                        </div>
+                    )}
+                    {isGenerated && (
+                        <a
+                            href={generatedExcel}
+                            className="form-control download-link"
+                            style={{ marginLeft: "auto" }} // Aligns the link to the right
+                        >
+                            Download Excel File
+                        </a>
+                    )}
+                </label>
+            </div> */}
+
+
+
             <main className="main-content">
                 <div className='other-content'>
                     <div style={{ display: "relative" }}>
-                        <div className="statistics">
-                            <div>
-                                <div className="stat-item" style={{ marginTop: '20px' }}>
-                                    <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
-                                    <h3>Number Of Vendor</h3>
-                                    <p>{vendorData.length}</p>
-                                </div>
 
-                                <div className="stat-item" style={{ marginTop: '20px' }}>
-                                    <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
-                                    <h3>Remaining Vehicles Assigned to Vendors</h3>
-                                    <p>{remainingAssignedVendors.length}</p>
-                                </div>
+                        <div className="stat-container">
+                            <div className="stat-item">
+                                <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
+                                <h3>Number Of Vendor</h3>
+                                <p>{vendorData.length}</p>
                             </div>
 
+                            <div className="stat-item">
+                                <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
+                                <h3>Remaining Vehicles</h3>
+                                <p>{remainingAssignedVendors.length}</p>
+                            </div>
+
+                            <div className="stat-item">
+                                <img src={customerImage} className="small-image" alt="Vendor Types" />
+                                <h3>Number of Customer</h3>
+                                <p>{customerData.length}</p>
+                            </div>
+
+                            <div className="stat-item">
+                                <img src={complaints} className="small-image" alt="Vendor Types" />
+                                <h3>Number of Complaints on Vehicle</h3>
+                                <p>{allAccidentVehicleData.length}</p>
+                            </div>
+                        </div>
+
+
+
+                        <div className="statistics">
                             <div className="charts">
-                                <div className="chart-item">
-                                    <h2 className="chart-title">Vendors</h2>
-                                    <Line data={lineData} />
-                                    <h4 className="chart-subtitle">Vendors Added By Month</h4>
-                                </div>
+                                <Featured />
 
                                 <div className="chart-item">
                                     <h3 className="chart-title">Vendor Type Distribution</h3>
                                     <Doughnut data={doughnutData} />
                                 </div>
+
+                                <Chart />
+
                             </div>
                         </div>
+
+                        <div className="stat-container">
+                            <div className="stat-item">
+                                <img src={registerComplaints} className="small-image" alt="Vendor Types" />
+                                <h3>Registered Complaints</h3>
+                                <p>{registeredAccidentVehicleData.length}</p>
+                            </div>
+                            <div className="stat-item">
+                                <img src={remainingComplaints} className="small-image" alt="Vendor Types" />
+                                <h3>Remaining Complaints</h3>
+                                <p>{accidentVehicleData.length}</p>
+                            </div>
+                            <div className="stat-item">
+                                <img src={vendorResponseImg} className="small-image" alt="Vendor Types" />
+                                <h3>Vendor Response</h3>
+                                <p>{vendorResponse.length}</p>
+                            </div>
+                            <div className="stat-item">
+                                <img src={visitorsImage} className="small-image" alt="Vendor Types" />
+                                <h3>Number Of Visitors</h3>
+                                <p>{visitors.length}</p>
+                            </div>
+                        </div>
+
 
                         <div className="statistics">
-
-                            <div>
-                                <div className="stat-item" style={{ marginTop: '20px' }}>
-                                    <img src={customerImage} className="small-image" alt="Vendor Types" />
-                                    <h3>Number of Customer</h3>
-                                    <p>{customerData.length}</p>
-                                </div>
-
-                                <div className="stat-item" style={{ marginTop: '20px' }}>
-                                    <img src={complaints} className="small-image" alt="Vendor Types" />
-                                    <h3>Number of Complaints on Vehicle</h3>
-                                    <p>{allAccidentVehicleData.length}</p>
-                                </div>
-                            </div>
-
                             <div className="charts">
-                                <div className="chart-item">
-                                    <h2 className='chart-title'>Customer</h2>
-                                    <Line data={lineData2} />
-                                    <h4 className="chart-subtitle">Customer Added By Month</h4>
-                                </div>
-                                <div className="chart-item">
-                                    <h3 className="chart-title">Customer Type Distribution</h3>
-                                    <Doughnut data={doughnutData2} />
+                                <CustomerChart />
+                                <Featured />
+
+                                <div className="charts">
+                                    <div className="chart-item">
+                                        <h3 className="chart-title">Customer Type Distribution</h3>
+                                        <Doughnut data={doughnutData2} />
+                                    </div>
+
                                 </div>
                             </div>
 
                         </div>
-
-                        {/* <div className="timeline-container" style={{ width: '200px', height: '880px', marginLeft: '20px', overflowY: 'scroll' }}>
-                        <h1 style={{marginTop:"40px", marginBottom:"50px", fontWeight:"bold"}}>
-                            Key Data Points
-                        </h1>
-                        {events.map((event, index) => (
-                            <div key={index} className="timeline-item">
-                                <div className="timeline-date">{event.date}</div>
-                                <div className="timeline-description">{event.description}</div>
-                            </div>
-                        ))}
-                        </div> */}
                     </div>
                 </div>
 
 
 
 
-                <div className="statistics">
+                {/* <div className="statistics">
                     <div className="stat-item2">
                         <img src={registerComplaints} className="small-image" alt="Vendor Types" />
                         <h3>Registered Complaints</h3>
@@ -378,7 +450,7 @@ const Dashboard = () => {
                     <div className='cityCss'>
                         <Bar data={cityData} options={cityOptions} />
                     </div>
-                </div>
+                </div> */}
 
                 <div className="map-container" style={{ height: '400px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
                     <MapContainer center={[19.0760, 72.8777]} zoom={10} style={{ height: '100%', width: '100%' }}>

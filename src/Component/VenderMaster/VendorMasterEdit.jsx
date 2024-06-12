@@ -17,7 +17,7 @@ import Modal from 'react-modal';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const config = {
@@ -25,9 +25,9 @@ const config = {
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VendorMasterEdit = () => {
+const VendorMasterEdit = ({id, onUpdate}) => {
   const location = useLocation();
-  const { id } = location.state || {};
+  // const { id } = location.state || {};
   console.log("Received ID:", id);
   const navigate = useNavigate();
   const today = new Date().toISOString().split('T')[0];
@@ -315,7 +315,7 @@ const VendorMasterEdit = () => {
       setOpenSnackbar(true);
       setIsLoading(false);
       setTimeout(() => {
-        navigate("../Admin");
+        onUpdate(); 
       }, 2000);
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -328,18 +328,21 @@ const VendorMasterEdit = () => {
   const editable = () => {
     setIsReadOnly(!IsReadOnly)
   }
-  const handleBack = () => {
-    navigate("../Admin")
-  }
+    const handleBack = () => {
+      onUpdate(); 
+      // navigate("../Admin")
+    }
   return (
     <div>
       <Helmet>
         <title>Vendor Info Edit - Claimpro</title>
         <meta name="description" content="Edit the Vendor Information." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/VendorMasterEdit`} />
       </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form" style={{ marginBottom: "50px" }}>
-        <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
+       <div style={{display:"flex", marginRight:'10px', marginBottom:'10px'}}>
+        <Button startIcon={<ArrowBackIcon />} style={{background:"none", color:"#077ede"}} onClick={handleBack} />
         <div>
           <h3 className='bigtitle' >Vendor Master Edits</h3>
 
@@ -354,7 +357,7 @@ const VendorMasterEdit = () => {
             </Alert>
           </Snackbar>
 
-
+          </div>
         </div>
 
 
@@ -366,15 +369,14 @@ const VendorMasterEdit = () => {
               name="systemDate"
               value={formData.systemDate}
               onChange={handleChange}
-              readOnly={IsReadOnly}
               className="form-control"
+              readOnly
             />
           </label>
 
           <label className="form-field input-group mb-3">
             Accident Place - State:
             <select
-              className='form-control'
               name="state"
               onChange={handleChange}
               disabled={IsReadOnly || isLoadingStates}
@@ -389,7 +391,6 @@ const VendorMasterEdit = () => {
           <label className="form-field input-group mb-3">
             Accident Place - City:
             <select
-              className='form-control'
               name="district"
               readOnly={IsReadOnly}
               value={formData.district}
@@ -410,6 +411,7 @@ const VendorMasterEdit = () => {
               name="vendorCode"
               value={formData.vendorCode}
               className="form-control"
+              readOnly
             />
           </label>
 

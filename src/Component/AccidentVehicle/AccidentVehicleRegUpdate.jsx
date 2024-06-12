@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -18,6 +18,10 @@ const AccidentVehicleRegUpdate = () => {
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
+  const [marginLeft, setMarginLeft] = useState('30px');
+  const [paddingLeft, setPaddingLeft] = useState('30px');
+  const [width, setWidth] = useState('100%');
+
   useEffect(() => {
     getData();
     console.log("token", token, userId);
@@ -65,13 +69,39 @@ const AccidentVehicleRegUpdate = () => {
     navigate("../VehicleClaim", { state: { id } });
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+        setMarginLeft('0px');
+        setPaddingLeft('20px')
+        setWidth('80%');
+      } else {
+        setMarginLeft('30px');
+        setPaddingLeft("40px")
+        setWidth('100%');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
   return ( 
-    <div>
+    <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
             <Helmet>
         <title>Accident Vehicle Information Register Update - Claimpro</title>
         <meta name="description" content="Accident Vehicle Information Register Update Claimpro Assist" />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/AccidentVehicleRegUpdate`} />
       </Helmet>
+      <div className='responsive-table' style={{ width }}>
       <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
       <table style={{ width: '100%', marginLeft: "10px", marginRight: "30px" }}>
         <thead>
@@ -106,6 +136,7 @@ const AccidentVehicleRegUpdate = () => {
         </tbody>
 
       </table>
+      </div>
     </div>
   );
 

@@ -9,10 +9,10 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './vendorResponse.css';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
-function AdvocateResponse() {
+function AdvocateResponse({ data, onUpdate }) {
     const location = useLocation();
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
@@ -20,7 +20,7 @@ function AdvocateResponse() {
     const [action, setAction] = useState('');
 
     // Initially set formData from location state if available
-    const initialData = location.state?.data || {
+    const initialData = data || {
         bailerDetails: "",
         companyRepresentative: "",
         feedback: "",
@@ -47,7 +47,9 @@ function AdvocateResponse() {
     }, [formData]);
 
 
-    const onSubmit = async (action) => {
+    const onSubmit = async (event) => {
+        event.preventDefault();
+
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
@@ -55,6 +57,9 @@ function AdvocateResponse() {
             const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setTimeout(() => {
+                    onUpdate()
+                }, 2000);
             } else {
                 const errorMessage = 'An error occurred';
                 setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
@@ -84,21 +89,24 @@ function AdvocateResponse() {
     };
 
     const handleBack = () => {
-        navigate("../Admin")
+        // navigate("../Admin")
+        onUpdate()
+
     }
 
     return (
-        <form className="vendor-response-form" style={{ marginBottom: "50px" }}>
+        <form className="vendor-response-form"  onSubmit={onSubmit} style={{ marginBottom: "50px" }}>
             <Helmet>
                 <title>Advocate Response - Claimpro</title>
                 <meta name="description" content="Advocate Response Bvc Claimpro Assist." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/AdvocateResponse`} />
             </Helmet>
 
-            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
-
-            <h2 className='bigtitle'>Accident Images</h2>
-
+            <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                <h2 className='bigtitle'>Accident Images</h2>
+            </div>
             <div className="form-row">
                 <label className="form-field">
                     Chassis Number:
@@ -291,13 +299,16 @@ function AdvocateResponse() {
                 <label className="form-field">
                     Bailer Details:
                     {
-                        formData.bailerDetails ?
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Bailer Details Available
-                            </button> :
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Bailer Details Not Available
-                            </button>
+                        formData.bailerDetails ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div style={{ marginTop: "20px" }}>
+                                    <a href={formData.bailerDetails} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Bailer Details uploaded</p>
+                        )
                     }
 
                 </label>
@@ -305,66 +316,85 @@ function AdvocateResponse() {
                 <label className="form-field">
                     FIR Copy:
                     {
-                        formData.firCopy ?
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                FIR Copy Available
-                            </button> :
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                FIR Copy Not Available
-                            </button>
+                        formData.firCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div style={{ marginTop: "20px" }}>
+                                    <a href={formData.firCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FIR Copy uploaded</p>
+                        )
                     }
                 </label>
                 <label className="form-field">
                     Release Order Copy:
                     {
-                        formData.releaseOrderCopy ?
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Copy Available
-                            </button> :
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Copy Not Available
-                            </button>
+                        formData.releaseOrderCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div style={{ marginTop: "20px" }}>
+                                    <a href={formData.releaseOrderCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Release Order uploaded</p>
+                        )
                     }
                 </label>
 
             </div>
             <div className='form-row'>
                 <label className="form-field">
-                    indemnity Bond Copy:
+                    Indemnity Bond Copy:
                     {
-                        formData.indemnityBondCopy ?
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Copy Available
-                            </button> :
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Copy Not Available
-                            </button>
+                        formData.indemnityBondCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div style={{ marginTop: "20px" }}>
+                                    <a href={formData.indemnityBondCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Indemnity Bond uploaded</p>
+                        )
                     }
                 </label>
                 <label className="form-field">
-                    petitionCopy:
+                    Petition Copy:
                     {
-                        formData.petitionCopy ?
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Copy Available
-                            </button> :
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Copy Not Available
-                            </button>
+                        formData.petitionCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div style={{ marginTop: "20px" }}>
+                                    <a href={formData.petitionCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Petition Copy uploaded</p>
+                        )
                     }
                 </label>
                 <label className="form-field">
-                    policeReportCopy:
+                    Police Report Copy:
                     {
-                        formData.policeReportCopy ?
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Available
-                            </button> :
-                            <button style={{ marginTop: '10px', padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightgreen', color: 'white' }}>
-                                Release Order Not Available
-                            </button>
+                        formData.policeReportCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div style={{ marginTop: "20px" }}>
+                                    <a href={formData.policeReportCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Police Report uploaded</p>
+                        )
                     }
                 </label>
+
                 <label className="form-field">
                     Feedback:
                     <textarea name="feedback" className='inputField' value={formData.feedback} readOnly />
@@ -396,7 +426,7 @@ function AdvocateResponse() {
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', padding: '20px 0' }}>
                 <button
                     type="submit"
-                    onClick={() => onSubmit('accept')}
+                    onClick={() =>  setAction('accept') }
                     style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
                 >
                     Accept

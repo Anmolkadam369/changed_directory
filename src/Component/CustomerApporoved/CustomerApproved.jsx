@@ -13,8 +13,10 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from '@mui/material';
-import ConfirmationModal from '../ConfirmModel';
-import { Helmet } from 'react-helmet';
+import ActivationModel from '../Visitors/ActivationModel';
+
+import { Helmet } from 'react-helmet-async';
+import CustomerMasterEdit from "../CustomerMaster/CustomerMasterEdit"
 
 const CustomerApproved = () => {
   const [data, setData] = useState([]);
@@ -27,16 +29,31 @@ const CustomerApproved = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info',timestamp: null });
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
 
+  const [showCustomerMasterEdit, setShowCustomerMasterEdit] = useState(false)
+  const [selectedId, setSelectedId] = useState(null);
+
+  const [marginLeft, setMarginLeft] = useState('30px');
+  const [paddingLeft, setPaddingLeft] = useState('30px');
+
   useEffect(() => {
-    getData();
+    if (!showCustomerMasterEdit) getData();
     if (token === "" || userId === "") {
       navigate("/");
     }
-  }, [token, userId, navigate]);
+  }, [token, userId, navigate, showCustomerMasterEdit]);
+
+  useEffect(() => {
+    if (alertInfo.show) {
+      const timer = setTimeout(() => {
+        setAlertInfo({ ...alertInfo, show: false });
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertInfo]);
 
   const generateFile = async () => {
     try {
@@ -78,7 +95,12 @@ const CustomerApproved = () => {
   };
 
   const view = (id) => {
-    navigate("../CustomerMasterEdit", { state: { id } });
+    setSelectedId(id);
+    setShowCustomerMasterEdit(true)
+    // navigate("../CustomerMasterEdit", { state: { id } });
+  };
+  const handleUpdate = () => {
+    setShowCustomerMasterEdit(false); // Hide VendorMasterEdit
   };
 
   const getData = async () => {
@@ -127,129 +149,157 @@ const CustomerApproved = () => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+        setMarginLeft('0px');
+        setPaddingLeft('20px')
+      } else {
+        setMarginLeft('30px');
+        setPaddingLeft("40px")
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <div>
-      <Helmet>
-        <title>Customer Table - Claimpro</title>
-        <meta name="description" content="Customer Table BVC claimPro Assist." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
-      </Helmet>
-      <div className="header-container-search">
-        <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Customer View / Edit</h3>
-
-        <label className="form-field search-field">
-          Search by Customer Name
-          <input
-            type='text'
-            placeholder="Search by Customer Name"
-            className="form-control"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            required />
-        </label>
-        <label className="form-field search-field">
-          Number Of Items On Page
-          <input
-            type='text'
-            placeholder="Items Show on Page"
-            className="form-control"
-            value={itemsPerPage}
-            onChange={handleSetItemPerPage}
-            required />
-        </label>
-        <label className="form-field search-field">
-          {!isGenerated && (
-            <div
-              className="form-control generate-button"
-              onClick={generateFile}
-            >
-              {isLoading ? (
-                <ClipLoader color="#4CAF50" loading={isLoading} />
-              ) : (
-                'Generate Excel File'
+      {!showCustomerMasterEdit && (<div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+        <Helmet>
+          <title>Customer Table - Claimpro</title>
+          <meta name="description" content="Customer Table BVC claimPro Assist." />
+          <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
+          <link rel='canonical' href={`https://claimpro.in/CustomerApproved`} />
+        </Helmet>
+        <div>
+          <h3 className="bigtitle">Customer View / Edit</h3>
+          <div className="form-search">
+            <label className='label-class'>
+              Search by Vendor Name
+              <input
+                type="text"
+                placeholder="Search by Vendor Name"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                required
+              />
+            </label>
+            <label className='label-class'>
+              Number Of Items On Page
+              <input
+                type="number"
+                placeholder="Items Show on Page"
+                value={itemsPerPage}
+                onChange={handleSetItemPerPage}
+                required
+              />
+            </label>
+            <label className="label-class" style={{ marginTop: "20px" }}>
+              {!isGenerated && (
+                <div
+                  className="form-control generate-button"
+                  onClick={generateFile}
+                >
+                  {isLoading ? (
+                    <ClipLoader color="#4CAF50" loading={isLoading} />
+                  ) : (
+                    'Generate Excel File'
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isGenerated && (
-            <a
-              href={generatedExcel}
-              className="form-control download-link"
-            >
-              Download Excel File
-            </a>
-          )}
-        </label>
-      </div>
+              {isGenerated && (
+                <a
+                  href={generatedExcel}
+                  className="form-control download-link"
+                >
+                  Download Excel File
+                </a>
+              )}
+            </label>
+          </div>
+        </div>
 
-      {alertInfo.show && (
-        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-          {alertInfo.message}
-        </Alert>
-      )}
-      <div className='responsive-table'>
-        <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Customer Name</th>
-              <th>Email</th>
-              <th>Customer Type</th>
-              <th>Edited By</th>
-              <th>View</th>
-              <th>Active/Deactive</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.length === 0 ? (
+        {alertInfo.show && (
+          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+            {alertInfo.message}
+          </Alert>
+        )}
+        <div className='responsive-table'>
+          <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+            <thead>
               <tr>
-                <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                <th>Sr. No.</th>
+                <th>Customer Name</th>
+                <th>Email</th>
+                <th>Customer Type</th>
+                <th>Edited By</th>
+                <th>View</th>
+                <th>Active/Deactive</th>
               </tr>
-            ) : (
-              currentItems.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{indexOfFirstItem + index + 1}</td>
-                  <td>{item.CustomerName}</td>
-                  <td>{item.email}</td>
-                  <td>{item.CustomerType}</td>
-                  <td>{item.EditedBy}</td>
-                  <td>
-                    <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => openModal(item)}
-                      className="deactivate-button"
-                    >
-                      {item.isActive === "true" ? "Deactivate" : "Activate"}
-                    </button>
-                  </td>
+            </thead>
+            <tbody>
+              {currentItems.length === 0 ? (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className='pagination'>
-        <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
-          <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
-          {pageNumbers.map((pageNumber) => (
-            <Button
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-              className={currentPage === pageNumber ? 'active' : ''}
-            >
-              {pageNumber}
-            </Button>
-          ))}
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
-        </ButtonGroup>
-      </div>
-      {modalData && (
-        <ConfirmationModal
-          isOpen={isModalOpen}
-          onConfirm={() => handleConfirm(modalData.CustomerCode, modalData.isActive === "true" ? "false" : "true")}
-          onCancel={handleCancel}
-        />
+              ) : (
+                currentItems.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{indexOfFirstItem + index + 1}</td>
+                    <td>{item.CustomerName}</td>
+                    <td>{item.email}</td>
+                    <td>{item.CustomerType}</td>
+                    <td>{item.EditedBy}</td>
+                    <td>
+                      <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => openModal(item)}
+                        className="deactivate-button"
+                      >
+                        {item.isActive === "true" ? "Deactivate" : "Activate"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className='pagination'>
+          <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
+            <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
+            {pageNumbers.map((pageNumber) => (
+              <Button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                className={currentPage === pageNumber ? 'active' : ''}
+              >
+                {pageNumber}
+              </Button>
+            ))}
+            <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
+          </ButtonGroup>
+        </div>
+        {modalData && (
+          <ActivationModel
+            isOpen={isModalOpen}
+            onConfirm={() => handleConfirm(modalData.CustomerCode, modalData.isActive === "true" ? "false" : "true")}
+            onCancel={handleCancel}
+          />
+        )}
+      </div>)}
+      {showCustomerMasterEdit && (
+        <CustomerMasterEdit id={selectedId} onUpdate={handleUpdate} />
       )}
     </div>
   );

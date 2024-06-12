@@ -7,7 +7,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import Modal from '../Location1/Modal'; // Import the modal component
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 function Registration({ onVehicleData }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -29,8 +29,8 @@ function Registration({ onVehicleData }) {
     }, [vehicleInfo]);
 
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
 
     useEffect(() => {
         if (token === "" || userId === "") {
@@ -82,6 +82,7 @@ function Registration({ onVehicleData }) {
                     <title>Customer Service Vehicle Number - Claimpro</title>
                     <meta name="description" content="Customer Service Vehicle for BVC ClaimPro Assist to register the vehicle and get data about vehicle." />
                     <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                    <link rel='canonical' href={`https://claimpro.in/Register`}/>
                 </Helmet>
                 <div style={{ position: 'relative' }}>
                     {getData.isActive === "false" && showPopup && (

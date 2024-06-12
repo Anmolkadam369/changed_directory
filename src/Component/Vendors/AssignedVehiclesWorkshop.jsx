@@ -7,7 +7,7 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -134,6 +134,7 @@ const AssignedVehicleWorkshop = () => {
         <title>Assigned Vehicles To Workshop - Claimpro</title>
         <meta name="description" content="We are Assigning Vehicles To Workshop." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/AssignedVehicleWorkshop`} />
       </Helmet>
 <div style={{ position: 'relative' }}>
         {GetDataOfUser.isActive === "false" && showPopup && (

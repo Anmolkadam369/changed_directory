@@ -9,18 +9,18 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import './vendorResponse.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
-function WorkshopResponse() {
+function WorkshopResponse({data, onUpdate}) {
     const location = useLocation();
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [action, setAction] = useState('');
 
 
-    const initialData = location.state?.data || {
+    const initialData = data || {
         agreementCPA: "",
         allBillCopy: "",
         contactofDriver: "",
@@ -64,6 +64,9 @@ function WorkshopResponse() {
             const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setTimeout(() => {
+                    onUpdate()
+                }, 2000);
             } else {
                 const errorMessage = 'An error occurred';
                 setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
@@ -76,7 +79,8 @@ function WorkshopResponse() {
     };
 
     const handleBack = () => {
-        navigate("../Admin")
+        // navigate("../Admin")
+        onUpdate()
     }
 
     return (
@@ -85,12 +89,13 @@ function WorkshopResponse() {
                 <title>Workshop Response For Service - Claimpro</title>
                 <meta name="description" content="Workshop Response For Service Bvc ClaimPro Assist" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/WorkshopResponse`} />
             </Helmet>
 
-            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
-
-            <h2 className='bigtitle'>Accident Images</h2>
-
+            <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                <h2 className='bigtitle'>Accident Images</h2>
+            </div>
             <div className="form-row">
                 <label className="form-field">
                     Chassis Number:

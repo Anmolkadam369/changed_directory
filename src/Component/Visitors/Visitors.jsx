@@ -14,7 +14,7 @@ import { ClipLoader } from 'react-spinners';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const Visitors = () => {
@@ -23,13 +23,14 @@ const Visitors = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [isClicked, setIsClicked] = useState(false)
     const [isOutClicked, setIsOutClicked] = useState(false)
     const [addVisitor, setAddVisitor] = useState(false)
     const [editVisitor, setEditVisitor] = useState(false)
     const [showTable, setShowTable] = useState(true)
+    const [width, setWidth] = useState('100%');
 
     const [data, setdata] = useState([]);
     const [comingData, setComingData] = useState([]);
@@ -315,159 +316,188 @@ const Visitors = () => {
         getVisitor()
     }
 
+    useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth <= 480) {
+            // document.querySelector('.visitor-container').classList.add('mobile');
+          } 
+          if (window.innerWidth <= 630) {
+            setWidth('60%');
+          }
+          else {
+            // document.querySelector('.visitor-container').classList.remove('mobile');
+            setWidth('100%');
+          }
+        };
+    
+        window.addEventListener('resize', handleResize);
+    
+        // Initial check
+        handleResize();
+    
+        // Cleanup event listener on component unmount
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
+
     return (
         <div>
 
-<Helmet>
-        <title>Visitors Information - Claimpro</title>
-        <meta name="description" content="Visitors Information For BVC Claimpro Assist" />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-      </Helmet>
-            {addVisitor && (<form onSubmit={handleSubmit} className="Customer-master-form">
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', marginBottom:"20px" }}>
-                    <h3 className="bigtitle">Visitors Form</h3>
-                    <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black' , background:"white"}}>
-                        <CloseIcon />
-                    </button>
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        System Date:
-                        <input
-                            type="date"
-                            name="systemDate"
-                            value={formData.systemDate}
-                            onChange={handleChange}
-                            readOnly
-                            className="form-control"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Entry Time:
-                            <div className="form-control download-link">
-                                {formData.VisitorsEntry}
-                            </div>
-                    </label>
-
-
-                    <label className="form-field">
-                        Visitors First Name:
-                        <input
-                            type="text"
-                            name="VisitorFirstName"
-                            placeholder=' Name'
-                            value={formData.VisitorFirstName}
-                            onChange={handleChange}
-                            className="form-control"
-                            required
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Visitors Last Name:
-                        <input
-                            type="text"
-                            name="VisitorLastName"
-                            placeholder=' Name'
-                            value={formData.VisitorLastName}
-                            onChange={handleChange}
-                            className="form-control"
-                            required
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Address  :
-                        <textarea
-                            name="VisitorAddress"
-                            value={formData.VisitorAddress}
-                            onChange={handleChange}
-                            required
-                            className="form-control"
-                            placeholder='Address' />
-                    </label>
-
-                    <label className="form-field">
-                        Phone Number:
-                        <input
-                            type='tel'
-                            name="phoneNo"
-                            value={formData.phoneNo}
-                            onChange={handleChange}
-                            placeholder=' Phone No'
-                            required
-                            pattern="\d{10}"
-                            title="Phone number must be exactly 10 digits"
-                            className="form-control"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        E-Mail:
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder='E-Mail'
-                            required
-                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                            title="Please enter a valid email address."
-                            className="form-control"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Reason  :
-                        <textarea
-                            name="Reason"
-                            value={formData.Reason}
-                            onChange={handleChange}
-                            required
-                            className="form-control"
-                            placeholder='Reason' />
-                    </label>
-
-                </div>
-
-                {alertInfo.show && (
-                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                        {alertInfo.message}
-                    </Alert>
-                )}
-
-                <div style={{ textAlign: 'center' }}>
-                    <button type="submit"
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                        disabled={isLoading} // Disable button while loading
-                    >
-                        {isLoading ? 'Submitting...' : 'Submit'}
-                    </button>
-                    {isLoading && (
-                        <div style={{ marginTop: '10px' }}>
-                            <ClipLoader color="#4CAF50" loading={isLoading} />
-                            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+            <Helmet>
+                <title>Visitors Information - Claimpro</title>
+                <meta name="description" content="Visitors Information For BVC Claimpro Assist" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/Visitors`} />
+            </Helmet>
+            {addVisitor && (
+                <div>
+                    <form onSubmit={handleSubmit} className="Customer-master-form" style={{width}}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
+                            <h3 style={{fontSize: "25px" , fontWeight: "bold"}}>Visitors Form</h3>
+                            <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
+                                <CloseIcon />
+                            </button>
                         </div>
-                    )}
-                </div>
+                        <div className="form-row">
+                            <label className="form-field">
+                                System Date:
+                                <input
+                                    type="date"
+                                    name="systemDate"
+                                    value={formData.systemDate}
+                                    onChange={handleChange}
+                                    readOnly
+                                    className="form-control"
+                                />
+                            </label>
 
-            </form>)}
+                            <label className="form-field">
+                                Entry Time:
+                                <div className="form-control download-link">
+                                    {formData.VisitorsEntry}
+                                </div>
+                            </label>
 
-            {showTable && (<div style={{ padding: '20px', margin: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8f9fa', padding: '10px' }}>
-                    <h3 className="bigtitle">Visitor's Form</h3>
-                    <button onClick={add} style={{ padding: '10px 20px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#796de5', color: 'white' }}>
-                        Add New Visitor
-                    </button>
+
+                            <label className="form-field">
+                                Visitors First Name:
+                                <input
+                                    type="text"
+                                    name="VisitorFirstName"
+                                    placeholder=' Name'
+                                    value={formData.VisitorFirstName}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    required
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Visitors Last Name:
+                                <input
+                                    type="text"
+                                    name="VisitorLastName"
+                                    placeholder=' Name'
+                                    value={formData.VisitorLastName}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                    required
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Address  :
+                                <textarea
+                                    name="VisitorAddress"
+                                    value={formData.VisitorAddress}
+                                    onChange={handleChange}
+                                    required
+                                    className="form-control"
+                                    placeholder='Address' />
+                            </label>
+
+                            <label className="form-field">
+                                Phone Number:
+                                <input
+                                    type='tel'
+                                    name="phoneNo"
+                                    value={formData.phoneNo}
+                                    onChange={handleChange}
+                                    placeholder=' Phone No'
+                                    required
+                                    pattern="\d{10}"
+                                    title="Phone number must be exactly 10 digits"
+                                    className="form-control"
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                E-Mail:
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder='E-Mail'
+                                    required
+                                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                    title="Please enter a valid email address."
+                                    className="form-control"
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Reason  :
+                                <textarea
+                                    name="Reason"
+                                    value={formData.Reason}
+                                    onChange={handleChange}
+                                    required
+                                    className="form-control"
+                                    placeholder='Reason' />
+                            </label>
+
+                        </div>
+
+                        {alertInfo.show && (
+                            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                {alertInfo.message}
+                            </Alert>
+                        )}
+
+                        <div style={{ textAlign: 'center' }}>
+                            <button type="submit"
+                                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                                disabled={isLoading} // Disable button while loading
+                            >
+                                {isLoading ? 'Submitting...' : 'Submit'}
+                            </button>
+                            {isLoading && (
+                                <div style={{ marginTop: '10px' }}>
+                                    <ClipLoader color="#4CAF50" loading={isLoading} />
+                                    <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                                </div>
+                            )}
+                        </div>
+
+                    </form>
                 </div>
+            )}
+
+            {showTable && (
+            <div className="Customer-master-form" style={{ padding: '20px', margin: '20px' }}>
+    <div className="visitor-container">
+      <h3 className="bigtitle">Visitor's Data</h3>
+      <button onClick={add} className="add-button">
+        Add New Visitor
+      </button>
+    </div>
 
 
                 <div>
                     <div style={{ marginTop: "50px" }}>
-                        <div className='vendor-response-responsive-table'>
+                        <div className='responsive-table' style={{ width }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                 <thead>
                                     <tr>
@@ -487,7 +517,7 @@ const Visitors = () => {
                                     ) : (
                                         data.map((person, index) => (
                                             <tr key={person} >
-                                                <td>{index+1}</td>
+                                                <td>{index + 1}</td>
                                                 <td>{person.VisitorFirstName || '---'}</td>
                                                 <td>{person.VisitorLastName || '---'}</td>
                                                 <td>{person.phoneNo || '---'}</td>
@@ -507,10 +537,13 @@ const Visitors = () => {
                 </div>
             </div>)}
 
-            {editVisitor && (<form className="Customer-master-form">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', marginBottom:"20px" }}>
-                    <h3 className="bigtitle">Visitors Edit Form</h3>
-                    <button onClick={closeEditVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black' , background:"white"}}>
+            {editVisitor && (
+            
+            <div>            
+            <form className="Customer-master-form">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
+                    <h3 style={{fontSize: "25px" , fontWeight: "bold"}}>Visitors Edit Form</h3>
+                    <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
                         <CloseIcon />
                     </button>
                 </div>
@@ -678,7 +711,9 @@ const Visitors = () => {
                     )}
                 </div>
 
-            </form>)}
+            </form>
+            </div>
+            )}
 
 
         </div>

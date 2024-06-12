@@ -11,7 +11,7 @@ import trucks1 from "../../Assets/trucks3.jpg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -174,6 +174,7 @@ const Login = () => {
                 <title>Contact Form - Claimpro</title>
                 <meta name="description" content="Contact form for the query" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,customer form,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/ContactUs`}/>
             </Helmet>
             <div style={loginContainerStyle}>
                 <div style={headerContainerStyle}>

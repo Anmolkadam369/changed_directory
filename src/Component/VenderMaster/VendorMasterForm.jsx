@@ -13,7 +13,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -268,6 +268,7 @@ const VendorMasterForm = () => {
         <title>Vendor Details - Claimpro</title>
         <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />
         <meta name="keywords" content="Vehicle Accidents, vendor, vendor Information, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/VendorMaster`}/>
       </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <div class="header-container">
@@ -288,11 +289,21 @@ const VendorMasterForm = () => {
             />
           </label>
 
+          <label className="form-field input-group mb-3">
+            Vendor Code:
+            <input
+              type="text"
+              name="vendorCode"
+              placeholder='SYSTEM GENERATED'
+              value={formData.vendorCode}
+              className="form-control"
 
+              readOnly
+            />
+          </label>
           <label className="form-field input-group mb-3">
             Accident Place - State:
             <select
-              className='form-control'
               name="state"
               onChange={handleChange}
               disabled={isLoadingStates}
@@ -307,31 +318,20 @@ const VendorMasterForm = () => {
           <label className="form-field input-group mb-3">
             Accident Place - City:
             <select
-              className='form-control'
-              name="state"
+              name="district"
+              value={formData.district}
               onChange={handleChange}
-              disabled={isLoadingStates}
-              value={formData.state}>
-              <option value="">Select State</option>
-              {states.map(state => (
-                <option key={state.iso2} value={state.iso2}>{state.name}</option>
+              disabled={isLoadingCities || !formData.state}
+            >
+              <option value="">Select City</option>
+              {!cities.error && cities.map(city => (
+                <option key={city.iso2} value={city.iso2}>{city.name}</option>
               ))}
             </select>
           </label>
+        </div>
 
-          <label className="form-field input-group mb-3">
-            Vendor Code:
-            <input
-              type="text"
-              name="vendorCode"
-              placeholder='SYSTEM GENERATED'
-              value={formData.vendorCode}
-              className="form-control"
-
-              readOnly
-            />
-          </label>
-
+        <div className='form-row'>
 
         </div>
 

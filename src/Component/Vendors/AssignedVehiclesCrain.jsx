@@ -7,7 +7,7 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -128,6 +128,7 @@ const AssignedVehicleCrain = () => {
         <title>Assigned Vehicles to Crain Manager - Claimpro</title>
         <meta name="description" content="View and manage vehicles assigned to Crain Manager for service. Track accident file numbers, vehicle codes, and more." />
         <meta name="keywords" content="Assigned Vehicles, Crain Manager, Vehicle Service, Accident File, Vehicle Management, Claimpro" />
+        <link rel='canonical' href={`https://claimpro.in/AssignedVehicleCrain`} />
       </Helmet>
 
 

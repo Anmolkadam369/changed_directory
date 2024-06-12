@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import backendUrl from '../../environment';
 import onlinePaymentImage from "../../Assets/onlinePaymentImage.png"
 import { useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 function Payment() {
@@ -78,6 +78,7 @@ function Payment() {
         <title>Payment For Agreement - Claimpro</title>
         <meta name="description" content="Payment Information For Agreement For BVC Claimpro Assist" />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/Payment`} />
       </Helmet>
 
       {isTokenValid === null && (

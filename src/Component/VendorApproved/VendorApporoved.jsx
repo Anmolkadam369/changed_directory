@@ -12,11 +12,12 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from '@mui/material';
-import ConfirmationModal from '../ConfirmModel';
-import { Helmet } from 'react-helmet';
+import ActivationModel from '../Visitors/ActivationModel';
+import { Helmet } from 'react-helmet-async';
+import VendorMasterEdit from '../VenderMaster/VendorMasterEdit';
 
 const VendorApproved = () => {
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info',timestamp: null });
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [data, setData] = useState([]);
@@ -25,18 +26,32 @@ const VendorApproved = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [marginLeft, setMarginLeft] = useState('30px');
+  const [paddingLeft, setPaddingLeft] = useState('30px');
 
+  const [showVendorMasterEdit, setShowVendorMasterEdit] = useState(false)
+  const [selectedId, setSelectedId] = useState(null);
+  console.log("selectedID", selectedId)
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    getData();
+    if (!showVendorMasterEdit) getData();
     if (token === "" || userId === "") {
-      navigate("/");
+      console.log("NO USER ID AND NO TOKEN")
     }
-  }, [token, userId, navigate]);
+  }, [token, userId, navigate, showVendorMasterEdit]);
+
+  useEffect(() => {
+    if (alertInfo.show) {
+      const timer = setTimeout(() => {
+        setAlertInfo({ ...alertInfo, show: false });
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertInfo]);
 
   const generateFile = async () => {
     try {
@@ -110,9 +125,14 @@ const VendorApproved = () => {
     }
   };
 
-  const view=(id)=>{
-    navigate("../VendorMasterEdit", {state: {id}});
-  }
+    const view = (id) => {
+      setSelectedId(id);
+      setShowVendorMasterEdit(true)
+      // navigate("../VendorMasterEdit", { state: { id } });
+    }
+    const handleUpdate = () => {
+      setShowVendorMasterEdit(false); // Hide VendorMasterEdit
+    };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -125,59 +145,87 @@ const VendorApproved = () => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+        setMarginLeft('0px');
+        setPaddingLeft('20px')
+      } else {
+        setMarginLeft('30px');
+        setPaddingLeft("40px")
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <div>
+    {!showVendorMasterEdit && (
+      <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
       <Helmet>
         <title>Vendor Information - Claimpro</title>
         <meta name="description" content="Vendor Information Claimpro." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks, vendor service, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/VendorApporoved`}/>
       </Helmet>
-      <div className="header-container-search">
-        <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Vendor View / Edit</h3>
 
-        <label className="form-field search-field">
-          Search by Vendor Name
-          <input
-            type='text'
-            placeholder="Search by Vendor Name"
-            className="form-control"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            required />
-        </label>
-        <label className="form-field search-field">
-          Number Of Items On Page
-          <input
-            type='number'
-            placeholder="Items Show on Page"
-            className="form-control"
-            value={itemsPerPage}
-            onChange={handleSetItemPerPage}
-            required />
-        </label>
-        <label className="form-field search-field">
-          {!isGenerated && (
-            <div
-              className="form-control generate-button"
-              onClick={generateFile}
-            >
-              {isLoading ? (
-                <ClipLoader color="#4CAF50" loading={isLoading} />
-              ) : (
-                'Generate Excel File'
-              )}
-            </div>
-          )}
-          {isGenerated && (
-            <a
-              href={generatedExcel}
-              className="form-control download-link"
-            >
-              Download Excel File
-            </a>
-          )}
-        </label>
+      <div>
+        <h3 className="bigtitle">Vendor View / Edit</h3>
+        <div className="form-search">
+          <label className='label-class'>
+            Search by Vendor Name
+            <input
+              type="text"
+              placeholder="Search by Vendor Name"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              required
+            />
+          </label>
+          <label className='label-class'>
+            Number Of Items On Page
+            <input
+              type="number"
+              placeholder="Items Show on Page"
+              value={itemsPerPage}
+              onChange={handleSetItemPerPage}
+              required
+            />
+          </label>
+          <label className="label-class" style={{ marginTop: "20px" }}>
+            {!isGenerated && (
+              <div
+                className="form-control generate-button"
+                onClick={generateFile}
+              >
+                {isLoading ? (
+                  <ClipLoader color="#4CAF50" loading={isLoading} />
+                ) : (
+                  'Generate Excel File'
+                )}
+              </div>
+            )}
+            {isGenerated && (
+              <a
+                href={generatedExcel}
+                className="form-control download-link"
+              >
+                Download Excel File
+              </a>
+            )}
+          </label>
+        </div>
       </div>
+
+
       {alertInfo.show && (
         <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
           {alertInfo.message}
@@ -226,9 +274,11 @@ const VendorApproved = () => {
           </tbody>
         </table>
       </div>
-      <div className='pagination'>
+      <div className="pagination">
         <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
-          <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
+          <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+            <ArrowBack />
+          </Button>
           {pageNumbers.map((pageNumber) => (
             <Button
               key={pageNumber}
@@ -238,16 +288,24 @@ const VendorApproved = () => {
               {pageNumber}
             </Button>
           ))}
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
+          <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+            <ArrowForward />
+          </Button>
         </ButtonGroup>
       </div>
+
       {modalData && (
-        <ConfirmationModal
+        <ActivationModel
           isOpen={isModalOpen}
           onConfirm={() => handleConfirm(modalData.vendorCode, modalData.isActive === "true" ? "false" : "true")}
           onCancel={handleCancel}
         />
       )}
+    </div>)}
+    {showVendorMasterEdit && 
+    (
+      <VendorMasterEdit id={selectedId} onUpdate={handleUpdate}/>
+    )}
     </div>
   );
 };

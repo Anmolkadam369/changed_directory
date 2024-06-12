@@ -179,63 +179,59 @@
 // export default MachanicResponse;
 
 
-
-
 import React, { useEffect, useState } from 'react';
 import './vendorResponse.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
-import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
-
-function MachanicResponse() {
+function MachanicResponse({ data, onUpdate }) {
     const location = useLocation();
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
     const userId = useRecoilValue(userIdState);
     const [action, setAction] = useState('');
+    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
-
-    // Initially set formData from location state if available
-    const initialData = location.state?.data || {
+    const initialData = data || {
         vehicleInspection: "",
         labourEstimate: "",
-        partsArrangment: "",
+        partsArrangement: "",
         trial: "",
         payment: "",
         feedback: "",
         reasonOfReject: ""
-
     };
-    const [formData, setFormData] = useState(initialData);
-    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
-    // Redirect if no valid token or userId
+    const [formData, setFormData] = useState(initialData);
+
     useEffect(() => {
-        if (!token || !userId) {
+        if (token === "" || userId === "") {
             navigate("/");
         }
     }, [token, userId, navigate]);
 
-    // Effect for debugging and watching formData
     useEffect(() => {
         console.log('formData updated:', formData);
     }, [formData]);
 
-
-    const onSubmit = async (action) => {
+    const onSubmit = async (event) => {
+        event.preventDefault();
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.VendorCode);
             const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
+            console.log("some data", response);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setTimeout(() => {
+                    onUpdate();
+                }, 2000);
             } else {
                 const errorMessage = 'An error occurred';
                 setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
@@ -248,20 +244,21 @@ function MachanicResponse() {
     };
 
     const handleBack = () => {
-        navigate("../Admin")
-    }
+        onUpdate();
+    };
 
     return (
-        <form className="vendor-response-form" style={{ marginBottom: "50px" }}>
+        <form className="vendor-response-form" onSubmit={onSubmit} style={{ marginBottom: "50px" }}>
             <Helmet>
                 <title>Mechanic Response - Claimpro</title>
                 <meta name="description" content="Mechanic Response for BVC claimPro Assist." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/MachanicResponse`} />
             </Helmet>
-            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
-
-            <h2 className='bigtitle'>Accident Images</h2>
-
+            <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                <h2 className='bigtitle'>Accident Images</h2>
+            </div>
             <div className="form-row">
                 <label className="form-field">
                     Chassis Number:
@@ -275,7 +272,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        <p style={{
+                            color: 'red',
+                            fontStyle: 'italic',
+                            fontSize: '14px',
+                            margin: '10px 0',
+                            textAlign: 'center'
+                        }}>No Chassis Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -289,7 +292,13 @@ function MachanicResponse() {
                             />
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No Chassis Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -304,7 +313,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No FrontLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -318,7 +333,13 @@ function MachanicResponse() {
                             />
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No frontRH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -333,7 +354,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No front View Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -348,7 +375,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -363,7 +396,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -378,7 +417,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -393,7 +438,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -408,7 +459,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -423,7 +480,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
                 <label className="form-field">
@@ -438,7 +501,13 @@ function MachanicResponse() {
 
                         </>
                     ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                     )}
                 </label>
 
@@ -447,7 +516,6 @@ function MachanicResponse() {
                 <h3 class="bigtitle">Data Uploaded by Mechanic</h3>
             </div>
             <div className='form-row'>
-                {/* Ensure correct name attribute values are used */}
                 <label className="form-field">
                     Vehicle Inspection Remarks:
                     <textarea className='inputField' name="vehicleInspection" value={formData.vehicleInspection} readOnly />
@@ -460,7 +528,6 @@ function MachanicResponse() {
                     Parts Arrangement:
                     <textarea name="partsArrangement" className='inputField' value={formData.partsArrangment} readOnly />
                 </label>
-
             </div>
             <div className='form-row'>
                 <label className="form-field">
@@ -479,20 +546,20 @@ function MachanicResponse() {
 
             {action === "reject" && (
                 <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
+                <label>
                     Reason to Reject:
-                    <label>
-                        <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
-                            onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => { onSubmit('reject'); }}
-                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}>
-                            Submit
-                        </button>
-                    </label>
-
-                </div>
+                    <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
+                        onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
+                    />
+                </label>
+                <button
+                    type="button"
+                    onClick={() => onSubmit('reject')}
+                    style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}
+                >
+                    Submit
+                </button>
+            </div>
             )}
 
             {alertInfo.show && (
@@ -503,7 +570,7 @@ function MachanicResponse() {
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', padding: '20px 0' }}>
                 <button
                     type="submit"
-                    onClick={() => onSubmit('accept')}
+                    onClick={() => setAction('accept')}
                     style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
                 >
                     Submit

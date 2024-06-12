@@ -7,8 +7,8 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
-import { Helmet } from 'react-helmet';
-
+import { Helmet } from 'react-helmet-async';
+import '../CustomerMaster/CustomerMaster.css'
 
 
 
@@ -19,6 +19,7 @@ const AccidentVehicleUser = () => {
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
+  const [width, setWidth] = useState('100%');
   useEffect(() => {
     getData();
     console.log("token", token, userId);
@@ -61,7 +62,7 @@ const AccidentVehicleUser = () => {
 
   function view(id) {
     console.log("myId", id)
-    // navigate("../CustomerMasterEdit", { state: { id } });
+    navigate("../SeeUpdatedPics", { state: { id } });
   }
 
   function formatDate(dateString) {
@@ -82,6 +83,7 @@ const AccidentVehicleUser = () => {
     if (response.data.message == "No accident vehicle data found.") setData([])
     else {
       console.log("response", response.data.data);
+      console.log("data2", response.data.data2);
       setData(response.data.data)
     }
   };
@@ -98,6 +100,24 @@ const AccidentVehicleUser = () => {
 
   console.log("dddddddddddddddddddd", data.data)
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+        setWidth('60%');
+      } else {
+        setWidth('100%');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
 
   return (
@@ -106,12 +126,12 @@ const AccidentVehicleUser = () => {
         <title>Register Accident Vehicle Information - Claimpro</title>
         <meta name="description" content="Register Accident Vehicle Information for BVC ClaimPro Assist." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/AccidentVehicleUser`} />
       </Helmet>
-      <div class='Customer-master-form' style={{ marginLeft: "0px" }}>
-        <div class="header-container">
-          <h3 class="bigtitle">My Vehicles Cases</h3>
+      <form className='Customer-master-form' style={{ width, marginLeft: "0px" }}>
+        <div className="header-container">
+          <h3 className="bigtitle">My Vehicles Cases</h3>
         </div>
-
         <div className="form-row">
 
           <label className="form-field input-group mb-3">
@@ -120,7 +140,7 @@ const AccidentVehicleUser = () => {
               type="text"
               name="VehicleNo"
               placeholder='Vehicle No'
-              class="form-label"
+              // class="form-label"
               value={formData.VehicleNo}
               onChange={handleChange}
               className="form-control"
@@ -134,7 +154,7 @@ const AccidentVehicleUser = () => {
               type="text"
               name="accidentFileNo"
               placeholder='Accident File No'
-              class="form-label"
+              // class="form-label"
               value={formData.accidentFileNo}
               onChange={handleChange}
               className="form-control"
@@ -148,7 +168,7 @@ const AccidentVehicleUser = () => {
               type="text"
               name="lossType"
               placeholder='Loss Type'
-              class="form-label"
+              // class="form-label"
               value={formData.lossType}
               onChange={handleChange}
               className="form-control"
@@ -162,7 +182,7 @@ const AccidentVehicleUser = () => {
               type="text"
               name="serviceType"
               placeholder='Service Type'
-              class="form-label"
+              // class="form-label"
               value={formData.serviceType}
               onChange={handleChange}
               className="form-control"
@@ -176,7 +196,7 @@ const AccidentVehicleUser = () => {
           <div className="dropdown green-dropdown form-field">
             Select Option :
             <button
-              className="btn btn-secondary dropdown-toggle"
+              className="form-field input-group mb-3"
               type="button"
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"
@@ -218,43 +238,45 @@ const AccidentVehicleUser = () => {
             />
           </label>
 
+          <label className="form-field input-group mb-3"></label>
+
         </div>
-      </div>
-
-
+      </form>
       <div className='responsive-table'>
-        <table className='allvendor-response'>
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Accident File No</th>
-              <th>Model</th>
-              <th>Chassis Number</th>
-              <th>See Updated Pics</th>
-
-            </tr>
-          </thead>
-          <tbody>
-            {data.length === 0 ? (
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+            <thead>
               <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
+                <th>Sr. No.</th>
+                <th>Accident File No</th>
+                <th>Model</th>
+                <th>Chassis Number</th>
+                <th>See Updated Pics</th>
+
               </tr>
-            ) : (
-              data.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-                  <td>{item.accidentFileNo}</td>
-                  <td>{item.model}</td>
-                  <td>{item.chassisNo}</td>
-                  <td>
-                    <button onClick={() => view(item.id)} className="view-button">Updated Pics</button>
-                  </td>
+            </thead>
+            <tbody>
+              {data.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center" }}>No data is there...</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                data.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{index + 1}</td>
+                    <td>{item.accidentFileNo}</td>
+                    <td>{item.model}</td>
+                    <td>{item.chassisNo}</td>
+                    <td>
+                      <button onClick={() => view(item.accidentFileNo)} className="view-button">Updated Pics</button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+
     </div>
   );
 

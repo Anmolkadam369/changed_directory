@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import './User.css';
 import "../Admin/Admin.css";
 import axios from 'axios';
@@ -23,7 +23,12 @@ import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import UserDashboard from '../Dashboard/UserDashboard';
+import userImg from "../../Assets/userImg.jpg";
+import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
+import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
+
 
 
 
@@ -33,6 +38,8 @@ const User = () => {
     const [getData, setGetData] = useState({});
     console.log("GETDATA", getData)
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [userImage, setUserImage] = useState(true);
+    const dropdownRef = useRef(null);
 
     const user = {
         name: "John Doe",
@@ -52,13 +59,7 @@ const User = () => {
     const [myAccidentVehicle, setMyAccidentVehicle] = useState(false);
     const [sendLocation, setSendLocation] = useState(false);
 
-
-
     const [isModalOpen, setModalOpen] = useState(false);
-
-
-
-
     const [startingPage, setStartingPage] = useState(true);
 
     const vendorData = [10, 4];
@@ -67,12 +68,49 @@ const User = () => {
     const customerData = [40, 10];
     const customerLabels = ['total Days', 'Days by Each Vehicle'];
 
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
 
     const handleSignOutClick = () => { setModalOpen(true) };
+
+    const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
+    const effectRan = useRef(false);
+    const urlBase64ToUint8Array = base64String => {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    };
+
+    useEffect(() => {
+        if (effectRan.current === false) {
+            const sendLoginNotification = async () => {
+                try {
+                    console.log('Registering service worker...');
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('Service worker registered:', registration);
+
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                    });
+                    console.log('Push Manager subscription:', subscription);
+
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
+
+                    // alert('Login notification sent successfully');
+                } catch (error) {
+                    console.error('Error sending login notification:', error);
+                }
+            };
+
+            sendLoginNotification();
+            effectRan.current = true;
+        }
+    }, []);
 
     const handleConfirmSignOut = () => {
         setRefreshToken('');
@@ -107,6 +145,15 @@ const User = () => {
 
     };
 
+    const handleFullScreenToggle = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    };
+
+
     useEffect(() => {
         const handleResize = () => {
             console.log("size", window.innerWidth)
@@ -128,6 +175,7 @@ const User = () => {
                 <title>User Page - Claimpro</title>
                 <meta name="description" content="User Page" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/UserDashboard`} />
             </Helmet>
             {isSidebarOpen ? (
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
@@ -135,7 +183,7 @@ const User = () => {
                         <div className="close-btn" onClick={toggleSidebar}>×</div>
                     )}
                     <ul>
-                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft: "10px" }} />
+                        <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
 
                         <li onClick={() => {
                             setShowCustomerOptions(!showCustomerOptions)
@@ -205,30 +253,47 @@ const User = () => {
                 </div>
             )}
             <main className="content" style={{ marginLeft: '0px' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
-                    <div>
-                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
-                            onClick={() => setShowUserId(!showUserId)} />
+            <div className='first-container'>
+                    <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                        {getData.CustomerName}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {/* <label className="form-field search-field" style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '30px', marginBottom: '0px' }}>
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                className="form-control"
+                                style={{ paddingRight: '30px', marginBottom: '0px' }} // Add padding to the right to make space for the icon
+                                required
+                            />
+                            <SearchOutlinedIcon
+                                className="icon2"
+                                onClick={handleSearchClick}
+                                style={{ cursor: 'pointer', position: 'absolute', right: '10px', marginTop: '5px' }} // Position the icon inside the input
+                            />
+                        </label> 
+
+                         <DarkModeOutlinedIcon className="icon2" style={{ cursor: 'pointer', marginRight: '30px', marginBottom: '0px' }} /> */}
+                        <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px',marginBottom: '0px' }} />
+                        <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+                            {userImage ? (
+                                <img
+                                    src={userImg}
+                                    alt="User"
+                                    style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                                />
+                            ) : (
+                                <FaUserCircle size={30} />
+                            )}
+                        </div>
                         {showUserId && (
-                            <div style={{
-                                position: 'absolute', // Makes the div float
-                                top: '50px', // Adjust this value to position it properly below the trigger element
-                                right: '0',
-                                width: '200px', // Set a fixed width for better control
-                                padding: '15px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
-                                backgroundColor: '#fff',
-                                borderRadius: '8px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-start',
-                                zIndex: 1000
-                            }}>
+                            <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
                                 <div style={{
                                     marginBottom: '10px',
                                     fontSize: '16px',
                                     fontWeight: 'bold',
-                                    color: '#333'
+                                    color: '#333',
+                                    marginTop: "15px"
                                 }}>
                                     User Information
                                 </div>
@@ -252,7 +317,8 @@ const User = () => {
                                         cursor: 'pointer',
                                         outline: 'none',
                                         width: '100%',
-                                        textAlign: 'center'
+                                        textAlign: 'center',
+                                        marginTop: "15px",
                                     }}>
                                     Sign Out
                                 </button>
@@ -261,59 +327,10 @@ const User = () => {
                         )}
                     </div>
                 </div>
-
-
+                <hr />
                 {
                     startingPage &&
-                    <div>
-                        <div style={{
-                            textAlign: 'center',
-                            backgroundColor: '#4CAF50', // Choose your color
-                            color: 'white', // Choose text color
-                            padding: '20px 0', // Vertical padding and no horizontal padding
-                            marginBottom: '30px', // Space below the header
-                        }}>
-                            <h1 style={{ fontSize: "170%" }}>User - {getData.CustomerName} </h1>
-                            <hr style={{
-                                border: '0',
-                                height: '2px', // Thickness of the hr
-                                backgroundColor: '#fff', // Same as the text color for consistency
-                                maxWidth: '50%', // Width of the hr
-                                margin: '0 auto', // Center the hr
-                            }} />
-                        </div>
-
-                        <h2 className='heading-box'>
-                            Vehicles Details
-                        </h2>
-
-                        <section className="dashboard-summary">
-                            <div className="summary-item">
-                                <h2>4</h2>
-                                <p>Repairing Pending</p>
-                            </div>
-                            <div className="summary-item">
-                                <h2>10</h2>
-                                <p>Repaired Vehicles</p>
-                            </div>
-                            <div className="summary-item">
-                                <h2>100</h2>
-                                <p>Registered Vehicles</p>
-                            </div>
-
-                        </section>
-
-                        <section className="charts-section">
-                            <div className="chart-container">
-                                <h2>Vendor Details</h2>
-                                <PieChartComponent chartData={vendorData} chartLabels={vendorLabels} />
-                            </div>
-                            <div className="chart-container">
-                                <h2>Customer Details</h2>
-                                <PieChartComponent chartData={customerData} chartLabels={customerLabels} />
-                            </div>
-                        </section>
-                    </div>
+                    <UserDashboard/>
                 }
                 {
                     showAddVehicle ? (

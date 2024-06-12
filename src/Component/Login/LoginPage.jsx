@@ -17,7 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -197,6 +197,14 @@ const Login = () => {
     width: '80px',
     height: 'auto',
   };
+  const remembermecontainer = {
+    display: "flex",
+    alignItems: "center",
+  };
+  
+  const labelStyle2 = {
+    marginLeft: "8px", // Adjust the spacing between checkbox and label
+  };
 
   return (
     <div style={backgroundStyle}>
@@ -204,6 +212,7 @@ const Login = () => {
         <title>BVC claimPro assist Login - Claimpro</title>
         <meta name="description" content="login for BVC ClaimPro Assist." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/LoginPage`}/>
       </Helmet>
       <div className="slide-in" style={loginContainerStyle}>
         <div style={headerContainerStyle}>
@@ -243,17 +252,15 @@ const Login = () => {
               }
             />
           </div>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={rememberMe}
-                onChange={handleRememberMeChange}
-                name="rememberMe"
-                color="primary"
-              />
-            }
-            label="Remember Me"
-          />
+          <div style={remembermecontainer}>
+      <Checkbox
+        checked={rememberMe}
+        onChange={handleRememberMeChange}
+        name="rememberMe"
+        color="primary"
+      />
+      <span style={labelStyle2}>Remember Me</span>
+    </div>
           {alertInfo.show && (
             <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
               {alertInfo.message}

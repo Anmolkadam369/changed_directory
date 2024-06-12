@@ -9,18 +9,18 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function ImageUpload() {
+function ImageUpload({ id, onUpdate }) {
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
     console.log("Received ID:", id);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'error' });
     const [showServices, setShowServices] = useState(true);
     const [formData, setFormData] = useState({});
@@ -129,7 +129,8 @@ function ImageUpload() {
             if (response.status === 200) {
                 setSnackbarMessage("Photos uploaded successfully!");
                 setTimeout(() => {
-                    navigate("../Admin");
+                    // navigate("../Admin");
+                    onUpdate();
                 }, 2000);
             } else {
                 setSnackbarMessage("Failed to upload photos.");
@@ -153,7 +154,8 @@ function ImageUpload() {
     };
 
     const handleBack = () => {
-        navigate("../Admin");
+        // navigate("../Admin");
+        onUpdate()
     };
 
     return (
@@ -162,11 +164,14 @@ function ImageUpload() {
                 <title>Accident Images Upload - Claimpro</title>
                 <meta name="description" content="Upload Accident Images" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/ImageUpload`} />
             </Helmet>
-            <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
+            <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+            <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
             <div className='header-container'>
                 <h2 className='bigtitle'>Daily Image Upload</h2>
                 <span className="mandatory-note">All fields are mandatory</span>
+            </div>
             </div>
             {Object.keys(photos).map((type, index) => (
                 <div key={type} className="photo-input-section">

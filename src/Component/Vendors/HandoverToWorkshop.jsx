@@ -6,7 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import backendUrl from '../../environment';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const HandoverToWorkshop = () => {
@@ -16,8 +16,8 @@ const HandoverToWorkshop = () => {
     const location = useLocation();
     const { id } = location.state || {};
     console.log("Received IDssss:", id);
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
@@ -222,6 +222,7 @@ const HandoverToWorkshop = () => {
                 <title>Handover to workshop - claimproassist</title>
                 <meta name="description" content="Handover for workshop for BVC Claimpro Assist" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/HandoverToWorkshop`} />
             </Helmet>
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
                 <div class='header-container'>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getToken, onMessage } from 'firebase/messaging';
 import { messaging } from './Firebase';
 import axios from 'axios';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import backendUrl from '../../environment';
 
 // function NotificationComponent() {

@@ -16,7 +16,7 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClipLoader } from 'react-spinners';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const config = {
@@ -24,16 +24,16 @@ const config = {
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VehicleClaimEdit = () => {
+const VehicleClaimEdit = ({ id, onUpdate }) => {
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
     console.log("Received IDssss:", id);
     const [comingData, setComingData] = useState([]);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -672,6 +672,9 @@ const VehicleClaimEdit = () => {
                 console.log("response", response.data);
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setIsLoading(false);
+                setTimeout(() => {
+                    onUpdate()
+                })
             }
         }
 
@@ -767,7 +770,7 @@ const VehicleClaimEdit = () => {
         setIsReadOnly(!IsReadOnly)
     }
     const handleBack = () => {
-        navigate("../Admin")
+        onUpdate()
     }
 
     return (
@@ -776,6 +779,7 @@ const VehicleClaimEdit = () => {
                 <title>Accident Vehicle Info Edit - Claimpro</title>
                 <meta name="description" content="Edit the Accident Vehicle Information." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/VehicleClaimEdit`} />
             </Helmet>
 
             {/* <form>
@@ -3385,11 +3389,14 @@ const VehicleClaimEdit = () => {
             </form> */}
 
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
-                <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
-                <div class='header-container'>
-                    <h2 className='bigtitle'>Accident Details</h2>
-                    <span class="mandatory-note">All fields are mandatory</span>
+                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                    <Button startIcon={<ArrowBackIcon />}  style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <div class='header-container'>
+                        <h2 className='bigtitle'>Accident Details</h2>
+                        <span class="mandatory-note">All fields are mandatory</span>
+                    </div>
                 </div>
+
                 <div className="form-row">
                     <label className="form-field">
                         Accident File No:

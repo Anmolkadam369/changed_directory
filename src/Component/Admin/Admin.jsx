@@ -28,12 +28,31 @@ import { messaging } from '../Firebase/Firebase';
 import EmployeeForm from '../EmployeeForm/EmployeeForm';
 import EmployeeApproved from '../EmployeeForm/EmployeeApproved';
 import Visitors from '../Visitors/Visitors';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import StoreIcon from "@mui/icons-material/Store";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import BadgeIcon from '@mui/icons-material/Badge';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import ReportIcon from '@mui/icons-material/Report';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import HailIcon from '@mui/icons-material/Hail';
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
+import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import userImg from "../../Assets/userImg.jpg";
+
 
 const Admin = () => {
 
     const [showUserId, setShowUserId] = useState(false);
+    const [userImage, setUserImage] = useState(true);
+
     const [getData, setGetData] = useState({});
+    const [highlightData, setHighlightData] = useState(false);
 
     let navigate = useNavigate();
 
@@ -85,8 +104,10 @@ const Admin = () => {
     const customerData = [30, 70];
     const customerLabels = ['Bulk Customers', 'Single Customers'];
 
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    // const token = useRecoilValue(tokenState);
+    // const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -133,6 +154,12 @@ const Admin = () => {
         const seconds = String(now.getSeconds()).padStart(2, '0');
         const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
         return `${hours}:${minutes}:${seconds}:${milliseconds}`;
+    };
+
+
+    const handleSearchClick = () => {
+        setHighlightData(true);
+        setTimeout(() => setHighlightData(false), 2000); // Highlight for 2 seconds
     };
 
     // const requestPermission = async () => {
@@ -280,6 +307,14 @@ const Admin = () => {
         };
     }, [showUserId]);
 
+    const handleFullScreenToggle = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    };
+
 
 
     return (
@@ -288,6 +323,7 @@ const Admin = () => {
                 <title>Admin Page - Claimpro</title>
                 <meta name="description" content="Admin Page." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/Admin`} />
             </Helmet>
             {isSidebarOpen ? (
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
@@ -295,102 +331,127 @@ const Admin = () => {
                         <div className="close-btn" onClick={toggleSidebar}>×</div>
                     )}
                     <ul>
-                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '50px', width: '80px', marginRight: '8px' }} />
-
-                        <li onClick={() => {
+                        <img src={claimproassist} alt="Dashboard Icon" className='company-img' />
+                        <li className='li-class' onClick={() => {
                             setShowCustomerOptions(!showCustomerOptions);
                             resetStates();
                             setStartingPage(true);
                         }}>
+                            <SpaceDashboardIcon className="icon" />
                             Dashboard</li>
                         <ul>
-                            <li onClick={(e) => {
+                            <li classname="li-class" onClick={(e) => {
                                 setShowVendorOptions(!showVendorOptions);
                                 resetStates();
                                 setShowAddVendor(true);
                                 e.stopPropagation();
-                            }}>Vendor
+                            }}>
+                                <StoreIcon className="icon" />
+                                Vendor
                                 {showVendorOptions && (
                                     <ul className='submenu'>
-                                        <li onClick={(e) => {
+                                        <li classname="li-class" onClick={(e) => {
                                             resetStates();
                                             setShowAddVendor(true);
                                             e.stopPropagation();
-                                        }}>Add Vendor</li>
-                                        <li onClick={(e) => {
+                                        }}>
+                                            <AddBusinessIcon className="icon" />
+                                            Add Vendor</li>
+                                        <li classname="li-class" onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setShowViewVendor(true);
-                                        }}>View Vendor</li>
+                                        }}>
+                                            <StoreIcon className="icon" />
+                                            View Vendor</li>
                                     </ul>
                                 )}
                             </li>
                         </ul>
                         <ul>
-                            <li onClick={(e) => {
+                            <li classname="li-class" onClick={(e) => {
                                 e.stopPropagation();
                                 setShowCustomerOptions(!showCustomerOptions);
                                 resetStates();
                                 setShowAddCustomer(true);
-                            }}>Customer
+                            }}>
+                                <PersonOutlineIcon className="icon" />
+                                Customer
                                 {showCustomerOptions && (
                                     <ul className='submenu'>
-                                        <li onClick={(e) => {
+                                        <li classname="li-class" onClick={(e) => {
                                             resetStates();
                                             e.stopPropagation();
                                             setShowAddCustomer(true);
-                                        }}>Add Customer</li>
-                                        <li onClick={(e) => {
+                                        }}>
+                                            <PersonAddAltIcon className="icon" />
+                                            Add </li>
+                                        <li classname="li-class" onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setShowViewCustomer(true);
-                                        }}>View Customer</li>
+                                        }}>
+                                            <PersonOutlineIcon className="icon" />
+                                            View </li>
                                     </ul>
                                 )}
                             </li>
                         </ul>
                         <ul>
-                            <li onClick={(e) => {
+                            <li classname="li-class" onClick={(e) => {
                                 e.stopPropagation();
                                 setShowEmployeeOptions(!showEmployeeOptions);
                                 resetStates();
                                 setShowAddEmployee(true);
-                            }}>Employee
+                            }}>
+                                <BadgeIcon className="icon" />
+                                Employee
                                 {showEmployeeOptions && (
                                     <ul className='submenu'>
-                                        <li onClick={(e) => {
+                                        <li classname="li-class" onClick={(e) => {
                                             resetStates();
                                             e.stopPropagation();
                                             setShowAddEmployee(true);
-                                        }}>Add Employee</li>
-                                        <li onClick={(e) => {
+                                        }}>
+                                            <PersonAddAltIcon className="icon" />
+                                            Add </li>
+                                        <li classname="li-class" onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setShowEmployeeView(true);
-                                        }}>View Employee</li>
+                                        }}>
+                                            <BadgeIcon className="icon" />
+                                            View </li>
                                     </ul>
                                 )}
                             </li>
                         </ul>
                         <ul>
-                            <li onClick={(e) => {
+                            <li classname="li-class" onClick={(e) => {
                                 e.stopPropagation();
                                 setShowVehicleInfo(!showVehicleInfo);
                                 resetStates();
                                 setShowVehicleClaim(true);
-                            }}>Vehicle Reported
+                            }}>
+
+                                <ReportIcon className="icon" />
+                                Vehicle Reported
                                 {showVehicleInfo && (
                                     <ul className='submenu'>
-                                        <li onClick={(e) => {
+                                        <li classname="li-class" onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setShowVehicleClaim(true);
-                                        }}>Register Update</li>
-                                        <li onClick={(e) => {
+                                        }}>
+                                            <AppRegistrationIcon className="icon" />
+                                            Register</li>
+                                        <li classname="li-class" onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setShowVehicleClaimView(true);
-                                        }}>View Register</li>
+                                        }}>
+                                            <ReportIcon className="icon" />
+                                            View Register</li>
                                     </ul>
                                 )}
                             </li>
@@ -405,19 +466,25 @@ const Admin = () => {
                                 setShowAssignedVehicleReport(!showAssignedVehicleReport);
                                 resetStates();
                                 setaccidendVehicle(true);
-                            }}>Assigned Vehicle
+                            }}>
+                                <LocalShippingIcon className="icon" />
+                                Assigned Vehicle
                                 {showAssignedVehicleReport && (
                                     <div className='submenu'>
                                         <li onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setaccidendVehicle(true);
-                                        }}>Assign Vendors</li>
+                                        }}>
+                                            <AddBusinessIcon className="icon" />
+                                            Vendors</li>
                                         <li onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setVendorResponsing(true);
-                                        }}>Vendor Response</li>
+                                        }}>
+                                            <SensorOccupiedIcon className="icon" />
+                                            Response</li>
                                     </div>
                                 )}
                             </li>
@@ -430,14 +497,19 @@ const Admin = () => {
                                 setShowVisitorForm(!showVisitorForm);
                                 resetStates();
                                 setVisitorForm(true);
-                            }}>Visitor's Form
+                            }}>
+                                <HailIcon className="icon" />
+                                Visitor's Form
                                 {showVisitorForm && (
                                     <div className='submenu'>
                                         <li onClick={(e) => {
                                             e.stopPropagation();
                                             resetStates();
                                             setVisitorForm(true);
-                                        }}>Visitor Form</li>
+                                        }}>
+
+                                            <HailIcon className="icon" />
+                                            Visitor Form</li>
                                     </div>
                                 )}
                             </li>
@@ -456,17 +528,47 @@ const Admin = () => {
             )}
 
             <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
-                    <div>
-                        <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
-                            onClick={() => setShowUserId(!showUserId)} />
+                <div className='first-container'>
+                    <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                        Administration
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {/* <label className="form-field search-field" style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '30px', marginBottom: '0px' }}>
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                className="form-control"
+                                style={{ paddingRight: '30px', marginBottom: '0px' }} // Add padding to the right to make space for the icon
+                                required
+                            />
+                            <SearchOutlinedIcon
+                                className="icon2"
+                                onClick={handleSearchClick}
+                                style={{ cursor: 'pointer', position: 'absolute', right: '10px', marginTop: '5px' }} // Position the icon inside the input
+                            />
+                        </label> 
+
+                         <DarkModeOutlinedIcon className="icon2" style={{ cursor: 'pointer', marginRight: '30px', marginBottom: '0px' }} /> */}
+                        <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px',marginBottom: '0px' }} />
+                        <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+                            {userImage ? (
+                                <img
+                                    src={userImg}
+                                    alt="User"
+                                    style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                                />
+                            ) : (
+                                <FaUserCircle size={30} />
+                            )}
+                        </div>
                         {showUserId && (
                             <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
                                 <div style={{
                                     marginBottom: '10px',
                                     fontSize: '16px',
                                     fontWeight: 'bold',
-                                    color: '#333'
+                                    color: '#333',
+                                    marginTop: "15px"
                                 }}>
                                     User Information
                                 </div>
@@ -490,7 +592,8 @@ const Admin = () => {
                                         cursor: 'pointer',
                                         outline: 'none',
                                         width: '100%',
-                                        textAlign: 'center'
+                                        textAlign: 'center',
+                                        marginTop: "15px",
                                     }}>
                                     Sign Out
                                 </button>
@@ -499,6 +602,7 @@ const Admin = () => {
                         )}
                     </div>
                 </div>
+                <hr />
 
 
                 {

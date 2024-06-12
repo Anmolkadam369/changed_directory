@@ -7,9 +7,10 @@ import './responsive-bp_1440.css'
 import './responsive-bp_1920.css'
 
 import { useNavigate } from 'react-router-dom';
+import backendUrl from '../../environment';
 import trucks1 from '../../Assets/trucks1.jpg';
 import trucks2 from '../../Assets/trucks2.jpg';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 function Home() {
     const navigate = useNavigate();
@@ -28,6 +29,8 @@ function Home() {
         <title>Accident Trucks Customer Service - Claimpro</title>
         <meta name="description" content="Home Page for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/`}/>
+
       </Helmet>
             <div className="home-elem-14">
                 <div className="home-elem-13">
@@ -39,14 +42,14 @@ function Home() {
                     <div className="home-elem-16">
                         <div className="home-elem-12">
                             <span className="home-elem-8">
-                                <a href="home.html" className="link" target="_self">
-                                    <p>Home </p>
-                                </a>
+                                {/* <a href="home.html" className="link" target="_self"> */}
+                                    <p style={{cursor:'pointer'}}>Home </p>
+                                {/* </a> */}
                             </span>
                             <span className="home-elem-9">
-                                <a href="#home-elem-45" className="link" target="_self">
-                                    <p>FAQ </p>
-                                </a>
+                                {/* <a href="#home-elem-45" className="link" target="_self"> */}
+                                    <p style={{cursor:'pointer'}}>FAQ </p>
+                                {/* </a> */}
                             </span>
                             <span className="home-elem-10">
                                 <span onClick={navigateToContactUs} style={{cursor:'pointer'}} >
@@ -54,9 +57,9 @@ function Home() {
                                     </span>
                             </span>
                             <span className="home-elem-11">
-                                <a href="#home-elem-80" className="link" target="_self">
-                                    <p>Blog </p>
-                                </a>
+                                {/* <a href="#home-elem-80" className="link" target="_self"> */}
+                                    <p style={{cursor:'pointer'}}>Blog </p>
+                                {/* </a> */}
                             </span>
                         </div>
                     </div>
@@ -98,7 +101,7 @@ function Home() {
             <div className="home-elem-20">
                 <div className="home-elem-21">
                     <span className="home-elem-25">
-                        <p>Professional Assistance for Vehicle Accidents</p>
+                        <h1>Professional Assistance for Vehicle Accidents</h1>
                     </span>
                     <span className="home-elem-26">
                         <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>

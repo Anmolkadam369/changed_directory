@@ -13,7 +13,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners'
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const config = {
@@ -26,14 +26,18 @@ const EmployeeForm = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [selectedState, setSelectedState] = useState('');
     const [isLoadingStates, setIsLoadingStates] = useState(true);
     const [isLoadingCities, setIsLoadingCities] = useState(true);
+
+    const [marginLeft, setMarginLeft] = useState('30px');
+    const [paddingLeft, setPaddingLeft] = useState('30px');
+  
 
     useEffect(() => {
         loadStates();
@@ -345,6 +349,27 @@ const EmployeeForm = () => {
     };
     const toggleDropdown = () => setShowDropdown(!showDropdown);
 
+    useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth <= 630) {
+            setMarginLeft('5x');
+            setPaddingLeft('20px')
+          } else {
+            setMarginLeft('30px');
+            setPaddingLeft("40px")
+          }
+        };
+        window.addEventListener('resize', handleResize);
+    
+        // Initial check
+        handleResize();
+    
+        // Cleanup event listener on component unmount
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
+
     return (
 
         <div>
@@ -352,8 +377,9 @@ const EmployeeForm = () => {
                 <title>Employee Information - Claimpro</title>
                 <meta name="description" content="Employee Information - BVC Claimpro Assist" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/EmployeeForm`} />
             </Helmet>
-            <form onSubmit={handleSubmit} className="Customer-master-form">
+            <form onSubmit={handleSubmit} className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
                 <div class="header-container">
                     <h1 class="bigtitle" style={{ textAlign: 'center' }}>Employee Form</h1>
                 </div>
@@ -446,7 +472,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Employee Email Id:
                         <input
                             type="email"
@@ -462,7 +488,7 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Contact No:
                         <input
                             type="tel"
@@ -475,7 +501,7 @@ const EmployeeForm = () => {
                             title="Phone number must be 10 digits"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Alternative No:
                         <input
                             type="tel"
@@ -495,7 +521,6 @@ const EmployeeForm = () => {
                             name="DOB"
                             value={formData.DOB}
                             onChange={handleChange}
-                            className="form-control"
                         />
                     </label>
                     <label className="form-field input-group mb-3">
@@ -505,7 +530,6 @@ const EmployeeForm = () => {
                             name="DOJ"
                             value={formData.DOJ}
                             onChange={handleChange}
-                            className="form-control"
                         />
                     </label>
                 </div>
@@ -627,7 +651,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Corresponding Address:
                         <textarea
                             name="correspondingAddress"
@@ -640,7 +664,7 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className='form-row'>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Permanent Address:
                         <textarea
                             name="permanentAddress"
@@ -668,7 +692,7 @@ const EmployeeForm = () => {
 
                 <div className="form-row">
 
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         State:
                         <select
                             className='form-control'
@@ -682,7 +706,7 @@ const EmployeeForm = () => {
                             ))}
                         </select>
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         City:
                         <select
                             className='form-control'
@@ -703,7 +727,7 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Pincode:
                         <input
                             type='tel'

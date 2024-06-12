@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "../Admin/Admin.css"
 import './Advocate.css';
 import axios from 'axios';
@@ -26,7 +26,7 @@ import AssignedVehicleCrain from './AssignedVehiclesCrain';
 import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const CrainHydra = () => {
 
@@ -63,8 +63,8 @@ const CrainHydra = () => {
     const customerData = [40, 50];
     const customerLabels = ['total cases', 'Days by Each Case'];
 
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -107,6 +107,43 @@ const CrainHydra = () => {
     }, []);
 
 
+    const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
+    const effectRan = useRef(false);
+    const urlBase64ToUint8Array = base64String => {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    };
+
+    useEffect(() => {
+        if (effectRan.current === false) {
+            const sendLoginNotification = async () => {
+                try {
+                    console.log('Registering service worker...');
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('Service worker registered:', registration);
+
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                    });
+                    console.log('Push Manager subscription:', subscription);
+
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
+
+                    // alert('Login notification sent successfully');
+                } catch (error) {
+                    console.error('Error sending login notification:', error);
+                }
+            };
+
+            sendLoginNotification();
+            effectRan.current = true;
+        }
+    }, []);
+
     function toggleSidebar() {
         setIsSidebarOpen(!isSidebarOpen);
     }
@@ -117,6 +154,7 @@ const CrainHydra = () => {
                 <title>Crain Hydra Dashboard - Claimpro</title>
                 <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Crain Hydra Dashboard." />
                 <meta name="keywords" content="Crain Hydra Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
+                <link rel='canonical' href={`https://claimpro.in/CrainDashboard`} />
             </Helmet>
 
             {isSidebarOpen ? (
@@ -125,7 +163,7 @@ const CrainHydra = () => {
                         <div className="close-btn" onClick={toggleSidebar}>×</div>
                     )}
                     <ul>
-                        <img src={claimproassist} alt="Dashboard Icon" style={{ height: '45px', width: '80px', marginRight: '8px', marginLeft: "10px" }} />
+                        <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
 
                         <li onClick={() => {
                             setShowCustomerOptions(!showCustomerOptions)

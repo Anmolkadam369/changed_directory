@@ -1,5 +1,5 @@
 import './App.css';
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Home from './Component/Home/Home';
 import Registration from './Component/Registration/Registration';
@@ -39,7 +39,7 @@ import CrainHydra from './Component/Vendors/CrainHydra';
 import AssignedVehicleCrain from './Component/Vendors/AssignedVehiclesCrain';
 import AddedDataByCrain from './Component/Vendors/AddedDataByCrain';
 import AccidentVehicleRegUpdate from './Component/AccidentVehicle/AccidentVehicleRegUpdate';
-import vendorResponse from './Component/Vendors/VendorsResponse';
+import VendorResponse from './Component/Vendors/VendorsResponse';
 import Workshop from './Component/Vendors/Workshop';
 import AssignedVehicleWorkshop from './Component/Vendors/AssignedVehiclesWorkshop';
 import AddedDataByWorkshop from './Component/Vendors/AddedDataByWorkshop';
@@ -64,7 +64,17 @@ import EmployeeFormEdit from './Component/EmployeeForm/EmployeeFormEdit';
 
 import Visitors from './Component/Visitors/Visitors';
 import Payment  from './Component/PaymentPage/Payment';
-//testing
+
+import Chart from './Component/Charts/Chart'
+import Featured from './Component/Charts/Featured';
+
+import UserDashboard from './Component/Dashboard/UserDashboard';
+import SeeUpdatedPics from './Component/SeeUpdatedPics/SeeUpdatedPics';
+//Chart
+import ActivationModel from './Component/Visitors/ActivationModel';
+import MechanicDashboard from './Component/Vendors/MechanicDashboard';
+
+import NotFoundPage from './Component/NotFound';
 
 function App() {                              
   return (
@@ -116,7 +126,7 @@ function App() {
 
           <Route path='/AccidentVehicleRegUpdate' element={< AccidentVehicleRegUpdate/>} />
 
-          <Route path='/vendorResponse' element={< vendorResponse/>} />
+          <Route path='/vendorResponse' element={< VendorResponse/>} />
           
           <Route path='/WorkshopDashboard' element={< Workshop/>} />
           <Route path='/AssignedVehicleWorkshop' element={< AssignedVehicleWorkshop/>} />
@@ -140,7 +150,16 @@ function App() {
 
           <Route path='/Payment/:token' element={<Payment/>}/>
 
+          <Route path='/Chart' element={<Chart/>}/>
+          <Route path='/Featured' element={<Featured/>}/>
 
+          <Route path='/UserDashboard' element={<UserDashboard/>}/>
+          
+          <Route path='/SeeUpdatedPics' element={<SeeUpdatedPics/>}/>
+          <Route path='/ActivationModel' element={<ActivationModel/>}/>
+
+          <Route path="*"  element={<NotFoundPage/>}/>
+          <Route path='/MechanicDashboard' element={<MechanicDashboard/>}/>
 
         </Routes>
       </div>

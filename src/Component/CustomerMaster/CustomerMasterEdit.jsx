@@ -15,17 +15,17 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClipLoader } from 'react-spinners';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const CustomerMasterEdit = () => {
+const CustomerMasterEdit = ({ id, onUpdate }) => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const location = useLocation();
-  const { id } = location.state || {};
+  // const { id } = location.state || {};
   console.log("Received IDssssssssssssssssssssss:", id);
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
@@ -320,7 +320,8 @@ const CustomerMasterEdit = () => {
     setIsReadOnly(!IsReadOnly)
   }
   const handleBack = () => {
-    navigate("../Admin")
+    // navigate("../Admin")
+    onUpdate()
   }
 
 
@@ -335,7 +336,7 @@ const CustomerMasterEdit = () => {
     }
     console.log('Form data submitted:', formData);
     setAlertInfo({ ...alertInfo, show: false });
-  
+
     const formDataObj = new FormData();
     for (const key in formData) {
       if (formData[key]) {
@@ -361,7 +362,7 @@ const CustomerMasterEdit = () => {
         }
       }
     }
-  
+
     for (let pair of formDataObj.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
@@ -379,7 +380,8 @@ const CustomerMasterEdit = () => {
       setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
       setTimeout(() => {
-        navigate("../Admin");
+        // navigate("../Admin");
+        onUpdate();
       }, 2000);
     }
     catch (error) {
@@ -396,15 +398,16 @@ const CustomerMasterEdit = () => {
         <title>Customer Info Edit - Claimpro</title>
         <meta name="description" content="Edit the Customer Information." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/CustomerMasterEdit`} />
       </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
-        <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
+        <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+          <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
 
-        <div class='header-container'>
-          <h2 className='bigtitle'>Customer Master Edit</h2>
-          <span class="mandatory-note">All fields are mandatory</span>
+          <div class='header-container'>
+            <h2 className='bigtitle'>Customer Master Edit</h2>
+          </div>
         </div>
-
         <div className="form-row">
           <label className="form-field">
             System Date:
@@ -419,7 +422,6 @@ const CustomerMasterEdit = () => {
           <label className="form-field input-group mb-3">
             Accident Place - State:
             <select
-              className='form-control'
               name="state"
               onChange={handleChange}
               disabled={IsReadOnly || isLoadingStates}
@@ -434,7 +436,6 @@ const CustomerMasterEdit = () => {
           <label className="form-field input-group mb-3">
             Accident Place - City:
             <select
-              className='form-control'
               name="district"
               value={formData.district}
               onChange={handleChange}
@@ -735,17 +736,17 @@ const CustomerMasterEdit = () => {
           <label className="form-field">
             {IsReadOnly ? (
               <div>
-              {formData.agreement ? (
-                <>
-                  <p style={{ fontWeight: 'bold', marginTop: "20px" }}>Download Agreement
-                    <a href={formData.agreement} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                      Download
-                    </a>
-                  </p>
-                </>
-              ) : (
-                <p>No Adhar Card uploaded</p>
-              )}
+                {formData.agreement ? (
+                  <>
+                    <p style={{ fontWeight: 'bold', marginTop: "20px" }}>Download Agreement
+                      <a href={formData.agreement} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                        Download
+                      </a>
+                    </p>
+                  </>
+                ) : (
+                  <p>No Adhar Card uploaded</p>
+                )}
               </div>
             ) : null}
           </label>

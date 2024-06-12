@@ -10,7 +10,7 @@ import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 function DailyWorkshop() {
@@ -19,8 +19,8 @@ function DailyWorkshop() {
     const { id } = location.state || {};
     console.log("Received IDssss:", id);
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [existingData, setExistingData] = useState([]);
@@ -267,6 +267,7 @@ function DailyWorkshop() {
                 <title>Daily Workshop Images - ClaimProAssist</title>
                 <meta name="description" content="Daily Workshop Images BVC Claimoro Asist" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/DailyWorkshop`} />
             </Helmet>
             <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
             <div class='header-container'>

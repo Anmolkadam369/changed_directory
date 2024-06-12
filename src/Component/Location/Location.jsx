@@ -4,7 +4,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import backendUrl from '../../environment';
 
 function Location({ vehicleData }) {
     console.log("vehicleData")
@@ -14,8 +15,8 @@ function Location({ vehicleData }) {
     // const vehicleData = vehicleData;
     // console.log("vehicalData", vehicleData)
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     useEffect(() => {
         console.log("token", token, userId);
         if (token === "" || userId === "") {
@@ -29,6 +30,7 @@ function Location({ vehicleData }) {
                 <title>Get Location of Accident Veehicle - Claimpro</title>
                 <meta name="description" content="Get Location of Accident Veehicle and photos of vehicle." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/Location`}/>
             </Helmet>
             <div className="vehicle-info-container">
                 <table className="vehicle-info-table">

@@ -14,8 +14,8 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
-import { Helmet } from 'react-helmet';
-
+import { Helmet } from 'react-helmet-async';
+import EmployeeFormEdit from './EmployeeFormEdit';
 
 const EmployeeApproved = () => {
   const [data, setData] = useState([]);
@@ -28,16 +28,21 @@ const EmployeeApproved = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [marginLeft, setMarginLeft] = useState('30px');
+  const [paddingLeft, setPaddingLeft] = useState('30px');
+  const [width, setWidth] = useState('100%');
 
+  const [showEmployeeMasterEdit, setShowEmployeeMasterEdit] = useState(false)
+  const [selectedId, setSelectedId] = useState(null);
 
 
   useEffect(() => {
-    getData();
+    if(!showEmployeeMasterEdit) getData();
     console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
     }
-  }, [token, userId, navigate]);
+  }, [token, userId, navigate, showEmployeeMasterEdit]);
 
   const generateFile = async () => {
     try {
@@ -56,9 +61,13 @@ const EmployeeApproved = () => {
 
   function view(id) {
     console.log("myId", id)
-    navigate("../EmployeeFormEdit", { state: { id } });
+    setSelectedId(id);
+    setShowEmployeeMasterEdit(true)
+    // navigate("../EmployeeFormEdit", { state: { id } });
   }
-
+  const handleUpdate = () => {
+    setShowEmployeeMasterEdit(false); // Hide VendorMasterEdit
+  };
   const getData = async (e) => {
     const response = await axios.get(`${backendUrl}/api/getEmployee`);
     console.log("response", response.data.data);
@@ -104,63 +113,90 @@ const EmployeeApproved = () => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+        setMarginLeft('0px');
+        setPaddingLeft('20px');
+        setWidth('60%');
+      } else {
+        setMarginLeft('30px');
+        setPaddingLeft("40px");
+        setWidth('100%');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
 
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
+
+    {!showEmployeeMasterEdit && (<div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
       <Helmet>
         <title>Employee Information - Claimpro</title>
         <meta name="description" content="Employee Information For BVC Claimpro Assist" />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/EmployeeApproved`} />
       </Helmet>
-      <div className="header-container-search">
-        <h3 className='bigtitle' style={{ marginLeft: "5px" }}>Employee View / Edit</h3>
-
-        <label className="form-field search-field">
-          Search by Employee Name
-          <input
-            type='text'
-            placeholder="Search by Customer Name"
-            className="form-control"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            required />
-        </label>
-        <label className="form-field search-field">
-          Number Of Items On Page
-          <input
-            type='text'
-            placeholder="Items Show on Page"
-            className="form-control"
-            value={itemsPerPage}
-            onChange={handleSetItemPerPage}
-            required />
-        </label>
-        <label className="form-field search-field">
-          {!isGenerated && (
-            <div
-              className="form-control generate-button"
-              onClick={generateFile}
-            >
-              {isLoading ? (
-                <ClipLoader color="#4CAF50" loading={isLoading} />
-              ) : (
-                'Generate Excel File'
-              )}
-            </div>
-          )}
-          {isGenerated && (
-            <a
-              href={generatedExcel}
-              className="form-control download-link"
-            >
-              Download Excel File
-            </a>
-          )}
-        </label>
+      <div>
+        <h3 className="bigtitle">Employee View / Edit</h3>
+        <div className="form-search">
+          <label className='label-class'>
+            Search by Employee Name
+            <input
+              type="text"
+              placeholder="Search by Vendor Name"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              required
+            />
+          </label>
+          <label className='label-class'>
+            Number Of Items On Page
+            <input
+              type="number"
+              placeholder="Items Show on Page"
+              value={itemsPerPage}
+              onChange={handleSetItemPerPage}
+              required
+            />
+          </label>
+          <label className="label-class" style={{ marginTop: "20px" }}>
+            {!isGenerated && (
+              <div
+                className="form-control generate-button"
+                onClick={generateFile}
+              >
+                {isLoading ? (
+                  <ClipLoader color="#4CAF50" loading={isLoading} />
+                ) : (
+                  'Generate Excel File'
+                )}
+              </div>
+            )}
+            {isGenerated && (
+              <a
+                href={generatedExcel}
+                className="form-control download-link"
+              >
+                Download Excel File
+              </a>
+            )}
+          </label>
+        </div>
       </div>
-      <div className='responsive-table'>
+
+      <div className='responsive-table' style={{ width }}>
         <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
             <tr>
@@ -210,6 +246,11 @@ const EmployeeApproved = () => {
           <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
         </ButtonGroup>
       </div>
+    </div>)}
+
+    {showEmployeeMasterEdit && (
+      <EmployeeFormEdit id={selectedId} onUpdate={handleUpdate}/>
+    )}
     </div>
   );
 

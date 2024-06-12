@@ -10,17 +10,17 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
-function EditAccidentVehicle() {
+function EditAccidentVehicle({ id, onUpdate }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
     console.log("Received IDssss:", id);
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const [vendorData, setVendorData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
@@ -187,6 +187,9 @@ function EditAccidentVehicle() {
             console.log("response", response);
             if (response.data.status == true) {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setTimeout(() => {
+                    onUpdate()
+                }, 2000);
             } else {
                 const errorMessage = 'An error occurred';
                 setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
@@ -205,7 +208,8 @@ function EditAccidentVehicle() {
     console.log("crain", formData.crain)
 
     const handleBack = () => {
-        navigate("../Admin")
+        // navigate("../Admin")
+        onUpdate()
     }
 
     return (
@@ -214,11 +218,14 @@ function EditAccidentVehicle() {
                 <title>Accident Vehicle Edit Form- Claimpro</title>
                 <meta name="description" content="Accident Vehicle Edit Form" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/EditAccidentVehicle`} />
             </Helmet>
             <div className="Customer-master-form" style={{ marginBottom: "50px" }}>
-                <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
-                <h1 className='bigtitle'>Assign Vendors To Customer</h1>
+                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
 
+                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <h1 className='bigtitle'>Assign Vendors To Customer</h1>
+                </div>
                 <div className='form-row'>
 
                     <label className="form-field">

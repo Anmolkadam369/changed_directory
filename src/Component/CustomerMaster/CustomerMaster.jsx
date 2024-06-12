@@ -11,7 +11,7 @@ import backendUrl from '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import demoexcel from '../../Assets/demoexcel.png'
 import { ClipLoader } from 'react-spinners';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const config = {
@@ -301,6 +301,7 @@ const CustomerMaster = () => {
         <title>Customer Service - Claimpro</title>
         <meta name="description" content="Customer Service form" />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+        <link rel='canonical' href={`https://claimpro.in/CustomerMaster`}/>
       </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
 
@@ -324,7 +325,6 @@ const CustomerMaster = () => {
           <label className="form-field input-group mb-3">
             Accident Place - State:
             <select
-              className='form-control'
               name="state"
               onChange={handleChange}
               disabled={isLoadingStates}
@@ -339,7 +339,6 @@ const CustomerMaster = () => {
           <label className="form-field input-group mb-3">
             Accident Place - City:
             <select
-              className='form-control'
               name="district"
               value={formData.district}
               onChange={handleChange}
@@ -374,6 +373,7 @@ const CustomerMaster = () => {
               value={formData.CustomerName}
               onChange={handleChange}
               className="form-control"
+              placeholder='Customer Name'
               required
             />
           </label>
@@ -389,7 +389,7 @@ const CustomerMaster = () => {
 
           <label className="form-field">
             Address  :
-            <textarea name="address" value={formData.address} className="form-control" onChange={handleChange} required />
+            <textarea name="address" value={formData.address} className="form-control" placeholder='Address' onChange={handleChange} required />
           </label>
 
           <label className="form-field">
@@ -562,7 +562,7 @@ const CustomerMaster = () => {
           
           <div className="dropdown green-dropdown form-field">
             <button
-              className="btn btn-secondary dropdown-toggle"
+              className="form-field input-group mb-3"
               type="button"
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"

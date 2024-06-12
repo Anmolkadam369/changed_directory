@@ -19,7 +19,7 @@ import Modal from 'react-modal';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 const config = {
@@ -27,17 +27,20 @@ const config = {
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };;
 
-const EmployeeFormEdit = () => {
+const EmployeeFormEdit = ({ id, onUpdate }) => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
 
+    const [marginLeft, setMarginLeft] = useState('30px');
+    const [paddingLeft, setPaddingLeft] = useState('30px');
+  
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -539,6 +542,10 @@ const EmployeeFormEdit = () => {
             console.log("response", response.data);
             setIsLoading(false);
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
+            setTimeout(()=>{
+
+                onUpdate()
+            })
         } catch (error) {
             console.error("Error during form submission:", error);
             const errorMessage = error.response?.data || 'An error occurred';
@@ -562,9 +569,31 @@ const EmployeeFormEdit = () => {
         setIsReadOnly(!IsReadOnly)
     }
     const handleBack = () => {
-        navigate("../Admin")
+        // navigate("../Admin")
+        onUpdate()
     }
     const toggleDropdown = () => setShowDropdown(!showDropdown);
+
+    useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth <= 630) {
+            setMarginLeft('0px');
+            setPaddingLeft('5px')
+          } else {
+            setMarginLeft('30px');
+            setPaddingLeft("40px")
+          }
+        };
+        window.addEventListener('resize', handleResize);
+    
+        // Initial check
+        handleResize();
+    
+        // Cleanup event listener on component unmount
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
 
     return (
 
@@ -573,13 +602,17 @@ const EmployeeFormEdit = () => {
                 <title>Employee Information Edit - Claimpro</title>
                 <meta name="description" content="Employee Information For Edit For BVC Claimpro Assist" />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/EmployeeFormEdit`} />
             </Helmet>
-            <form onSubmit={handleSubmit} style={{ marginLeft: '10px', padding: '20px' }} className="Customer-master-form">
-                <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
+            <form onSubmit={handleSubmit} style={{ marginLeft, paddingLeft }} className="Customer-master-form">
+        <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                
+                <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
 
                 <div class="header-container">
-                    <h1 class="bigtitle" style={{ textAlign: 'center' }}>Employee Form</h1>
+                    <h1 class="bigtitle" style={{ textAlign: 'center' }}>Employee Form Edit</h1>
                 </div>
+        </div>
 
                 <div className="form-row">
                     <label className="form-field input-group mb-3">
@@ -636,7 +669,7 @@ const EmployeeFormEdit = () => {
 
                     <div className="dropdown green-dropdown form-field">
                         <button
-                            className="btn btn-secondary dropdown-toggle"
+                            className="form-field input-group mb-3"
                             type="button"
                             id="dropdownMenuButton"
                             data-bs-toggle="dropdown"

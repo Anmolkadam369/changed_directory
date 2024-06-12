@@ -11,8 +11,9 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
-import { Helmet } from 'react-helmet';
-
+import { Helmet } from 'react-helmet-async';
+import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
+import ImageUpload from "../ImageUpload/ImageUpload"
 
 const ViewVehicleInfo = () => {
   const [data, setData] = useState([]);
@@ -22,19 +23,30 @@ const ViewVehicleInfo = () => {
   const token = useRecoilValue(tokenState);
   const userId = useRecoilValue(userIdState);
   const [searchQuery, setSearchQuery] = useState('');
+  const [width, setWidth] = useState('100%');
+
 
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [marginLeft, setMarginLeft] = useState('30px');
+  const [paddingLeft, setPaddingLeft] = useState('30px');
+
+  const [showMainContent, setShowMainContent] = useState(true)
+  const [showEditVehicleInfo, setShowEditVehicleInfo] = useState(false)
+  const [showUploadImage, setShowUploadImage] = useState(false)
+
+  const [selectedId, setSelectedId] = useState(null);
+
   useEffect(() => {
-    getData();
+    if (showMainContent) getData();
     // generateToken();   
     console.log("token", token, userId);
     if (token === "" || userId === "") {
       navigate("/");
     }
-  }, [token, userId, navigate]);
+  }, [token, userId, navigate, showMainContent]);
 
 
   const generateFile = async () => {
@@ -52,6 +64,26 @@ const ViewVehicleInfo = () => {
       console.error(error.message);
     }
   }
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+
+        setWidth('45%');
+      } else {
+
+        setWidth('100%');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
 
   async function generateToken() {
@@ -89,12 +121,26 @@ const ViewVehicleInfo = () => {
 
   function view(id) {
     console.log("myId", id)
-    navigate("../VehicleClaimEdit", { state: { id } });
+    setSelectedId(id);
+    setShowEditVehicleInfo(true)
+    setShowMainContent(false)
+    setShowUploadImage(false)
+    // navigate("../VehicleClaimEdit", { state: { id } });
   }
+
+  const handleUpdate = () => {
+    setShowEditVehicleInfo(false); // Hide VendorMasterEdit
+    setShowMainContent(true)
+    setShowUploadImage(false)
+  };
 
   function upload(id) {
     console.log("myId", id)
-    navigate("../ImageUpload", { state: { id } });
+    setSelectedId(id);
+    setShowEditVehicleInfo(false)
+    setShowMainContent(false)
+    setShowUploadImage(true)
+    // navigate("../ImageUpload", { state: { id } });
   }
 
   const getData = async (e) => {
@@ -114,7 +160,7 @@ const ViewVehicleInfo = () => {
     item.insuredBy && item.insuredBy.toLowerCase().includes(searchQuery.toLowerCase())
 
   );
-  
+
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -146,117 +192,149 @@ const ViewVehicleInfo = () => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 630) {
+        setMarginLeft('0px');
+        setPaddingLeft('20px')
+      } else {
+        setMarginLeft('30px');
+        setPaddingLeft("40px")
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
-      <Helmet>
-        <title>Accident Vehicle Infomation - Claimpro</title>
-        <meta name="description" content="Accident Vehicle Infomation" />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-      </Helmet>
-           <div className="header-container-search">
-        <h3 className='bigtitle' style={{marginLeft:"5px"}}>Register View / Edit</h3>
+      {showMainContent && (<div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+        <Helmet>
+          <title>Accident Vehicle Infomation - Claimpro</title>
+          <meta name="description" content="Accident Vehicle Infomation" />
+          <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+          <link rel='canonical' href={`https://claimpro.in/ViewVehicleInfo`} />
+        </Helmet>
 
-        <label className="form-field search-field">
-        Search by City/Insurance Name
-          <input
-              type='text'
-              placeholder="Search by City Name"
-              className="form-control"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              required />
-        </label>
-        <label className="form-field search-field">
-          Number Of Items On Page
-          <input
-              type='text'
-              placeholder="Items Show on Page"
-              className="form-control"
-              value={itemsPerPage}
-              onChange={handleSetItemPerPage}
-              required />
-        </label>
-        <label className="form-field search-field">
-          {!isGenerated && (
-            <div
-              className="form-control generate-button"
-              onClick={generateFile}
-            >
-              {isLoading ? (
-                <ClipLoader color="#4CAF50" loading={isLoading} />
-              ) : (
-                'Generate Excel File' 
+        <div>
+          <h3 className="bigtitle">Accident Vehicle View / Edit</h3>
+          <div className="form-search">
+            <label className='label-class'>
+              Search by District Name
+              <input
+                type="text"
+                placeholder="Search by District Name"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                required
+              />
+            </label>
+            <label className='label-class'>
+              Number Of Items On Page
+              <input
+                type="number"
+                placeholder="Items Show on Page"
+                value={itemsPerPage}
+                onChange={handleSetItemPerPage}
+                required
+              />
+            </label>
+
+            <label className="label-class" style={{ marginTop: "20px" }}>
+              {!isGenerated && (
+                <div
+                  className="form-control generate-button"
+                  onClick={generateFile}
+                >
+                  {isLoading ? (
+                    <ClipLoader color="#4CAF50" loading={isLoading} />
+                  ) : (
+                    'Generate Excel File'
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isGenerated && (
-            <a
-              href={generatedExcel}
-              className="form-control download-link"
-            >
-              Download Excel File
-            </a>
-          )}
-        </label>
-      </div>
-      <div className='register-responsive-table'>
-        <table style={{ width: '100%', marginLeft: '20px', borderCollapse: 'collapse', marginBottom:'90px' }}>
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Reason</th>
-              <th>intimated Date</th>
-              <th>District</th>
-              <th>Insured By</th>
-              <th>Accident No</th>
-              <th>View</th>
-              <th>Upload Photos</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.length === 0 ? (
-            <tr>
-              <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
-            </tr>
-          ) : (
-            
-            currentItems.map((item, index) => (
-              <tr key={item.id}>
-                <td>{indexOfFirstItem + index + 1}</td>
-                <td>{item.reason || "---"}</td>
-                <td>{item.intimatedDate || "---"}</td>
-                <td>{item.district || "---"}</td>
-                <td>{item.insuredBy || "---"}</td>
-                <td>{item.accidentFileNo || "---"}</td>
-                <td>
-                  <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
-                </td>
-                <td>
-                  <button onClick={() => upload(item.AccidentDataCode)} className="view-button">Upload</button>
-                </td>
+              {isGenerated && (
+                <a
+                  href={generatedExcel}
+                  className="form-control download-link"
+                >
+                  Download Excel File
+                </a>
+              )}
+            </label>
+          </div>
+        </div>
+        <div className='responsive-table' style={{ width }}>
+          <table style={{ width: '100%', marginLeft: '20px', borderCollapse: 'collapse', marginBottom: '90px' }}>
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Reason</th>
+                <th>intimated Date</th>
+                <th>District</th>
+                <th>Insured By</th>
+                <th>Accident No</th>
+                <th>View</th>
+                <th>Upload Photos</th>
               </tr>
-            ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className='pagination'>
-        <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
-          <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
-          {pageNumbers.map((pageNumber) => (
-            <Button
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-              className={currentPage === pageNumber ? 'active' : ''}
-            >
-              {pageNumber}
-            </Button>
-          ))}
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
-        </ButtonGroup>
-      </div>
+            </thead>
+            <tbody>
+              {currentItems.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                </tr>
+              ) : (
+
+                currentItems.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{indexOfFirstItem + index + 1}</td>
+                    <td>{item.reason || "---"}</td>
+                    <td>{item.intimatedDate || "---"}</td>
+                    <td>{item.district || "---"}</td>
+                    <td>{item.insuredBy || "---"}</td>
+                    <td>{item.accidentFileNo || "---"}</td>
+                    <td>
+                      <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
+                    </td>
+                    <td>
+                      <button onClick={() => upload(item.AccidentDataCode)} className="view-button">Upload</button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className='pagination'>
+          <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
+            <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
+            {pageNumbers.map((pageNumber) => (
+              <Button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                className={currentPage === pageNumber ? 'active' : ''}
+              >
+                {pageNumber}
+              </Button>
+            ))}
+            <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
+          </ButtonGroup>
+        </div>
+      </div>)}
+      {showEditVehicleInfo && (
+        <VehicleClaimEdit id={selectedId} onUpdate={handleUpdate} />
+      )}
+      {showUploadImage && (
+        <ImageUpload id={selectedId} onUpdate={handleUpdate} />
+      )}
     </div>
   );
 

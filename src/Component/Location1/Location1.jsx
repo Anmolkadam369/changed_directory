@@ -12,7 +12,7 @@ import Input from '@mui/material/Input';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import Snackbar from '@mui/material/Snackbar';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -21,8 +21,8 @@ function Location1({ vehicleData }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+  const token = useRecoilValue(tokenState);
+  const userId = useRecoilValue(userIdState);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [latitude, setLatitude] = useState("");
     const [longitude, setLongitude] = useState("");
@@ -74,7 +74,7 @@ function Location1({ vehicleData }) {
     console.log("choosenpa", choosenPlan)
     const allOptions = ['advocate', 'workshop', 'onsite temperory repair', 'crain'];
     const [selectedOptions, setSelectedOptions] = useState([]);
-    
+
     const getOptionsToShow = () => {
         switch (choosenPlan) {
             case 'advanced':
@@ -198,7 +198,7 @@ function Location1({ vehicleData }) {
     };
 
     const accidentDataObject = { ...photos, ...vehicleData, latitude, longitude, ...getData, ...formData, selectedOptions };
-console.log("accidentData", accidentDataObject)
+    console.log("accidentData", accidentDataObject)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -263,10 +263,11 @@ console.log("accidentData", accidentDataObject)
 
     return (
         <div className="photo-upload-container">
-                        <Helmet>
+            <Helmet>
                 <title>Get Location of Accident Veehicle - Claimpro</title>
                 <meta name="description" content="Get Location of Accident Veehicle and photos of vehicle." />
                 <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/Location1`} />
             </Helmet>
             <Stack spacing={2}>
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
@@ -326,15 +327,15 @@ console.log("accidentData", accidentDataObject)
                 }}>
 
 
-                        {showServices ? (
-                            choosenPlan ? (
-                                <div style={{ position: 'relative', color: '#333', marginBottom: '15px' }}>
+                    {showServices ? (
+                        choosenPlan ? (
+                            <div style={{ position: 'relative', color: '#333', marginBottom: '15px' }}>
                                 <h3>Select Your Services</h3>
                                 {optionstoshow.map((option, index) => (
                                     <label key={index} style={{
                                         display: 'block',
                                         marginBottom: '10px',
-                                        marginTop:"20px",
+                                        marginTop: "20px",
                                         fontSize: '16px',
                                         color: '#666'
                                     }}>
@@ -347,30 +348,30 @@ console.log("accidentData", accidentDataObject)
                                         />
                                     </label>
                                 ))}
-                                <button onClick={handleSkip} style={{ 
-                                    position: 'absolute', 
-                                    top: '0', 
-                                    right: '0', 
-                                    padding: '5px 10px', 
-                                    border: 'none', 
-                                    borderRadius: '4px', 
-                                    cursor: 'pointer', 
-                                    backgroundColor: ' rgb(62 55 0 / 17%)', 
-                                    color: 'white' 
+                                <button onClick={handleSkip} style={{
+                                    position: 'absolute',
+                                    top: '0',
+                                    right: '0',
+                                    padding: '5px 10px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    backgroundColor: ' rgb(62 55 0 / 17%)',
+                                    color: 'white'
                                 }}>
                                     Skip
                                 </button>
                             </div>
-                            
-                            ) : (
-                                <p>We will provide the best services, don't worry!</p>
-                            )
+
                         ) : (
-                            <div>
-                            <h4 style={{color:"blue"}}>We will provide the best services, don't worry!</h4>
-                            <button onClick={handleSkip} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: ' rgb(62 55 0 / 17%)', color: 'white', marginTop:"10px" }}>i want to select</button>
-                            </div>
-                        )}
+                            <p>We will provide the best services, don't worry!</p>
+                        )
+                    ) : (
+                        <div>
+                            <h4 style={{ color: "blue" }}>We will provide the best services, don't worry!</h4>
+                            <button onClick={handleSkip} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: ' rgb(62 55 0 / 17%)', color: 'white', marginTop: "10px" }}>i want to select</button>
+                        </div>
+                    )}
 
                 </div>
                 <Snackbar
