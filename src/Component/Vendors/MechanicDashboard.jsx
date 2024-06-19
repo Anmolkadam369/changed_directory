@@ -35,7 +35,7 @@ const MechanicDashboard = ({ getData }) => {
 
 
     const [doughnutData, setDoughnutData] = useState({
-        labels: ['Total Vehicles', 'Fully Closed Cases', 'Working Vehicles', 'Non Working Vehicles'],
+        labels: ['Total Vehicles', 'Fully Closed Inc. Rejected', 'Working Vehicles', 'Non Working Vehicles'],
         datasets: [
             {
                 label: 'Vehicles',
@@ -98,8 +98,8 @@ const MechanicDashboard = ({ getData }) => {
     useEffect(() => {
 
         const totalCases = totalAssignedCases.length;
-        const fullyClosedCasesVendor = fullyClosedCases;
-        const workingCasesVendor = workingCases;
+        const fullyClosedCasesVendor = fullyClosedCases+adminRejected;
+        const workingCasesVendor = workingCases-adminRejected;
         const NonworkingCasesVehicle = totalAssignedCases.length - gotResponse.length; // Update this with the actual resolved vehicles count
 
         setDoughnutData((prevData) => ({
@@ -277,7 +277,7 @@ const MechanicDashboard = ({ getData }) => {
 
                             <div className="stat-item">
                                 <PendingActionsOutlinedIcon className="small-image" />
-                                <h3>Pending By Admin</h3>
+                                <h3>Pending (Admin and Not Requested)</h3>
                                 <p>{adminPending}</p>
                             </div>
 
@@ -290,12 +290,12 @@ const MechanicDashboard = ({ getData }) => {
                             <div className="stat-item">
                                 <AssignmentTurnedInOutlinedIcon className="small-image" />
                                 <h3>Fully Closed Cases</h3>
-                                <p>{fullyClosedCases}</p>
+                                <p>{fullyClosedCases+adminRejected}</p>
                             </div>
                             <div className="stat-item">
                             <PendingActionsOutlinedIcon className="small-image" />
                                 <h3>Working Cases</h3>
-                                <p>{workingCases}</p>
+                                <p>{workingCases-adminRejected}</p>
                             </div>
                             <div className="stat-item">
                             <PendingOutlinedIcon className="small-image" />

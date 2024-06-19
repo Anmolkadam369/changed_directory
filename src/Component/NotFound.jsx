@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -10,6 +11,11 @@ const NotFoundPage = () => {
 
   return (
     <div style={styles.container}>
+            <Helmet>
+        <title>Page Not Found- Claimpro</title>
+        <meta name="description" content="Page Not Found " />
+        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+      </Helmet>
       <h1 style={styles.title}>404 - Page Not Found</h1>
       <p style={styles.message}>Sorry, the page you are looking for does not exist.</p>
       <button style={styles.button} onClick={goHome}>Go to Home</button>

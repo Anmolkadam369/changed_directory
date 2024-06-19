@@ -30,8 +30,8 @@ const CustomerApproved = () => {
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info',timestamp: null });
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [modalData, setModalData] = useState(null);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalData, setModalData] = useState(null);
 
   const [showCustomerMasterEdit, setShowCustomerMasterEdit] = useState(false)
   const [selectedId, setSelectedId] = useState(null);

@@ -11,9 +11,6 @@ import backendUrl from '../../environment';
 import { Helmet } from 'react-helmet-async';
 import AddedDataByMachanic from './AddedDataByMachanic';
 
-
-
-
 const AssignedVehicleMachanic = () => {
 
   const [data, setData] = useState([]);
@@ -324,7 +321,6 @@ const AssignedVehicleMachanic = () => {
 
                 <label className="form-field input-group mb-3"></label>
               </div>
-
 
             </form>
 

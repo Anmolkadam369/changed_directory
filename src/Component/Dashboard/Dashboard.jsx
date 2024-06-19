@@ -23,6 +23,12 @@ import Chart from '../Charts/Chart';
 import Featured from '../Charts/Featured';
 import visitorsImage from '../../Assets/visitorsImage.webp'
 import CustomerChart from '../Charts/CustomerChart';
+import VendorApproved from '../VendorApproved/VendorApporoved';
+import CustomerApproved from '../CustomerApporoved/CustomerApproved';
+import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
+import ViewVehicleInfo from '../ViewVehicleInfo/ViewVehicleInfo';
+import VendorResponse from '../Vendors/VendorsResponse';
+import Visitors from '../Visitors/Visitors';
 
 
 
@@ -42,6 +48,28 @@ const Dashboard = () => {
     const [isGenerated, setIsGenerated] = useState(false);
     const [generatedExcel, setGeneratedExcel] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const [dashboardOnly, setDashboardOnly] = useState(true)
+    const [vendorOnly, setVendorOnly] = useState(false)
+    const [showViewCustomer, setShowViewCustomer] = useState(false)
+    const [accidentVehicle, setAccidentVehicle] = useState(false)
+    const [showVehicleClaimView, setShowVehicleClaimView] = useState(false)
+    const [vendorResponsing, setVendorResponsing] = useState(false)
+    const [visitorForm, setVisitorForm] = useState(false)
+    const [getData, setGetData] = useState({});
+    console.log("getdata", getData)
+
+
+    const resetStates = () => {
+        setDashboardOnly(false);
+        setVendorOnly(false);
+        setShowViewCustomer(false);
+        setAccidentVehicle(false) //vendors
+        setShowVehicleClaimView(false);//view register
+        setVendorResponsing(false); //responses
+        setVisitorForm(false);
+    };
+
 
     const markerIcon = new L.Icon({
         iconUrl: require('leaflet/dist/images/marker-icon.png'),
@@ -157,8 +185,8 @@ const Dashboard = () => {
     });
 
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
 
     useEffect(() => {
         getVendorData();
@@ -169,6 +197,7 @@ const Dashboard = () => {
         AssignedVendorsRemaining();
         allVendorResponse();
         allVisitors();
+        findUserById(userId)
 
         if (token === '' || userId === '') {
             //   navigate('/');
@@ -247,6 +276,22 @@ const Dashboard = () => {
 
     }, [vendorData, customerData]);
 
+    const findUserById = async (id) => {
+        try{console.log("HEY", `${backendUrl}/api/findById/${id}`)
+        let response = await axios.get(`${backendUrl}/api/findById/${id}`);
+        console.log("daa", response.data)
+        if (response.data.message == "No user found") {
+            response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
+        }
+        console.log("daa2", response.data)
+
+        console.log("data", response.data.data[0]);
+        setGetData(response.data.data[0])}
+        catch(error){
+            console.log("error",error.message)
+        }
+    }
+
     const getVendorData = async () => {
         const response = await axios.get(`${backendUrl}/api/getVendor`);
         setVendorData(response.data.data);
@@ -301,16 +346,47 @@ const Dashboard = () => {
         }
     };
 
+    const vendorInfo = () => {
+        resetStates()
+        setVendorOnly(true)
+    }
+
+    const customerInfo = () => {
+        resetStates()
+        setShowViewCustomer(true)
+    }
+
+    const accidentInfo = () => {
+        resetStates()
+        setAccidentVehicle(true)
+    }
+
+    const claimInfo = () => {
+        resetStates()
+        setShowVehicleClaimView(true)
+    }
+
+    const vendorResponseInfo = () => {
+        resetStates()
+        setVendorResponsing(true)
+    }
+
+    const visitorsInfo = () => {
+        resetStates();
+        setVisitorForm(true);
+    }
+
 
     return (
-        <div className="dashboard">
-            <Helmet>
-                <title>Accident Dashboard - Claimpro</title>
-                <meta name="description" content="Dashboard for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
-                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-                <link rel='canonical' href={`https://claimpro.in/Dashboard`} />
-            </Helmet>
-            {/* <div className="header-container-search" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+            {dashboardOnly && (<div className="dashboard">
+                <Helmet>
+                    <title>Accident Dashboard - Claimpro</title>
+                    <meta name="description" content="Dashboard for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
+                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                    <link rel='canonical' href={`https://claimpro.in/Dashboard`} />
+                </Helmet>
+                {/* <div className="header-container-search" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h1 className="dashboardTitle">Administration</h1>
                 <label className="form-field search-field" style={{ display: "flex", alignItems: "center" }}>
                     {!isGenerated && (
@@ -340,98 +416,114 @@ const Dashboard = () => {
 
 
 
-            <main className="main-content">
-                <div className='other-content'>
-                    <div style={{ display: "relative" }}>
+                <main className="main-content">
+                    <div className='other-content'>
+                        <div style={{ display: "relative" }}>
 
-                        <div className="stat-container">
-                            <div className="stat-item">
-                                <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
-                                <h3>Number Of Vendor</h3>
-                                <p>{vendorData.length}</p>
-                            </div>
-
-                            <div className="stat-item">
-                                <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
-                                <h3>Remaining Vehicles</h3>
-                                <p>{remainingAssignedVendors.length}</p>
-                            </div>
-
-                            <div className="stat-item">
-                                <img src={customerImage} className="small-image" alt="Vendor Types" />
-                                <h3>Number of Customer</h3>
-                                <p>{customerData.length}</p>
-                            </div>
-
-                            <div className="stat-item">
-                                <img src={complaints} className="small-image" alt="Vendor Types" />
-                                <h3>Number of Complaints on Vehicle</h3>
-                                <p>{allAccidentVehicleData.length}</p>
-                            </div>
-                        </div>
-
-
-
-                        <div className="statistics">
-                            <div className="charts">
-                                <Featured />
-
-                                <div className="chart-item">
-                                    <h3 className="chart-title">Vendor Type Distribution</h3>
-                                    <Doughnut data={doughnutData} />
+                            <div className="stat-container">
+                                <div className="stat-item">
+                                    <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
+                                    <h3>Number Of Vendor</h3>
+                                    <p>{vendorData.length}</p>
+                                    {(getData.randomId || getData.department ==="Management" || getData.department === "IT") && (
+                                    <h6 onClick={vendorInfo} className="see-list">see vendor list</h6>
+                                    )}
                                 </div>
 
-                                <Chart />
+                                <div className="stat-item">
+                                    <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
+                                    <h3>Remaining Vehicles</h3>
+                                    <p>{remainingAssignedVendors.length}</p>
+                                    {(getData.randomId || getData.department ==="Management" || getData.department === "IT") && (
+                                    <h6 onClick={accidentInfo} className="see-list">see remaining vehicle</h6>
+                                    )}
+                                </div>
 
-                            </div>
-                        </div>
+                                <div className="stat-item">
+                                    <img src={customerImage} className="small-image" alt="Vendor Types" />
+                                    <h3>Number of Customer</h3>
+                                    <p>{customerData.length}</p>
+                                    {(getData.randomId || getData.department ==="Management" || getData.department === "IT") && (
+                                    <h6 onClick={customerInfo} className="see-list">see customer list</h6>
+                                    )}
+                                </div>
 
-                        <div className="stat-container">
-                            <div className="stat-item">
-                                <img src={registerComplaints} className="small-image" alt="Vendor Types" />
-                                <h3>Registered Complaints</h3>
-                                <p>{registeredAccidentVehicleData.length}</p>
+                                <div className="stat-item">
+                                    <img src={complaints} className="small-image" alt="Vendor Types" />
+                                    <h3>Number of Complaints on Vehicle</h3>
+                                    <p>{allAccidentVehicleData.length}</p>
+                                </div>
                             </div>
-                            <div className="stat-item">
-                                <img src={remainingComplaints} className="small-image" alt="Vendor Types" />
-                                <h3>Remaining Complaints</h3>
-                                <p>{accidentVehicleData.length}</p>
-                            </div>
-                            <div className="stat-item">
-                                <img src={vendorResponseImg} className="small-image" alt="Vendor Types" />
-                                <h3>Vendor Response</h3>
-                                <p>{vendorResponse.length}</p>
-                            </div>
-                            <div className="stat-item">
-                                <img src={visitorsImage} className="small-image" alt="Vendor Types" />
-                                <h3>Number Of Visitors</h3>
-                                <p>{visitors.length}</p>
-                            </div>
-                        </div>
 
-
-                        <div className="statistics">
-                            <div className="charts">
-                                <CustomerChart />
-                                <Featured />
-
+                            <div className="statistics">
                                 <div className="charts">
+                                    <Featured />
+
                                     <div className="chart-item">
-                                        <h3 className="chart-title">Customer Type Distribution</h3>
-                                        <Doughnut data={doughnutData2} />
+                                        <h3 className="chart-title">Vendor Type Distribution</h3>
+                                        <Doughnut data={doughnutData} />
                                     </div>
 
+                                    <Chart />
+
                                 </div>
                             </div>
 
+                            <div className="stat-container">
+                                <div className="stat-item">
+                                    <img src={registerComplaints} className="small-image" alt="Vendor Types" />
+                                    <h3>Registered Complaints</h3>
+                                    <p>{registeredAccidentVehicleData.length}</p>
+                                    {(getData.randomId || getData.department ==="Management" || getData.department === "IT") && (
+                                        <h6 onClick={claimInfo} className="see-list">See Claim List</h6>
+                                    )}
+                                </div>
+                                <div className="stat-item">
+                                    <img src={remainingComplaints} className="small-image" alt="Vendor Types" />
+                                    <h3>Remaining Complaints</h3>
+                                    <p>{accidentVehicleData.length}</p>
+                                </div>
+                                <div className="stat-item">
+                                    <img src={vendorResponseImg} className="small-image" alt="Vendor Types" />
+                                    <h3>Vendor Response</h3>
+                                    <p>{vendorResponse.length}</p>
+                                    {(getData.randomId || getData.department ==="Management" || getData.department === "IT") && (
+                                    <h6 onClick={vendorResponseInfo} className="see-list">see response list</h6>
+                                    )}
+                                </div>
+                                <div className="stat-item">
+                                    <img src={visitorsImage} className="small-image" alt="Vendor Types" />
+                                    <h3>Number Of Visitors</h3>
+                                    <p>{visitors.length}</p>
+                                    {(getData.randomId || getData.department ==="Management" || getData.department === "IT" || getData.department === "Administration") && (
+                                    <h6 onClick={visitorsInfo} className="see-list">see visitors list</h6>
+                                    )}
+                                </div>
+                            </div>
+
+
+                            <div className="statistics">
+                                <div className="charts">
+                                    <CustomerChart />
+                                    <Featured />
+
+                                    <div className="charts">
+                                        <div className="chart-item">
+                                            <h3 className="chart-title">Customer Type Distribution</h3>
+                                            <Doughnut data={doughnutData2} />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                </div>
 
 
 
 
-                {/* <div className="statistics">
+                    {/* <div className="statistics">
                     <div className="stat-item2">
                         <img src={registerComplaints} className="small-image" alt="Vendor Types" />
                         <h3>Registered Complaints</h3>
@@ -452,35 +544,54 @@ const Dashboard = () => {
                     </div>
                 </div> */}
 
-                <div className="map-container" style={{ height: '400px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
-                    <MapContainer center={[19.0760, 72.8777]} zoom={10} style={{ height: '100%', width: '100%' }}>
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        />
-                        <Marker position={[19.0760, 72.8777]} icon={markerIcon}>
-                            <Popup>
-                                Mumbai
-                            </Popup>
-                        </Marker>
-                        <Marker position={[28.6139, 77.2090]} icon={markerIcon}>
-                            <Popup>
-                                Delhi
-                            </Popup>
-                        </Marker>
-                        <Marker position={[12.9716, 77.5946]} icon={markerIcon}>
-                            <Popup>
-                                Karnataka
-                            </Popup>
-                        </Marker>
-                        <Marker position={[20.9517, 85.0985]} icon={markerIcon}>
-                            <Popup>
-                                Orissa
-                            </Popup>
-                        </Marker>
-                    </MapContainer>
-                </div>
-            </main>
+                    <div className="map-container" style={{ height: '400px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
+                        <MapContainer center={[19.0760, 72.8777]} zoom={10} style={{ height: '100%', width: '100%' }}>
+                            <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            />
+                            <Marker position={[19.0760, 72.8777]} icon={markerIcon}>
+                                <Popup>
+                                    Mumbai
+                                </Popup>
+                            </Marker>
+                            <Marker position={[28.6139, 77.2090]} icon={markerIcon}>
+                                <Popup>
+                                    Delhi
+                                </Popup>
+                            </Marker>
+                            <Marker position={[12.9716, 77.5946]} icon={markerIcon}>
+                                <Popup>
+                                    Karnataka
+                                </Popup>
+                            </Marker>
+                            <Marker position={[20.9517, 85.0985]} icon={markerIcon}>
+                                <Popup>
+                                    Orissa
+                                </Popup>
+                            </Marker>
+                        </MapContainer>
+                    </div>
+                </main>
+            </div>)}
+            {vendorOnly && (
+                <VendorApproved />
+            )}
+            {showViewCustomer && (
+                <CustomerApproved />
+            )}
+            {accidentVehicle && (
+                <AccidentVehicle />
+            )}
+            {showVehicleClaimView && (
+                <ViewVehicleInfo />
+            )}
+            {vendorResponsing && (
+                <VendorResponse />
+            )}
+            {visitorForm && (
+                <Visitors />
+            )}
         </div>
     );
 

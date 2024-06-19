@@ -118,7 +118,7 @@ const EmployeeApproved = () => {
       if (window.innerWidth <= 630) {
         setMarginLeft('0px');
         setPaddingLeft('20px');
-        setWidth('60%');
+        setWidth('85%');
       } else {
         setMarginLeft('30px');
         setPaddingLeft("40px");

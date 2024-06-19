@@ -10,15 +10,38 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
+import ActivationModel from '../Visitors/ActivationModel';
+import { ClipLoader } from 'react-spinners'; //added
 
 
-function CraineResponse({data, onUpdate}) {
+function CraineResponse({ data, onUpdate }) {
     const location = useLocation();
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
     const [action, setAction] = useState('');
-    
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalData, setModalData] = useState(null);
+    const [fullInfomation, setFullInfomation] = useState(false); //added
+    const [comingLink, setComingLink] = useState("");  //added
+    const [isLoading, setIsLoading] = useState(false);   //added
+    const [marginLeft, setMarginLeft] = useState('30px');
+    const [padding, setPaddingLeft] = useState('30px');
+    const [width, setWidth] = useState('100%');
+
+    const openModal = (item) => {
+        setModalData(item);
+        setModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setModalOpen(false);
+    };
+
+    const handleConfirm = async () => {
+        setModalOpen(false);
+        await onSubmit(modalData.action);
+    };
 
     // Initially set formData from location state if available
     const initialData = data || {
@@ -28,9 +51,9 @@ function CraineResponse({data, onUpdate}) {
         vehicleHandover: "",
         vehicleInspection: "",
         feedback: "",
-        vehicleTakeOver:"",
-        workEstimate:"",
-        reasonOfReject:""
+        vehicleTakeOver: "",
+        workEstimate: "",
+        reasonOfReject: ""
     };
     const [formData, setFormData] = useState(initialData);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -40,6 +63,10 @@ function CraineResponse({data, onUpdate}) {
         if (!token || !userId) {
             navigate("/");
         }
+        if (formData.advancedPayment !== '' && formData.balancePayment !== '' && formData.recoveryVanEstimate !== '' &&
+            formData.vehicleHandover !== '' && formData.vehicleInspection !== '' && formData.feedback !== '' &&
+            formData.vehicleTakeOver !== '' && formData.workEstimate !== '')
+            setFullInfomation(true);
     }, [token, userId, navigate]);
 
     // Effect for debugging and watching formData
@@ -48,7 +75,7 @@ function CraineResponse({data, onUpdate}) {
     }, [formData]);
 
 
-    const onSubmit = async (action) => {
+    const onSubmit = async (event) => {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
@@ -69,26 +96,73 @@ function CraineResponse({data, onUpdate}) {
         }
     };
 
+    const handlePayment = async () => {  // added
+        console.log("crain", data.crain) //added
+        const id = data.crain;// added
+        try {
+            setIsLoading(true);
+            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${userId}/${id}`);
+            console.log("handlepayment", response.data)
+            if (response.data.message === "successfully created") {
+                setFullInfomation(false)
+                setIsLoading(false);
+                setComingLink(response.data.data);
+            } else {
+                const errorMessage = 'An error occurred';
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } catch (error) {
+            console.error('Error response:', error);
+            const errorMessage = error.response?.data || 'An error occurred';
+            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+        }
+    }
+
     const handleBack = () => {
         // navigate("../Admin")
         onUpdate()
     }
 
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 630) {
+                setMarginLeft('10px');
+                setPaddingLeft('15px');
+                setWidth('100%');
+            } else {
+                setMarginLeft('10px');
+                setPaddingLeft('30px');
+                setWidth('100%');
+            }
+        };
+        window.addEventListener('resize', handleResize);
+
+        // Initial check
+        handleResize();
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
 
     return (
-        <form className="vendor-response-form" style={{marginBottom:"50px"}}>
-                  <Helmet>
-        <title>Crane Responses For Accident Vehicles - Claimpro</title>
-        <meta name="description" content="Crane Responses For Accident Vehicles for Bvc ClaimPro Assist" />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/CraineResponse`} />
-      </Helmet>
+        <form className="customer-response-form" style={{ marginBottom: "50px" }}>
+            <Helmet>
+                <title>Crane Responses For Accident Vehicles - Claimpro</title>
+                <meta name="description" content="Crane Responses For Accident Vehicles for Bvc ClaimPro Assist" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/CraineResponse`} />
+            </Helmet>
 
-      <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+
+            <form className="customer-response-form" style={{ background: "white", marginLeft, padding, width }}>
+            <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
                 <h2 className='bigtitle'>Accident Images</h2>
             </div>
-                <div className="form-row">
+            <div className="form-row">
                     <label className="form-field">
                         Chassis Number:
                         {formData.ChassisNoView ? (
@@ -98,10 +172,16 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Front LH"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                               
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -115,7 +195,13 @@ function CraineResponse({data, onUpdate}) {
                                 />
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -127,12 +213,22 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                             
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No FrontLH Photo uploaded</p>
                         )}
                     </label>
+
+                </div>
+
+                <div className="form-row">
                     <label className="form-field">
                         frontRH:
                         {formData.frontRH ? (
@@ -144,7 +240,13 @@ function CraineResponse({data, onUpdate}) {
                                 />
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No frontRH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -156,10 +258,16 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                                
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No front View Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -171,12 +279,21 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                              
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
+                </div>
+
+                <div className="form-row">
                     <label className="form-field">
                         rear RH:
                         {formData.rearRH ? (
@@ -186,10 +303,16 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                               
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -201,10 +324,16 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                             
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -216,12 +345,21 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                               
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
+                </div>
+
+                <div className='form-row'>
                     <label className="form-field">
                         Major Damage Photo 3:
                         {formData.MajorDamages3 ? (
@@ -231,10 +369,16 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                               
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -246,10 +390,16 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                                
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -261,17 +411,22 @@ function CraineResponse({data, onUpdate}) {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                 />
-                               
+
                             </>
                         ) : (
-                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                            <p style={{
+                                color: 'red',
+                                fontStyle: 'italic',
+                                fontSize: '14px',
+                                margin: '10px 0',
+                                textAlign: 'center'
+                            }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-
                 </div>
-        <div class="header-container">
-          <h3 class="bigtitle">Data Uploaded by Craine Manager</h3>
-        </div>
+            <div class="header-container">
+                <h3 class="bigtitle">Data Uploaded by Craine Manager</h3>
+            </div>
             <div className='form-row'>
                 {/* Ensure correct name attribute values are used */}
                 <label className="form-field">
@@ -286,23 +441,25 @@ function CraineResponse({data, onUpdate}) {
                     Parts Arrangement:
                     <textarea name="partsArrangement" className='inputField' value={formData.recoveryVanEstimate} readOnly />
                 </label>
-                <label className="form-field">
-                workEstimate:
-                    <input type="text" className='inputField' name="workEstimate" value={formData.workEstimate} readOnly />
-                </label>
-
             </div>
             <div className='form-row'>
+            <label className="form-field">
+                    workEstimate:
+                    <input type="text" className='inputField' name="workEstimate" value={formData.workEstimate} readOnly />
+                </label>
                 <label className="form-field">
                     vehicleHandover:
                     <input type="text" className='inputField' name="vehicleHandover" value={formData.vehicleHandover} readOnly />
                 </label>
                 <label className="form-field">
-                vehicleInspection:
+                    vehicleInspection:
                     <input type="text" className='inputField' name="vehicleInspection" value={formData.vehicleInspection} readOnly />
                 </label>
-                <label className="form-field">
-                vehicleTakeOver:
+            </div>
+
+            <div className='form-row'>
+            <label className="form-field">
+                    vehicleTakeOver:
                     <input type="text" className='inputField' name="vehicleTakeOver" value={formData.vehicleTakeOver} readOnly />
                 </label>
                 <label className="form-field">
@@ -313,17 +470,17 @@ function CraineResponse({data, onUpdate}) {
 
             {action === "reject" && (
                 <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
-                        Reason to Reject:
+                    Reason to Reject:
                     <label>
-                        <textarea name="reasonOfReject" className='inputField'value={formData.reasonOfReject}
+                        <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
                             onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
                         />
-                    <button
-                        type="button"
-                        onClick={() => { onSubmit('reject'); }}
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft:"50px", marginTop:"20px"}}>
-                        Submit
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => openModal({ action: 'reject' })}
+                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}>
+                            Submit
+                        </button>
                     </label>
 
                 </div>
@@ -333,25 +490,93 @@ function CraineResponse({data, onUpdate}) {
                     {alertInfo.message}
                 </Alert>
             )}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', padding: '20px 0' }}>
-                <button
-                    type="submit"
-                    onClick={() => onSubmit('accept')}
-                    style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                >
-                    Submit
-                </button>
-                <button
-                    type="button"
-                    onClick={() => { setAction('reject'); }}
-                    style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                >
-                    Reject
-
-                </button>
-            </div>
-
+                <div style={{ padding: '20px 0' }}>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setAction('accept');
+                            openModal({ action: 'accept' });
+                        }}
+                        style={{
+                            display: 'inline-block',
+                            padding: '10px 30px',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            marginRight: '20px'
+                        }}
+                    >
+                        Submit
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setAction('reject')}
+                        style={{
+                            display: 'inline-block',
+                            padding: '10px 30px',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            marginRight: '20px'
+                        }}
+                    >
+                        Reject
+                    </button>
+                    {fullInfomation && (
+                        <div
+                            className="form-control generate-button"
+                            onClick={handlePayment}
+                            style={{
+                                display: 'inline-block',
+                                padding: '10px 30px',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                backgroundColor: '#4CAF50',
+                                color: 'white',
+                                marginRight: '20px'
+                            }}
+                        >
+                            {isLoading ? (
+                                <ClipLoader color="#ffffff" loading={isLoading} />
+                            ) : (
+                                'Payment Request'
+                            )}
+                        </div>
+                    )}
+                    {comingLink && (
+                        <a
+                            href={comingLink}
+                            className="form-control download-link"
+                            style={{
+                                display: 'inline-block',
+                                padding: '10px 30px',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                backgroundColor: '#4CAF50',
+                                color: 'white',
+                                textDecoration: 'none',
+                                marginRight: '20px'
+                            }}
+                        >
+                            Pay Now
+                        </a>
+                    )}
+                </div>
+            {modalData && (
+                <ActivationModel
+                    isOpen={isModalOpen}
+                    onConfirm={handleConfirm}
+                    onCancel={handleCancel}
+                />
+            )}
         </form>
+    </form>
     );
 }
 

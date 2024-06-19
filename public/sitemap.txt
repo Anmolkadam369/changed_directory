@@ -60,3 +60,6 @@ https://claimpro.in/Featured
 https://claimpro.in/UserDashboard
 https://claimpro.in/SeeUpdatedPics
 https://claimpro.in/ActivationModel
+https://claimpro.in/MechanicDashboard
+https://claimpro.in/CustomerEnquiry
+https://claimpro.in/VendorPaymentDetail

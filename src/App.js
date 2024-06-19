@@ -75,7 +75,12 @@ import ActivationModel from './Component/Visitors/ActivationModel';
 import MechanicDashboard from './Component/Vendors/MechanicDashboard';
 
 import NotFoundPage from './Component/NotFound';
+import CustomerEnquiry from './Component/CustomerEnquiry/CustomerEnquiry';
+import VendorPaymentDetail from './Component/PaymentPage/VendorPaymentDetail';
 
+import CreatePassword from './Component/CreatePassword/CreatePassword';
+import Administration from './Component/EmployeeDashboard/Administration';
+import Salesteam from './Component/EmployeeDashboard/Salesteam';
 function App() {                              
   return (
 <Router>
@@ -160,6 +165,11 @@ function App() {
 
           <Route path="*"  element={<NotFoundPage/>}/>
           <Route path='/MechanicDashboard' element={<MechanicDashboard/>}/>
+          <Route path='/CustomerEnquiry' element={<CustomerEnquiry/>}/>
+          <Route path='/VendorPaymentDetail' element={<VendorPaymentDetail/>}/>
+          <Route path='/CreatePassword' element={<CreatePassword/>}/>
+          <Route path='/Administration' element={<Administration/>}/>
+          <Route path='/Salesteam' element={<Salesteam/>}/>
 
         </Routes>
       </div>

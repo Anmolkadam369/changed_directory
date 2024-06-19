@@ -20,8 +20,8 @@ function AddedDataByMachanic({ id, item, onUpdate }) {
     console.log("Received IDssss:", id);
     console.log("item", item)
     let adminResponse = "not requested yet";
-    if(item.details.length != 0) {
-     adminResponse = item.details[0].acceptedByAdmin
+    if (item.details.length != 0) {
+        adminResponse = item.details[0].acceptedByAdmin
     }
     const navigate = useNavigate();
     const token = useRecoilValue(tokenState);
@@ -30,7 +30,6 @@ function AddedDataByMachanic({ id, item, onUpdate }) {
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [existingData, setExistingData] = useState(null);
     const [showPopup, setShowPopup] = useState(true);
-
 
     const [formData, setFormData] = useState({
         vehicleInspection: "",
@@ -154,7 +153,7 @@ function AddedDataByMachanic({ id, item, onUpdate }) {
 
     console.log("adminResponse:", adminResponse);
     console.log("showPopup:", showPopup);
-    
+
     return (
         <div>
             <form className='Customer-master-form'>
@@ -616,60 +615,60 @@ function AddedDataByMachanic({ id, item, onUpdate }) {
                     </label>
 
                     {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
-                <>
-                    <label className="form-field">
-                        Feedback:
-                        <textarea
-                            name="feedback"
-                            className="inputField form-control"
-                            value={formData.feedback}
-                            onChange={handleChange}
-                            readOnly
-                        />
-                    </label>
-                    {showPopup && (
-                        <div style={{
-                            position: 'fixed',
-                            top: '10px',
-                            right: '10px',
-                            background: 'lightgrey',
-                            width: 'fit-content',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-                            zIndex: 1000, // Ensure it stays above other elements
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginTop: '120px',
-                            marginRight: "30px",
-                        }}>
-                            <button
-                                onClick={() => setShowPopup(false)}
-                                style={{
-                                    background: 'grey',
-                                    border: 'none',
-                                    fontSize: '16px',
-                                    cursor: 'pointer',
-                                    color: 'white',
-                                    borderRadius: '50%',
-                                    width: '24px',
-                                    height: '24px',
+                        <>
+                            <label className="form-field">
+                                Feedback:
+                                <textarea
+                                    name="feedback"
+                                    className="inputField form-control"
+                                    value={formData.feedback}
+                                    onChange={handleChange}
+                                    readOnly
+                                />
+                            </label>
+                            {showPopup && (
+                                <div style={{
+                                    position: 'fixed',
+                                    top: '10px',
+                                    right: '10px',
+                                    background: 'lightgrey',
+                                    width: 'fit-content',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                                    zIndex: 1000, // Ensure it stays above other elements
                                     display: 'flex',
                                     alignItems: 'center',
-                                    justifyContent: 'center',
-                                    position: 'absolute',
-                                    top: '-30px',
-                                    right: '-12px',
-                                }}
-                            >
-                                &times;
-                            </button>
-                            <h3 style={{ margin: '0 20px 0 0' }}>Your Information is not Accepted By the Admin that's why Feedback section is blocked </h3>
-                        </div>
+                                    justifyContent: 'space-between',
+                                    marginTop: '120px',
+                                    marginRight: "30px",
+                                }}>
+                                    <button
+                                        onClick={() => setShowPopup(false)}
+                                        style={{
+                                            background: 'grey',
+                                            border: 'none',
+                                            fontSize: '16px',
+                                            cursor: 'pointer',
+                                            color: 'white',
+                                            borderRadius: '50%',
+                                            width: '24px',
+                                            height: '24px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            position: 'absolute',
+                                            top: '-30px',
+                                            right: '-12px',
+                                        }}
+                                    >
+                                        &times;
+                                    </button>
+                                    <h3 style={{ margin: '0 20px 0 0' }}>Your Information is not Accepted By the Admin that's why Feedback section is blocked </h3>
+                                </div>
+                            )}
+                        </>
                     )}
-                </>
-            )}
 
                     {adminResponse === 'accept' && (
                         <label className="form-field">

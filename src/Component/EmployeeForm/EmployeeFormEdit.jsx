@@ -32,15 +32,15 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const location = useLocation();
     // const { id } = location.state || {};
 
     const [marginLeft, setMarginLeft] = useState('30px');
     const [paddingLeft, setPaddingLeft] = useState('30px');
-  
+
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -542,7 +542,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
             console.log("response", response.data);
             setIsLoading(false);
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
-            setTimeout(()=>{
+            setTimeout(() => {
 
                 onUpdate()
             })
@@ -576,24 +576,24 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
 
     useEffect(() => {
         const handleResize = () => {
-          if (window.innerWidth <= 630) {
-            setMarginLeft('0px');
-            setPaddingLeft('5px')
-          } else {
-            setMarginLeft('30px');
-            setPaddingLeft("40px")
-          }
+            if (window.innerWidth <= 630) {
+                setMarginLeft('15px');
+                setPaddingLeft('30px')
+            } else {
+                setMarginLeft('30px');
+                setPaddingLeft("40px")
+            }
         };
         window.addEventListener('resize', handleResize);
-    
+
         // Initial check
         handleResize();
-    
+
         // Cleanup event listener on component unmount
         return () => {
-          window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', handleResize);
         };
-      }, []);
+    }, []);
 
     return (
 
@@ -605,14 +605,12 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 <link rel='canonical' href={`https://claimpro.in/EmployeeFormEdit`} />
             </Helmet>
             <form onSubmit={handleSubmit} style={{ marginLeft, paddingLeft }} className="Customer-master-form">
-        <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
-                
-                <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
-
-                <div class="header-container">
-                    <h1 class="bigtitle" style={{ textAlign: 'center' }}>Employee Form Edit</h1>
+                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <div class="header-container">
+                        <h1 class="bigtitle" style={{ textAlign: 'center' }}>Employee Form Edit</h1>
+                    </div>
                 </div>
-        </div>
 
                 <div className="form-row">
                     <label className="form-field input-group mb-3">

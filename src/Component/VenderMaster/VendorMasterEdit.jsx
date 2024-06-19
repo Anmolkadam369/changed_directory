@@ -360,7 +360,6 @@ const VendorMasterEdit = ({id, onUpdate}) => {
           </div>
         </div>
 
-
         <div className="form-row">
           <label className="form-field input-group mb-3">
             System Date:
@@ -792,8 +791,6 @@ const VendorMasterEdit = ({id, onUpdate}) => {
               EDIT
             </button>
           )}
-
-
         </div>
       </form>
     </div>

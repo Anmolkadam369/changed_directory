@@ -14,6 +14,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
+import VendorPaymentDetail from '../PaymentPage/VendorPaymentDetail';
 
 
 
@@ -22,6 +23,7 @@ const config = {
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 // import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const VendorMasterForm = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -36,7 +38,26 @@ const VendorMasterForm = () => {
   const [selectedState, setSelectedState] = useState('');
   const [isLoadingStates, setIsLoadingStates] = useState(true);
   const [isLoadingCities, setIsLoadingCities] = useState(true);
+  const [showBankForm, setShowBankForm] = useState(false);
+  const [recipientName, setRecipientName] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
 
+  const [bankDetails, setBankDetails] = useState({
+    bankName: '',
+    bankAccount: '',
+    ifscCode: '',
+    branchName: ''
+  });
+  const [upiDetails, setUpiDetails] = useState({
+    mobileNumber: '',
+    upiId: ''
+  });
+  const [errors, setErrors] = useState({
+    recipientName: '',
+    paymentMethod: '',
+    bankDetails: '',
+    upiDetails: ''
+  });
 
   useEffect(() => {
     loadStates();
@@ -108,149 +129,209 @@ const VendorMasterForm = () => {
   const panRef = useRef(null);
   const adharCardRef = useRef(null);
 
+  const handleBankDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setBankDetails({ ...bankDetails, [name]: value });
+  };
+
+  const handleUpiDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setUpiDetails({ ...upiDetails, [name]: value });
+  };
+
+
   const handleChange = (e) => {
     const { name, type, files, value } = e.target;
     if (type === 'file') {
-      if (files[0] && files[0].size > 2097152) {
-        setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
-        const refs = {
-          GST: GSTRef,
-          panCard: panRef,
-          adharCard: adharCardRef,
+        if (files[0] && files[0].size > 2097152) {
+            setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
+            const refs = {
+                GST: GSTRef,
+                panCard: panRef,
+                adharCard: adharCardRef,
+            };
 
-        };
+            if (refs[name] && refs[name].current) {
+                refs[name].current.value = "";
+            }
 
-        if (refs[name] && refs[name].current) {
-          refs[name].current.value = "";
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: null // Reset the file state
+            }));
+            return;
         }
-
         setFormData(prevState => ({
-          ...prevState,
-          [name]: null // Reset the file state
+            ...prevState,
+            [name]: files[0]
         }));
-        return;
-      }
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: files[0]
-      }));
+    } else if (name === 'state') {
+        loadCities(value);
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+    } else if (["vendorPhone", "contactPersonNum", "contactPersonNum2"].includes(name)) {
+        const validValue = value.replace(/\D/g, '').slice(0, 10);
+        setFormData({
+            ...formData,
+            [name]: validValue,
+        });
+    } else if (["pincode", "rate"].includes(name)) {
+        const validValue = value.replace(/\D/g, '').slice(0, 6);
+        setFormData({
+            ...formData,
+            [name]: validValue,
+        });
+    } else if (name === "adharNo") {
+        const validValue = value.replace(/\D/g, '').slice(0, 12);
+        setFormData({
+            ...formData,
+            [name]: validValue,
+        });
+    } else {
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     }
-    else if (name === 'state') {
-      loadCities(value);
-      setFormData(prevState => ({ ...prevState, [name]: value }));
-    }
-    else if (name === "vendorPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
-      const validValue = value.replace(/\D/g, '').slice(0, 10);
-      setFormData({
-        ...formData,
-        [name]: validValue,
-      });
-    }
-    else if (name === "pincode" || name === "rate") {
-      const validValue = value.replace(/\D/g, '').slice(0, 6);
-      setFormData({
-        ...formData,
-        [name]: validValue,
-      });
-    }
-    else if (name === "vendorPhone") {
-      const validValue = value.replace(/\D/g, '').slice(0, 10);
-      setFormData({
-        ...formData,
-        [name]: validValue,
-      });
-    }
-    else if (name === "adharNo") {
-      const validValue = value.replace(/\D/g, '').slice(0, 12);
-      setFormData({
-        ...formData,
-        [name]: validValue,
-      });
-    }  else {
-      const { value } = e.target;
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: value
-      }));
-    }
-  };
+};
 
-  const validateForm = () => {
-    for (const [key, value] of Object.entries(formData)) {
-      if (key === 'panCard' || key === 'adharCard' || key === 'GST') {
-        if (value === null || value === undefined || value.size === 0)
-          return `Field '${key}' is required.`;
+const validateForm = () => {
+  for (const [key, value] of Object.entries(formData)) {
+      if (["panCard", "adharCard", "GST"].includes(key)) {
+          if (value === null || value === undefined || value.size === 0)
+              return `Field '${key}' is required.`;
       }
       if (value === '') {
-        return `Field '${key}' is required.`;
+          return `Field '${key}' is required.`;
       }
-    }
+  }
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(formData.email)) {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(formData.email)) {
       return 'Please enter a valid email address.';
-    }
+  }
 
-    return '';
-  };
+  return '';
+};
 
-  console.log("firm", formData)
+const validateInnerForm = () => {
+  let formErrors = {};
+  let isValid = true;
 
+  if (!recipientName) {
+      formErrors.recipientName = 'Please enter recipient name';
+      isValid = false;
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    if (!e.target.checkValidity()) {
-      e.target.reportValidity();
-      setAlertInfo({ show: true, message: `${e.target.key} should be in correct format`, severity: 'error' });
-      setIsLoading(false);
-      return;
-    }
-    const validationMessage = validateForm();
-    if (validationMessage) {
-      setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
-      return;
-    }
-    console.log('Form data submitted:', formData);
-    setAlertInfo({ ...alertInfo, show: false });
-
-    const formDataObj = new FormData();
-    for (const key in formData) {
-      if (formData[key]) {
-        if (formData[key] instanceof File) {
-          formDataObj.append(key, formData[key], formData[key].name);
-        } else {
-          formDataObj.append(key, formData[key]);
-        }
+  if (paymentMethod === 'bank') {
+      if (!bankDetails.bankName || !bankDetails.bankAccount || !bankDetails.ifscCode || !bankDetails.branchName) {
+          formErrors.bankDetails = 'Please fill all bank details';
+          isValid = false;
       }
-    }
+      if (bankDetails.bankAccount && !/^\d{9,18}$/.test(bankDetails.bankAccount)) {
+          formErrors.bankAccount = 'Please enter a valid bank account number';
+          isValid = false;
+      }
+      if (bankDetails.ifscCode && !/^[A-Za-z]{4}[a-zA-Z0-9]{7}$/.test(bankDetails.ifscCode)) {
+          formErrors.ifscCode = 'Please enter a valid IFSC code';
+          isValid = false;
+      }
+  } else if (paymentMethod === 'upi') {
+      if (!upiDetails.mobileNumber || !upiDetails.upiId) {
+          formErrors.upiDetails = 'Please fill both mobile number and UPI ID';
+          isValid = false;
+      }
+      if (upiDetails.mobileNumber && !/^\d{10}$/.test(upiDetails.mobileNumber)) {
+          formErrors.mobileNumber = 'Please enter a valid mobile number';
+          isValid = false;
+      }
+      if (upiDetails.upiId && !/^[\w.-]+@[\w.-]+$/.test(upiDetails.upiId)) {
+          formErrors.upiId = 'Please enter a valid UPI ID';
+          isValid = false;
+      }
+  } else {
+      formErrors.paymentMethod = 'Please select a payment method';
+      isValid = false;
+  }
 
-    for (let pair of formDataObj.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+  setErrors(formErrors);
+  return isValid ? '' : formErrors;
+};
 
-    try {
-      const response = await axios({
-        method: 'POST',
-        url: `${backendUrl}/api/venderInfo/${userId}`,
-        data: formDataObj,
-        headers: {
-          'Authorization': token
-        }
-      });
-      console.log("response", response.data);
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  if (!e.target.checkValidity()) {
+      e.target.reportValidity();
       setIsLoading(false);
-      setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
+      return;
+  }
+
+  const validationMessage = validateForm();
+  if (validationMessage) {
+      setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+      setIsLoading(false);
+      return;
+  }
+
+  const innerValidationMessage = validateInnerForm();
+  if (innerValidationMessage) {
+      setAlertInfo({ show: true, message: "Fill form Appropriately.", severity: 'error' });
+      setIsLoading(false);
+      return;
+  }
+
+  let sendData = {};
+
+  if (paymentMethod === 'bank') {
+      sendData = {
+          recipientName,
+          ...bankDetails
+      };
+  } else if (paymentMethod === 'upi') {
+      sendData = {
+          recipientName,
+          ...upiDetails
+      };
+  }
+
+  const formDataObj = new FormData();
+  for (const key in formData) {
+      if (formData[key]) {
+          if (formData[key] instanceof File) {
+              formDataObj.append(key, formData[key], formData[key].name);
+          } else {
+              formDataObj.append(key, formData[key]);
+          }
+      }
+  }
+
+  for (const key in sendData) {
+      if (sendData[key]) formDataObj.append(key, sendData[key]);
+  }
+
+  try {
+      const response = await axios({
+          method: 'POST',
+          url: `${backendUrl}/api/venderInfo/${userId}`,
+          data: formDataObj,
+          headers: {
+              'Authorization': token
+          }
+      });
+      setIsLoading(false);
+      setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
       setTimeout(() => {
-        navigate("../Admin");
+          navigate("../Admin");
       }, 2000);
-    } catch (error) {
-      console.error("Error during form submission:", error);
+  } catch (error) {
       const errorMessage = error.response?.data || 'An error occurred';
       setIsLoading(false);
       setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-    }
-  };
+  }
+}
   const [showDropdown, setShowDropdown] = useState(false);
   const handleSelect = (event, value) => {
     event.preventDefault(); // Prevent default link behavior
@@ -261,6 +342,7 @@ const VendorMasterForm = () => {
     setShowDropdown(false); // Close dropdown after selection
   };
   const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const bankFormOpen = () => setShowBankForm(!showBankForm);
 
   return (
     <div>
@@ -268,7 +350,7 @@ const VendorMasterForm = () => {
         <title>Vendor Details - Claimpro</title>
         <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />
         <meta name="keywords" content="Vehicle Accidents, vendor, vendor Information, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/VendorMaster`}/>
+        <link rel='canonical' href={`https://claimpro.in/VendorMaster`} />
       </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form">
         <div class="header-container">
@@ -333,10 +415,6 @@ const VendorMasterForm = () => {
 
         <div className='form-row'>
 
-        </div>
-
-        <div className='form-row'>
-
           <label className="form-field input-group mb-3">
             Vendor Name:
             <input
@@ -370,13 +448,13 @@ const VendorMasterForm = () => {
           </div>
           <label className="form-field">
             Address  :
-            <textarea 
-            name="address" 
-            value={formData.address} 
-            onChange={handleChange} 
-            required 
-            className="form-control" 
-            placeholder='Address' />
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              className="form-control"
+              placeholder='Address' />
           </label>
           <label className="form-field">
             Pincode:
@@ -557,24 +635,141 @@ const VendorMasterForm = () => {
               required />
           </label>
 
-          {formData.vendorType == "crain" && 
-         ( <label className="form-field">
-            Rate/KM :
-            <input
-              type='text'
-              name="rate"
-              placeholder='Rate Per KM'
-              value={formData.rate}
-              onChange={handleChange}
-              className="form-control"
-              title="Aadhaar number must be exactly 12 digits."
-              required />
-          </label>
-        )}
-        {formData.vendorType != "crain" && (
-          <label className="form-field"></label>
-        )}
+          {formData.vendorType == "crain" &&
+            (<label className="form-field">
+              Rate/KM :
+              <input
+                type='text'
+                name="rate"
+                placeholder='Rate Per KM'
+                value={formData.rate}
+                onChange={handleChange}
+                className="form-control"
+                title="Aadhaar number must be exactly 12 digits."
+                required />
+            </label>
+            )}
+          {formData.vendorType != "crain" && (
+            <label className="form-field"></label>
+          )}
         </div>
+
+        <form className="Customer-master-form" style={{background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px",}}>
+        <div class="header-container">
+          <h3 class="bigtitle">Bank Information</h3>
+        </div>
+          <div className="form-row">
+            <label className="form-field input-group mb-3">
+              Recipient's Name:
+              <input
+                type="text"
+                name="recipientName"
+                value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+                className="form-control"
+              />
+              {errors.recipientName && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.recipientName}</p>}
+            </label>
+          </div>
+
+          <div className="form-row" style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="button"
+              onClick={() => setPaymentMethod('bank')}
+              disabled={!recipientName}
+              style={{ flex: 1 }}
+            >
+              Bank Transfer
+            </button>
+            <button
+              type="button"
+              onClick={() => setPaymentMethod('upi')}
+              disabled={!recipientName}
+              style={{ flex: 1 }}
+            >
+              UPI
+            </button>
+          </div>
+          {errors.paymentMethod && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.paymentMethod}</p>}
+
+          {paymentMethod === 'bank' && (
+            <div className="Customer-master-form" style={{  marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
+              <label className="form-field input-group mb-3">
+                Bank Name:
+                <input
+                  type="text"
+                  name="bankName"
+                  value={bankDetails.bankName}
+                  onChange={handleBankDetailsChange}
+                  className="form-control"
+                />
+              </label>
+              <label className="form-field input-group mb-3">
+                Bank Account:
+                <input
+                  type="text"
+                  name="bankAccount"
+                  value={bankDetails.bankAccount}
+                  onChange={handleBankDetailsChange}
+                  className="form-control"
+                />
+                {errors.bankAccount && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.bankAccount}</p>}
+              </label>
+              <label className="form-field input-group mb-3">
+                IFSC Code:
+                <input
+                  type="text"
+                  name="ifscCode"
+                  value={bankDetails.ifscCode}
+                  onChange={handleBankDetailsChange}
+                  className="form-control"
+                />
+                {errors.ifscCode && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.ifscCode}</p>}
+              </label>
+              <label className="form-field input-group mb-3">
+                Branch Name:
+                <input
+                  type="text"
+                  name="branchName"
+                  value={bankDetails.branchName}
+                  onChange={handleBankDetailsChange}
+                  className="form-control"
+                />
+              </label>
+              {errors.bankDetails && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.bankDetails}</p>}
+            </div>
+          )}
+
+          {paymentMethod === 'upi' && (
+            <div className="Customer-master-form" style={{  marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
+              <label className="form-field input-group mb-3">
+                Registered Mobile Number:
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  value={upiDetails.mobileNumber}
+                  onChange={handleUpiDetailsChange}
+                  className="form-control"
+                />
+                {errors.mobileNumber && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.mobileNumber}</p>}
+              </label>
+              <label className="form-field input-group mb-3">
+                UPI ID:
+                <input
+                  type="text"
+                  name="upiId"
+                  value={upiDetails.upiId}
+                  onChange={handleUpiDetailsChange}
+                  className="form-control"
+                />
+                {errors.upiId && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.upiId}</p>}
+              </label>
+              {errors.upiDetails && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.upiDetails}</p>}
+            </div>
+          )}
+        </form>
+
+
 
         {alertInfo.show && (
           <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
@@ -596,6 +791,14 @@ const VendorMasterForm = () => {
             </div>
           )}
         </div>
+
+{/* <div style={{ textAlign: 'center' }}>
+          <button type="submit"
+            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+            disabled={isLoading} // Disable button while loading
+          >{ 'Submit'}
+          </button>
+    </div> */}
 
       </form>
     </div>

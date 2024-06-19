@@ -26,8 +26,8 @@ const EmployeeForm = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -37,7 +37,7 @@ const EmployeeForm = () => {
 
     const [marginLeft, setMarginLeft] = useState('30px');
     const [paddingLeft, setPaddingLeft] = useState('30px');
-  
+
 
     useEffect(() => {
         loadStates();
@@ -115,6 +115,7 @@ const EmployeeForm = () => {
         qualification: "",
         employmentType: "",
         enchashmentName: "",
+        department:"",
         adharNo: "",
         panNo: "",
         UANNo: "",
@@ -194,7 +195,7 @@ const EmployeeForm = () => {
         empCode: "",
         assetOwningEmployeeName: "",
     })
-    console.log("formData", formData)
+    console.log("formData123", formData)
 
     const profilePictureRef = useRef(null);
     const adharFrontRef = useRef(null);
@@ -339,6 +340,9 @@ const EmployeeForm = () => {
     };
 
     const [showDropdown, setShowDropdown] = useState(false);
+    const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+    const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
+
     const handleSelect = (event, value) => {
         event.preventDefault(); // Prevent default link behavior
         setFormData({
@@ -347,28 +351,50 @@ const EmployeeForm = () => {
         });
         setShowDropdown(false); // Close dropdown after selection
     };
+
+    const handleStatusSelect = (event, value) => {
+        event.preventDefault(); // Prevent default link behavior
+        setFormData({
+            ...formData,
+            maritalStatus: value
+        });
+        setShowStatusDropdown(false); // Close dropdown after selection
+    };
+
+    const handleDepartmentSelect = (event, value) => {
+        event.preventDefault(); // Prevent default link behavior
+        setFormData({
+            ...formData,
+            department: value
+        });
+        setShowDepartmentDropdown(false); // Close dropdown after selection
+    };
+
     const toggleDropdown = () => setShowDropdown(!showDropdown);
+    const toggleStatusDropdown = () => setShowStatusDropdown(!showStatusDropdown);
+    const toggleDepartmentDropdown = () => setShowDepartmentDropdown(!showDepartmentDropdown);
+    
 
     useEffect(() => {
         const handleResize = () => {
-          if (window.innerWidth <= 630) {
-            setMarginLeft('5x');
-            setPaddingLeft('20px')
-          } else {
-            setMarginLeft('30px');
-            setPaddingLeft("40px")
-          }
+            if (window.innerWidth <= 630) {
+                setMarginLeft('5x');
+                setPaddingLeft('20px')
+            } else {
+                setMarginLeft('30px');
+                setPaddingLeft("40px")
+            }
         };
         window.addEventListener('resize', handleResize);
-    
+
         // Initial check
         handleResize();
-    
+
         // Cleanup event listener on component unmount
         return () => {
-          window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', handleResize);
         };
-      }, []);
+    }, []);
 
     return (
 
@@ -433,8 +459,8 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
-
                     <div className="dropdown green-dropdown form-field">
+                        Select Gender:
                         <button
                             className="form-field input-group mb-3"
                             type="button"
@@ -685,12 +711,6 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3"></label>
-                    <label className="form-field input-group mb-3"></label>
-
-                </div>
-
-                <div className="form-row">
 
                     <label className="form-field">
                         State:
@@ -721,8 +741,6 @@ const EmployeeForm = () => {
                             ))}
                         </select>
                     </label>
-                    <label className="form-field input-group mb-3"></label>
-                    <label className="form-field input-group mb-3"></label>
 
                 </div>
 
@@ -741,16 +759,24 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <div className="dropdown green-dropdown form-field">
                         Marital Status:
-                        <input
-                            type="text"
-                            name="maritalStatus"
-                            value={formData.maritalStatus}
-                            onChange={handleChange}
-                            className="form-control"
-                        />
-                    </label>
+                        <button
+                            className="form-field input-group mb-3"
+                            type="button"
+                            id="dropdownButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            onClick={toggleStatusDropdown}
+                        >
+                            {formData.maritalStatus || "Select Status"}
+                        </button>
+                        <ul className={`dropdown-menu${showStatusDropdown ? " show" : ""}`} aria-labelledby="dropdownButton">
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleStatusSelect(e, "Married")}>Married</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleStatusSelect(e, "Unmarried")}>Unmarried</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleStatusSelect(e, "Divorce")}>Divorce</a></li>
+                        </ul>
+                    </div>
                     <label className="form-field input-group mb-3">
                         Qualification:
                         <input
@@ -774,6 +800,28 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
+                <div className="dropdown green-dropdown form-field">
+                        Select Department:
+                        <button
+                            className="form-field input-group mb-3"
+                            type="button"
+                            id="dropdownButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            onClick={toggleDepartmentDropdown}
+                        >
+                            {formData.department || "Select Department"}
+                        </button>
+                        <ul className={`dropdown-menu${showDepartmentDropdown ? " show" : ""}`} aria-labelledby="dropdownButton">
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Management")}>Management</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Administration")}>Administration</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Sales")}>Sales</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Billing")}>Billing</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "IT")}>IT</a></li>
+
+
+                        </ul>
+                    </div>
                     <label className="form-field input-group mb-3">
                         Enchashment Name:
                         <input
@@ -812,7 +860,11 @@ const EmployeeForm = () => {
                             title="Please enter a valid PAN number (e.g., ABCDE1234F)."
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+
+                </div>
+
+                <div className="form-row">
+                <label className="form-field input-group mb-3">
                         UAN No:
                         <input
                             type="text"
@@ -822,9 +874,6 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                </div>
-
-                <div className="form-row">
                     <label className="form-field input-group mb-3">
                         ESI No:
                         <input
@@ -855,8 +904,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
-                    </label>
+
                 </div>
 
 
@@ -1274,7 +1322,7 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Profile Picture:
                         <input
                             type="file"
@@ -1287,7 +1335,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Adhar Front:
                         <input
                             type="file"
@@ -1300,7 +1348,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Adhar Back:
                         <input
                             type="file"
@@ -1317,7 +1365,7 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         PAN Front:
                         <input
                             type="file"
@@ -1330,7 +1378,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Matric Passing Certificate:
                         <input
                             type="file"
@@ -1343,7 +1391,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         10 + 2 Passing Certificate:
                         <input
                             type="file"
@@ -1359,7 +1407,7 @@ const EmployeeForm = () => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Under Graduate Passing Certificate:
                         <input
                             type="file"
@@ -1372,7 +1420,7 @@ const EmployeeForm = () => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Post Graduate Passing Certificate:
                         <input
                             type="file"
@@ -1386,7 +1434,7 @@ const EmployeeForm = () => {
                         />
                     </label>
 
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Cancelled Cheque:
                         <input
                             type="file"

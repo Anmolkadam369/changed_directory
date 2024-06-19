@@ -50,7 +50,6 @@
     color: black;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 20px;
   }
   
   .Customer-master-form button:hover {

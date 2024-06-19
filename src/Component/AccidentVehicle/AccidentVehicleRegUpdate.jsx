@@ -103,7 +103,7 @@ const AccidentVehicleRegUpdate = () => {
       </Helmet>
       <div className='responsive-table' style={{ width }}>
       <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
-      <table style={{ width: '100%', marginLeft: "10px", marginRight: "30px" }}>
+      <table style={{ width: '100%', marginLeft: "10px", marginRight: "100px" }}>
         <thead>
           <tr>
             <th>Sr. No.</th>

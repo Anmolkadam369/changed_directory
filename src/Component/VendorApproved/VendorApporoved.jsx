@@ -222,6 +222,7 @@ const VendorApproved = () => {
               </a>
             )}
           </label>
+          
         </div>
       </div>
 

@@ -29,7 +29,7 @@ function ActivationModel({ isOpen, message, onConfirm, onCancel }) {
                 textAlign: 'center', // Center the text
                 border: '1px solid #ccc' // Subtle border for depth
             }}>
-                <p style={{ fontWeight: 'bold', fontSize: '18px' }}>Do you Want to do the Action ?</p>
+                <p style={{ fontWeight: 'bold', fontSize: '18px' }}>Are you sure you want to proceed?</p>
                 <div style={{
                     marginTop: '20px',
                     display: 'flex',

@@ -636,17 +636,6 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 </a>
                                 </div>
                             </div>
-                            {/* <Modal isOpen={isFirCopyModalOpen} onRequestClose={closeFirCopyModal} contentLabel="FIR Copy Modal">
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                                    <IconButton href={formData.firCopy} download color="primary">
-                                        <DownloadIcon />
-                                    </IconButton>
-                                    <IconButton onClick={closeFirCopyModal} color="secondary">
-                                        <CloseIcon />
-                                    </IconButton>
-                                </div>
-                                <img src={formData.firCopy} alt="FIR Copy" style={{ width: '100%' }} />
-                            </Modal> */}
                         </>
 
                     ) : (

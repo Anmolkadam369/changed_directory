@@ -67,7 +67,8 @@ const VendorResponse = () => {
 
   return (
     <div>
-    {!showActualVendorResponse && (<div className="Customer-master-form">
+    {!showActualVendorResponse && (
+      <div className="Customer-master-form" style={{paddingLeft:'10px',paddingRight:"10px", paddingTop:"40px", paddingBottom:"40px"}}>
       <Helmet>
         <title>Vendor Response Overview - Claimpro</title>
         <meta name="description" content="View and manage vendor responses for vehicle accidents. Keep track of customer names, vehicle numbers, and actions taken." />

@@ -83,6 +83,24 @@ const Machanic = () => {
         }
     };
 
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowUserId(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showUserId) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showUserId]);
+
     const handleCancelSignOut = () => { setModalOpen(false) };
     useEffect(() => {
         console.log("token", token, userId);
@@ -264,12 +282,12 @@ const Machanic = () => {
                                     }}>
                                     Sign Out
                                 </button>
-                                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
                             </div>
                         )}
                     </div>
                 </div>
                 <hr />
+                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
 
 
                     {

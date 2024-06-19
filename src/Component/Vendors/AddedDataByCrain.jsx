@@ -13,18 +13,50 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
 
 
-function AddedDataByCrain() {
+function AddedDataByCrain({ id, item, onUpdate }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
     console.log("Received IDssss:", id);
+    let adminResponse = "not requested yet";
+    if (item.details.length != 0) {
+        adminResponse = item.details[0].acceptedByAdmin
+    }
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [existingData, setExistingData] = useState([]);
+    const [showPopup, setShowPopup] = useState(true);
 
+    const [formData, setFormData] = useState({
+        vehicleInspection: "",
+        workEstimate: "",
+        recoveryVanEstimate: "",
+        vehicleHandover: "",
+        advancedPayment: "",
+        vehicleTakeOver: "",
+        balancePayment: "",
+        feedback: ""
+    });
+
+    useEffect(() => {
+        if (existingData) {
+            setFormData({
+                firCopy: existingData.firCopy || "",
+                companyRepresentative: existingData.companyRepresentative || "",
+                POA: existingData.POA || "",
+                petitionCopy: existingData.petitionCopy || "",
+                policeReportCopy: existingData.policeReportCopy || "",
+                indemnityBondCopy: existingData.indemnityBondCopy || "",
+                releaseOrderCopy: existingData.releaseOrderCopy || "",
+                bailerDetails: existingData.bailerDetails || "",
+                feedback: existingData.feedback || "",
+                releaseUpload: existingData.releaseUpload || "",
+            });
+        }
+    }, [existingData]);
 
     useEffect(() => {
         console.log("token", token, userId);
@@ -34,6 +66,7 @@ function AddedDataByCrain() {
         getDataById(id);
         getExistingData(id, userId)
     }, [token, userId, navigate, id]);
+
 
     useEffect(() => {
         if (comingData) {
@@ -48,34 +81,11 @@ function AddedDataByCrain() {
                 longitude: comingData.longitude || '',
                 vehicleNo: comingData.vehicleNo || '',
                 accidentFileNo: comingData.accidentFileNo || "",
-                ChassisNoView: null,
-                ClusterView: null,
-                MajorDamages1: null,
-                MajorDamages2: null,
-                MajorDamages3: null,
-                MajorDamages4: null,
-                MajorDamages5: null,
-                frontLH: null,
-                frontRH: null,
-                rearLH: null,
-                rearRH: null,
-                frontView: null,
-                rearView: null,
                 CustomerName: comingData.CustomerName || "",
                 choosenPlan: comingData.choosenPlan || '',
-                advocate: "", workshop: '', machanic: "", crain: "",
                 randomId: comingData.randomId || "",
-                vehicleInspection: "",
-                workEstimate: "",
-                recoveryVanEstimate: "",
-                vehicleHandover: "",
-                advancedPayment: "",
-                vehicleTakeOver: "",
-                balancePayment: "",
-                feedback: ""
             }));
         }
-
     }, [comingData])
 
     const getDataById = async (id) => {
@@ -102,17 +112,6 @@ function AddedDataByCrain() {
         }
     };
 
-    const [formData, setFormData] = useState({
-        vehicleInspection: "",
-        workEstimate: "",
-        recoveryVanEstimate: "",
-        vehicleHandover: "",
-        advancedPayment: "",
-        vehicleTakeOver: "",
-        balancePayment: "",
-        feedback: ""
-    });
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData(prev => ({
@@ -120,7 +119,6 @@ function AddedDataByCrain() {
             [name]: value
         }));
     };
-    console.log('the id which want to send', formData, id, userId);
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -135,6 +133,9 @@ function AddedDataByCrain() {
             console.log("response", response.data.status);
             if (response.data.message === "data inserted successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setTimeout(() => {
+                    onUpdate()
+                }, 2000);
 
             } else {
                 const errorMessage = 'An error occurred';
@@ -148,476 +149,515 @@ function AddedDataByCrain() {
     };
 
     const handleBack = () => {
-        navigate("../CrainDashboard")
+        onUpdate()
     }
     return (
-        <div className='container'>
-                  <Helmet>
-        <title>Accident Data Added By Crane - Claimpro</title>
-        <meta name="description" content="Accident Data By Crane." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/AddedDataByCrain`} />
-      </Helmet>
-             <Button startIcon={<ArrowBackIcon />} onClick={handleBack}/>
-            <div class='header-container'>
-                <h2 className='bigtitle'>User Details</h2>
-            </div>
+        <div>
+            <form className='Customer-master-form'>
 
-            <div className='form-row'>
+                <Helmet>
+                    <title>Accident Data Added By Crane - Claimpro</title>
+                    <meta name="description" content="Accident Data By Crane." />
+                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                    <link rel='canonical' href={`https://claimpro.in/AddedDataByCrain`} />
+                </Helmet>
+                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <h2 className='bigtitle'>User Details</h2>
+                </div>
 
-                <label className="form-field">
-                    Users Name:
-                    <input
-                        type="text"
-                        name="CustomerName"
-                        className='inputField form-control'
-                        value={formData.CustomerName}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
+                <div className='form-row'>
 
-                <label className="form-field">
-                    Choosen Plan:
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="choosenPlan"
-                        value={formData.choosenPlan}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
+                    <label className="form-field">
+                        Users Name:
+                        <input
+                            type="text"
+                            name="CustomerName"
+                            className='inputField form-control'
+                            value={formData.CustomerName}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
 
-            </div>
+                    <label className="form-field">
+                        Choosen Plan:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="choosenPlan"
+                            value={formData.choosenPlan}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field">
+                        Chasis No:
+                        <input
+                            type="text"
+                            name="chassisNo"
+                            className='inputField form-control'
+                            value={formData.chassisNo}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field">
+                        Engine No:
+                        <input
+                            type="text"
+                            name="engineNo"
+                            className='inputField form-control'
+                            value={formData.engineNo}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                </div>
 
-            <div className='form-row'>
-                <label className="form-field">
-                    Chasis No:
-                    <input
-                        type="text"
-                        name="chassisNo"
-                        className='inputField form-control'
-                        value={formData.chassisNo}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-                <label className="form-field">
-                    Engine No:
-                    <input
-                        type="text"
-                        name="engineNo"
-                        className='inputField form-control'
-                        value={formData.engineNo}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-                <label className="form-field">
-                    Make:
-                    <input
-                        type="text"
-                        name="make"
-                        className='inputField form-control'
-                        value={formData.make}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-                <label className="form-field">
-                    latitude:
-                    <input
-                        type="text"
-                        name="latitude"
-                        className='inputField form-control'
-                        value={formData.latitude || 0.0}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-            </div>
+                <div className='form-row'>
 
-            <div className='form-row'>
-                <label className="form-field">
-                    Longitude:
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="longitude"
-                        value={formData.longitude || 0.0}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-                <label className="form-field">
-                    Vehicle No:
-                    <input
-                        type="text"
-                        name="vehicleNo"
-                        className='inputField form-control'
-                        value={formData.vehicleNo}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-                <label className="form-field">
-                    accidentFileNo:
-                    <input
-                        type="text"
-                        name="accidentFileNo"
-                        className='inputField form-control'
-                        value={formData.accidentFileNo}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-                <label className="form-field">
-                    model:
-                    <input
-                        type="text"
-                        name="model"
-                        className='inputField form-control'
-                        value={formData.model}
-                        onChange={handleChange}
-                        readOnly={IsReadOnly}
-                    />
-                </label>
-            </div>
+                    <label className="form-field">
+                        Make:
+                        <input
+                            type="text"
+                            name="make"
+                            className='inputField form-control'
+                            value={formData.make}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field">
+                        latitude:
+                        <input
+                            type="text"
+                            name="latitude"
+                            className='inputField form-control'
+                            value={formData.latitude}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field">
+                        Longitude:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="longitude"
+                            value={formData.longitude}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field">
+                        accidentFileNo:
+                        <input
+                            type="text"
+                            name="accidentFileNo"
+                            className='inputField form-control'
+                            value={formData.accidentFileNo}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                </div>
 
-            <div class='header-container'>
-                <h2 className='bigtitle'>Accident Images</h2>
-            </div>
+                <div className='form-row'>
 
-            <div className="form-row">
-                <label className="form-field">
-                    Chassis Number:
-                    {comingData.ChassisNoView ? (
-                        <>
-                            <img
-                                src={comingData.ChassisNoView}
-                                alt="Front LH"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                    <label className="form-field">
+                        accidentFileNo:
+                        <input
+                            type="text"
+                            name="accidentFileNo"
+                            className='inputField form-control'
+                            value={formData.accidentFileNo}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field">
+                        model:
+                        <input
+                            type="text"
+                            name="model"
+                            className='inputField form-control'
+                            value={formData.model}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+                </div>
+            </form>
+
+
+            <form className='Customer-master-form'>
+                <div class='header-container'>
+                    <h2 className='bigtitle'>Accident Images</h2>
+                </div>
+
+                <div className="form-row">
+                    <label className="form-field">
+                        Chassis Number:
+                        {comingData.ChassisNoView ? (
+                            <>
+                                <img
+                                    src={comingData.ChassisNoView}
+                                    alt="Front LH"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Cluster Number:
+                        {comingData.ClusterView ? (
+                            <>
+                                <img
+                                    src={comingData.ClusterView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        FrontLH Number:
+                        {comingData.frontLH ? (
+                            <>
+                                <img
+                                    src={comingData.frontLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        frontRH:
+                        {comingData.frontRH ? (
+                            <>
+                                <img
+                                    src={comingData.frontRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        front View:
+                        {comingData.frontView ? (
+                            <>
+                                <img
+                                    src={comingData.frontView}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear LH:
+                        {comingData.rearLH ? (
+                            <>
+                                <img
+                                    src={comingData.rearLH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        rear RH:
+                        {comingData.rearRH ? (
+                            <>
+                                <img
+                                    src={comingData.rearRH}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo:
+                        {comingData.MajorDamages1 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages1}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 2:
+                        {comingData.MajorDamages2 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages2}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 3:
+                        {comingData.MajorDamages3 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages3}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 4:
+                        {comingData.MajorDamages4 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages4}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+                    <label className="form-field">
+                        Major Damage Photo 5:
+                        {comingData.MajorDamages5 ? (
+                            <>
+                                <img
+                                    src={comingData.MajorDamages5}
+                                    alt="Chassis Number"
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                />
+
+                            </>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
+                        )}
+                    </label>
+
+                </div>
+            </form>
+
+
+            <form className='Customer-master-form' onSubmit={onSubmit}>
+
+                <div class='header-container'>
+                    <h2 className='bigtitle'>Document Upload - Crane</h2>
+                </div>
+
+                <div className='form-row'>
+                    <label className="form-field">
+                        Vehicle Inspection Remarks:
+                        <textarea
+                            className='inputField form-control'
+                            name="vehicleInspection"
+                            value={formData.vehicleInspection}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.vehicleInspection}
+                        />
+                    </label>
+
+                    <label className="form-field">
+                        Work Estimate :
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="workEstimate"
+                            value={formData.workEstimate}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.workEstimate}
+                        />
+                    </label>
+
+                    <label className="form-field">
+                        Recovery Van Estimate:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="recoveryVanEstimate"
+                            value={formData.recoveryVanEstimate}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.recoveryVanEstimate}
+                        />
+                    </label>
+
+                    <label className="form-field">
+                        Vehicle Handover:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="vehicleHandover"
+                            value={formData.vehicleHandover}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.vehicleHandover}
+                        />
+                    </label>
+                </div>
+
+                <div className='form-row'>
+
+                    <label className="form-field">
+                        Advanced Payment:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="advancedPayment"
+                            value={formData.advancedPayment}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.advancedPayment}
+                        />
+                    </label>
+
+
+                    <label className="form-field">
+                        Vehicle TakeOver:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="vehicleTakeOver"
+                            value={formData.vehicleTakeOver}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.vehicleTakeOver}
+                        />
+                    </label>
+
+                    <label className="form-field">
+                        Balance Payment:
+                        <input
+                            type="text"
+                            className='inputField form-control'
+                            name="balancePayment"
+                            value={formData.balancePayment}
+                            onChange={handleChange}
+                            readOnly={!!existingData?.balancePayment}
+                        />
+                    </label>
+
+                    {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
+                <>
+                    <label className="form-field">
+                        Feedback:
+                        <textarea
+                            name="feedback"
+                            className="inputField form-control"
+                            value={formData.feedback}
+                            onChange={handleChange}
+                            readOnly
+                        />
+                    </label>
+                    {showPopup && (
+                        <div style={{
+                            position: 'fixed',
+                            top: '10px',
+                            right: '10px',
+                            background: 'lightgrey',
+                            width: 'fit-content',
+                            padding: '10px',
+                            borderRadius: '10px',
+                            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                            zIndex: 1000, // Ensure it stays above other elements
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginTop: '120px',
+                            marginRight: "30px",
+                        }}>
+                            <button
+                                onClick={() => setShowPopup(false)}
+                                style={{
+                                    background: 'grey',
+                                    border: 'none',
+                                    fontSize: '16px',
+                                    cursor: 'pointer',
+                                    color: 'white',
+                                    borderRadius: '50%',
+                                    width: '24px',
+                                    height: '24px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'absolute',
+                                    top: '-30px',
+                                    right: '-12px',
+                                }}
+                            >
+                                &times;
+                            </button>
+                            <h3 style={{ margin: '0 20px 0 0' }}>Your Information is not Accepted By the Admin that's why Feedback section is blocked </h3>
+                        </div>
                     )}
-                </label>
-                <label className="form-field">
-                    Cluster Number:
-                    {comingData.ClusterView ? (
-                        <>
-                            <img
-                                src={comingData.ClusterView}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    FrontLH Number:
-                    {comingData.frontLH ? (
-                        <>
-                            <img
-                                src={comingData.frontLH}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
+                </>
+            )}
 
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    frontRH:
-                    {comingData.frontRH ? (
-                        <>
-                            <img
-                                src={comingData.frontRH}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    front View:
-                    {comingData.frontView ? (
-                        <>
-                            <img
-                                src={comingData.frontView}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    rear LH:
-                    {comingData.rearLH ? (
-                        <>
-                            <img
-                                src={comingData.rearLH}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    rear RH:
-                    {comingData.rearRH ? (
-                        <>
-                            <img
-                                src={comingData.rearRH}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    Major Damage Photo:
-                    {comingData.MajorDamages1 ? (
-                        <>
-                            <img
-                                src={comingData.MajorDamages1}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    Major Damage Photo 2:
-                    {comingData.MajorDamages2 ? (
-                        <>
-                            <img
-                                src={comingData.MajorDamages2}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    Major Damage Photo 3:
-                    {comingData.MajorDamages3 ? (
-                        <>
-                            <img
-                                src={comingData.MajorDamages3}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    Major Damage Photo 4:
-                    {comingData.MajorDamages4 ? (
-                        <>
-                            <img
-                                src={comingData.MajorDamages4}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-                <label className="form-field">
-                    Major Damage Photo 5:
-                    {comingData.MajorDamages5 ? (
-                        <>
-                            <img
-                                src={comingData.MajorDamages5}
-                                alt="Chassis Number"
-                                style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                            />
-
-                        </>
-                    ) : (
-                        <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
-                    )}
-                </label>
-
-            </div>
-
-
-            <div class='header-container'>
-                <h2 className='bigtitle'>Document Upload - Craine</h2>
-            </div>
-
-
-            <div className='form-row'>
-                <div>
-                    <p className="form-field">Vehicle Inspection Remarks :</p>
-                    {existingData?.vehicleInspection ? (
-                        <p className='notUploaded1'>Vehicle Inspection is already existed</p>
-                    ) : (
+                    {adminResponse === 'accept' && (
                         <label className="form-field">
+                            Feedback:
                             <textarea
-                                className='inputField form-control'
-                                name="vehicleInspection"
-                                value={formData.vehicleInspection}
+                                name="feedback"
+                                className="inputField form-control"
+                                value={formData.feedback}
                                 onChange={handleChange}
+                                readOnly={!!existingData?.feedback}
                             />
                         </label>
                     )}
                 </div>
 
+                {alertInfo.show && (
+                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                        {alertInfo.message}
+                    </Alert>
+                )}
 
-                <div>
-                    <p className="form-field">work Estimate:</p>
-                    {existingData?.workEstimate ? (
-                        <p className='notUploaded1'>work Estimate is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="workEstimate"
-                        value={formData.workEstimate}
-                        onChange={handleChange}
-                    />
-                </label>)}
-            </div>
-
-            <div>
-            <p className="form-field">Recovery Van Estimate:</p>
-                    {existingData?.recoveryVanEstimate ? (
-                        <p className='notUploaded1'>Recovery Van Estimate is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="recoveryVanEstimate"
-                        value={formData.recoveryVanEstimate}
-                        onChange={handleChange}
-                    />
-                </label>)}
+                <div style={{ textAlign: 'center' }}>
+                    <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+                        Submit
+                    </button>
                 </div>
+            </form>
 
-                <div>
-                <p className="form-field">Vehicle Handover:</p>
-                    {existingData?.vehicleHandover ? (
-                        <p className='notUploaded1'>Vehicle Handover is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="vehicleHandover"
-                        value={formData.vehicleHandover}
-                        onChange={handleChange}
-                    />
-                </label>)}
-                </div>
-            </div>
-
-            <div className='form-row'>
-                <div>
-                <p className="form-field">Advanced Payment:</p>
-                    {existingData?.advancedPayment ? (
-                        <p className='notUploaded1'>Advanced Payment is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="advancedPayment"
-                        value={formData.advancedPayment}
-                        onChange={handleChange}
-                    />
-                </label>)}
-                </div>
-
-                <div>
-                <p className="form-field">Vehicle TakeOver:</p>
-                    {existingData?.vehicleTakeOver ? (
-                        <p className='notUploaded1'>Vehicle TakeOver is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="vehicleTakeOver"
-                        value={formData.vehicleTakeOver}
-                        onChange={handleChange}
-                    />
-                </label>)}
-                </div>
-
-                <div>
-                <p className="form-field">Balance Payment:</p>
-                    {existingData?.balancePayment ? (
-                        <p className='notUploaded1'>Balance Payment is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <input
-                        type="text"
-                        className='inputField form-control'
-                        name="balancePayment"
-                        value={formData.balancePayment}
-                        onChange={handleChange}
-                    />
-                </label>)}
-                </div>
-
-                <div>
-                <p className="form-field">Feedback:</p>
-                    {existingData?.Feedback ? (
-                        <p className='notUploaded1'>Feedback is already existed</p>
-                    ) : (
-                <label className="form-field">
-                    <textarea
-                        className='inputField form-control'
-                        name="feedback"
-                        value={formData.feedback}
-                        onChange={handleChange}
-                    />
-                </label>)}
-                </div>
-            </div>
-            {alertInfo.show && (
-                <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                    {alertInfo.message}
-                </Alert>
-            )}
-
-            <div style={{ textAlign: 'center' }}>
-                <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
-                    Submit
-                </button>
-            </div>
         </div>
     );
 }

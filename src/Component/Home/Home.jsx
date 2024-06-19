@@ -10,6 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import backendUrl from '../../environment';
 import trucks1 from '../../Assets/trucks1.jpg';
 import trucks2 from '../../Assets/trucks2.jpg';
+import onsiterepair from '../../Assets/onsiterepair.jpg';
+import cranefrontpage from '../../Assets/cranefrontpage.jpg';
+import workshopfirstpage from '../../Assets/workshopfirstpage.jpg';
+import advocatefirstpage from '../../Assets/advoatefirstpage.jpeg';
+
 import { Helmet } from 'react-helmet-async';
 
 function Home() {
@@ -25,13 +30,13 @@ function Home() {
 
     return (
         <div className="home-elem-19">
-      <Helmet>
-        <title>Accident Trucks Customer Service - Claimpro</title>
-        <meta name="description" content="Home Page for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/`}/>
+            <Helmet>
+                <title>Accident Trucks Customer Service - Claimpro</title>
+                <meta name="description" content="Home Page for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <link rel='canonical' href={`https://claimpro.in/`} />
 
-      </Helmet>
+            </Helmet>
             <div className="home-elem-14">
                 <div className="home-elem-13">
                     <div className="home-elem-15">
@@ -43,22 +48,22 @@ function Home() {
                         <div className="home-elem-12">
                             <span className="home-elem-8">
                                 {/* <a href="home.html" className="link" target="_self"> */}
-                                    <p style={{cursor:'pointer'}}>Home </p>
+                                <p style={{ cursor: 'pointer' }}>Home </p>
                                 {/* </a> */}
                             </span>
                             <span className="home-elem-9">
                                 {/* <a href="#home-elem-45" className="link" target="_self"> */}
-                                    <p style={{cursor:'pointer'}}>FAQ </p>
+                                <p style={{ cursor: 'pointer' }}>FAQ </p>
                                 {/* </a> */}
                             </span>
                             <span className="home-elem-10">
-                                <span onClick={navigateToContactUs} style={{cursor:'pointer'}} >
+                                <span onClick={navigateToContactUs} style={{ cursor: 'pointer' }} >
                                     <p>Contact Us </p>
-                                    </span>
+                                </span>
                             </span>
                             <span className="home-elem-11">
                                 {/* <a href="#home-elem-80" className="link" target="_self"> */}
-                                    <p style={{cursor:'pointer'}}>Blog </p>
+                                <p style={{ cursor: 'pointer' }}>Blog </p>
                                 {/* </a> */}
                             </span>
                         </div>
@@ -107,7 +112,7 @@ function Home() {
                         <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>
                     </span>
                     <span className="home-elem-26">
-                    <p>BVC ClaimPro Assist is providing services for you. Come and join your business with us and be relaxed.</p>
+                        <p>BVC ClaimPro Assist is providing services for you. Come and join your business with us and be relaxed.</p>
                     </span>
                     <div className="home-elem-27">
                         <button className="home-elem-29" onClick={navigateToContactUs}>
@@ -188,7 +193,7 @@ function Home() {
             <div className="home-elem-59">
                 <div className="home-elem-60">
                     <span className="home-elem-61">
-                        <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/ojmes8dfrcaclb07umz6.jpg" alt="Accident" />
+                        <img src={advocatefirstpage} alt="Accident" />
                     </span>
                 </div>
                 <div className="home-elem-62">
@@ -221,14 +226,14 @@ function Home() {
                 </div>
                 <div className="home-elem-74">
                     <span className="home-elem-73">
-                        <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/oq6r4vmih8vaaszgig16.jpg" alt="Vehicle Repair" />
+                        <img src={onsiterepair} alt="Vehicle Repair" />
                     </span>
                 </div>
             </div>
             <div className="home-elem-72">
                 <div className="home-elem-67">
                     <span className="home-elem-66">
-                        <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/watf987deyzihdxzbcxg.jpg" alt="Cranes" />
+                        <img src={cranefrontpage} alt="Cranes" />
                     </span>
                 </div>
                 <div className="home-elem-71">
@@ -243,6 +248,27 @@ function Home() {
                             <p>Learn More </p>
                         </a>
                     </button>
+                </div>
+            </div>
+            <div className="home-elem-79">
+                <div className="home-elem-78">
+                    <span className="home-elem-75">
+                        <p>Expert Heavy Vehicle Repairs and Maintenance</p>
+                    </span>
+                    <span className="home-elem-76">
+                        <p>From routine maintenance to major overhauls, our skilled technicians are equipped to handle all your heavy vehicle needs with precision and care.</p>
+                    </span>
+
+                    <button className="home-elem-77">
+                        <a href="#home-elem-80" className="link" target="_self">
+                            <p>Find Out More </p>
+                        </a>
+                    </button>
+                </div>
+                <div className="home-elem-74">
+                    <span className="home-elem-73">
+                        <img src={workshopfirstpage} alt="Vehicle Repair" />
+                    </span>
                 </div>
             </div>
             <div className="home-elem-80">
@@ -280,12 +306,12 @@ function Home() {
                             <p>Immediate minor fixes for your vehicle. </p>
                         </span>
                     </div>
-                    <div className="home-elem-107">
-                        <i className="fas fa-award home-elem-104"></i>
-                        <span className="home-elem-105">
+                    <div className="home-elem-95">
+                        <i className="fas fa-award home-elem-92"></i>
+                        <span className="home-elem-93">
                             <p>Transport </p>
                         </span>
-                        <span className="home-elem-106">
+                        <span className="home-elem-94">
                             <p>Safe and secure vehicle transportation is provided. </p>
                         </span>
                     </div>
@@ -298,12 +324,12 @@ function Home() {
                             <p>Guidance for smooth claim settlement process. </p>
                         </span>
                     </div>
-                    <div className="home-elem-99">
-                        <i className="fas fa-check home-elem-96"></i>
-                        <span className="home-elem-97">
+                    <div className="home-elem-95">
+                        <i className="fas fa-check home-elem-92"></i>
+                        <span className="home-elem-93">
                             <p>Workshops </p>
                         </span>
-                        <span className="home-elem-98">
+                        <span className="home-elem-94">
                             <p>Major repairs are conducted at workshops. </p>
                         </span>
                     </div>
@@ -444,12 +470,9 @@ function Home() {
                 <span className="home-elem-169">
                     <p>Join our extended family and experience hassle-free, professional assistance during unwelcomed vehicle accidents.</p>
                 </span>
-                <div className="home-elem-172">
-                    <input type="email" placeholder="Enter your email" className="home-elem-170" required={true} />
-                    <button className="home-elem-171">
+                    <button className="home-elem-171" onClick={navigateToContactUs}>
                         <p>Join Now</p>
                     </button>
-                </div>
             </div>
             <div className="home-elem-188">
                 <div className="home-elem-185">
@@ -480,7 +503,7 @@ function Home() {
                         <span className="home-elem-179">
                             <p>+91 7800 78 4700</p>
                         </span>
-                        <button className="home-elem-175"  onClick={navigateToContactUs}>
+                        <button className="home-elem-175" onClick={navigateToContactUs}>
                             <p>Contact Us</p>
                         </button>
                     </div>

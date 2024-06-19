@@ -22,7 +22,7 @@ import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlin
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 
-const AdvocateDashboard = ({ getData }) => {
+const WorkshopDashboard = ({ getData }) => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [vendorData, setVendorData] = useState([])
     const [gotResponse, setGotResponse] = useState([]);
@@ -133,7 +133,6 @@ const AdvocateDashboard = ({ getData }) => {
 
     const getGotResponseVehicle = async () => {
         try {
-            console.log("userId,userId",userId)
             const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
             setGotResponse(response.data.data);
@@ -151,14 +150,15 @@ const AdvocateDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${userId}`);
-            console.log("Total assignedCasesAdvocate", response.data.data);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${userId}`);
+            console.log("Total assignedTasksMachanic", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {
             console.error("Failed to fetch assigned cases:", error);
         }
     };
 
+    console.log("totalAssignedCases:", totalAssignedCases);
 
     useEffect(() => {
         if (gotResponse.length != 0) {
@@ -229,25 +229,12 @@ const AdvocateDashboard = ({ getData }) => {
         shadowSize: [41, 41]
     });
 
-    // const generateFile = async () => {
-    //     try {
-    //         setIsLoading(true);
-    //         const response = await axios.get(`${backendUrl}/api/getWeeklyReports/${userId}`);
-    //         setGeneratedExcel(response.data.data);
-    //         setIsLoading(false);
-    //         setIsGenerated(true);
-    //     } catch (error) {
-    //         setIsLoading(false);
-    //         console.error(error.message);
-    //     }
-    // };
-
     return (
         <div className="dashboard">
-            <Helmet>
-                <title>Advocate Dashboard - Claimpro</title>
+            <Helmet>a
+                <title>Workshop Dashboard - Claimpro</title>
                 <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Mechanic Dashboard." />
-                <meta name="keywords" content="Mechanic Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
+                <meta name="keywords" content="Workshop Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
                 <link rel='canonical' href={`https://claimpro.in/MachanicDashboard`} />
             </Helmet>
 
@@ -360,4 +347,4 @@ const AdvocateDashboard = ({ getData }) => {
 
 }
 
-export default AdvocateDashboard;
+export default WorkshopDashboard;

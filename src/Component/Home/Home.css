@@ -1949,14 +1949,15 @@ span {
 .home-elem-107 {
     padding: 30px 20px 30px 20px;
     flex-direction: column;
-    background-color: #ffffffff;
+    background-color: #0e4823ff;
     border-radius: 14px 14px 14px 14px;
     height: auto;
     width: 100%;
     display: flex;
     margin-right: NaNpx;
     max-width: 385px;
-    position: relative
+    position: relative;
+    color:white
 }
 
 .home-elem-104 {

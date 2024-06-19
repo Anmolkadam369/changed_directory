@@ -68,7 +68,7 @@ const ViewVehicleInfo = () => {
     const handleResize = () => {
       if (window.innerWidth <= 630) {
 
-        setWidth('45%');
+        setWidth('55%');
       } else {
 
         setWidth('100%');

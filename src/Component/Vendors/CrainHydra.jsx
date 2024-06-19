@@ -27,6 +27,12 @@ import backendUrl from '../../environment';
 import claimproassist from '../../Assets/claimproassist.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
+import userImg from "../../Assets/userImg.jpg";
+import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
+import CraneDashboard from './CraneDashboard';
+
 
 const CrainHydra = () => {
 
@@ -68,6 +74,8 @@ const CrainHydra = () => {
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const dropdownRef = useRef(null);
+    const [userImage, setUserImage] = useState(true);
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
@@ -77,7 +85,34 @@ const CrainHydra = () => {
         setModalOpen(false);
     };
 
+    const handleFullScreenToggle = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    };
+
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowUserId(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showUserId) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showUserId]);
+
     const handleCancelSignOut = () => { setModalOpen(false) };
+
     useEffect(() => {
         console.log("token", token, userId);
         if (token === "" || userId === "") {
@@ -169,14 +204,18 @@ const CrainHydra = () => {
                             setShowCustomerOptions(!showCustomerOptions)
                             setStartingPage(true); // Hide Starting Page
                             setMyAccidentVehicle(false)
-                        }}>Dashboard</li>
+                        }}>
+                            <SpaceDashboardIcon className="icon" />
+                            Dashboard</li>
                         <ul>
                             <li onClick={(e) => {
                                 setShowReportsOptions(!showReportsOptions)
                                 setStartingPage(false);
                                 setMyAccidentVehicle(true);
                                 e.stopPropagation();
-                            }}>Reports
+                            }}>
+                                <SummarizeOutlinedIcon className="icon" />
+                                Reports
                                 {showReportsOptions && (
                                     <ul className='submenu' >
 
@@ -201,109 +240,68 @@ const CrainHydra = () => {
             )}
             <div className="admin-page">
                 <main className="content" style={{ marginLeft: '0px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', marginRight: '30px', marginTop: '50px', position: 'relative' }}>
-                        <div>
-                            <FaUserCircle size={30} style={{ cursor: 'pointer', marginRight: '10px', marginLeft: '10px' }}
-                                onClick={() => setShowUserId(!showUserId)} />
-                            {showUserId && (
-                                <div style={{
-                                    position: 'absolute', // Makes the div float
-                                    top: '50px', // Adjust this value to position it properly below the trigger element
-                                    right: '0',
-                                    width: '200px', // Set a fixed width for better control
-                                    padding: '15px',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Slightly larger shadow for better separation
-                                    backgroundColor: '#fff',
-                                    borderRadius: '8px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-                                    zIndex: 1000
-                                }}>
-                                    <div style={{
-                                        marginBottom: '10px',
-                                        fontSize: '16px',
-                                        fontWeight: 'bold',
-                                        color: '#333'
-                                    }}>
-                                        User Information
-                                    </div>
-                                    <span style={{
-                                        fontSize: '14px',
-                                        color: '#555',
-                                        marginBottom: '10px'
-                                    }}>
-                                        User Name: {getData.vendorName} <br />
-                                        User Id: {getData.id}
-                                    </span>
-                                    <button
-                                        onClick={handleSignOutClick}
-                                        style={{
-                                            padding: '10px 20px',
-                                            fontSize: '14px',
-                                            color: '#fff',
-                                            backgroundColor: '#007bff',
-                                            border: 'none',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer',
-                                            outline: 'none',
-                                            width: '100%',
-                                            textAlign: 'center'
-                                        }}>
-                                        Sign Out
-                                    </button>
-                                    <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
-                                </div>
+                <div className='first-container'>
+                    <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                    {getData.vendorName}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px',marginBottom: '0px' }} />
+                    <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+                            {userImage ? (
+                                <img
+                                    src={userImg}
+                                    alt="User"
+                                    style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                                />
+                            ) : (
+                                <FaUserCircle size={30} />
                             )}
                         </div>
+                        {showUserId && (
+                            <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
+                                <div style={{
+                                    marginBottom: '10px',
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    color: '#333',
+                                    marginTop: "15px"
+                                }}>
+                                    User Information
+                                </div>
+                                <span style={{
+                                    fontSize: '14px',
+                                    color: '#555',
+                                    marginBottom: '10px'
+                                }}>
+                                    User Name: {getData.vendorName} <br />
+                                    User Id: {getData.id}
+                                </span>
+                                <button
+                                    onClick={handleSignOutClick}
+                                    style={{
+                                        padding: '10px 20px',
+                                        fontSize: '14px',
+                                        color: '#fff',
+                                        backgroundColor: '#007bff',
+                                        border: 'none',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer',
+                                        outline: 'none',
+                                        width: '100%',
+                                        textAlign: 'center',
+                                        marginTop: "15px",
+                                    }}>
+                                    Sign Out
+                                </button>
+                            </div>
+                        )}
                     </div>
-
+                </div>
+                <hr />
 
                     {
                         startingPage &&
-                        <div>
-                            <div style={{
-                                textAlign: 'center',
-                                backgroundColor: '#4CAF50', // Choose your color
-                                color: 'white', // Choose text color
-                                padding: '20px 0', // Vertical padding and no horizontal padding
-                                marginBottom: '30px', // Space below the header
-                            }}>
-                                <h1 style={{ fontSize: "170%" }}>User - {getData.vendorName} </h1>
-
-                            </div>
-
-                            <h2 className='heading-box'>
-                                Clients Details
-                            </h2>
-
-                            <section className="dashboard-summary">
-                                <div className="summary-item">
-                                    <h2>4</h2>
-                                    <p> Pending Tasks</p>
-                                </div>
-                                <div className="summary-item">
-                                    <h2>10</h2>
-                                    <p>Resolved Task</p>
-                                </div>
-                                <div className="summary-item">
-                                    <h2>100</h2>
-                                    <p>Tasks Done With Organization</p>
-                                </div>
-
-                            </section>
-
-                            <section className="charts-section">
-                                <div className="chart-container">
-                                    <h2>Cases Details</h2>
-                                    <PieChartComponent chartData={vendorData} chartLabels={vendorLabels} />
-                                </div>
-                                <div className="chart-container">
-                                    <h2>Customer Details</h2>
-                                    <PieChartComponent chartData={customerData} chartLabels={customerLabels} />
-                                </div>
-                            </section>
-                        </div>
+                        <CraneDashboard/>
                     }
 
                     {

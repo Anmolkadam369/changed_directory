@@ -44,6 +44,7 @@ import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import userImg from "../../Assets/userImg.jpg";
+import CustomerEnquiry from '../CustomerEnquiry/CustomerEnquiry';
 
 
 const Admin = () => {
@@ -78,6 +79,7 @@ const Admin = () => {
     const [vendorResponsing, setVendorResponsing] = useState(false);
     const [showEmployeeView, setShowEmployeeView] = useState(false);
     const [visitorForm, setVisitorForm] = useState(false);
+    const [customerEnquiryForm, setCustomerEnquiryForm] = useState(false);
     const [showVisitorForm, setShowVisitorForm] = useState(false);
     const dropdownRef = useRef(null);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -96,6 +98,7 @@ const Admin = () => {
         setShowAddEmployee(false)
         setShowEmployeeView(false);
         setVisitorForm(false);
+        setCustomerEnquiryForm(false)
     };
 
     const vendorData = [10, 5, 15, 20];
@@ -106,8 +109,8 @@ const Admin = () => {
 
     // const token = useRecoilValue(tokenState);
     // const userId = useRecoilValue(userIdState);
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -270,11 +273,21 @@ const Admin = () => {
 
 
     const findUserById = async (id) => {
-        console.log("HEY", `${backendUrl}/api/findById/${id}`)
-        const response = await axios.get(`${backendUrl}/api/findById/${id}`);
-        console.log("daa", response.data)
-        console.log("data", response.data.data[0]);
-        setGetData(response.data.data[0])
+        try {
+            console.log("HEY", `${backendUrl}/api/findById/${id}`)
+            let response = await axios.get(`${backendUrl}/api/findById/${id}`);
+            console.log("daa", response.data)
+            if (response.data.message == "No user found") {
+                response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
+            }
+            console.log("daa2", response.data)
+
+            console.log("data", response.data.data[0]);
+            setGetData(response.data.data[0])
+        }
+        catch (error) {
+            console.log("error", error.message)
+        }
     }
 
     function toggleSidebar() {
@@ -315,6 +328,11 @@ const Admin = () => {
         }
     };
 
+    const showDashboard = () => {
+        resetStates()
+        startingPage(true);
+    }
+
 
 
     return (
@@ -331,7 +349,14 @@ const Admin = () => {
                         <div className="close-btn" onClick={toggleSidebar}>×</div>
                     )}
                     <ul>
-                        <img src={claimproassist} alt="Dashboard Icon" className='company-img' />
+                        <img src={claimproassist}
+                            onClick={() => {
+                                setShowCustomerOptions(!showCustomerOptions);
+                                resetStates();
+                                setStartingPage(true);
+                            }}
+                            alt="Dashboard Icon" className='company-img' style={{ cursor: 'pointer' }} />
+
                         <li className='li-class' onClick={() => {
                             setShowCustomerOptions(!showCustomerOptions);
                             resetStates();
@@ -499,7 +524,7 @@ const Admin = () => {
                                 setVisitorForm(true);
                             }}>
                                 <HailIcon className="icon" />
-                                Visitor's Form
+                                Other Form
                                 {showVisitorForm && (
                                     <div className='submenu'>
                                         <li onClick={(e) => {
@@ -507,9 +532,15 @@ const Admin = () => {
                                             resetStates();
                                             setVisitorForm(true);
                                         }}>
-
                                             <HailIcon className="icon" />
                                             Visitor Form</li>
+                                        <li onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetStates();
+                                            setCustomerEnquiryForm(true);
+                                        }}>
+                                            <HailIcon className="icon" />
+                                            Customer Enquiry</li>
                                     </div>
                                 )}
                             </li>
@@ -530,7 +561,15 @@ const Admin = () => {
             <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
                 <div className='first-container'>
                     <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
-                        Administration
+                        {getData.randomId && (
+                            "Administration"
+                        )}
+                        {getData.department === "Management" && (
+                            "Management"
+                        )}
+                        {getData.department === "IT" && (
+                            "IT"
+                        )}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <label className="form-field search-field" style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '30px', marginBottom: '0px' }}>
@@ -549,7 +588,7 @@ const Admin = () => {
                         </label> 
 
                          <DarkModeOutlinedIcon className="icon2" style={{ cursor: 'pointer', marginRight: '30px', marginBottom: '0px' }} /> */}
-                        <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px',marginBottom: '0px' }} />
+                        <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
                         <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
                             {userImage ? (
                                 <img
@@ -577,8 +616,8 @@ const Admin = () => {
                                     color: '#555',
                                     marginBottom: '10px'
                                 }}>
-                                    User Name: {getData.username} <br />
-                                    User Id: {getData.randomId}
+                                    User Name: {getData.username || getData.name} <br />
+                                    User Id: {getData.randomId || getData.id}
                                 </span>
                                 <button
                                     onClick={handleSignOutClick}
@@ -597,12 +636,12 @@ const Admin = () => {
                                     }}>
                                     Sign Out
                                 </button>
-                                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
                             </div>
                         )}
                     </div>
                 </div>
                 <hr />
+                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
 
 
                 {
@@ -626,6 +665,11 @@ const Admin = () => {
                 {
                     visitorForm &&
                     <Visitors />
+                }
+
+                {
+                    customerEnquiryForm &&
+                    <CustomerEnquiry />
                 }
 
                 {

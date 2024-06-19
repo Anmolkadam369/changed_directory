@@ -18,6 +18,37 @@
   font-size: 1.5rem;
   color: #0d0101;
 }
+.see-list {
+  display: none;
+  text-decoration: underline !important;
+  text-underline-offset: 2px; /* Adjust this value as needed for more space */
+  font-size: 12px;
+  /* color: blue; */
+  cursor: pointer;
+}
+.stat-item:hover .see-list {
+  display: inline;
+}
+
+@media (max-width: 600px) {
+  .stat-item p {
+      margin-bottom: 20px; /* Adjust this value as needed */
+  }
+
+  .stat-item {
+      padding-bottom: 50px; /* Adjust this value as needed */
+  }
+}
+
+@media (max-width: 450px) {
+  .stat-item p {
+      margin-bottom: 50px; /* Adjust this value as needed */
+  }
+
+  .stat-item {
+      padding-bottom: 70px; /* Adjust this value as needed */
+  }
+}
 
 .main-content {
   padding-left: 2rem;
@@ -77,6 +108,8 @@
   min-width: 120px;
   transition: transform 0.3s, box-shadow 0.3s;
 }
+
+
 
 .stat-item:hover {
   transform: scale(1.05);
@@ -308,7 +341,7 @@
 }
 
 .stat-item {
-    width: 60%;
+    width: 100%;
     margin-bottom: 1rem;
     margin-left: 10px;
 }
@@ -320,7 +353,7 @@
 
 .chart-item {
   padding: 1rem;
-  width: 60%;
+  width: 100%;
   min-width: unset;
 }
 

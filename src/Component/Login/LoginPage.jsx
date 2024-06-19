@@ -85,7 +85,7 @@ const Login = () => {
 
         setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
 
-        if (response.data.data.username === "admin" || response.data.data.username === "admin2") {
+        if (response.data.data.username === "admin" ||response.data.data.department === "IT" || response.data.data.department === "Management") {
           navigate("../Admin");
         } else if (response.data.data.vendorType === "advocate") {
           navigate("../advocateDashboard");
@@ -93,9 +93,13 @@ const Login = () => {
           navigate("../MachanicDashboard");
         } else if (response.data.data.vendorType === "crain") {
           navigate("../CrainDashboard");
-        } else if (response.data.data.vendorType === "workshop") {
-          navigate("../WorkshopDashboard");
-        } else {
+        } else if (response.data.data.department === "Administration") {
+          navigate("../Administration");
+        } else if (response.data.data.department === "Sales") {
+          navigate("../Salesteam");
+        }
+        // if (response.data.data.type === "advocate") navigate("../advocateDashboard");
+        else {
           navigate('../userDashboard');
         }
       }
@@ -201,7 +205,7 @@ const Login = () => {
     display: "flex",
     alignItems: "center",
   };
-  
+
   const labelStyle2 = {
     marginLeft: "8px", // Adjust the spacing between checkbox and label
   };
@@ -212,7 +216,7 @@ const Login = () => {
         <title>BVC claimPro assist Login - Claimpro</title>
         <meta name="description" content="login for BVC ClaimPro Assist." />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/LoginPage`}/>
+        <link rel='canonical' href={`https://claimpro.in/LoginPage`} />
       </Helmet>
       <div className="slide-in" style={loginContainerStyle}>
         <div style={headerContainerStyle}>
@@ -253,14 +257,14 @@ const Login = () => {
             />
           </div>
           <div style={remembermecontainer}>
-      <Checkbox
-        checked={rememberMe}
-        onChange={handleRememberMeChange}
-        name="rememberMe"
-        color="primary"
-      />
-      <span style={labelStyle2}>Remember Me</span>
-    </div>
+            <Checkbox
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+              name="rememberMe"
+              color="primary"
+            />
+            <span style={labelStyle2}>Remember Me</span>
+          </div>
           {alertInfo.show && (
             <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
               {alertInfo.message}

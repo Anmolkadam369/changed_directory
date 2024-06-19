@@ -56,7 +56,7 @@ const AccidentVehicle = () => {
       if (window.innerWidth <= 630) {
         setMarginLeft('0px');
         setPaddingLeft('5px');
-        setWidth('60%');
+        setWidth('70%');
       } else {
         setMarginLeft('30px');
         setPaddingLeft('30px');
