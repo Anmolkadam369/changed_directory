@@ -12,6 +12,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import demoexcel from '../../Assets/demoexcel.png'
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
+import Switch from '@mui/material/Switch';
+import Button from '@mui/material/Button';
 
 
 const config = {
@@ -31,6 +33,17 @@ const CustomerMaster = () => {
   const [selectedState, setSelectedState] = useState('');
   const [isLoadingStates, setIsLoadingStates] = useState(true);
   const [isLoadingCities, setIsLoadingCities] = useState(true);
+  const [singleCustomer, setSingleCustomer] = useState(true);
+  const [isZoomed1, setIsZoomed1] = useState(false);
+  const [isZoomed2, setIsZoomed2] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  
+  const handleSwitchChange = (event) => {
+    setSingleCustomer(event.target.checked);
+  };
+
 
   useEffect(() => {
     loadStates();
@@ -72,6 +85,40 @@ const CustomerMaster = () => {
       });
   };
 
+
+const getLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, showError);
+  } else {
+    setLocation("Geolocation is not supported by this browser.");
+  }
+};
+
+const showPosition = (position) => {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+  setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
+  setLatitude(lat);
+  setLongitude(lon);
+};
+
+const showError = (error) => {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      setLocation("User denied the request for Geolocation.");
+      break;
+    case error.POSITION_UNAVAILABLE:
+      setLocation("Location information is unavailable.");
+      break;
+    case error.TIMEOUT:
+      setLocation("The request to get user location timed out.");
+      break;
+    case error.UNKNOWN_ERROR:
+      setLocation("An unknown error occurred.");
+      break;
+  }
+};
+
   const today = new Date().toISOString().split('T')[0];
   const [isRetail, setIsRetail] = useState(false);
   const [isFleetOwner, setIsFleetOwner] = useState(false);
@@ -103,6 +150,10 @@ const CustomerMaster = () => {
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "", year: "", type: "", application: "", GVW: "", ULW: "", InsuranceName: "", choosenPlan: ""
   });
 
+  const [otherFormData, setOtherFormData] = useState({
+    customersInfo: ''
+  })
+  console.log("otherformdata", otherFormData)
   console.log("FORMDATA", formData)
 
   const handleSelect = (event, value) => {
@@ -116,11 +167,14 @@ const CustomerMaster = () => {
 
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const toggleZoom = () => setIsZoomed(!isZoomed);
+  const toggleZoom1 = () => setIsZoomed1(!isZoomed1);
+  const toggleZoom2 = () => setIsZoomed2(!isZoomed2);
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
   const adharCardRef = useRef(null);
   const fleetSizeRef = useRef(null);
+  const customersInfoRef = useRef(null);
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(formData)) {
@@ -272,6 +326,17 @@ const CustomerMaster = () => {
         }
       }
     }
+
+    console.log("latitude", latitude, "longitiude", longitude, "location", location)
+    if (latitude === "" || longitude === "" || location === "Geolocation is not supported by this browser.") {
+      setAlertInfo({ show: true, message: "Please Give latitude and Longitude", severity: 'error' });
+      setIsLoading(false);
+      return;
+    }
+
+    formDataObj.append('latitude', latitude);
+    formDataObj.append('longitude', longitude);
+
     for (let pair of formDataObj.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
@@ -295,6 +360,67 @@ const CustomerMaster = () => {
       setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
     }
   };
+
+
+  const handleExcelSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+    setIsLoading(true); // Start loading
+    const formDataObj = new FormData();
+    for (const key in otherFormData) {
+      if (otherFormData[key]) {
+          formDataObj.append(key, otherFormData[key], otherFormData[key].name);
+      }
+    }
+
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${backendUrl}/api/customerInfoExcel/${userId}`,
+        data: formDataObj,
+        headers: {
+          'Authorization': token
+        }
+      });
+      setIsLoading(false);
+      setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+      setTimeout(() => {
+        navigate("../Admin");
+      }, 2000);
+    } catch (error) {
+      const errorMessage = error.response?.data || 'An error occurred';
+      setIsLoading(false);
+      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+    }
+
+  }
+
+
+  const handleExcelChange = (e) => {
+    const { name, files } = e.target;
+    if (name === 'customersInfo') {
+      if (files[0].type !== 'application/vnd.ms-excel' && files[0].type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        setAlertInfo({ show: true, message: "should be only excel file!!!", severity: 'error' });
+        const refs = {
+          customersInfo: customersInfoRef
+        }
+        if (refs[name] && refs[name].current) {
+          refs[name].current.value = "";
+        }
+        setOtherFormData(prevState => ({
+          ...prevState,
+          [name]: ''
+        }));
+        return;
+      }
+
+      setOtherFormData(prevState => ({
+        ...prevState,
+        [name]: files[0]
+      }));
+    }
+  };
+
+
   return (
     <div>
       <Helmet>
@@ -303,7 +429,101 @@ const CustomerMaster = () => {
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
         <link rel='canonical' href={`https://claimpro.in/CustomerMaster`}/>
       </Helmet>
-      <form onSubmit={handleSubmit} className="Customer-master-form">
+
+      <div className="switch-container">
+        <p></p>
+        <Switch
+          checked={singleCustomer}
+          onChange={handleSwitchChange}
+          color="primary"
+          inputProps={{ 'aria-label': 'single vendor switch' }}
+        />
+      </div>
+
+
+      {!singleCustomer && (
+        <form onSubmit={handleExcelSubmit} className="Customer-master-form">
+          <div className="selected-container">
+            <div class="header-container">
+              <h3 class="bigtitle">Customer Excel File</h3>
+              <span class="mandatory-note">All fields are mandatory</span>
+            </div>
+            <div className='form-row'>
+              <label className="form-field">
+                Customer's Data : (only Excel files should be inserted)
+                <input
+                  type='file'
+                  name="customersInfo"
+                  ref={customersInfoRef}
+                  onChange={handleExcelChange}
+                  className="form-control"
+                  required />
+              </label>
+              <div className={isZoomed1 ? "overlay" : ""}>
+                <label className="form-field" onClick={toggleZoom1}>
+                  have a look how structure looks :
+                  <img
+                    // src={vendorInfo1}
+                    alt="Dashboard Icon"
+                    style={{
+                      height: isZoomed1 ? '90%' : '45px',
+                      width: isZoomed1 ? '90%' : '80%',
+                      marginRight: '8px',
+                      marginLeft: "8px",
+                      transition: 'transform 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </label>
+              </div>
+
+              <div className={isZoomed2 ? 'overlay' : ''}>
+                <label className="form-field" onClick={toggleZoom2}>
+                  have a look how structure looks for Rest of the Part :
+                  <img
+                    // src={vendorInfo2}
+                    alt="Dashboard Icon"
+                    style={{
+                      height: isZoomed2 ? '90%' : '45px',
+                      width: isZoomed2 ? '90%' : '80%',
+                      marginRight: '8px',
+                      marginLeft: "8px",
+                      transition: 'transform 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </label>
+              </div>
+
+
+            </div>
+          </div>
+
+          {alertInfo.show && (
+            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+              {alertInfo.message}
+            </Alert>
+          )}
+
+          <div style={{ textAlign: 'center', marginTop:'30px' }}>
+            <button type="submit"
+              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              disabled={isLoading} // Disable button while loading
+            >
+              {isLoading ? 'Submitting...' : 'Submit'}
+            </button>
+            {isLoading && (
+              <div style={{ marginTop: '10px' }}>
+                <ClipLoader color="#4CAF50" loading={isLoading} />
+                <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+              </div>
+            )}
+          </div>
+        </form>
+      )}
+
+      {singleCustomer && (
+        <form onSubmit={handleSubmit} className="Customer-master-form">
 
         <div class="header-container">
           <h3 class="bigtitle">Customer Master</h3>
@@ -578,6 +798,14 @@ const CustomerMaster = () => {
             </ul>
           </div>
         </div>
+
+        <div className='form-row'>
+            <label className='form-field'>
+              <Button variant="contained" onClick={getLocation}>Send Location</Button>
+            </label>
+          </div>
+          {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
+
         <div>
 
           {isFleetOwner && (
@@ -776,6 +1004,7 @@ const CustomerMaster = () => {
         )}
       </div>
       </form>
+    )}
     </div>
   );
 };

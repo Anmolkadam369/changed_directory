@@ -32,8 +32,8 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = useRecoilValue(tokenState);
+    const userId = useRecoilValue(userIdState);
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -783,7 +783,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
             </Helmet>
 
             {/* <form>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Date & Time:
                         <input
@@ -833,7 +833,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Accident Place - City:
                         <select
@@ -875,7 +875,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 <hr />
                 <h2 className='heading-box'>Insurance Details</h2>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Insured By:
                         <input
@@ -924,7 +924,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 </div>
                 <hr />
                 <h2 className='heading-box'>Driver Details</h2>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Driver Name:
                         <input
@@ -972,7 +972,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 </div>
                 <hr />
                 <h2 className='heading-box'>Police Reports</h2>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Police Station:
                         <input
@@ -1020,7 +1020,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Advocate Name:
                         <input
@@ -1071,7 +1071,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 </div>
                 <hr />
                 <h2 className='heading-box'>Surveyor Details</h2>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Spot Surveyor Name:
                         <input
@@ -1121,7 +1121,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Material Surveyor Name:
                         <input
@@ -1171,7 +1171,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Final Surveyor Name:
                         <input
@@ -1221,7 +1221,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Investigator Name:
                         <input
@@ -1272,7 +1272,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 </div>
                 <hr />
                 <h2 className='heading-box'>Action Details</h2>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Company Representative Name:
                         <input
@@ -1323,7 +1323,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Material Transshiped in Vehicle No:
                         <input
@@ -1373,7 +1373,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
                 <h2 className='heading-box'>Operational Details</h2>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Deadline Date:
                         <input
@@ -1427,7 +1427,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 <h2 className='heading-box'>Analyses</h2>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Total Days From Accident:
                         <input
@@ -1467,7 +1467,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 </div>
 
                 <h2 className='heading-box'>Docket Information</h2>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Docket Name:
                         <input
@@ -1517,7 +1517,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Consignor Name:
                         <input
@@ -1567,7 +1567,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Material:
                         <input
@@ -3390,18 +3390,18 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
                 <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
-                    <Button startIcon={<ArrowBackIcon />}  style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
                     <div class='header-container'>
                         <h2 className='bigtitle'>Accident Details</h2>
                         <span class="mandatory-note">All fields are mandatory</span>
                     </div>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Accident File No:
                         <input
-                            className='inputField form-control'
+                            className='inputField'
                             type="text"
                             name="accidentFileNo"
                             value={accidentData.accidentFileNo}
@@ -3412,7 +3412,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <label className="form-field">
                         Date & Time:
                         <input
-                            className='inputField form-control'
+                            className='inputField'
                             type="text"
                             name="dateTime"
                             value={accidentData.dateTime}
@@ -3425,7 +3425,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <label className="form-field">
                         System Generated - Vehicle No.:
                         <input
-                            className='inputField form-control'
+                            className='inputField'
                             type="text"
                             name="systemGenerated"
                             value="System Generated"
@@ -3436,20 +3436,18 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <label className="form-field">
                         Time (Railway):
                         <input
-                            className='inputField form-control'
+                            className='inputField'
                             type="text"
                             name="railwayTime"
                             value={accidentData.railwayTime}
                             onChange={handleChange}
                             placeholder='Time'
                             readOnly={IsReadOnly}
-
                         />
                     </label>
-
-
                 </div>
-                <div className="form-row">
+
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Accident Place - State:
                         <select
@@ -3511,7 +3509,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <h2 className='bigtitle'>Insurance Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Insured By:
                         <input
@@ -3593,7 +3591,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <h2 className='bigtitle'>Driver Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Driver Name:
                         <input
@@ -3645,7 +3643,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <h2 className='bigtitle'>Police Reports</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Police Station:
                         <input
@@ -3719,7 +3717,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
 
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Advocate's Name :
                         <input
@@ -3814,7 +3812,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <h2 className='bigtitle'>Surveyor Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Spot Surveyor Name:
                         <input
@@ -3867,7 +3865,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                     <label className="form-field"></label>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Material Surveyor Name:
                         <input
@@ -3924,7 +3922,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <label className="form-field"></label>
 
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Final Surveyor Name:
                         <input
@@ -3981,7 +3979,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     </label>
                     <label className="form-field"></label>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Investigator Name:
                         <input
@@ -4042,7 +4040,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <h2 className='bigtitle'>Action Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Company Representative Name:
                         <input
@@ -4124,21 +4122,9 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                         />
                     </label>
-
-                    <label className="form-field">
-                        Material Transshiped in Vehicle No:
-                        <input
-                            className='inputField form-control'
-                            name="transshippedVehicleNo"
-                            value={accidentData.transshippedVehicleNo}
-                            onChange={handleChange}
-                            readOnly={IsReadOnly}
-
-                        />
-                    </label>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Vehicle Transshiped Date:
                         <input
@@ -4226,11 +4212,29 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 </div>
 
+                <div className="form-row" style={{ gap: '0px' }}>
+                    <label className="form-field">
+                        Material Transshiped in Vehicle No:
+                        <input
+                            className='inputField form-control'
+                            name="transshippedVehicleNo"
+                            value={accidentData.transshippedVehicleNo}
+                            onChange={handleChange}
+                            readOnly={IsReadOnly}
+
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+
+                </div>
+
                 <div class='header-container'>
                     <h2 className='bigtitle'>Operational Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Deadline Date:
                         <input
@@ -4299,7 +4303,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Total Days From Accident:
                         <input
@@ -4340,7 +4344,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                     <h2 className='bigtitle'>Docket Information</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Docket Name:
                         <input
@@ -4395,7 +4399,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Consignor Name:
                         <input
@@ -4452,7 +4456,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Material:
                         <input
@@ -4779,6 +4783,11 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
+
+
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -4868,11 +4877,6 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-
-                </div>
-
-                <div className='form-row'>
-
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5049,6 +5053,9 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5225,10 +5232,6 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-
-                </div>
-
-                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5316,6 +5319,9 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5581,7 +5587,6 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-
                 </div>
 
 
@@ -5851,6 +5856,9 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -5940,10 +5948,6 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
-
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -6120,6 +6124,9 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -6297,9 +6304,6 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -6388,6 +6392,9 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className='form-row'>
                     <div className='form-field'>
                         <div>
                             <div className="form-row radio-group inputField">
@@ -6651,7 +6658,6 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'></div>
                 </div>
 
                 {alertInfo.show && (

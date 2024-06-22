@@ -432,7 +432,7 @@ const Dashboard = () => {
 
                                 <div className="stat-item">
                                     <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
-                                    <h3>Remaining Vehicles</h3>
+                                    <h3>Remaining Vehicles To Assign</h3>
                                     <p>{remainingAssignedVendors.length}</p>
                                     {(getData.randomId || getData.department ==="Management" || getData.department === "IT") && (
                                     <h6 onClick={accidentInfo} className="see-list">see remaining vehicle</h6>
@@ -550,7 +550,7 @@ const Dashboard = () => {
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             />
-                            <Marker position={[19.0760, 72.8777]} icon={markerIcon}>
+                            <Marker position={[19.244484, 72.9814762]} icon={markerIcon}>
                                 <Popup>
                                     Mumbai
                                 </Popup>

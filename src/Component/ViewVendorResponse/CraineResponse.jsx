@@ -426,6 +426,15 @@ function CraineResponse({ data, onUpdate }) {
                 </div>
             <div class="header-container">
                 <h3 class="bigtitle">Data Uploaded by Craine Manager</h3>
+                <h5 style={{
+                                color: 'green',
+                                // fontStyle: 'italic',
+                                fontSize: '15px',
+                                marginLeft:'20px',
+                                marginTop:"10px",
+                                textAlign: 'center'
+                                
+                            }}>Last Updated On : {formData.updateResponseOn ? formData.updateResponseOn : formData.firstResponseOn}</h5>
             </div>
             <div className='form-row'>
                 {/* Ensure correct name attribute values are used */}

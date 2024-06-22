@@ -43,6 +43,9 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
   const [isAdharModalOpen, setIsAdharModalOpen] = useState(false);
   const [isGSTModalOpen, setIsGSTModalOpen] = useState(false);
 
+  const [locations, setLocation] = useState(null);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
 
   useEffect(() => {
     loadStates();
@@ -113,7 +116,6 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     if (comingData) {
       setFormData(prevFormData => ({
         ...prevFormData,
-        // systemDate:comingData.systemDate || "",
         CustomerCode: comingData.CustomerCode || "",
         CustomerName: comingData.CustomerName || "",
         CustomerType: comingData.CustomerType || "",
@@ -146,7 +148,9 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         InsuranceName: comingData.InsuranceName || "",
         GSTNo: comingData.GSTNo || "",
         GST: comingData.GST || "",
-        fleetSize: comingData.fleetSize || ""
+        fleetSize: comingData.fleetSize || "",
+        longitude : comingData.longitude || "",
+        latitude : comingData.latitude || ""
       }));
     }
   }, [comingData]);
@@ -183,7 +187,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     GSTNo: "",
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "",
     year: "", type: "", application: "", GVW: "", ULW: "",
-    InsuranceName: ""
+    InsuranceName: "",
+    longitude:'', latitude:""
   });
 
   const GSTRef = useRef(null);
@@ -242,6 +247,39 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
     return ''; // If all checks pass, return an empty string
   };
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setLocation("Geolocation is not supported by this browser.");
+    }
+  };
+  const showPosition = (position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
+    setLatitude(lat);
+    setLongitude(lon);
+  };
+
+  const showError = (error) => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setLocation("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setLocation("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        setLocation("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        setLocation("An unknown error occurred.");
+        break;
+    }
+  };
+
 
   const handleChange = (e) => {
     const { name, type, files, value } = e.target;
@@ -361,6 +399,13 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           formDataObj.append(key, formData[key]);
         }
       }
+    }
+
+    console.log("latitude", latitude, "longitiude", longitude, "location", location)
+    if (latitude === "" || longitude === "" || location === "Geolocation is not supported by this browser.") {
+      setAlertInfo({ show: true, message: "Please Give latitude and Longitude", severity: 'error' });
+      setIsLoading(false);
+      return;
     }
 
     for (let pair of formDataObj.entries()) {
@@ -733,6 +778,32 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
               />
             )}
           </label>
+
+        </div>
+
+        <div className='form-row'>
+
+        <label className='form-field'>
+            {IsReadOnly ? (
+              formData.longitude == "" ? (
+                <p className='notUploaded'>No Location Uploaded</p>
+              ) : (
+                <>
+                  <Button variant="contained" onClick={getLocation}>Send Location</Button>
+                </>
+              )
+            ) : (
+              <>
+                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+                {locations && (
+                  locations.startsWith("Error:") ?
+                    <Alert severity="error">{locations}</Alert> :
+                    <Alert severity="success">{locations}</Alert>
+                )}
+              </>
+            )}
+          </label>
+
           <label className="form-field">
             {IsReadOnly ? (
               <div>
@@ -750,19 +821,16 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
               </div>
             ) : null}
           </label>
-        </div>
-
-        <div className='form-row'>
 
           {formData.fleetSize && (
             <label className="form-field">
               {IsReadOnly ? (
                 <div>
-                  {formData.fleetSize ? (
+                  {formData.fleetSize !== "No fleetSize" ? (
                     <>
                       {/* <img src={formData.fleetSize} style={{ maxWidth: '100px', display: 'block' }} /> */}
+                      Download Fleet-size
                       <p style={{ fontWeight: 'bold', marginTop: "20px" }}>
-                        Download Fleet-size
                         <a href={formData.fleetSize} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
                           Download
                         </a>
@@ -774,8 +842,9 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                 </div>
               ) : null}
             </label>)}
-          <label className="form-field"></label>
-          <label className="form-field"></label>
+
+
+
           <label className="form-field"></label>
         </div>
 

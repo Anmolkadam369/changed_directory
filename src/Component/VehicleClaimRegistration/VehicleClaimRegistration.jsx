@@ -482,7 +482,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Accident Images</h2>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Chassis Number:
                         {comingData.ChassisNoView ? (
@@ -791,7 +791,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Accident Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Accident File No:
                         <input
@@ -839,7 +839,10 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-                    <label className="form-field">
+
+                </div>
+                <div className="form-row" style={{gap:'0px'}}>
+                <label className="form-field">
                         Accident Place - State:
                         <select
                             className='inputField'
@@ -853,8 +856,6 @@ const VehicleClaimRegistration = () => {
                             ))}
                         </select>
                     </label>
-                </div>
-                <div className="form-row">
                     <label className="form-field">
                         Accident Place - City:
                         <select
@@ -891,15 +892,13 @@ const VehicleClaimRegistration = () => {
                             placeholder='Reason of Accident'
                         />
                     </label>
-                    <label className="form-field"></label>
-                    <label className="form-field"></label>
                 </div>
 
                 <div class='header-container'>
                     <h2 className='bigtitle'>Insurance Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Insured By:
                         <input
@@ -953,7 +952,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Driver Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Driver Name:
                         <input
@@ -1005,7 +1004,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Police Reports</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Police Station:
                         <input
@@ -1048,7 +1047,9 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-                    <label className="form-field">
+                </div>
+                <div className="form-row" style={{gap:'0px'}}>
+                <label className="form-field">
                         Advocate's Name :
                         <input
                             className='inputField'
@@ -1058,8 +1059,6 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-                </div>
-                <div className="form-row">
                     <label className="form-field">
                         Advocate Contact No:
                         <input
@@ -1096,7 +1095,10 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-                    <label className="form-field">
+                </div>
+
+                <div className="form-row" style={{gap:'0px'}}>
+                <label className="form-field">
                         Power Of Attorney:
                         <input
                             type='file'
@@ -1107,15 +1109,17 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-                    <label className="form-field"></label>
-
+                <label className="form-field"></label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
                 </div>
+                            
 
                 <div class='header-container'>
                     <h2 className='bigtitle'>Surveyor Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Spot Surveyor Name:
                         <input
@@ -1163,7 +1167,7 @@ const VehicleClaimRegistration = () => {
                     </label>
                     <label className="form-field"></label>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Material Surveyor Name:
                         <input
@@ -1215,7 +1219,7 @@ const VehicleClaimRegistration = () => {
                     <label className="form-field"></label>
 
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Final Surveyor Name:
                         <input
@@ -1266,7 +1270,7 @@ const VehicleClaimRegistration = () => {
                     </label>
                     <label className="form-field"></label>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Investigator Name:
                         <input
@@ -1321,7 +1325,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Action Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Company Representative Name:
                         <input
@@ -1372,7 +1376,10 @@ const VehicleClaimRegistration = () => {
                         />
                     </label>
 
-                    <label className="form-field">
+                </div>
+
+                <div className="form-row" style={{gap:'0px'}}>
+                <label className="form-field">
                         Material Transshiped in Vehicle No:
                         <input
                             className='inputField'
@@ -1382,9 +1389,6 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-                </div>
-
-                <div className="form-row">
                     <label className="form-field">
                         Vehicle Transshiped Date:
                         <input
@@ -1423,7 +1427,11 @@ const VehicleClaimRegistration = () => {
                         />
                     </label>
 
-                    <label className="form-field">
+
+                </div>
+
+                <div className="form-row" style={{gap:'0px'}}>
+                <label className="form-field">
                         Adhar Card of Company Representative:
                         <input
                             type='file'
@@ -1434,16 +1442,16 @@ const VehicleClaimRegistration = () => {
 
                         />
                     </label>
-
-                    <label className="form-field"></label>
-
+                <label className="form-field"></label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
                 </div>
 
                 <div class='header-container'>
                     <h2 className='bigtitle'>Operational Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Deadline Date:
                         <input
@@ -1505,7 +1513,7 @@ const VehicleClaimRegistration = () => {
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Total Days From Accident:
                         <input
@@ -1549,7 +1557,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Docket Information</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Docket Name:
                         <input
@@ -1601,7 +1609,7 @@ const VehicleClaimRegistration = () => {
 
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Consignor Name:
                         <input
@@ -1654,7 +1662,7 @@ const VehicleClaimRegistration = () => {
 
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{gap:'0px'}}>
                     <label className="form-field">
                         Material:
                         <input

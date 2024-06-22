@@ -81,6 +81,9 @@ import VendorPaymentDetail from './Component/PaymentPage/VendorPaymentDetail';
 import CreatePassword from './Component/CreatePassword/CreatePassword';
 import Administration from './Component/EmployeeDashboard/Administration';
 import Salesteam from './Component/EmployeeDashboard/Salesteam';
+import MapComponent from './Component/AAAAAAAAAAAAAAAAAA/MapComponent';
+
+
 function App() {                              
   return (
 <Router>
@@ -170,6 +173,7 @@ function App() {
           <Route path='/CreatePassword' element={<CreatePassword/>}/>
           <Route path='/Administration' element={<Administration/>}/>
           <Route path='/Salesteam' element={<Salesteam/>}/>
+          <Route path='/MapComponent' element={<MapComponent/>}/>
 
         </Routes>
       </div>

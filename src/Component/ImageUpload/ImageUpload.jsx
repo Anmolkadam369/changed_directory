@@ -179,9 +179,9 @@ function ImageUpload({ id, onUpdate }) {
                         {type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:
                         <input
                             type="file"
-                            ref={photoRefs[type]}
                             accept="image/*"
-                            capture="camera"
+                            ref={photoRefs[type]}
+                            capture="environment"
                             className="form-control"
                             onChange={(e) => handleFileChange(e, type)}
                         />
@@ -207,7 +207,7 @@ function ImageUpload({ id, onUpdate }) {
                             type="file"
                             ref={additionalPhotoRefs.current[index]}
                             accept="image/*"
-                            capture="camera"
+                            capture="environment"
                             className="form-control"
                             onChange={(e) => handleFileChange(e, 'additional', index)}
                         />
@@ -236,16 +236,11 @@ function ImageUpload({ id, onUpdate }) {
                     +
                 </Button>
             )}
-            <Snackbar
-                open={openSnackbar}
-                autoHideDuration={6000}
-                onClose={() => setOpenSnackbar(false)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            >
-                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
+        {alertInfo.show && (
+          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+            {alertInfo.message}
+          </Alert>
+        )}
 
             <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center' }}>
                 <Button variant="contained" disabled={isSubmitting} style={{ textAlign: 'center' }} onClick={handleSubmit}>

@@ -15,8 +15,10 @@ import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import VendorPaymentDetail from '../PaymentPage/VendorPaymentDetail';
-
-
+import vendorInfo1 from '../../Assets/vendorInfo1.jpg'
+import vendorInfo2 from '../../Assets/vendorInfo2.jpg'
+import Switch from '@mui/material/Switch';
+import Button from '@mui/material/Button';
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -41,6 +43,19 @@ const VendorMasterForm = () => {
   const [showBankForm, setShowBankForm] = useState(false);
   const [recipientName, setRecipientName] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [singleVendor, setSingleVendor] = useState(true)
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed1, setIsZoomed1] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+
+  console.log('latitude longitude', latitude, longitude)
+  console.log("locatin", location)
+
+  const handleSwitchChange = (event) => {
+    setSingleVendor(event.target.checked);
+  };
 
   const [bankDetails, setBankDetails] = useState({
     bankName: '',
@@ -123,11 +138,16 @@ const VendorMasterForm = () => {
     GST: "info"
   });
 
+  const [otherFormData, setOtherFormData] = useState({
+    vendorsInfo: ''
+  })
+  console.log("otherformdata", otherFormData)
   console.log("formdata", formData)
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
   const adharCardRef = useRef(null);
+  const vendorsInfoRef = useRef(null);
 
   const handleBankDetailsChange = (e) => {
     const { name, value } = e.target;
@@ -139,199 +159,279 @@ const VendorMasterForm = () => {
     setUpiDetails({ ...upiDetails, [name]: value });
   };
 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setLocation("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const showPosition = (position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
+    setLatitude(lat);
+    setLongitude(lon);
+  };
+
+  const showError = (error) => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setLocation("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setLocation("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        setLocation("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        setLocation("An unknown error occurred.");
+        break;
+    }
+  };
+
 
   const handleChange = (e) => {
     const { name, type, files, value } = e.target;
     if (type === 'file') {
-        if (files[0] && files[0].size > 2097152) {
-            setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
-            const refs = {
-                GST: GSTRef,
-                panCard: panRef,
-                adharCard: adharCardRef,
-            };
+      if (files[0] && files[0].size > 2097152) {
+        setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
+        const refs = {
+          GST: GSTRef,
+          panCard: panRef,
+          adharCard: adharCardRef,
+        };
 
-            if (refs[name] && refs[name].current) {
-                refs[name].current.value = "";
-            }
-
-            setFormData(prevState => ({
-                ...prevState,
-                [name]: null // Reset the file state
-            }));
-            return;
+        if (refs[name] && refs[name].current) {
+          refs[name].current.value = "";
         }
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: files[0]
-        }));
-    } else if (name === 'state') {
-        loadCities(value);
-        setFormData(prevState => ({ ...prevState, [name]: value }));
-    } else if (["vendorPhone", "contactPersonNum", "contactPersonNum2"].includes(name)) {
-        const validValue = value.replace(/\D/g, '').slice(0, 10);
-        setFormData({
-            ...formData,
-            [name]: validValue,
-        });
-    } else if (["pincode", "rate"].includes(name)) {
-        const validValue = value.replace(/\D/g, '').slice(0, 6);
-        setFormData({
-            ...formData,
-            [name]: validValue,
-        });
-    } else if (name === "adharNo") {
-        const validValue = value.replace(/\D/g, '').slice(0, 12);
-        setFormData({
-            ...formData,
-            [name]: validValue,
-        });
-    } else {
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    }
-};
 
-const validateForm = () => {
-  for (const [key, value] of Object.entries(formData)) {
-      if (["panCard", "adharCard", "GST"].includes(key)) {
-          if (value === null || value === undefined || value.size === 0)
-              return `Field '${key}' is required.`;
+        setFormData(prevState => ({
+          ...prevState,
+          [name]: null // Reset the file state
+        }));
+        return;
       }
-      if (value === '') {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: files[0]
+      }));
+    } else if (name === 'state') {
+      loadCities(value);
+      setFormData(prevState => ({ ...prevState, [name]: value }));
+    } else if (["vendorPhone", "contactPersonNum", "contactPersonNum2"].includes(name)) {
+      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    } else if (["pincode", "rate"].includes(name)) {
+      const validValue = value.replace(/\D/g, '').slice(0, 6);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    } else if (name === "adharNo") {
+      const validValue = value.replace(/\D/g, '').slice(0, 12);
+      setFormData({
+        ...formData,
+        [name]: validValue,
+      });
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    for (const [key, value] of Object.entries(formData)) {
+      if (["panCard", "adharCard", "GST"].includes(key)) {
+        if (value === null || value === undefined || value.size === 0)
           return `Field '${key}' is required.`;
       }
-  }
+      if (value === '') {
+        return `Field '${key}' is required.`;
+      }
+    }
 
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(formData.email)) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
       return 'Please enter a valid email address.';
-  }
+    }
 
-  return '';
-};
+    return '';
+  };
 
-const validateInnerForm = () => {
-  let formErrors = {};
-  let isValid = true;
+  const validateInnerForm = () => {
+    let formErrors = {};
+    let isValid = true;
 
-  if (!recipientName) {
+    if (!recipientName) {
       formErrors.recipientName = 'Please enter recipient name';
       isValid = false;
-  }
+    }
 
-  if (paymentMethod === 'bank') {
+    if (paymentMethod === 'bank') {
       if (!bankDetails.bankName || !bankDetails.bankAccount || !bankDetails.ifscCode || !bankDetails.branchName) {
-          formErrors.bankDetails = 'Please fill all bank details';
-          isValid = false;
+        formErrors.bankDetails = 'Please fill all bank details';
+        isValid = false;
       }
       if (bankDetails.bankAccount && !/^\d{9,18}$/.test(bankDetails.bankAccount)) {
-          formErrors.bankAccount = 'Please enter a valid bank account number';
-          isValid = false;
+        formErrors.bankAccount = 'Please enter a valid bank account number';
+        isValid = false;
       }
       if (bankDetails.ifscCode && !/^[A-Za-z]{4}[a-zA-Z0-9]{7}$/.test(bankDetails.ifscCode)) {
-          formErrors.ifscCode = 'Please enter a valid IFSC code';
-          isValid = false;
+        formErrors.ifscCode = 'Please enter a valid IFSC code';
+        isValid = false;
       }
-  } else if (paymentMethod === 'upi') {
+    } else if (paymentMethod === 'upi') {
       if (!upiDetails.mobileNumber || !upiDetails.upiId) {
-          formErrors.upiDetails = 'Please fill both mobile number and UPI ID';
-          isValid = false;
+        formErrors.upiDetails = 'Please fill both mobile number and UPI ID';
+        isValid = false;
       }
       if (upiDetails.mobileNumber && !/^\d{10}$/.test(upiDetails.mobileNumber)) {
-          formErrors.mobileNumber = 'Please enter a valid mobile number';
-          isValid = false;
+        formErrors.mobileNumber = 'Please enter a valid mobile number';
+        isValid = false;
       }
       if (upiDetails.upiId && !/^[\w.-]+@[\w.-]+$/.test(upiDetails.upiId)) {
-          formErrors.upiId = 'Please enter a valid UPI ID';
-          isValid = false;
+        formErrors.upiId = 'Please enter a valid UPI ID';
+        isValid = false;
       }
-  } else {
+    } else {
       formErrors.paymentMethod = 'Please select a payment method';
       isValid = false;
-  }
+    }
 
-  setErrors(formErrors);
-  return isValid ? '' : formErrors;
-};
+    setErrors(formErrors);
+    return isValid ? '' : formErrors;
+  };
 
 
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  if (!e.target.checkValidity()) {
+    if (!e.target.checkValidity()) {
       e.target.reportValidity();
       setIsLoading(false);
       return;
-  }
+    }
 
-  const validationMessage = validateForm();
-  if (validationMessage) {
+    const validationMessage = validateForm();
+    if (validationMessage) {
       setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
       setIsLoading(false);
       return;
-  }
+    }
 
-  const innerValidationMessage = validateInnerForm();
-  if (innerValidationMessage) {
+    const innerValidationMessage = validateInnerForm();
+    if (innerValidationMessage) {
       setAlertInfo({ show: true, message: "Fill form Appropriately.", severity: 'error' });
       setIsLoading(false);
       return;
-  }
+    }
 
-  let sendData = {};
+    console.log("latitude", latitude, "longitiude", longitude, "location", location)
+    if (latitude === "" || longitude === "" || location === "Geolocation is not supported by this browser.") {
+      setAlertInfo({ show: true, message: "Please Give latitude and Longitude", severity: 'error' });
+      setIsLoading(false);
+      return;
+    }
 
-  if (paymentMethod === 'bank') {
+    let sendData = {};
+
+    if (paymentMethod === 'bank') {
       sendData = {
-          recipientName,
-          ...bankDetails
+        recipientName,
+        ...bankDetails
       };
-  } else if (paymentMethod === 'upi') {
+    } else if (paymentMethod === 'upi') {
       sendData = {
-          recipientName,
-          ...upiDetails
+        recipientName,
+        ...upiDetails
       };
-  }
+    }
 
-  const formDataObj = new FormData();
-  for (const key in formData) {
+    const formDataObj = new FormData();
+    for (const key in formData) {
       if (formData[key]) {
-          if (formData[key] instanceof File) {
-              formDataObj.append(key, formData[key], formData[key].name);
-          } else {
-              formDataObj.append(key, formData[key]);
-          }
+        if (formData[key] instanceof File) {
+          formDataObj.append(key, formData[key], formData[key].name);
+        } else {
+          formDataObj.append(key, formData[key]);
+        }
       }
-  }
+    }
 
-  for (const key in sendData) {
+    for (const key in sendData) {
       if (sendData[key]) formDataObj.append(key, sendData[key]);
-  }
+    }
 
-  try {
+    formDataObj.append('latitude', latitude);
+    formDataObj.append('longitude', longitude);
+
+    for(let pair of formDataObj.entries()){
+      console.log(pair[0]  +":"+pair[1])
+    }
+
+    try {
       const response = await axios({
-          method: 'POST',
-          url: `${backendUrl}/api/venderInfo/${userId}`,
-          data: formDataObj,
-          headers: {
-              'Authorization': token
-          }
+        method: 'POST',
+        url: `${backendUrl}/api/venderInfo/${userId}`,
+        data: formDataObj,
+        headers: {
+          'Authorization': token
+        }
       });
       setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
       setTimeout(() => {
-          navigate("../Admin");
+        navigate("../Admin");
       }, 2000);
-  } catch (error) {
+    } catch (error) {
       const errorMessage = error.response?.data || 'An error occurred';
       setIsLoading(false);
       setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+    }
   }
-}
+
+  const handleExcelSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+    setIsLoading(true); // Start loading
+    const formDataObj = new FormData();
+    for (const key in otherFormData) {
+      if (otherFormData[key]) {
+        formDataObj.append(key, otherFormData[key], otherFormData[key].name);
+      }
+    }
+
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: `${backendUrl}/api/venderInfoExcel/${userId}`,
+        data: formDataObj,
+        headers: {
+          'Authorization': token
+        }
+      });
+      setIsLoading(false);
+      setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+      setTimeout(() => {
+        navigate("../Admin");
+      }, 2000);
+    } catch (error) {
+      const errorMessage = error.response?.data || 'An error occurred';
+      setIsLoading(false);
+      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+    }
+
+  }
+
   const [showDropdown, setShowDropdown] = useState(false);
   const handleSelect = (event, value) => {
     event.preventDefault(); // Prevent default link behavior
@@ -343,6 +443,35 @@ const handleSubmit = async (e) => {
   };
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const bankFormOpen = () => setShowBankForm(!showBankForm);
+  const toggleZoom = () => setIsZoomed(!isZoomed);
+  const toggleZoom1 = () => setIsZoomed1(!isZoomed1);
+
+
+  const handleExcelChange = (e) => {
+    const { name, files } = e.target;
+    if (name === 'vendorsInfo') {
+      if (files[0].type !== 'application/vnd.ms-excel' && files[0].type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        setAlertInfo({ show: true, message: "should be only excel file!!!", severity: 'error' });
+        const refs = {
+          vendorsInfo: vendorsInfoRef
+        }
+        if (refs[name] && refs[name].current) {
+          refs[name].current.value = "";
+        }
+        setOtherFormData(prevState => ({
+          ...prevState,
+          [name]: ''
+        }));
+        return;
+      }
+
+      setOtherFormData(prevState => ({
+        ...prevState,
+        [name]: files[0]
+      }));
+    }
+  };
+
 
   return (
     <div>
@@ -352,447 +481,549 @@ const handleSubmit = async (e) => {
         <meta name="keywords" content="Vehicle Accidents, vendor, vendor Information, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
         <link rel='canonical' href={`https://claimpro.in/VendorMaster`} />
       </Helmet>
-      <form onSubmit={handleSubmit} className="Customer-master-form">
-        <div class="header-container">
-          <h3 class="bigtitle">Vendor Master</h3>
-          <span class="mandatory-note">All fields are mandatory</span>
-        </div>
 
-        <div className="form-row">
-          <label className="form-field input-group mb-3">
-            System Date:
-            <input
-              type="date"
-              name="systemDate"
-              value={formData.systemDate}
-              onChange={handleChange}
-              readOnly
-              className="form-control"
-            />
-          </label>
+      <div className="switch-container">
+        <p></p>
+        <Switch
+          checked={singleVendor}
+          onChange={handleSwitchChange}
+          color="primary"
+          inputProps={{ 'aria-label': 'single vendor switch' }}
+        />
+      </div>
 
-          <label className="form-field input-group mb-3">
-            Vendor Code:
-            <input
-              type="text"
-              name="vendorCode"
-              placeholder='SYSTEM GENERATED'
-              value={formData.vendorCode}
-              className="form-control"
+      {!singleVendor && (
+        <form onSubmit={handleExcelSubmit} className="Customer-master-form">
+          <div className="selected-container">
+            <div class="header-container">
+              <h3 class="bigtitle">Vendor Excel File</h3>
+              <span class="mandatory-note">All fields are mandatory</span>
+            </div>
+            <div className='form-row'>
+              <label className="form-field">
+                Vendors Data : (only Excel files should be inserted)
+                <input
+                  type='file'
+                  name="vendorsInfo"
+                  ref={vendorsInfoRef}
+                  onChange={handleExcelChange}
+                  className="form-control"
+                  required />
+              </label>
+              <div className={isZoomed ? "overlay" : ""}>
+                <label className="form-field" onClick={toggleZoom}>
+                  have a look how structure looks :
+                  <img
+                    src={vendorInfo1}
+                    alt="Dashboard Icon"
+                    style={{
+                      height: isZoomed ? '90%' : '45px',
+                      width: isZoomed ? '90%' : '80%',
+                      marginRight: '8px',
+                      marginLeft: "8px",
+                      transition: 'transform 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </label>
+              </div>
 
-              readOnly
-            />
-          </label>
-          <label className="form-field input-group mb-3">
-            Accident Place - State:
-            <select
-              name="state"
-              onChange={handleChange}
-              disabled={isLoadingStates}
-              value={formData.state}>
-              <option value="">Select State</option>
-              {states.map(state => (
-                <option key={state.iso2} value={state.iso2}>{state.name}</option>
-              ))}
-            </select>
-          </label>
+              <div className={isZoomed1 ? 'overlay' : ''}>
+                <label className="form-field" onClick={toggleZoom1}>
+                  have a look how structure looks for Rest of the Part :
+                  <img
+                    src={vendorInfo2}
+                    alt="Dashboard Icon"
+                    style={{
+                      height: isZoomed ? '90%' : '45px',
+                      width: isZoomed ? '90%' : '80%',
+                      marginRight: '8px',
+                      marginLeft: "8px",
+                      transition: 'transform 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </label>
+              </div>
 
-          <label className="form-field input-group mb-3">
-            Accident Place - City:
-            <select
-              name="district"
-              value={formData.district}
-              onChange={handleChange}
-              disabled={isLoadingCities || !formData.state}
-            >
-              <option value="">Select City</option>
-              {!cities.error && cities.map(city => (
-                <option key={city.iso2} value={city.iso2}>{city.name}</option>
-              ))}
-            </select>
-          </label>
-        </div>
 
-        <div className='form-row'>
-
-          <label className="form-field input-group mb-3">
-            Vendor Name:
-            <input
-              type="text"
-              name="vendorName"
-              placeholder='Vendor Name'
-              value={formData.vendorName}
-              onChange={handleChange}
-              className="form-control"
-              required
-            />
-          </label>
-
-          <div className="dropdown green-dropdown form-field">
-            <button
-              className="form-field input-group mb-3"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              onClick={toggleDropdown}
-            >
-              {formData.vendorType || "Select Vendor Type"}
-            </button>
-            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-            </ul>
+            </div>
           </div>
-          <label className="form-field">
-            Address  :
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-              className="form-control"
-              placeholder='Address' />
-          </label>
-          <label className="form-field">
-            Pincode:
-            <input
-              type='tel'
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              placeholder='Pincode'
-              required
-              pattern="\d{6}"
-              title="Pincode must be 6 digits"
-              className="form-control"
-            />
-          </label>
-        </div>
 
-        <div className='form-row'>
-
-          <label className="form-field">
-            Vendor Phone No:
-            <input
-              type='tel'
-              name="vendorPhone"
-              value={formData.vendorPhone}
-              onChange={handleChange}
-              placeholder='Vendor Phone No'
-              required
-              pattern="\d{10}"
-              title="Phone number must be exactly 10 digits"
-              className="form-control"
-            />
-          </label>
-
-          <label className="form-field">
-            E-Mail:
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder='E-Mail'
-              required
-              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-              title="Please enter a valid email address."
-              className="form-control"
-            />
-          </label>
-
-          <label className="form-field">
-            Contact Person:
-            <input
-              type='text'
-              name="contactPerson"
-              value={formData.contactPerson}
-              onChange={handleChange}
-              placeholder='Contact Person Name'
-              className="form-control"
-
-              required />
-          </label>
-          <label className="form-field">
-            Contact Person Number:
-            <input
-              type='tel'
-              name="contactPersonNum"
-              value={formData.contactPersonNum}
-              onChange={handleChange}
-              placeholder='Contact Person Phone'
-              required
-              pattern="\d{10}"
-              className="form-control"
-              title="Phone number must be 10 digits" />
-          </label>
-        </div>
-
-        <div className='form-row'>
-          <label className="form-field">
-            Contact Person Number 2 :
-            <input
-              type='tel'
-              name="contactPersonNum2"
-              value={formData.contactPersonNum2}
-              placeholder='Contact Person Phone'
-              onChange={handleChange}
-              required
-              pattern="\d{10}"
-              title="Phone number must be 10 digits"
-              className="form-control"
-
-            />
-          </label>
-          <label className="form-field">
-            PAN Number:
-            <input
-              type='text'
-              name="panNo"
-              placeholder='Pan Card Number'
-              value={formData.panNo}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-              title="Please enter a valid PAN number (e.g., ABCDE1234F)."
-            />
-          </label>
-          <label className="form-field">
-            PAN Card :
-            <input
-              type='file'
-              name="panCard"
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              className="form-control"
-              ref={panRef}
-              capture="environment"
-              required />
-          </label>
-          <label className="form-field">
-            Aadhaar Number:
-            <input
-              type='text'
-              name="adharNo"
-              placeholder='Aadhaar Card Number'
-              value={formData.adharNo}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="\d{12}"
-              title="Aadhaar number must be exactly 12 digits."
-            />
-          </label>
-        </div>
-
-        <div className='form-row'>
-          <label className="form-field">
-            Adhar Card:
-            <input
-              type='file'
-              name="adharCard"
-              // value={formData.adharCard}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              ref={adharCardRef}
-              className="form-control"
-              capture="environment"
-              required />
-          </label>
-
-
-
-          <label className="form-field">
-            GST Number:
-            <input
-              type='text'
-              name="GSTNo"
-              placeholder='GST Number'
-              value={formData.GSTNo}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
-              title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
-            />
-          </label>
-
-          <label className="form-field">
-            GSTIN :
-            <input
-              type='file'
-              name="GST"
-              // value={formData.GST}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              ref={GSTRef}
-              capture="environment"
-              className="form-control"
-              required />
-          </label>
-
-          {formData.vendorType == "crain" &&
-            (<label className="form-field">
-              Rate/KM :
-              <input
-                type='text'
-                name="rate"
-                placeholder='Rate Per KM'
-                value={formData.rate}
-                onChange={handleChange}
-                className="form-control"
-                title="Aadhaar number must be exactly 12 digits."
-                required />
-            </label>
-            )}
-          {formData.vendorType != "crain" && (
-            <label className="form-field"></label>
+          {alertInfo.show && (
+            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+              {alertInfo.message}
+            </Alert>
           )}
-        </div>
 
-        <form className="Customer-master-form" style={{background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px",}}>
-        <div class="header-container">
-          <h3 class="bigtitle">Bank Information</h3>
-        </div>
+          <div style={{ textAlign: 'center', marginTop: '30px' }}>
+            <button type="submit"
+              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              disabled={isLoading} // Disable button while loading
+            >
+              {isLoading ? 'Submitting...' : 'Submit'}
+            </button>
+            {isLoading && (
+              <div style={{ marginTop: '10px' }}>
+                <ClipLoader color="#4CAF50" loading={isLoading} />
+                <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+              </div>
+            )}
+          </div>
+        </form>
+      )}
+
+      {singleVendor && (
+        <form onSubmit={handleSubmit} className="Customer-master-form">
+          <div class="header-container">
+            <h3 class="bigtitle">Vendor Master</h3>
+            <span class="mandatory-note">All fields are mandatory</span>
+          </div>
+
           <div className="form-row">
             <label className="form-field input-group mb-3">
-              Recipient's Name:
+              System Date:
               <input
-                type="text"
-                name="recipientName"
-                value={recipientName}
-                onChange={(e) => setRecipientName(e.target.value)}
+                type="date"
+                name="systemDate"
+                value={formData.systemDate}
+                onChange={handleChange}
+                readOnly
                 className="form-control"
               />
-              {errors.recipientName && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.recipientName}</p>}
+            </label>
+
+            <label className="form-field input-group mb-3">
+              Vendor Code:
+              <input
+                type="text"
+                name="vendorCode"
+                placeholder='SYSTEM GENERATED'
+                value={formData.vendorCode}
+                className="form-control"
+
+                readOnly
+              />
+            </label>
+            <label className="form-field input-group mb-3">
+              Accident Place - State:
+              <select
+                name="state"
+                onChange={handleChange}
+                disabled={isLoadingStates}
+                value={formData.state}>
+                <option value="">Select State</option>
+                {states.map(state => (
+                  <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                ))}
+              </select>
+            </label>
+
+            <label className="form-field input-group mb-3">
+              Accident Place - City:
+              <select
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                disabled={isLoadingCities || !formData.state}
+              >
+                <option value="">Select City</option>
+                {!cities.error && cities.map(city => (
+                  <option key={city.iso2} value={city.iso2}>{city.name}</option>
+                ))}
+              </select>
             </label>
           </div>
 
-          <div className="form-row" style={{ display: 'flex', gap: '10px' }}>
-            <button
-              type="button"
-              onClick={() => setPaymentMethod('bank')}
-              disabled={!recipientName}
-              style={{ flex: 1 }}
-            >
-              Bank Transfer
-            </button>
-            <button
-              type="button"
-              onClick={() => setPaymentMethod('upi')}
-              disabled={!recipientName}
-              style={{ flex: 1 }}
-            >
-              UPI
-            </button>
+          <div className='form-row'>
+
+            <label className="form-field input-group mb-3">
+              Vendor Name:
+              <input
+                type="text"
+                name="vendorName"
+                placeholder='Vendor Name'
+                value={formData.vendorName}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </label>
+
+            <div className="dropdown green-dropdown form-field">
+              <button
+                className="form-field input-group mb-3"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                onClick={toggleDropdown}
+              >
+                {formData.vendorType || "Select Vendor Type"}
+              </button>
+              <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
+                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
+                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+              </ul>
+            </div>
+            <label className="form-field">
+              Address  :
+              <textarea
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                required
+                className="form-control"
+                placeholder='Address' />
+            </label>
+            <label className="form-field">
+              Pincode:
+              <input
+                type='tel'
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleChange}
+                placeholder='Pincode'
+                required
+                pattern="\d{6}"
+                title="Pincode must be 6 digits"
+                className="form-control"
+              />
+            </label>
           </div>
-          {errors.paymentMethod && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.paymentMethod}</p>}
 
-          {paymentMethod === 'bank' && (
-            <div className="Customer-master-form" style={{  marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
-              <label className="form-field input-group mb-3">
-                Bank Name:
+          <div className='form-row'>
+
+            <label className="form-field">
+              Vendor Phone No:
+              <input
+                type='tel'
+                name="vendorPhone"
+                value={formData.vendorPhone}
+                onChange={handleChange}
+                placeholder='Vendor Phone No'
+                required
+                pattern="\d{10}"
+                title="Phone number must be exactly 10 digits"
+                className="form-control"
+              />
+            </label>
+
+            <label className="form-field">
+              E-Mail:
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder='E-Mail'
+                required
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                title="Please enter a valid email address."
+                className="form-control"
+              />
+            </label>
+
+            <label className="form-field">
+              Contact Person:
+              <input
+                type='text'
+                name="contactPerson"
+                value={formData.contactPerson}
+                onChange={handleChange}
+                placeholder='Contact Person Name'
+                className="form-control"
+
+                required />
+            </label>
+            <label className="form-field">
+              Contact Person Number:
+              <input
+                type='tel'
+                name="contactPersonNum"
+                value={formData.contactPersonNum}
+                onChange={handleChange}
+                placeholder='Contact Person Phone'
+                required
+                pattern="\d{10}"
+                className="form-control"
+                title="Phone number must be 10 digits" />
+            </label>
+          </div>
+
+          <div className='form-row'>
+            <label className="form-field">
+              Contact Person Number 2 :
+              <input
+                type='tel'
+                name="contactPersonNum2"
+                value={formData.contactPersonNum2}
+                placeholder='Contact Person Phone'
+                onChange={handleChange}
+                required
+                pattern="\d{10}"
+                title="Phone number must be 10 digits"
+                className="form-control"
+
+              />
+            </label>
+            <label className="form-field">
+              PAN Number:
+              <input
+                type='text'
+                name="panNo"
+                placeholder='Pan Card Number'
+                value={formData.panNo}
+                onChange={handleChange}
+                className="form-control"
+                required
+                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+              />
+            </label>
+            <label className="form-field">
+              PAN Card :
+              <input
+                type='file'
+                name="panCard"
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                className="form-control"
+                ref={panRef}
+                capture="environment"
+                required />
+            </label>
+            <label className="form-field">
+              Aadhaar Number:
+              <input
+                type='text'
+                name="adharNo"
+                placeholder='Aadhaar Card Number'
+                value={formData.adharNo}
+                onChange={handleChange}
+                className="form-control"
+                required
+                pattern="\d{12}"
+                title="Aadhaar number must be exactly 12 digits."
+              />
+            </label>
+          </div>
+
+          <div className='form-row'>
+            <label className="form-field">
+              Adhar Card:
+              <input
+                type='file'
+                name="adharCard"
+                // value={formData.adharCard}
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={adharCardRef}
+                className="form-control"
+                capture="environment"
+                required />
+            </label>
+
+
+
+            <label className="form-field">
+              GST Number:
+              <input
+                type='text'
+                name="GSTNo"
+                placeholder='GST Number'
+                value={formData.GSTNo}
+                onChange={handleChange}
+                className="form-control"
+                required
+                pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
+                title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
+              />
+            </label>
+
+            <label className="form-field">
+              GSTIN :
+              <input
+                type='file'
+                name="GST"
+                // value={formData.GST}
+                onChange={handleChange}
+                accept=".pdf,image/*"
+                ref={GSTRef}
+                capture="environment"
+                className="form-control"
+                required />
+            </label>
+
+            {formData.vendorType == "crain" &&
+              (<label className="form-field">
+                Rate/KM :
                 <input
-                  type="text"
-                  name="bankName"
-                  value={bankDetails.bankName}
-                  onChange={handleBankDetailsChange}
+                  type='text'
+                  name="rate"
+                  placeholder='Rate Per KM'
+                  value={formData.rate}
+                  onChange={handleChange}
                   className="form-control"
-                />
+                  title="Aadhaar number must be exactly 12 digits."
+                  required />
               </label>
-              <label className="form-field input-group mb-3">
-                Bank Account:
-                <input
-                  type="text"
-                  name="bankAccount"
-                  value={bankDetails.bankAccount}
-                  onChange={handleBankDetailsChange}
-                  className="form-control"
-                />
-                {errors.bankAccount && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.bankAccount}</p>}
-              </label>
-              <label className="form-field input-group mb-3">
-                IFSC Code:
-                <input
-                  type="text"
-                  name="ifscCode"
-                  value={bankDetails.ifscCode}
-                  onChange={handleBankDetailsChange}
-                  className="form-control"
-                />
-                {errors.ifscCode && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.ifscCode}</p>}
-              </label>
-              <label className="form-field input-group mb-3">
-                Branch Name:
-                <input
-                  type="text"
-                  name="branchName"
-                  value={bankDetails.branchName}
-                  onChange={handleBankDetailsChange}
-                  className="form-control"
-                />
-              </label>
-              {errors.bankDetails && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.bankDetails}</p>}
+              )}
+            {formData.vendorType != "crain" && (
+              <label className="form-field"></label>
+            )}
+          </div>
+
+          <div className='form-row'>
+            <label className='form-field'>
+              <Button variant="contained" onClick={getLocation}>Send Location</Button>
+            </label>
+          </div>
+          {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
+
+
+          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+            <div class="header-container">
+              <h3 class="bigtitle">Bank Information</h3>
             </div>
+            <div className="form-row">
+              <label className="form-field input-group mb-3">
+                Recipient's Name:
+                <input
+                  type="text"
+                  name="recipientName"
+                  value={recipientName}
+                  onChange={(e) => setRecipientName(e.target.value)}
+                  className="form-control"
+                />
+                {errors.recipientName && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.recipientName}</p>}
+              </label>
+            </div>
+
+            <div className="form-row" style={{ display: 'flex', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('bank')}
+                disabled={!recipientName}
+                style={{ flex: 1 }}
+              >
+                Bank Transfer
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('upi')}
+                disabled={!recipientName}
+                style={{ flex: 1 }}
+              >
+                UPI
+              </button>
+            </div>
+            {errors.paymentMethod && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.paymentMethod}</p>}
+
+            {paymentMethod === 'bank' && (
+              <div className="Customer-master-form" style={{ marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
+                <label className="form-field input-group mb-3">
+                  Bank Name:
+                  <input
+                    type="text"
+                    name="bankName"
+                    value={bankDetails.bankName}
+                    onChange={handleBankDetailsChange}
+                    className="form-control"
+                  />
+                </label>
+                <label className="form-field input-group mb-3">
+                  Bank Account:
+                  <input
+                    type="text"
+                    name="bankAccount"
+                    value={bankDetails.bankAccount}
+                    onChange={handleBankDetailsChange}
+                    className="form-control"
+                  />
+                  {errors.bankAccount && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.bankAccount}</p>}
+                </label>
+                <label className="form-field input-group mb-3">
+                  IFSC Code:
+                  <input
+                    type="text"
+                    name="ifscCode"
+                    value={bankDetails.ifscCode}
+                    onChange={handleBankDetailsChange}
+                    className="form-control"
+                  />
+                  {errors.ifscCode && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.ifscCode}</p>}
+                </label>
+                <label className="form-field input-group mb-3">
+                  Branch Name:
+                  <input
+                    type="text"
+                    name="branchName"
+                    value={bankDetails.branchName}
+                    onChange={handleBankDetailsChange}
+                    className="form-control"
+                  />
+                </label>
+                {errors.bankDetails && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.bankDetails}</p>}
+              </div>
+            )}
+
+            {paymentMethod === 'upi' && (
+              <div className="Customer-master-form" style={{ marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
+                <label className="form-field input-group mb-3">
+                  Registered Mobile Number:
+                  <input
+                    type="text"
+                    name="mobileNumber"
+                    value={upiDetails.mobileNumber}
+                    onChange={handleUpiDetailsChange}
+                    className="form-control"
+                  />
+                  {errors.mobileNumber && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.mobileNumber}</p>}
+                </label>
+                <label className="form-field input-group mb-3">
+                  UPI ID:
+                  <input
+                    type="text"
+                    name="upiId"
+                    value={upiDetails.upiId}
+                    onChange={handleUpiDetailsChange}
+                    className="form-control"
+                  />
+                  {errors.upiId && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.upiId}</p>}
+                </label>
+                {errors.upiDetails && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.upiDetails}</p>}
+              </div>
+            )}
+          </form>
+
+
+
+          {alertInfo.show && (
+            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+              {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
+            </Alert>
           )}
 
-          {paymentMethod === 'upi' && (
-            <div className="Customer-master-form" style={{  marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
-              <label className="form-field input-group mb-3">
-                Registered Mobile Number:
-                <input
-                  type="text"
-                  name="mobileNumber"
-                  value={upiDetails.mobileNumber}
-                  onChange={handleUpiDetailsChange}
-                  className="form-control"
-                />
-                {errors.mobileNumber && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.mobileNumber}</p>}
-              </label>
-              <label className="form-field input-group mb-3">
-                UPI ID:
-                <input
-                  type="text"
-                  name="upiId"
-                  value={upiDetails.upiId}
-                  onChange={handleUpiDetailsChange}
-                  className="form-control"
-                />
-                {errors.upiId && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.upiId}</p>}
-              </label>
-              {errors.upiDetails && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.upiDetails}</p>}
-            </div>
-          )}
-        </form>
 
+          <div style={{ textAlign: 'center', marginTop: '30px' }}>
+            <button type="submit"
+              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              disabled={isLoading} // Disable button while loading
+            >
+              {isLoading ? 'Submitting...' : 'Submit'}
+            </button>
+            {isLoading && (
+              <div style={{ marginTop: '10px' }}>
+                <ClipLoader color="#4CAF50" loading={isLoading} />
+                <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+              </div>
+            )}
+          </div>
 
-
-        {alertInfo.show && (
-          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-            {alertInfo.message}
-          </Alert>
-        )}
-
-        <div style={{ textAlign: 'center' }}>
-          <button type="submit"
-            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-            disabled={isLoading} // Disable button while loading
-          >
-            {isLoading ? 'Submitting...' : 'Submit'}
-          </button>
-          {isLoading && (
-            <div style={{ marginTop: '10px' }}>
-              <ClipLoader color="#4CAF50" loading={isLoading} />
-              <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
-            </div>
-          )}
-        </div>
-
-{/* <div style={{ textAlign: 'center' }}>
+          {/* <div style={{ textAlign: 'center' }}>
           <button type="submit"
             style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
             disabled={isLoading} // Disable button while loading
@@ -800,7 +1031,8 @@ const handleSubmit = async (e) => {
           </button>
     </div> */}
 
-      </form>
+        </form>
+      )}
     </div>
   );
 };

@@ -25,7 +25,7 @@ const config = {
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VendorMasterEdit = ({id, onUpdate}) => {
+const VendorMasterEdit = ({ id, onUpdate }) => {
   const location = useLocation();
   // const { id } = location.state || {};
   console.log("Received ID:", id);
@@ -48,6 +48,12 @@ const VendorMasterEdit = ({id, onUpdate}) => {
   const [isPANModalOpen, setIsPANModalOpen] = useState(false);
   const [isAdharModalOpen, setIsAdharModalOpen] = useState(false);
   const [isGSTModalOpen, setIsGSTModalOpen] = useState(false);
+
+  const [locations, setLocation] = useState(null);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+
+  console.log("latitude-",latitude, "longitude-", longitude)
 
   useEffect(() => {
     loadStates();
@@ -82,6 +88,42 @@ const VendorMasterEdit = ({id, onUpdate}) => {
     setIsGSTModalOpen(false);
   };
 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setLocation("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const showPosition = (position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
+    setFormData((prevFormData)=>({
+      ...prevFormData,
+      latitude:lat,
+      longitude:lon
+    }))
+  };
+
+  const showError = (error) => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setLocation("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setLocation("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        setLocation("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        setLocation("An unknown error occurred.");
+        break;
+    }
+  };
+
   useEffect(() => {
     if (comingData) {
       setFormData(prevFormData => ({
@@ -105,8 +147,9 @@ const VendorMasterEdit = ({id, onUpdate}) => {
         agreement: comingData.agreement || "",
         GST: comingData.GST || "",
         rate: comingData.rate || "",
-        GSTNo: comingData.GSTNo || ""
-
+        GSTNo: comingData.GSTNo || "",
+        longitude:comingData.longitude || "",
+        latitude:comingData.latitude || ""
       }));
     }
   }, [comingData]);
@@ -165,7 +208,11 @@ const VendorMasterEdit = ({id, onUpdate}) => {
     rate: "",
     GSTNo: "",
     GST: null,
+    latitude:"",
+    longitude:""
   });
+
+  console.log("setformda ta", formData)
 
   const getDataById = async (id) => {
     const response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
@@ -315,11 +362,11 @@ const VendorMasterEdit = ({id, onUpdate}) => {
       setOpenSnackbar(true);
       setIsLoading(false);
       setTimeout(() => {
-        onUpdate(); 
+        onUpdate();
       }, 2000);
     } catch (error) {
       console.error("Error during form submission:", error);
-      setSnackbarMessage("Failed to submit the form.");
+      setSnackbarMessage("Failed to submit the form.", error);
       setOpenSnackbar(true);
       setIsLoading(false);
     }
@@ -328,10 +375,12 @@ const VendorMasterEdit = ({id, onUpdate}) => {
   const editable = () => {
     setIsReadOnly(!IsReadOnly)
   }
-    const handleBack = () => {
-      onUpdate(); 
-      // navigate("../Admin")
-    }
+  const handleBack = () => {
+    onUpdate();
+    // navigate("../Admin")
+  }
+
+
   return (
     <div>
       <Helmet>
@@ -341,21 +390,21 @@ const VendorMasterEdit = ({id, onUpdate}) => {
         <link rel='canonical' href={`https://claimpro.in/VendorMasterEdit`} />
       </Helmet>
       <form onSubmit={handleSubmit} className="Customer-master-form" style={{ marginBottom: "50px" }}>
-       <div style={{display:"flex", marginRight:'10px', marginBottom:'10px'}}>
-        <Button startIcon={<ArrowBackIcon />} style={{background:"none", color:"#077ede"}} onClick={handleBack} />
-        <div>
-          <h3 className='bigtitle' >Vendor Master Edits</h3>
+        <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+          <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+          <div>
+            <h3 className='bigtitle' >Vendor Master Edits</h3>
 
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={6000}
-            onClose={() => setOpenSnackbar(false)}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          >
-            <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
-              {snackbarMessage}
-            </Alert>
-          </Snackbar>
+            <Snackbar
+              open={openSnackbar}
+              autoHideDuration={6000}
+              onClose={() => setOpenSnackbar(false)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+              <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+                {snackbarMessage}
+              </Alert>
+            </Snackbar>
 
           </div>
         </div>
@@ -564,7 +613,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
           <label className="form-field">
             PAN Card:
             {IsReadOnly ? (
-              formData.panCard ? (
+              formData.panCard !== "Pan Value" ? (
                 <>
                   <img
                     src={formData.panCard}
@@ -585,7 +634,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
                   </Modal>
                 </>
               ) : (
-                <p>No PAN Card uploaded</p>
+                <p className='notUploaded'>No PAN Card uploaded</p>
               )
             ) : (
               <input
@@ -621,7 +670,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
           <label className="form-field">
             Adhar Card:
             {IsReadOnly ? (
-              formData.adharCard ? (
+              formData.adharCard !== "Adhar Value" ? (
                 <>
                   <img
                     src={formData.adharCard}
@@ -642,7 +691,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
                   </Modal>
                 </>
               ) : (
-                <p>No Adhar Card uploaded</p>
+                <p className='notUploaded'>No Adhar Card uploaded</p>
               )
             ) : (
               <input
@@ -659,7 +708,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
           <label className="form-field">
             Agreement :
             {IsReadOnly ? (
-              formData.agreement ? (
+              formData.agreement !== "agreement Value" ? (
                 <>
                   <p style={{ fontWeight: 'bold', marginTop: "20px" }}>Click To Download
                     <a href={formData.agreement} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
@@ -668,21 +717,12 @@ const VendorMasterEdit = ({id, onUpdate}) => {
                   </p>
                 </>
               ) : (
-                <p>No Adhar Card uploaded</p>
+                <p className='notUploaded'>No Agreement uploaded</p>
               )
             ) : (
-              <input
-                type="file"
-                className="form-control"
-                name="agreement"
-                onChange={handleChange}
-                accept=".pdf,image/*"
-                ref={agreementRef}
-                required
-              />
+              <p className='notUploaded'>Cannot Upload Agreement</p>
             )}
           </label>
-
           <label className="form-field">
             GST Number:
             <input
@@ -701,7 +741,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
           <label className="form-field">
             GSTIN:
             {IsReadOnly ? (
-              formData.GST ? (
+              formData.GST !== "default-GST-value" ? (
                 <>
                   <img
                     src={formData.GST}
@@ -722,7 +762,7 @@ const VendorMasterEdit = ({id, onUpdate}) => {
                   </Modal>
                 </>
               ) : (
-                <p>No GST Card uploaded</p>
+                <p className='notUploaded'>No GST Card uploaded</p>
               )
             ) : (
               <input
@@ -739,6 +779,26 @@ const VendorMasterEdit = ({id, onUpdate}) => {
         </div>
 
         <div className='form-row'>
+          <label className='form-field'>
+            {IsReadOnly ? (
+              formData.longitude == "" ? (
+                <p className='notUploaded'>No Location Uploaded</p>
+              ) : (
+                <>
+                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+              </>
+              )
+            ) : (
+                <>
+                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+                {locations && (
+                  locations.startsWith("Error:") ?
+                    <Alert severity="error">{locations}</Alert> :
+                    <Alert severity="success">{locations}</Alert>
+                )}
+              </>
+            )}
+          </label>
 
           {formData.vendorType == "crain" &&
             (<label className="form-field">
@@ -759,12 +819,11 @@ const VendorMasterEdit = ({id, onUpdate}) => {
             <label className="form-field"></label>
           )}
           <label className="form-field"></label>
-          <label className="form-field"></label>
 
         </div>
 
         <div style={{ textAlign: 'center' }}>
-        {!IsReadOnly && (
+          {!IsReadOnly && (
             <div>
               <button type="submit"
                 style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
