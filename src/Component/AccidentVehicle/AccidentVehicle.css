@@ -1,6 +1,7 @@
 .responsive-table {
   overflow-x: auto; /* Allows table to scroll horizontally */
   width: 100%; /* Ensures that the container fits the width of its parent */
+margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {
@@ -122,7 +123,18 @@
   border: none;
   background-color: #ddd;
   cursor: pointer;
+  box-shadow: none; /* Ensure box shadow is set to none */
 }
+
+.pagination button:focus,
+.pagination button:hover {
+  box-shadow: none;
+}
+
+.MuiButtonGroup-root .MuiButton-root {
+  box-shadow: none !important;
+}
+
 
 .pagination button.active {
   background-color: #007bff;
@@ -142,8 +154,9 @@
 @media (max-width: 768px) {
 
   .pagination {
-    justify-content: flex-start;
-    /* margin-left: 10px; */
+    justify-content: center;
+    margin-left: 10px;
+    box-shadow: none;
   }
 
   .pagination button {
@@ -154,7 +167,8 @@
 
 @media (max-width: 480px) {
   .pagination {
-    justify-content: flex-start;
+    justify-content: center;
+    box-shadow: none;
   }
 
   .pagination button {
@@ -234,6 +248,8 @@ th,
 td {
   text-align: center;
   padding: 8px;
+  font-size: 13px;
+
 }
 
 th {
@@ -262,6 +278,7 @@ tr:hover {
   cursor: pointer;
   font-size: 12px;
   font-weight: bold;
+  margin-top: 10px;
 }
 .deactivate-button {
   padding: 6px 16px;
@@ -530,7 +547,7 @@ input[type="number"] {
 }
 
 .bigtitle {
-  font-size: 1.5rem;
+  font-size: 20px;
   margin-bottom: 20px;
   /* text-align: center; */
 }
@@ -555,6 +572,7 @@ input[type="number"] {
   .label-class {
     flex: 1 1 100%;
     width: 300px;
+    padding-left: 10px;
   }
 
   .bigtitle {
@@ -589,6 +607,7 @@ input[type="number"] {
   .visitor-container {
     flex-direction: column;
     align-items: flex-start;
+    width: 310px;
   }
 
   .visitor-container .add-button {

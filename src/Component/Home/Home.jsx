@@ -1,4 +1,4 @@
-import {React} from 'react';
+import { React, useRef, useEffect, useState } from 'react';
 import './Home.css';
 import './responsive-mobile.css'
 import './responsive-tablet.css'
@@ -14,11 +14,32 @@ import onsiterepair from '../../Assets/onsiterepair.jpg';
 import cranefrontpage from '../../Assets/cranefrontpage.jpg';
 import workshopfirstpage from '../../Assets/workshopfirstpage.jpg';
 import advocatefirstpage from '../../Assets/advoatefirstpage.jpeg';
-
+import homepage1st from "../../Assets/homepage1st.jpg"
+import homepage2nd from "../../Assets/homepage2nd.jpg"
+import homepage3rd from "../../Assets/homepage3rd.jpg"
+import craneadvocatemechanic from '../../Assets/camw.webp'; // Correct import path
+import ConstructionIcon from '@mui/icons-material/Construction';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import GavelIcon from '@mui/icons-material/Gavel';
+import CarRepairIcon from '@mui/icons-material/CarRepair';
+import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
+import customerImage from '../../Assets/customer.webp'; // Correct import path
+import complaints from '../../Assets/complaints.webp'; // Correct import path
+import registerComplaints from '../../Assets/registeredComplaints.webp'; // Correct import path
+import remainingComplaints from '../../Assets/remainingComplaints.webp'; // Correct import path
+import vehicleIcon from '../../Assets/vehicleIcon.webp'; // Correct import path
+import vendorResponseImg from '../../Assets/vendorResponse.webp';
+import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
+import ListIcon from '@mui/icons-material/List';
+import { FaFacebook, FaLinkedin, FaInstagramSquare, FaWhatsapp } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
+import { height } from '@mui/system';
 
 function Home() {
     const navigate = useNavigate();
+    const openInNewTab = (url) => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
 
     function navigateToVehiclePage() {
         navigate('./LoginPage');
@@ -27,6 +48,242 @@ function Home() {
     function navigateToContactUs() {
         navigate('./ContactUs');
     }
+
+    const videoRefs = useRef([]);
+
+    const handlePlay = (index) => {
+        videoRefs.current.forEach((video, i) => {
+            if (i !== index && video) {
+                video.pause();
+            }
+        });
+    }
+
+    const texts = [
+        { text: 'Accident Vehicles', color: 'blue' },
+        { text: 'Crane ', color: 'red' },
+        { text: 'Mechanic', color: 'green' },
+        { text: 'Workshop', color: 'orange' },
+        { text: 'Advocate', color: 'lightblue' },
+
+    ];
+
+    const [displayText, setDisplayText] = useState('');
+    const [index, setIndex] = useState(0);
+    const [charIndex, setCharIndex] = useState(0);
+    const [deleting, setDeleting] = useState(false);
+    const [currentColor, setCurrentColor] = useState(texts[0].color);
+
+    useEffect(() => {
+        const handleTyping = () => {
+            const current = texts[index];
+            const currentText = current.text;
+            if (deleting) {
+                setDisplayText((prev) => prev.slice(0, -1));
+                if (displayText === '') {
+                    setDeleting(false);
+                    setIndex((prev) => (prev + 1) % texts.length);
+                    setCurrentColor(texts[(index + 1) % texts.length].color);
+                }
+            } else {
+                setDisplayText((prev) => currentText.slice(0, charIndex + 1));
+                if (charIndex === currentText.length - 1) {
+                    setDeleting(true);
+                }
+            }
+            setCharIndex((prev) => (deleting ? prev - 1 : prev + 1));
+        };
+
+        const timer = setInterval(handleTyping, deleting ? 100 : 150);
+
+        return () => clearInterval(timer);
+    }, [displayText, index, charIndex, deleting]);
+
+    const elemRef = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust as needed
+        );
+
+        const elem = elemRef.current;
+        if (elem) {
+            observer.observe(elem);
+        }
+
+        return () => {
+            if (elem) {
+                observer.unobserve(elem);
+            }
+        };
+    }, []);
+
+    const secondRightRef = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust as needed
+        );
+
+        const elem = secondRightRef.current;
+        if (elem) {
+            observer.observe(elem);
+        }
+
+        return () => {
+            if (elem) {
+                observer.unobserve(elem);
+            }
+        };
+    }, []);
+
+    const thirdRightRef = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust as needed
+        );
+
+        const elem = thirdRightRef.current;
+        if (elem) {
+            observer.observe(elem);
+        }
+
+        return () => {
+            if (elem) {
+                observer.unobserve(elem);
+            }
+        };
+    }, []);
+
+    const leftRef = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust as needed
+        );
+
+        const elem = leftRef.current;
+        if (elem) observer.observe(elem);
+
+        return () => {
+            if (elem) observer.unobserve(elem);
+        };
+    }, [])
+
+    const fromTop1 = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust as needed
+        );
+
+        const elem = fromTop1.current;
+        if (elem) {
+            observer.observe(elem);
+        }
+
+        return () => {
+            if (elem) {
+                observer.unobserve(elem);
+            }
+        };
+    }, []);
+
+
+    const leftSecondRef = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust as needed
+        );
+
+        const elem = leftSecondRef.current;
+        if (elem) observer.observe(elem);
+
+        return () => {
+            if (elem) observer.unobserve(elem);
+        };
+    }, [])
+
+    const scrollToSection = () => {
+        const element = document.getElementById('target-section');
+        element.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const [isOpen, setIsOpen] = useState(false);
+    const menuRef = useRef(null);
+    const [isClicked, setIsClicked] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 1199);
+
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 1199);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+        setIsClicked(!isClicked);
+    };
+
+    const handleClickOutside = (event) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setIsOpen(false);
+            setIsClicked(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="home-elem-19">
@@ -41,35 +298,51 @@ function Home() {
                 <div className="home-elem-13">
                     <div className="home-elem-15">
                         <span className="home-elem-18">
-                            <p>BVC ClaimPro Assist </p>
+                            <img src={claimproassist} className='logo-image' alt="company logo" />
+                            <p className='title'>BVC ClaimPro Assist </p>
                         </span>
                     </div>
-                    <div className="home-elem-16">
-                        <div className="home-elem-12">
-                            <span className="home-elem-8">
-                                {/* <a href="home.html" className="link" target="_self"> */}
-                                <p style={{ cursor: 'pointer' }}>Home </p>
-                                {/* </a> */}
-                            </span>
-                            <span className="home-elem-9">
-                                {/* <a href="#home-elem-45" className="link" target="_self"> */}
-                                <p style={{ cursor: 'pointer' }}>FAQ </p>
-                                {/* </a> */}
-                            </span>
-                            <span className="home-elem-10">
-                                <span onClick={navigateToContactUs} style={{ cursor: 'pointer' }} >
-                                    <p>Contact Us </p>
-                                </span>
-                            </span>
-                            <span className="home-elem-11">
-                                {/* <a href="#home-elem-80" className="link" target="_self"> */}
-                                <p style={{ cursor: 'pointer' }}>Blog </p>
-                                {/* </a> */}
-                            </span>
+
+                    {isMobile ? (
+                        <div className="menu-container">
+                            <button className={`menu-button ${isClicked ? 'clicked' : ''}`} onClick={toggleMenu}>
+                                <ListIcon />
+                            </button>
+                            {isOpen && (
+                                <div className="menu-card" ref={menuRef}>
+                                    <ul>
+                                        <li><a href="#home">Home</a></li>
+                                        <li onClick={scrollToSection}><a href="#faq">FAQ</a></li>
+                                        <li onClick={navigateToContactUs}><a href="#contact">Contact Us</a></li>
+                                        <li onClick={scrollToSection}><a href="#blog">Blog</a></li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    ) : (
+                        <div className="home-elem-16">
+                            <div className="home-elem-12">
+                                <span className="home-elem-8">
+                                    <p style={{ cursor: 'pointer' }}>Home </p>
+                                </span>
+                                <span className="home-elem-9">
+                                    <p style={{ cursor: 'pointer' }} onClick={scrollToSection} >FAQ </p>
+                                </span>
+                                <span className="home-elem-10">
+                                    <span onClick={navigateToContactUs} style={{ cursor: 'pointer' }} >
+                                        <p>Contact Us </p>
+                                    </span>
+                                </span>
+                                <span className="home-elem-11">
+                                    <p style={{ cursor: 'pointer' }} onClick={scrollToSection}>Blog </p>
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
+
                     <button onClick={navigateToVehiclePage} className='home-elem-17'>
-                        <p>Log in/Sign up</p>
+                        <p>Log in</p>
                     </button>
                 </div>
             </div>
@@ -103,10 +376,10 @@ function Home() {
                     </button>
                 </div>
             </div>
-            <div className="home-elem-20">
+            <div className="home-elem-20" style={{ paddingTop: "20px" }}>
                 <div className="home-elem-21">
                     <span className="home-elem-25">
-                        <h1>Professional Assistance for Vehicle Accidents</h1>
+                        <h1>Professional Assistance for <span style={{ color: currentColor }}>{displayText}</span></h1>
                     </span>
                     <span className="home-elem-26">
                         <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>
@@ -116,7 +389,7 @@ function Home() {
                     </span>
                     <div className="home-elem-27">
                         <button className="home-elem-29" onClick={navigateToContactUs}>
-                            <p>Start Now</p>
+                            <p>Connect With Us</p>
                         </button>
                     </div>
                 </div>
@@ -132,16 +405,16 @@ function Home() {
                         </div>
                     </div>
                     <div className="home-elem-35">
-                        <span className="home-elem-36">
+                        <span ref={elemRef} className="home-elem-36">
                             <img src={trucks2} />
                         </span>
-                        <span className="home-elem-37">
+                        <span ref={elemRef} className="home-elem-37">
                             <img src={trucks1} />
                         </span>
                     </div>
                     <div className="home-elem-38">
                         <span className="home-elem-39">
-                            <p>1000+ Happy Clients</p>
+                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>1000+ Happy Clients</p>
                         </span>
                         <div className="home-elem-40">
                             <i className="fas fa-quote-left home-elem-41"></i>
@@ -167,11 +440,13 @@ function Home() {
                         <div className="home-elem-50">
                             <div className="home-elem-51">
                                 <span className="home-elem-52">
-                                    <p>Claims Settled </p>
+                                    <p style={{ fontSize: "15px", fontWeight: "bold", color: "yellow", textAlign: "center" }}> 500+ </p>
+                                    <p style={{ fontSize: "15px", fontWeight: "bold" }}> Claims Settled </p>
                                 </span>
                             </div>
                             <div className="home-elem-58">
                                 <span className="home-elem-57">
+                                    <p style={{ fontSize: "15px", fontWeight: "bold", color: "orange", textAlign: "center" }}> 200+ </p>
                                     <p>On-spot Repairs </p>
                                 </span>
                                 <span className="home-elem-56">
@@ -180,6 +455,7 @@ function Home() {
                             </div>
                             <div className="home-elem-55">
                                 <span className="home-elem-54">
+                                    <p style={{ fontSize: "15px", fontWeight: "bold", color: "blue", textAlign: "center" }}> 700+ </p>
                                     <p>Works Organized </p>
                                 </span>
                                 <span className="home-elem-53">
@@ -190,9 +466,9 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <div className="home-elem-59">
-                <div className="home-elem-60">
-                    <span className="home-elem-61">
+            <div ref={leftRef} className="home-elem-59">
+                <div className='home-elem-60' style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
+                    <span className="home-elem-66">
                         <img src={advocatefirstpage} alt="Accident" />
                     </span>
                 </div>
@@ -201,140 +477,77 @@ function Home() {
                         <p>Professional Advocate Assistance for getting your accident vehicle out from the Police Custody </p>
                     </span>
                     <span className="home-elem-64">
-                        <p>From reporting the incident to dealing with complex legalities, our advocates provide end-to-end guidance for settlement. </p>
+                        <p>At BVC ClaimPro Assist, we offer professional advocate assistance to help you navigate the complexities of getting your accident vehicle released from police custody. Our experienced legal team is ensuring all legal protocols are followed efficiently. We understand the urgency and stress involved in such situations, which is why we act swiftly to expedite the release process.</p>
                     </span>
-                    <button className="home-elem-65">
+                    {/* <button className="home-elem-65">
                         <a href="#home-elem-80" className="link" target="_self">
                             <p>Know More </p>
                         </a>
-                    </button>
+                    </button> */}
                 </div>
             </div>
-            <div className="home-elem-79">
+            <div ref={secondRightRef} className="home-elem-79">
                 <div className="home-elem-78">
                     <span className="home-elem-75">
-                        <p>Swift and Reliable On-spot Vehicle Repairs </p>
+                        <p>Swift and Reliable On-spot Vehicle Repairs</p>
                     </span>
                     <span className="home-elem-76">
-                        <p>Quick minor fixes or major repairs, our expert technicians are equipped to handle all with utmost care on the spot. </p>
+                        <p>BVC ClaimPro Assist offers swift and reliable on-spot vehicle repairs to minimize downtime and get you back on the road quickly. Our team of mobile technicians is equipped with the tools and expertise to handle a variety of minor repairs right at the accident scene or your location. From tire changes and battery replacements to minor mechanical adjustments, we provide efficient solutions to keep you moving.</p>
                     </span>
-                    <button className="home-elem-77">
-                        <a href="#home-elem-80" className="link" target="_self">
-                            <p>Find Out More </p>
-                        </a>
-                    </button>
+                    {/* <button className="home-elem-77">
+                    <a href="#home-elem-80" className="link" target="_self">
+                        <p>Find Out More</p>
+                    </a>
+                </button> */}
                 </div>
-                <div className="home-elem-74">
-                    <span className="home-elem-73">
+                <div className="home-elem-60" style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
+                    <span className="home-elem-66">
                         <img src={onsiterepair} alt="Vehicle Repair" />
                     </span>
                 </div>
             </div>
-            <div className="home-elem-72">
-                <div className="home-elem-67">
+            <div ref={leftSecondRef} className="home-elem-59">
+                <div className='home-elem-60' style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none', paddingTop: "10px" }}>
                     <span className="home-elem-66">
                         <img src={cranefrontpage} alt="Cranes" />
                     </span>
                 </div>
-                <div className="home-elem-71">
-                    <span className="home-elem-68">
+                <div className="home-elem-62">
+                    <span className="home-elem-63">
                         <p>Cranes for Safe Vehicle Extraction </p>
                     </span>
-                    <span className="home-elem-69">
-                        <p>With experienced operators and robust cranes, we ensure your damaged vehicle is safely transported to workshops. </p>
+                    <span className="home-elem-64">
+                        <p>With experienced operators and robust cranes, we ensure your damaged vehicle is safely transported to workshops. Our team is available 24/7, ready to respond promptly to any accident scene. We prioritize safety and efficiency, using the latest equipment to handle vehicles of all sizes and types. Our cranes are regularly maintained to ensure optimal performance and reliability. </p>
                     </span>
-                    <button className="home-elem-70">
+                    {/* <button className="home-elem-70">
                         <a href="#home-elem-80" className="link" target="_self">
                             <p>Learn More </p>
                         </a>
-                    </button>
+                    </button> */}
                 </div>
             </div>
-            <div className="home-elem-79">
+            <div ref={thirdRightRef} className="home-elem-79">
                 <div className="home-elem-78">
                     <span className="home-elem-75">
                         <p>Expert Heavy Vehicle Repairs and Maintenance</p>
                     </span>
                     <span className="home-elem-76">
-                        <p>From routine maintenance to major overhauls, our skilled technicians are equipped to handle all your heavy vehicle needs with precision and care.</p>
+                        <p>At BVC ClaimPro Assist, we specialize in expert heavy vehicle repairs and maintenance. Our team of certified mechanics is equipped to handle a wide range of issues, ensuring your vehicle is restored to peak condition. We use advanced diagnostic tools and high-quality parts to deliver reliable repairs that stand the test of time. Whether it's engine overhauls, transmission repairs, or routine maintenance, our skilled technicians provide thorough and efficient service.</p>
                     </span>
 
-                    <button className="home-elem-77">
+                    {/* <button className="home-elem-77">
                         <a href="#home-elem-80" className="link" target="_self">
                             <p>Find Out More </p>
                         </a>
-                    </button>
+                    </button> */}
                 </div>
-                <div className="home-elem-74">
-                    <span className="home-elem-73">
+                <div className="home-elem-60" style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
+                    <span className="home-elem-66">
                         <img src={workshopfirstpage} alt="Vehicle Repair" />
                     </span>
                 </div>
             </div>
-            <div className="home-elem-80">
-                <span className="home-elem-82">
-                    <p>Customized Services Tailored for Your Needs </p>
-                </span>
-                <span className="home-elem-83">
-                    <p>From legal assistance to vehicle repairs, we offer bespoke services to fit your specific requirements. </p>
-                </span>
-                <div className="home-elem-81">
-                    <div className="home-elem-84">
-                        <i className="fas fa-bahai home-elem-85"></i>
-                        <span className="home-elem-86">
-                            <p>Legal </p>
-                        </span>
-                        <span className="home-elem-87">
-                            <p>Advocate support is provided for claim settlements. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-95">
-                        <i className="far fa-heart home-elem-92"></i>
-                        <span className="home-elem-93">
-                            <p>Cranes </p>
-                        </span>
-                        <span className="home-elem-94">
-                            <p>Efficient vehicle extraction at the accident spot. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-91">
-                        <i className="fas fa-thumbs-up home-elem-88"></i>
-                        <span className="home-elem-89">
-                            <p>Onspot Repair </p>
-                        </span>
-                        <span className="home-elem-90">
-                            <p>Immediate minor fixes for your vehicle. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-95">
-                        <i className="fas fa-award home-elem-92"></i>
-                        <span className="home-elem-93">
-                            <p>Transport </p>
-                        </span>
-                        <span className="home-elem-94">
-                            <p>Safe and secure vehicle transportation is provided. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-103">
-                        <i className="fas fa-bolt home-elem-100"></i>
-                        <span className="home-elem-101">
-                            <p>Claims </p>
-                        </span>
-                        <span className="home-elem-102">
-                            <p>Guidance for smooth claim settlement process. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-95">
-                        <i className="fas fa-check home-elem-92"></i>
-                        <span className="home-elem-93">
-                            <p>Workshops </p>
-                        </span>
-                        <span className="home-elem-94">
-                            <p>Major repairs are conducted at workshops. </p>
-                        </span>
-                    </div>
-                </div>
-            </div>
+
             {/* <div className="home-elem-112">
                 <div className="home-elem-113">
                     <span className="home-elem-111 home-elem-111">
@@ -418,14 +631,12 @@ function Home() {
                     </div>
                 </div>
             </div> */}
-            <div className="home-elem-156">
-                <div className="home-elem-157">
+            <div className="home-elem-156" style={{ marginBottom: "0px" }}>
+                <div id="target-section" className="home-elem-157">
                     <span className="home-elem-154">
                         <p>Dive into Our Blog Section</p>
                     </span>
-                    <span className="home-elem-155">
-                        <p>Stay updated with the latest news and helpful tips related to commercial vehicle accidents and their management.</p>
-                    </span>
+
                 </div>
                 <div className="home-elem-153">
                     <div className="home-elem-152">
@@ -463,17 +674,153 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <div className="home-elem-167">
+
+            <div className="home-elem-80">
+                <span className="home-elem-82">
+                    <p>Customized Services Tailored for Your Needs </p>
+                </span>
+                <span className="home-elem-83">
+                    <p>From legal assistance to vehicle repairs, we offer bespoke services to fit your specific requirements. Stay updated with the latest news and helpful tips related to commercial vehicle accidents and their management.</p>
+                </span>
+                <div ref={fromTop1} className="home-elem-81">
+                    <div className="home-elem-84">
+                        <i className="fas fa-bahai home-elem-85"></i>
+                        <span className="home-elem-86" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                            <GavelIcon />
+                            <p style={{ alignItems: "center" }}>Legal </p>
+                        </span>
+                        <span className="home-elem-87">
+                            <p>Advocate support is provided for claim settlements. </p>
+                        </span>
+                    </div>
+                    <div className="home-elem-95">
+                        <i className="far fa-heart home-elem-92"></i>
+                        <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                            <PrecisionManufacturingIcon />
+                            <p>Cranes </p>
+                        </span>
+                        <span className="home-elem-94">
+                            <p>Efficient vehicle extraction at the accident spot. </p>
+                        </span>
+                    </div>
+                    <div className="home-elem-91">
+                        <i className="fas fa-thumbs-up home-elem-88"></i>
+                        <span className="home-elem-89" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                            <ConstructionIcon />
+                            <p>Onspot Repair </p>
+                        </span>
+                        <span className="home-elem-90">
+                            <p>Immediate minor fixes for your vehicle. </p>
+                        </span>
+                    </div>
+                    <div className="home-elem-95">
+                        <i className="fas fa-award home-elem-92"></i>
+                        <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                            <LocalShippingIcon />
+                            <p>Transport </p>
+                        </span>
+                        <span className="home-elem-94">
+                            <p>Safe and secure vehicle transportation is provided. </p>
+                        </span>
+                    </div>
+                    <div className="home-elem-103">
+                        <i className="fas fa-bolt home-elem-100"></i>
+                        <span className="home-elem-101" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                            <img src={registerComplaints} className="small-image" alt="Vendor Types" />
+                            <p>Claims </p>
+                        </span>
+                        <span className="home-elem-102">
+                            <p>Guidance for smooth claim settlement process. </p>
+                        </span>
+                    </div>
+                    <div className="home-elem-95">
+                        <i className="fas fa-check home-elem-92"></i>
+                        <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                            <CarRepairIcon />
+                            <p>Workshops </p>
+                        </span>
+                        <span className="home-elem-94">
+                            <p>Major repairs are conducted at workshops. </p>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="home-elem-156" style={{ paddingTop: '0px' }}>
+                {/* <span>
+                    <p style={{ marginTop: "60px", fontWeight: "bold", fontSize: "24px", textAlign: "left", padding: 0 }}>Services Provided By BVC ClaimPro Assist</p>
+                </span> */}
+                <div className="home-elem-153">
+                    <div className="home-elem-152">
+                        <span className="home-elem-158">
+                            <video
+                                controls
+                                ref={(el) => (videoRefs.current[0] = el)}
+                                onPlay={() => handlePlay(0)}
+                            >
+                                <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/images/firstvideotiranga.mp4" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </span>
+                        <span className="home-elem-150">
+                            <p>Efficient Accident Management</p>
+                        </span>
+                        <span className="home-elem-151">
+                            <p> Our team ensures the safe and professional handling of vehicles involved in accidents, From small cars to heavy-duty trucks, our cranes are equipped to manage all types of vehicles, ensuring they are securely transported to the designated location.</p>
+                        </span>
+                    </div>
+                    <div className="home-elem-166">
+                        <span className="home-elem-165">
+                            <video
+                                controls
+                                ref={(el) => (videoRefs.current[1] = el)}
+                                onPlay={() => handlePlay(1)}
+                            >
+                                <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/images/newvid.mp4" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </span>
+                        <span className="home-elem-163">
+                            <p>Expert Advocate Services</p>
+                        </span>
+                        <span className="home-elem-164">
+                            <p>Our advocate services at BVC ClaimPro Assist offer legal support right from the accident scene. We provide immediate legal counsel to ensure that all necessary legal procedures are followed, protecting your rights and facilitating a smooth claims process.</p>
+                        </span>
+                    </div>
+                    <div className="home-elem-162">
+                        <span className="home-elem-161">
+                            <video
+                                controls
+                                ref={(el) => (videoRefs.current[2] = el)}
+                                onPlay={() => handlePlay(2)}
+                            >
+                                <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/WhatsApp+Video+2024-07-11+at+20.17.05_b864227a.mp4" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </span>
+                        <span className="home-elem-159">
+                            <p>Peace of Mind</p>
+                        </span>
+                        <span className="home-elem-160">
+                            <p>Every aspect of accident management is handled with professionalism and care, we are committed to providing seamless and efficient solutions. Our goal is to ensure your safety, convenience, and peace of mind throughout the entire process.</p>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div className="home-elem-167" >
                 <span className="home-elem-168">
                     <p>Why not choose the BVC ClaimPro Assist?</p>
                 </span>
                 <span className="home-elem-169">
                     <p>Join our extended family and experience hassle-free, professional assistance during unwelcomed vehicle accidents.</p>
                 </span>
-                    <button className="home-elem-171" onClick={navigateToContactUs}>
-                        <p>Join Now</p>
-                    </button>
+                <button className="home-elem-171" onClick={navigateToContactUs}>
+                    <p>Join Now</p>
+                </button>
             </div>
+
             <div className="home-elem-188">
                 <div className="home-elem-185">
                     <div className="home-elem-176">
@@ -488,24 +835,90 @@ function Home() {
                             <i className="fab fa-twitter-square home-elem-182"></i>
                             <i className="fab fa-facebook home-elem-181"></i>
                         </div>
+                        <div>
+                        </div>
+
                     </div>
-                    <span className="home-elem-197">
-                        <img src="https://res.cloudinary.com/dbyioi2qq/q_auto/v1705838029/static/logo_page-0001jpg_1705838020_75147.jpg" alt="BVC ClaimPro Assist Logo" />
-                    </span>
+
                     <div className="home-elem-184">
+
+                        <p style={{ fontSize: "16px", fontWeight: 700, marginBottom: "15px" }}>Social Media Accounts </p>
+                        <div style={{ display: 'flex', marginBottom: "20px" }}>
+                            <div
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#3b5998',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: '0 10px',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => openInNewTab('https://www.facebook.com/people/BVC-ClaimPro-Assist/61559865797607/?mibextid=LQQJ4d')}
+                            >
+                                <FaFacebook style={{ color: 'white', fontSize: '24px' }} />
+                            </div>
+                            <div
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#0077b5',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: '0 10px',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => openInNewTab('https://www.linkedin.com/company/bvc-claim-pro-assist/')}
+                            >
+                                <FaLinkedin style={{ color: 'white', fontSize: '24px' }} />
+                            </div>
+                            <div
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#3b5998',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: '0 10px',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => openInNewTab(' https://www.instagram.com/claimproassist?utm_source=ig_web_button_share_sheet&igsh=ODdmZWVhMTFiMw==')}
+                            >
+                                <FaInstagramSquare style={{ color: 'white', fontSize: '24px' }} />
+                            </div>
+                            <div
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#3b5998',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: '0 10px',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => openInNewTab('https://whatsapp.com/channel/0029Vaf9dkzEgGfM3tCiUJ3Z')}
+                            >
+                                <FaWhatsapp style={{ color: 'white', fontSize: '24px' }} />
+                            </div>
+                        </div>
                         <span className="home-elem-177">
                             <p>Contact us</p>
+                            <span className="home-elem-179">
+                                <p>+91 7800 78 4700</p>
+                            </span>
+                            <button className="home-elem-175" onClick={navigateToContactUs}>
+                                <p>Contact Us</p>
+                            </button>
                         </span>
 
-                        {/* <span className="home-elem-178">
-                            <p><br /></p>
-                        </span> */}
-                        <span className="home-elem-179">
-                            <p>+91 7800 78 4700</p>
-                        </span>
-                        <button className="home-elem-175" onClick={navigateToContactUs}>
-                            <p>Contact Us</p>
-                        </button>
                     </div>
                 </div>
                 <div className="home-elem-187">

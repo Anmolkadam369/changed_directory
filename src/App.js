@@ -8,7 +8,7 @@ import Location from './Component/Location/Location';
 import Location1 from './Component/Location1/Location1';
 import UserIV from './Component/UserIV/UserIV';
 import UserIV1 from './Component/UserIV1/UserIV1';
-import CrainUser from './Component/CrainUser/CrainUser';
+import CraneUser from './Component/CraneUser/CraneUser';
 import AdvocateUser from './Component/AdvocateUser/AdvocateUser';
 import AdvocateHistoryComponent from './Component/AdvocateHistoryComponent/AdvocateHistoryComponent';
 import AdminInfoPage from './Component/AdminInfoPage/AdminInfoPage';
@@ -32,20 +32,20 @@ import Advocate from './Component/Vendors/Advocate';
 import EditAccidentVehicle from './Component/EditAccidentVehicle/EditAccidentVehicle';
 import AssignedVehicleAdvocate from './Component/Vendors/AssignedVehiclesAdvocate';
 import UploadDocAdvocate from './Component/Vendors/UploadDocAdvocate';
-import Machanic from './Component/Vendors/Machanic';
-import AssignedVehicleMachanic from './Component/Vendors/AssignedVehiclesMachanic';
-import AddedDataByMachanic from './Component/Vendors/AddedDataByMachanic';
-import CrainHydra from './Component/Vendors/CrainHydra';
-import AssignedVehicleCrain from './Component/Vendors/AssignedVehiclesCrain';
-import AddedDataByCrain from './Component/Vendors/AddedDataByCrain';
+import Mechanic from './Component/Vendors/Mechanic';
+import AssignedVehicleMechanic from './Component/Vendors/AssignedVehiclesMechanic';
+import AddedDataByMechanic from './Component/Vendors/AddedDataByMechanic';
+import CraneHydra from './Component/Vendors/CraneHydra';
+import AssignedVehicleCrane from './Component/Vendors/AssignedVehiclesCrane';
+import AddedDataByCrane from './Component/Vendors/AddedDataByCrane';
 import AccidentVehicleRegUpdate from './Component/AccidentVehicle/AccidentVehicleRegUpdate';
 import VendorResponse from './Component/Vendors/VendorsResponse';
 import Workshop from './Component/Vendors/Workshop';
 import AssignedVehicleWorkshop from './Component/Vendors/AssignedVehiclesWorkshop';
 import AddedDataByWorkshop from './Component/Vendors/AddedDataByWorkshop';
 
-import MachanicResponse from './Component/ViewVendorResponse/MachanicResponse';
-import CraineResponse from './Component/ViewVendorResponse/CraineResponse';
+import MechanicResponse from './Component/ViewVendorResponse/MechanicResponse';
+import CraneResponse from './Component/ViewVendorResponse/CraneResponse';
 import AdvocateResponse from './Component/ViewVendorResponse/AdvocateResponse';
 import WorkshopResponse from './Component/ViewVendorResponse/WorkshopResponse';
 import ActualVendorResponse from './Component/Vendors/ActualVendorResponse';
@@ -84,6 +84,10 @@ import Salesteam from './Component/EmployeeDashboard/Salesteam';
 import MapComponent from './Component/AAAAAAAAAAAAAAAAAA/MapComponent';
 
 
+import DummyDashboard from './Component/Dashboard/DummyDashboard';
+import EmployeeChart from './Component/Charts/EmployeeChart';
+import Table from './Component/AAAAAAAAAAAAAAAAAA/Table';
+
 function App() {                              
   return (
 <Router>
@@ -99,7 +103,7 @@ function App() {
           <Route path='/Location1' element={<Location1 />} />
           <Route path='/UserIV' element={<UserIV />} />
           <Route path='/UserIV1' element={<UserIV1 />} />
-          <Route path='/CrainUser' element={<CrainUser />} />
+          <Route path='/CraneUser' element={<CraneUser />} />
           <Route path='/AdvocateUser' element={<AdvocateUser />} />
           <Route path='/AdvocateHistoryComponent' element={<AdvocateHistoryComponent />} />
           <Route path='/AdminInfoPage' element={<AdminInfoPage />} />
@@ -124,13 +128,13 @@ function App() {
           <Route path='/AssignedVehicleAdvocate' element={<AssignedVehicleAdvocate />} />
           <Route path='/UploadDocAdvocate' element={<UploadDocAdvocate />} />
 
-          <Route path='/MachanicDashboard' element={<Machanic />} />
-          <Route path='/AssignedVehicleMachanic' element={<AssignedVehicleMachanic />} />
-          <Route path='/AddedDataByMachanic' element={< AddedDataByMachanic/>} />
+          <Route path='/MechanicDashboard' element={<Mechanic />} />
+          <Route path='/AssignedVehicleMechanic' element={<AssignedVehicleMechanic />} />
+          <Route path='/AddedDataByMechanic' element={< AddedDataByMechanic/>} />
 
-          <Route path='/CrainDashboard' element={<CrainHydra />} />
-          <Route path='/AssignedVehicleCrain' element={<AssignedVehicleCrain />} />
-          <Route path='/AddedDataByCrain' element={< AddedDataByCrain/>} />
+          <Route path='/CraneDashboard' element={<CraneHydra />} />
+          <Route path='/AssignedVehicleCrane' element={<AssignedVehicleCrane />} />
+          <Route path='/AddedDataByCrane' element={< AddedDataByCrane/>} />
 
           <Route path='/AccidentVehicleRegUpdate' element={< AccidentVehicleRegUpdate/>} />
 
@@ -140,8 +144,8 @@ function App() {
           <Route path='/AssignedVehicleWorkshop' element={< AssignedVehicleWorkshop/>} />
           <Route path="/AddedDataByWorkshop" element={<AddedDataByWorkshop/>}/>
 
-          <Route path='/MachanicResponse' element={<MachanicResponse/>}/>
-          <Route path='/CraineResponse' element={<CraineResponse/>}/>
+          <Route path='/MechanicResponse' element={<MechanicResponse/>}/>
+          <Route path='/CraneResponse' element={<CraneResponse/>}/>
           <Route path='/AdvocateResponse' element={<AdvocateResponse/>}/>
           <Route path='/WorkshopResponse' element={<WorkshopResponse/>}/>
           <Route path='/ActualVendorResponse' element={<ActualVendorResponse/>}/>
@@ -170,10 +174,15 @@ function App() {
           <Route path='/MechanicDashboard' element={<MechanicDashboard/>}/>
           <Route path='/CustomerEnquiry' element={<CustomerEnquiry/>}/>
           <Route path='/VendorPaymentDetail' element={<VendorPaymentDetail/>}/>
-          <Route path='/CreatePassword' element={<CreatePassword/>}/>
+          <Route path='/CreatePassword/:userType' element={<CreatePassword/>}/>
           <Route path='/Administration' element={<Administration/>}/>
           <Route path='/Salesteam' element={<Salesteam/>}/>
           <Route path='/MapComponent' element={<MapComponent/>}/>
+
+          <Route path='/DummyDashboard' element={<DummyDashboard/>}/>
+          <Route path='/EmployeeChart' element={<EmployeeChart/>}/>
+          <Route path='/Table' element={<Table/>}/>
+
 
         </Routes>
       </div>

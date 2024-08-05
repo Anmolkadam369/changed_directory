@@ -29,13 +29,13 @@ function Registration({ onVehicleData }) {
     }, [vehicleInfo]);
 
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         findUserById(userId)
     }, [token, userId, navigate]);
 
@@ -158,55 +158,55 @@ function Registration({ onVehicleData }) {
                     <p>Submit</p>
                 </button>
 
-                <Modal isOpen={isModalOpen} onClose={closeModal}>
-                    {comingVehicleInfo && (
-                        <div>
-                            <div className="responsive-table">
-                                {comingVehicleInfo.length === 0 ? (
-                                    <div style={{ textAlign: 'center', fontWeight: "bold" }}>No Response from this vendor...</div>
-                                ) : (
-                                    comingVehicleInfo.map((item, index) => (
-                                        <div key={index} className="vertical-table">
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Vehicle Number:</strong></div>
-                                                <div className="table-cell">{item.vehicleNo || '---'}</div>
+                <Modal className="custom-modal-content" isOpen={isModalOpen} onClose={closeModal}>
+                        {comingVehicleInfo && (
+                            <div>
+                                <div className="responsive-table">
+                                    {comingVehicleInfo.length === 0 ? (
+                                        <div style={{ textAlign: 'center', fontWeight: "bold" }}>No Data Found Related This No...</div>
+                                    ) : (
+                                        comingVehicleInfo.map((item, index) => (
+                                            <div key={index} className="vertical-table">
+                                                <div className="table-row">
+                                                    <div className="table-cell"><strong>Vehicle Number:</strong></div>
+                                                    <div className="table-cell">{item.vehicleNo || '---'}</div>
+                                                </div>
+                                                <div className="table-row">
+                                                    <div className="table-cell"><strong>Chassis Number:</strong></div>
+                                                    <div className="table-cell">{item.chassisNo || '---'}</div>
+                                                </div>
+                                                <div className="table-row">
+                                                    <div className="table-cell"><strong>Make:</strong></div>
+                                                    <div className="table-cell">{item.make || '---'}</div>
+                                                </div>
+                                                <div className="table-row">
+                                                    <div className="table-cell"><strong>Model:</strong></div>
+                                                    <div className="table-cell">{item.model || '---'}</div>
+                                                </div>
+                                                <div className="table-row">
+                                                    <div className="table-cell"><strong>Engine Number:</strong></div>
+                                                    <div className="table-cell">{item.engineNo || '---'}</div>
+                                                </div>
+                                                <div className="table-row">
+                                                    <div className="table-cell"><strong>Insurance Name:</strong></div>
+                                                    <div className="table-cell">{item.InsuranceName || '---'}</div>
+                                                </div>
                                             </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Chassis Number:</strong></div>
-                                                <div className="table-cell">{item.chassisNo || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Make:</strong></div>
-                                                <div className="table-cell">{item.make || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Model:</strong></div>
-                                                <div className="table-cell">{item.model || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Engine Number:</strong></div>
-                                                <div className="table-cell">{item.engineNo || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Insurance Name:</strong></div>
-                                                <div className="table-cell">{item.InsuranceName || '---'}</div>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
+                                        ))
+                                    )}
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <button
+                                        type="submit"
+                                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'rgb(173 223 227)', color: 'white' }}
+                                        onClick={handleNext}
+                                    >
+                                        Next
+                                    </button>
+                                </div>
                             </div>
-                            <div style={{ textAlign: 'center' }}>
-                                <button
-                                    type="submit"
-                                    style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'rgb(173 223 227)', color: 'white' }}
-                                    onClick={handleNext}
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </Modal>
+                        )}
+                    </Modal>
 
             </div >
         </div >

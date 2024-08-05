@@ -19,7 +19,7 @@ function ConfirmationModal({ isOpen, message, onConfirm, onCancel }) {
         }}>
             <div style={{
                 padding: '20px',
-                background: 'white',
+                background: '#ffffff8a',
                 borderRadius: '10px', // More pronounced rounded corners
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)', // Shadow for 3D effect
                 display: 'flex',

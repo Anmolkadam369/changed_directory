@@ -12,13 +12,18 @@ import './vendorResponse.css';
 import { Helmet } from 'react-helmet-async';
 import ActivationModel from '../Visitors/ActivationModel';
 import { ClipLoader } from 'react-spinners';
-
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import Modal from 'react-modal';
+import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 function AdvocateResponse({ data, onUpdate }) {
     const location = useLocation();
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [action, setAction] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
@@ -28,6 +33,80 @@ function AdvocateResponse({ data, onUpdate }) {
     const [marginLeft, setMarginLeft] = useState('30px');
     const [padding, setPaddingLeft] = useState('30px');
     const [width, setWidth] = useState('100%');
+
+    const generateOfficePreviewLink = (fileUrl) => {
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+      };
+      
+      const generateGooglePreviewLink = (fileUrl) => {
+        return `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+      };
+      
+      const handlePreviewClick = (e, fileUrl) => {
+        e.stopPropagation();
+        const fileExtension = fileUrl.split('.').pop().toLowerCase();
+        let previewLink;
+        if (fileExtension === 'pdf') {
+          previewLink = generateGooglePreviewLink(fileUrl);
+        } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExtension)) {
+          previewLink = generateOfficePreviewLink(fileUrl);
+        } else {
+          alert('Preview not available for this file type.');
+          return;
+        }
+        window.open(previewLink, '_blank');
+      };
+
+    const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
+    const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
+    const [isFrontLHModalOpen, setIsFrontLHModalOpen] = useState(false);
+    const [isFrontRHModalOpen, setIsFrontRHModalOpen] = useState(false);
+
+    const [isFrontViewModalOpen, setIsFrontViewModalOpen] = useState(false);
+    const [isRearRHModalOpen, setIsRearRHModalOpen] = useState(false);
+    const [isRearLHModalOpen, setIsRearLHModalOpen] = useState(false);
+    const [isMajorDamage1ModalOpen, setIsMajorDamage1ModalOpen] = useState(false);
+
+    const [isMajorDamage2ModalOpen, setIsMajorDamage2ModalOpen] = useState(false);
+    const [isMajorDamage3ModalOpen, setIsMajorDamage3ModalOpen] = useState(false);
+    const [isMajorDamage4ModalOpen, setIsMajorDamage4ModalOpen] = useState(false);
+    const [isMajorDamage5ModalOpen, setIsMajorDamage5ModalOpen] = useState(false);
+
+    const openChassisModal = () => setIsChassisModalOpen(true);
+    const closeChassisModal = () => setIsChassisModalOpen(false);
+
+    const openClusterModal = () => setIsClusterModalOpen(true);
+    const closeClusterModal = () => setIsClusterModalOpen(false);
+
+    const openFrontLHModal = () => setIsFrontLHModalOpen(true);
+    const closeFrontLHModal = () => setIsFrontLHModalOpen(false);
+
+    const openFrontRHModal = () => setIsFrontRHModalOpen(true);
+    const closeFrontRHModal = () => setIsFrontRHModalOpen(false);
+
+    const openFrontViewModal = () => setIsFrontViewModalOpen(true);
+    const closeFrontViewModal = () => setIsFrontViewModalOpen(false);
+
+    const openRearRHModal = () => setIsRearRHModalOpen(true);
+    const closeRearRHModal = () => setIsRearRHModalOpen(false);
+
+    const openRearLHModal = () => setIsRearLHModalOpen(true);
+    const closeRearLHModal = () => setIsRearLHModalOpen(false);
+
+    const openMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(true);
+    const closeMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(false);
+
+    const openMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(true);
+    const closeMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(false);
+
+    const openMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(true);
+    const closeMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(false);
+
+    const openMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(true);
+    const closeMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(false);
+
+    const openMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(true);
+    const closeMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(false);
 
     // Initially set formData from location state if available
     const initialData = data || {
@@ -41,7 +120,8 @@ function AdvocateResponse({ data, onUpdate }) {
         releaseOrderCopy: "",
         reasonOfReject: ""
     };
-    const [formData, setFormData] = useState(initialData);
+    const [formData, setFormData] = useState(initialData[0]);
+    console.log("myfordata", formData)
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
     const openModal = (item) => {
@@ -98,8 +178,15 @@ function AdvocateResponse({ data, onUpdate }) {
             }
         } catch (error) {
             console.error('Error response:', error.response);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     };
 
@@ -120,8 +207,15 @@ function AdvocateResponse({ data, onUpdate }) {
             }
         } catch (error) {
             console.error('Error response:', error);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     }
 
@@ -194,8 +288,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.ChassisNoView}
                                     alt="Front LH"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openChassisModal}
                                 />
-
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.ChassisNoView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeChassisModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.ChassisNoView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -215,7 +322,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.ClusterView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openClusterModal}
                                 />
+                                <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.ClusterView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeClusterModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -235,7 +356,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.frontLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openFrontLHModal}
                                 />
+                                <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.frontLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.frontLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -260,7 +395,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.frontRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openFrontRHModal}
                                 />
+                                <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.frontRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.frontRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -280,8 +429,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.frontView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openFrontViewModal}
                                 />
-
+                                <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.frontView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontViewModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.frontView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -301,7 +463,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.rearLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openRearLHModal}
                                 />
+                                <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.rearLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.rearLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -325,7 +501,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.rearRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openRearRHModal}
                                 />
+                                <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.rearRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.rearRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -346,8 +536,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages1}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage1Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages1} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -367,7 +570,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages2}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage2Modal}
                                 />
+                                <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages2} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -391,7 +608,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages3}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage3Modal}
                                 />
+                                <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages3} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -412,7 +643,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages4}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage4Modal}
                                 />
+                                <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages4} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -433,7 +678,21 @@ function AdvocateResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages5}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage5Modal}
                                 />
+                                <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages5} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -461,19 +720,77 @@ function AdvocateResponse({ data, onUpdate }) {
                             }}>Last Updated On : {formData.updateResponseOn ? formData.updateResponseOn : formData.firstResponseOn}</h5>
             </div>
             <div className='form-row'>
-                <label className="form-field">
-                    Company Representative:
-                    <input type="text" style={{ marginTop: '10px' }} className='inputField' readOnly value={formData.companyRepresentative} />
+
+            <label className="form-field">
+                    Indemnity Bond Copy:
+                    {
+                        formData.indemnityBondCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div >
+                                    <a
+                                        href={formData.indemnityBondCopy}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color:'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon/> Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.indemnityBondCopy)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color:"#560303"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon/> Preview
+                                    </button>
+                                </div>
+                            </div>) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FIR Copy uploaded</p>
+                        )
+                    }
                 </label>
                 <label className="form-field">
                     Bailer Details:
                     {
                         formData.bailerDetails ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.bailerDetails} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.bailerDetails}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color:'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon/> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.bailerDetails)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color:"#560303"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon/> Preview
+                                    </button>
                                 </div>
                             </div>) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Bailer Details uploaded</p>
@@ -487,10 +804,33 @@ function AdvocateResponse({ data, onUpdate }) {
                     {
                         formData.firCopy ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.firCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.firCopy}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color:'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon/> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.firCopy)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color:"#560303"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon/> Preview
+                                    </button>
                                 </div>
                             </div>) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No FIR Copy uploaded</p>
@@ -506,10 +846,33 @@ function AdvocateResponse({ data, onUpdate }) {
                     {
                         formData.releaseOrderCopy ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.releaseOrderCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.releaseOrderCopy}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color:"green"
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon/> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.releaseOrderCopy)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color:"#560303"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon/> Preview
+                                    </button>
                                 </div>
                             </div>) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Release Order uploaded</p>
@@ -521,10 +884,33 @@ function AdvocateResponse({ data, onUpdate }) {
                     {
                         formData.indemnityBondCopy ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.indemnityBondCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.indemnityBondCopy}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color:'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon/> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.indemnityBondCopy)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color:"#560303"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon/> Preview
+                                    </button>
                                 </div>
                             </div>
                         ) : (
@@ -537,10 +923,33 @@ function AdvocateResponse({ data, onUpdate }) {
                     {
                         formData.petitionCopy ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.petitionCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.petitionCopy}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color:'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon/> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.petitionCopy)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color:"#560303"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon/> Preview
+                                    </button>
                                 </div>
                             </div>
                         ) : (
@@ -557,22 +966,129 @@ function AdvocateResponse({ data, onUpdate }) {
                     {
                         formData.policeReportCopy ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.policeReportCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
-                                    </a>
-                                </div>
+                            <div >
+                                <a
+                                    href={formData.policeReportCopy}
+                                    style={{
+                                        marginLeft: '10px',
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        color:'green'
+                                    }}
+                                    download
+                                >
+                                    <DownloadingOutlinedIcon/> Download
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={(e) => handlePreviewClick(e, formData.policeReportCopy)}
+                                    style={{
+                                        marginLeft: '10px',
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        border: 'none',
+                                        background: "white",
+                                        color:"#560303"
+                                    }}
+                                >
+                                    <RemoveRedEyeOutlinedIcon/> Preview
+                                </button>
                             </div>
+                        </div>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Police Report uploaded</p>
                         )
                     }
                 </label>
                 <label className="form-field">
+                POA (Power Of Attorney):
+                    {
+                        formData.POA ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                            <div >
+                                <a
+                                    href={formData.POA}
+                                    style={{
+                                        marginLeft: '10px',
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        color:'green'
+                                    }}
+                                    download
+                                >
+                                    <DownloadingOutlinedIcon/> Download
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={(e) => handlePreviewClick(e, formData.POA)}
+                                    style={{
+                                        marginLeft: '10px',
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        border: 'none',
+                                        background: "white",
+                                        color:"#560303"
+                                    }}
+                                >
+                                    <RemoveRedEyeOutlinedIcon/> Preview
+                                </button>
+                            </div>
+                        </div>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Police Report uploaded</p>
+                        )
+                    }
+                </label>
+                <label className="form-field">
+                Release Upload:
+                    {
+                        formData.releaseUpload ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                            <div >
+                                <a
+                                    href={formData.releaseUpload}
+                                    style={{
+                                        marginLeft: '10px',
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        color:'green'
+                                    }}
+                                    download
+                                >
+                                    <DownloadingOutlinedIcon/> Download
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={(e) => handlePreviewClick(e, formData.releaseUpload)}
+                                    style={{
+                                        marginLeft: '10px',
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        border: 'none',
+                                        background: "white",
+                                        color:"#560303"
+                                    }}
+                                >
+                                    <RemoveRedEyeOutlinedIcon/> Preview
+                                </button>
+                            </div>
+                        </div>
+                        ) : (
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Release uploaded</p>
+                        )
+                    }
+                </label>
+                
+            </div>
+
+            <div className='form-row'>
+            <label className="form-field">
                     Feedback:
                     <textarea name="feedback" className='inputField' value={formData.feedback} readOnly />
                 </label>
-                <label className='form-field'></label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
+
             </div>
             {action === "reject" && (
                 <div className="form-field" style={{ display: 'flex', gap: '20px' }}>

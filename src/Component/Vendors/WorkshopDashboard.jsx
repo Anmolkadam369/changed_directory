@@ -83,8 +83,8 @@ const WorkshopDashboard = ({ getData }) => {
     });
 
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         if (token === '' || userId === '') {
@@ -151,7 +151,7 @@ const WorkshopDashboard = ({ getData }) => {
     const fetchAssignedCases = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${userId}`);
-            console.log("Total assignedTasksMachanic", response.data.data);
+            console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {
             console.error("Failed to fetch assigned cases:", error);
@@ -235,7 +235,7 @@ const WorkshopDashboard = ({ getData }) => {
                 <title>Workshop Dashboard - Claimpro</title>
                 <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Mechanic Dashboard." />
                 <meta name="keywords" content="Workshop Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
-                <link rel='canonical' href={`https://claimpro.in/MachanicDashboard`} />
+                <link rel='canonical' href={`https://claimpro.in/MechanicDashboard`} />
             </Helmet>
 
             <main className="main-content">
@@ -267,6 +267,10 @@ const WorkshopDashboard = ({ getData }) => {
                                 <h3>Pending (Admin and Not Requested)</h3>
                                 <p>{adminPending}</p>
                             </div>
+
+                            </div>
+
+                            <div className="stat-container">
 
                             <div className="stat-item">
                                 <img src={vehicleIcon} className="small-image" alt="Vendor Types" />

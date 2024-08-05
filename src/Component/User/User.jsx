@@ -16,12 +16,11 @@ import { FaUserCircle } from 'react-icons/fa';
 import ConfirmationModal from '../ConfirmModel';
 import ImageUpload from '../ImageUpload/ImageUpload';
 import Registration from '../Registration/Registration';
-import Location from '../Location/Location';
 import Location1 from '../Location1/Location1';
 import { Alert } from '@mui/material';
 import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import backendUrl from '../../environment';
-import claimproassist from '../../Assets/claimproassist.jpg'
+import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
 import UserDashboard from '../Dashboard/UserDashboard';
@@ -68,8 +67,8 @@ const User = () => {
     const customerData = [40, 10];
     const customerLabels = ['total Days', 'Days by Each Vehicle'];
 
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
 
@@ -121,9 +120,9 @@ const User = () => {
     const handleCancelSignOut = () => { setModalOpen(false) };
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         console.log("USERID", userId);
         if (userId !== '') findUserById(userId);
     }, [token, userId, navigate]);

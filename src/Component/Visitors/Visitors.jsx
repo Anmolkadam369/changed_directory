@@ -15,7 +15,10 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { Helmet } from 'react-helmet-async';
-
+import { Button } from '@mui/material';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const Visitors = () => {
 
@@ -23,8 +26,8 @@ const Visitors = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [isClicked, setIsClicked] = useState(false)
     const [isOutClicked, setIsOutClicked] = useState(false)
     const [addVisitor, setAddVisitor] = useState(false)
@@ -35,6 +38,48 @@ const Visitors = () => {
     const [data, setdata] = useState([]);
     const [comingData, setComingData] = useState([]);
     const [currentTiming, setCurrentTiming] = useState("")
+
+
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+    const handleSetItemPerPage = (e) => {
+        setItemsPerPage(e.target.value);
+    };
+    const filteredData = data.filter(item =>
+        item.VisitorFirstName && item.VisitorFirstName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(totalPages, currentPage + 1);
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+    }
+
+
 
     const [editedFormData, setEditedFormData] = useState({
         systemDate: today,
@@ -190,8 +235,15 @@ const Visitors = () => {
 
         } catch (error) {
             console.error("Error during form submission:", error);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     }
 
@@ -237,8 +289,15 @@ const Visitors = () => {
 
         } catch (error) {
             console.error("Error during form submission:", error);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     }
 
@@ -318,28 +377,28 @@ const Visitors = () => {
 
     useEffect(() => {
         const handleResize = () => {
-          if (window.innerWidth <= 480) {
-            // document.querySelector('.visitor-container').classList.add('mobile');
-          } 
-          if (window.innerWidth <= 630) {
-            setWidth('60%');
-          }
-          else {
-            // document.querySelector('.visitor-container').classList.remove('mobile');
-            setWidth('100%');
-          }
+            if (window.innerWidth <= 480) {
+                // document.querySelector('.visitor-container').classList.add('mobile');
+            }
+            if (window.innerWidth <= 630) {
+                setWidth('60%');
+            }
+            else {
+                // document.querySelector('.visitor-container').classList.remove('mobile');
+                setWidth('100%');
+            }
         };
-    
+
         window.addEventListener('resize', handleResize);
-    
+
         // Initial check
         handleResize();
-    
+
         // Cleanup event listener on component unmount
         return () => {
-          window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', handleResize);
         };
-      }, []);
+    }, []);
 
     return (
         <div>
@@ -352,9 +411,9 @@ const Visitors = () => {
             </Helmet>
             {addVisitor && (
                 <div>
-                    <form onSubmit={handleSubmit} className="Customer-master-form" style={{width}}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
-                            <h3 style={{fontSize: "25px" , fontWeight: "bold"}}>Visitors Form</h3>
+                    <form onSubmit={handleSubmit} className="Customer-master-form" style={{ width }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
+                            <h3 style={{ fontSize: "25px", fontWeight: "bold" }}>Visitors Form</h3>
                             <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
                                 <CloseIcon />
                             </button>
@@ -486,233 +545,275 @@ const Visitors = () => {
             )}
 
             {showTable && (
-            <div className="Customer-master-form" style={{ padding: '20px', margin: '20px' }}>
-    <div className="visitor-container">
-      <h3 className="bigtitle">Visitor's Data</h3>
-      <button onClick={add} className="add-button">
-        Add New Visitor
-      </button>
-    </div>
+                <div className="Customer-master-form" style={{ padding: '20px', margin: '20px' }}>
+                    <div className="visitor-container">
+                        <h3 className="bigtitle">Visitor's Data</h3>
+                        <button onClick={add} className="add-button">
+                            Add New Visitor
+                        </button>
+                    </div>
+                    <div className="form-search" style={{marginTop:"20px"}}>
+                        <label className='label-class'>
+                            Search by Customer Name
+                            <input
+                                type="text"
+                                placeholder="Search by Customer Name"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                required
+                            />
+                        </label>
+                        <label className='label-class'>
+                            Number Of Items On Page
+                            <input
+                                type="number"
+                                placeholder="Items Show on Page"
+                                value={itemsPerPage}
+                                onChange={handleSetItemPerPage}
+                                required
+                            />
+                        </label>
+                        <label className='label-class'></label>
+                    </div>
 
 
-                <div>
-                    <div style={{ marginTop: "50px" }}>
-                        <div className='responsive-table' style={{ width }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-                                <thead>
-                                    <tr>
-                                        <th>Sr. No</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Phone No</th>
-                                        <th>Email Id</th>
-                                        <th>Edit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.length === 0 ? (
+                    <div>
+                        <div style={{ marginTop: "50px" }}>
+                            <div className='responsive-table' style={{ width }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                                    <thead>
                                         <tr>
-                                            <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Data...</td>
+                                            <th>Sr. No</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Phone No</th>
+                                            <th>Email Id</th>
+                                            <th>Edit</th>
                                         </tr>
-                                    ) : (
-                                        data.map((person, index) => (
-                                            <tr key={person} >
-                                                <td>{index + 1}</td>
-                                                <td>{person.VisitorFirstName || '---'}</td>
-                                                <td>{person.VisitorLastName || '---'}</td>
-                                                <td>{person.phoneNo || '---'}</td>
-                                                <td>{person.email || '---'}</td>
-                                                <td>
-                                                    <div>
-                                                        <button onClick={() => view(person.visitorId)} className='view-button' >View</button>
-                                                    </div>
-                                                </td>
+                                    </thead>
+                                    <tbody>
+                                        {currentItems.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Data...</td>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
+                                        ) : (
+                                            currentItems.map((person, index) => (
+                                                <tr key={person} >
+                                                    <td>{indexOfFirstItem + index + 1}</td>
+                                                    <td>{person.VisitorFirstName || '---'}</td>
+                                                    <td>{person.VisitorLastName || '---'}</td>
+                                                    <td>{person.phoneNo || '---'}</td>
+                                                    <td>{person.email || '---'}</td>
+                                                    <td>
+                                                        <div>
+                                                            <button onClick={() => view(person.visitorId)} className='view-button' >View</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="pagination">
+                                <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+                                    <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                                        <ArrowBack />
+                                    </Button>
+                                    {pageNumbers.map((pageNumber) => (
+                                        <Button
+                                            key={pageNumber}
+                                            onClick={() => handlePageChange(pageNumber)}
+                                            className={currentPage === pageNumber ? 'active' : ''}
+                                        >
+                                            {pageNumber}
+                                        </Button>
+                                    ))}
+                                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                        <ArrowForward />
+                                    </Button>
+                                </ButtonGroup>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>)}
+                </div>)}
 
             {editVisitor && (
-            
-            <div>            
-            <form className="Customer-master-form">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
-                    <h3 style={{fontSize: "25px" , fontWeight: "bold"}}>Visitors Edit Form</h3>
-                    <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
-                        <CloseIcon />
-                    </button>
-                </div>
 
-                <div className="form-row">
-                    <label className="form-field">
-                        System Date:
-                        <input
-                            type="date"
-                            name="systemDate"
-                            value={editedFormData.systemDate}
-                            onChange={handleChangeEdit}
-                            readOnly
-                            className="form-control"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Entry Time:
-                        {!isClicked && (
-                            <div
-                                className="form-control generate-button"
-                                // onClick={entryTimeEdit}
-                                disabled
-                            >
-                                {isLoading ? (
-                                    <ClipLoader color="#b3b3b3" loading={isLoading} />
-                                ) : (
-                                    <div>{editedFormData.VisitorsEntry}</div>
-
-                                )}
-                            </div>
-                        )}
-                        {isClicked && (
-                            <div className="form-control download-link">
-                                {editedFormData.VisitorsEntry}
-                            </div>
-                        )}
-                    </label>
-
-
-                    <label className="form-field">
-                        Visitors First Name:
-                        <input
-                            type="text"
-                            name="VisitorFirstName"
-                            placeholder=' Name'
-                            value={editedFormData.VisitorFirstName}
-                            onChange={handleChangeEdit}
-                            className="form-control"
-                            required
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Visitors Last Name:
-                        <input
-                            type="text"
-                            name="VisitorLastName"
-                            placeholder=' Name'
-                            value={editedFormData.VisitorLastName}
-                            onChange={handleChangeEdit}
-                            className="form-control"
-                            required
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Address  :
-                        <textarea
-                            name="VisitorAddress"
-                            value={editedFormData.VisitorAddress}
-                            onChange={handleChangeEdit}
-                            required
-                            className="form-control"
-                            placeholder='Address' />
-                    </label>
-
-                    <label className="form-field">
-                        Phone Number:
-                        <input
-                            type='tel'
-                            name="phoneNo"
-                            value={editedFormData.phoneNo}
-                            onChange={handleChangeEdit}
-                            placeholder=' Phone No'
-                            required
-                            pattern="\d{10}"
-                            title="Phone number must be exactly 10 digits"
-                            className="form-control"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        E-Mail:
-                        <input
-                            type="email"
-                            name="email"
-                            value={editedFormData.email}
-                            onChange={handleChangeEdit}
-                            placeholder='E-Mail'
-                            required
-                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                            title="Please enter a valid email address."
-                            className="form-control"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Reason  :
-                        <textarea
-                            name="Reason"
-                            value={editedFormData.Reason}
-                            onChange={handleChangeEdit}
-                            required
-                            className="form-control"
-                            placeholder='Reason' />
-                    </label>
-
-                    <label className="form-field">
-                        Out Time :
-                        {!isOutClicked && (
-                            <div
-                                className="form-control generate-button"
-                                onClick={outTimeEdit}
-                                name="VisitorOut"
-                                value={editedFormData.VisitorOut}
-                                onChange={handleChangeEdit}
-
-                            >
-                                {isLoading ? (
-                                    <ClipLoader color="#b3b3b3" loading={isLoading} />
-                                ) : (
-                                    'Out Time'
-                                )}
-                            </div>
-                        )}
-                        {isOutClicked && (
-                            <div className="form-control download-link">
-                                {editedFormData.VisitorOut}
-                            </div>
-                        )}
-                    </label>
-
-                </div>
-
-                {alertInfo.show && (
-                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                        {alertInfo.message}
-                    </Alert>
-                )}
-
-                <div style={{ textAlign: 'center' }}>
-                    <button type="submit" onClick={editFormSubmit}
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                        disabled={isLoading} // Disable button while loading
-                    >
-                        {isLoading ? 'Submitting...' : 'Submit'}
-                    </button>
-                    {isLoading && (
-                        <div style={{ marginTop: '10px' }}>
-                            <ClipLoader color="#4CAF50" loading={isLoading} />
-                            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                <div>
+                    <form className="Customer-master-form">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
+                            <h3 style={{ fontSize: "25px", fontWeight: "bold" }}>Visitors Edit Form</h3>
+                            <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
+                                <CloseIcon />
+                            </button>
                         </div>
-                    )}
-                </div>
 
-            </form>
-            </div>
+                        <div className="form-row">
+                            <label className="form-field">
+                                System Date:
+                                <input
+                                    type="date"
+                                    name="systemDate"
+                                    value={editedFormData.systemDate}
+                                    onChange={handleChangeEdit}
+                                    readOnly
+                                    className="form-control"
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Entry Time:
+                                {!isClicked && (
+                                    <div
+                                        className="form-control generate-button"
+                                        // onClick={entryTimeEdit}
+                                        disabled
+                                    >
+                                        {isLoading ? (
+                                            <ClipLoader color="#b3b3b3" loading={isLoading} />
+                                        ) : (
+                                            <div>{editedFormData.VisitorsEntry}</div>
+
+                                        )}
+                                    </div>
+                                )}
+                                {isClicked && (
+                                    <div className="form-control download-link">
+                                        {editedFormData.VisitorsEntry}
+                                    </div>
+                                )}
+                            </label>
+
+
+                            <label className="form-field">
+                                Visitors First Name:
+                                <input
+                                    type="text"
+                                    name="VisitorFirstName"
+                                    placeholder=' Name'
+                                    value={editedFormData.VisitorFirstName}
+                                    onChange={handleChangeEdit}
+                                    className="form-control"
+                                    required
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Visitors Last Name:
+                                <input
+                                    type="text"
+                                    name="VisitorLastName"
+                                    placeholder=' Name'
+                                    value={editedFormData.VisitorLastName}
+                                    onChange={handleChangeEdit}
+                                    className="form-control"
+                                    required
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Address  :
+                                <textarea
+                                    name="VisitorAddress"
+                                    value={editedFormData.VisitorAddress}
+                                    onChange={handleChangeEdit}
+                                    required
+                                    className="form-control"
+                                    placeholder='Address' />
+                            </label>
+
+                            <label className="form-field">
+                                Phone Number:
+                                <input
+                                    type='tel'
+                                    name="phoneNo"
+                                    value={editedFormData.phoneNo}
+                                    onChange={handleChangeEdit}
+                                    placeholder=' Phone No'
+                                    required
+                                    pattern="\d{10}"
+                                    title="Phone number must be exactly 10 digits"
+                                    className="form-control"
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                E-Mail:
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={editedFormData.email}
+                                    onChange={handleChangeEdit}
+                                    placeholder='E-Mail'
+                                    required
+                                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                    title="Please enter a valid email address."
+                                    className="form-control"
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Reason  :
+                                <textarea
+                                    name="Reason"
+                                    value={editedFormData.Reason}
+                                    onChange={handleChangeEdit}
+                                    required
+                                    className="form-control"
+                                    placeholder='Reason' />
+                            </label>
+
+                            <label className="form-field">
+                                Out Time :
+                                {!isOutClicked && (
+                                    <div
+                                        className="form-control generate-button"
+                                        onClick={outTimeEdit}
+                                        name="VisitorOut"
+                                        value={editedFormData.VisitorOut}
+                                        onChange={handleChangeEdit}
+
+                                    >
+                                        {isLoading ? (
+                                            <ClipLoader color="#b3b3b3" loading={isLoading} />
+                                        ) : (
+                                            'Out Time'
+                                        )}
+                                    </div>
+                                )}
+                                {isOutClicked && (
+                                    <div className="form-control download-link">
+                                        {editedFormData.VisitorOut}
+                                    </div>
+                                )}
+                            </label>
+
+                        </div>
+
+                        {alertInfo.show && (
+                            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                {alertInfo.message}
+                            </Alert>
+                        )}
+
+                        <div style={{ textAlign: 'center' }}>
+                            <button type="submit" onClick={editFormSubmit}
+                                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                                disabled={isLoading} // Disable button while loading
+                            >
+                                {isLoading ? 'Submitting...' : 'Submit'}
+                            </button>
+                            {isLoading && (
+                                <div style={{ marginTop: '10px' }}>
+                                    <ClipLoader color="#4CAF50" loading={isLoading} />
+                                    <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                                </div>
+                            )}
+                        </div>
+
+                    </form>
+                </div>
             )}
 
 

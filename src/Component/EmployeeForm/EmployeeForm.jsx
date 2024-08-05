@@ -26,8 +26,8 @@ const EmployeeForm = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -42,9 +42,9 @@ const EmployeeForm = () => {
     useEffect(() => {
         loadStates();
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
     }, [token, userId, navigate]);
 
 
@@ -333,9 +333,16 @@ const EmployeeForm = () => {
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
         } catch (error) {
             console.error("Error during form submission:", error);
-            const errorMessage = error.response?.data || 'An error occurred';
             setIsLoading(false);
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     };
 
@@ -379,7 +386,7 @@ const EmployeeForm = () => {
         const handleResize = () => {
             if (window.innerWidth <= 630) {
                 setMarginLeft('5x');
-                setPaddingLeft('20px')
+                setPaddingLeft('40px')
             } else {
                 setMarginLeft('30px');
                 setPaddingLeft("40px")

@@ -15,13 +15,13 @@ function Location({ vehicleData }) {
     // const vehicleData = vehicleData;
     // console.log("vehicalData", vehicleData)
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
     }, [token, userId, navigate]);
 
     return (

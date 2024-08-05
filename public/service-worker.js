@@ -14,6 +14,6 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow('https://your-website-url.com')
+    clients.openWindow('https://claimpro.in')
   );
 });

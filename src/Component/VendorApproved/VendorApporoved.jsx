@@ -15,9 +15,10 @@ import { Alert } from '@mui/material';
 import ActivationModel from '../Visitors/ActivationModel';
 import { Helmet } from 'react-helmet-async';
 import VendorMasterEdit from '../VenderMaster/VendorMasterEdit';
+import VendorPerformance from '../AAAAAAAAAAAAAAAAAA/VendorPerformnce';
 
 const VendorApproved = () => {
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info',timestamp: null });
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamp: null });
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [data, setData] = useState([]);
@@ -29,12 +30,19 @@ const VendorApproved = () => {
   const [marginLeft, setMarginLeft] = useState('30px');
   const [paddingLeft, setPaddingLeft] = useState('30px');
 
-  const [showVendorMasterEdit, setShowVendorMasterEdit] = useState(false)
+  const [showVendorMasterEdit, setShowVendorMasterEdit] = useState(false);
+  const [showPerformance, setShowPerformance] = useState(false);
+  const [showVendorTable, setShowVendorTable] = useState(true);
+
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedVendorCode, setSelectedVendorCode] = useState(null);
+  const [selectedVendorType, setSelectedVendorType] = useState(null);
+
+
   console.log("selectedID", selectedId)
   const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -99,6 +107,7 @@ const VendorApproved = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleSetItemPerPage = (e) => {
@@ -125,14 +134,29 @@ const VendorApproved = () => {
     }
   };
 
-    const view = (id) => {
-      setSelectedId(id);
-      setShowVendorMasterEdit(true)
-      // navigate("../VendorMasterEdit", { state: { id } });
-    }
-    const handleUpdate = () => {
-      setShowVendorMasterEdit(false); // Hide VendorMasterEdit
-    };
+  const view = (id) => {
+    setSelectedId(id);
+    setShowVendorMasterEdit(true)
+    setShowPerformance(false)
+    setShowVendorTable(false)
+  }
+
+  const viewPerformance = (id, type) => {
+    setSelectedVendorCode(id);
+    setSelectedVendorType(type);
+
+    console.log("DSFSDFFSDF")
+    setShowPerformance(true)
+    setShowVendorMasterEdit(false)
+    setShowVendorTable(false)
+  }
+
+
+  const handleUpdate = () => {
+    setShowVendorMasterEdit(false);
+    setShowPerformance(false)
+    setShowVendorTable(true)
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -168,145 +192,151 @@ const VendorApproved = () => {
 
   return (
     <div>
-    {!showVendorMasterEdit && (
-      <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
-      <Helmet>
-        <title>Vendor Information - Claimpro</title>
-        <meta name="description" content="Vendor Information Claimpro." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks, vendor service, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/VendorApporoved`}/>
-      </Helmet>
+      {showVendorTable && (
+        <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+          <Helmet>
+            <title>Vendor Information - Claimpro</title>
+            <meta name="description" content="Vendor Information Claimpro." />
+            <meta name="keywords" content="Vehicle Accidents, accident trucks, vendor service, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
+            <link rel='canonical' href={`https://claimpro.in/VendorApporoved`} />
+          </Helmet>
 
-      <div>
-        <h3 className="bigtitle">Vendor View / Edit</h3>
-        <div className="form-search">
-          <label className='label-class'>
-            Search by Vendor Name
-            <input
-              type="text"
-              placeholder="Search by Vendor Name"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              required
-            />
-          </label>
-          <label className='label-class'>
-            Number Of Items On Page
-            <input
-              type="number"
-              placeholder="Items Show on Page"
-              value={itemsPerPage}
-              onChange={handleSetItemPerPage}
-              required
-            />
-          </label>
-          <label className="label-class" style={{ marginTop: "20px" }}>
-            {!isGenerated && (
-              <div
-                className="form-control generate-button"
-                onClick={generateFile}
-              >
-                {isLoading ? (
-                  <ClipLoader color="#4CAF50" loading={isLoading} />
-                ) : (
-                  'Generate Excel File'
+          <div>
+            <h3 className="bigtitle">Vendor View / Edit</h3>
+            <div className="form-search">
+              <label className='label-class'>
+                Search by Vendor Name
+                <input
+                  type="text"
+                  placeholder="Search by Vendor Name"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  required
+                />
+              </label>
+              <label className='label-class'>
+                Number Of Items On Page
+                <input
+                  type="number"
+                  placeholder="Items Show on Page"
+                  value={itemsPerPage}
+                  onChange={handleSetItemPerPage}
+                  required
+                />
+              </label>
+              <label className="label-class" style={{ marginTop: "20px" }}>
+                {!isGenerated && (
+                  <div
+                    className="form-control generate-button"
+                    onClick={generateFile}
+                  >
+                    {isLoading ? (
+                      <ClipLoader color="#4CAF50" loading={isLoading} />
+                    ) : (
+                      'Generate Excel File'
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
-            {isGenerated && (
-              <a
-                href={generatedExcel}
-                className="form-control download-link"
-              >
-                Download Excel File
-              </a>
-            )}
-          </label>
-          
-        </div>
-      </div>
+                {isGenerated && (
+                  <a
+                    href={generatedExcel}
+                    className="form-control download-link"
+                  >
+                    Download Excel File
+                  </a>
+                )}
+              </label>
+
+            </div>
+          </div>
 
 
-      {alertInfo.show && (
-        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-          {alertInfo.message}
-        </Alert>
-      )}
-      <div className='responsive-table'>
-        <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Vendors Name</th>
-              <th>Vendor Email</th>
-              <th>Vendor Type</th>
-              <th>Edited By</th>
-              <th>View</th>
-              <th>Active/Deactive</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
-              </tr>
-            ) : (
-              currentItems.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{indexOfFirstItem + index + 1}</td>
-                  <td>{item.vendorName}</td>
-                  <td>{item.email}</td>
-                  <td>{item.vendorType}</td>
-                  <td>{item.EditedBy}</td>
-                  <td>
-                    <button onClick={() => view(item.id)} className='view-button'>View</button>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => openModal(item)}
-                      className="deactivate-button"
-                    >
-                      {item.isActive === "true" ? "Deactivate" : "Activate"}
-                    </button>
-                  </td>
+          {alertInfo.show && (
+            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+              {alertInfo.message}
+            </Alert>
+          )}
+          <div className='responsive-table'>
+            <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+              <thead>
+                <tr>
+                  <th>Sr. No.</th>
+                  <th>Vendors Name</th>
+                  <th>Vendor Email</th>
+                  <th>Vendor Type</th>
+                  <th>Edited By</th>
+                  <th>View</th>
+                  <th>Performance</th>
+                  <th>Action</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className="pagination">
-        <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
-          <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-            <ArrowBack />
-          </Button>
-          {pageNumbers.map((pageNumber) => (
-            <Button
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-              className={currentPage === pageNumber ? 'active' : ''}
-            >
-              {pageNumber}
-            </Button>
-          ))}
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-            <ArrowForward />
-          </Button>
-        </ButtonGroup>
-      </div>
+              </thead>
+              <tbody>
+                {currentItems.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                  </tr>
+                ) : (
+                  currentItems.map((item, index) => (
+                    <tr key={item.id}>
+                      <td>{indexOfFirstItem + index + 1}</td>
+                      <td>{item.vendorName}</td>
+                      <td>{item.email}</td>
+                      <td>{item.vendorType}</td>
+                      <td>{item.EditedBy}</td>
+                      <td>
+                        <button onClick={() => view(item.id)} className='view-button'>View</button>
+                      </td>
+                      <td>
+                        <button onClick={() => viewPerformance(item.vendorCode, item.vendorType)} className='view-button'>View</button>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => openModal(item)}
+                          className="deactivate-button"
+                        >
+                          {item.isActive === "true" ? "Deactivate" : "Activate"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="pagination">
+            <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+              <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                <ArrowBack />
+              </Button>
+              {pageNumbers.map((pageNumber) => (
+                <Button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  className={currentPage === pageNumber ? 'active' : ''}
+                >
+                  {pageNumber}
+                </Button>
+              ))}
+              <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                <ArrowForward />
+              </Button>
+            </ButtonGroup>
+          </div>
 
-      {modalData && (
-        <ActivationModel
-          isOpen={isModalOpen}
-          onConfirm={() => handleConfirm(modalData.vendorCode, modalData.isActive === "true" ? "false" : "true")}
-          onCancel={handleCancel}
-        />
+          {modalData && (
+            <ActivationModel
+              isOpen={isModalOpen}
+              onConfirm={() => handleConfirm(modalData.vendorCode, modalData.isActive === "true" ? "false" : "true")}
+              onCancel={handleCancel}
+            />
+          )}
+        </div>)}
+      {showVendorMasterEdit && (
+        <VendorMasterEdit id={selectedId} onUpdate={handleUpdate} />
       )}
-    </div>)}
-    {showVendorMasterEdit && 
-    (
-      <VendorMasterEdit id={selectedId} onUpdate={handleUpdate}/>
-    )}
+      {showPerformance && (
+        <VendorPerformance id={selectedVendorCode} type={selectedVendorType} onUpdate={handleUpdate} />
+      )}
     </div>
   );
 };

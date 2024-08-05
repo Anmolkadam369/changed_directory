@@ -14,7 +14,8 @@ import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
-
+import vendorInfo1 from '../../Assets/vendorInfo1.jpg'
+import vendorInfo2 from '../../Assets/vendorInfo2.jpg'
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -25,8 +26,8 @@ const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -39,7 +40,7 @@ const CustomerMaster = () => {
   const [location, setLocation] = useState(null);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
-  
+
   const handleSwitchChange = (event) => {
     setSingleCustomer(event.target.checked);
   };
@@ -86,38 +87,46 @@ const CustomerMaster = () => {
   };
 
 
-const getLocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition, showError);
-  } else {
-    setLocation("Geolocation is not supported by this browser.");
-  }
-};
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      setLocation("Geolocation is not supported by this browser.");
+    }
+  };
 
-const showPosition = (position) => {
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
-  setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
-  setLatitude(lat);
-  setLongitude(lon);
-};
+  const showPosition = (position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
+    setLatitude(lat);
+    setLongitude(lon);
+  };
 
-const showError = (error) => {
-  switch (error.code) {
-    case error.PERMISSION_DENIED:
-      setLocation("User denied the request for Geolocation.");
-      break;
-    case error.POSITION_UNAVAILABLE:
-      setLocation("Location information is unavailable.");
-      break;
-    case error.TIMEOUT:
-      setLocation("The request to get user location timed out.");
-      break;
-    case error.UNKNOWN_ERROR:
-      setLocation("An unknown error occurred.");
-      break;
-  }
-};
+  const showError = (error) => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setLocation("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setLocation("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        setLocation("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        setLocation("An unknown error occurred.");
+        break;
+    }
+  };
+
+  const handleLatitudeChange = (e) => {
+    setLatitude(e.target.value);
+  };
+
+  const handleLongitudeChange = (e) => {
+    setLongitude(e.target.value);
+  };
 
   const today = new Date().toISOString().split('T')[0];
   const [isRetail, setIsRetail] = useState(false);
@@ -144,17 +153,45 @@ const showError = (error) => {
     adharNo: '',
     adharCard: "",
     rate: "N/A",
-    GSTNo:"",
+    GSTNo: "N/A",
     fleetSize: "",
     plan: '',
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "", year: "", type: "", application: "", GVW: "", ULW: "", InsuranceName: "", choosenPlan: ""
   });
+
+  const fullAddress = `${formData.address}, ${formData.district}, ${formData.state}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
+  console.log("fullAddress", fullAddress)
 
   const [otherFormData, setOtherFormData] = useState({
     customersInfo: ''
   })
   console.log("otherformdata", otherFormData)
   console.log("FORMDATA", formData)
+
+
+  useEffect(() => {
+    const getLonLat = async () => {
+      try {
+        const response = await axios.get(url);
+        // if (response.data.length > 0) {
+        const location = response.data[0];
+        console.log("LOCATION", location)
+        setLatitude(location.lat);
+        setLongitude(location.lon);
+        setLocation(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
+        // } else {
+        //   setLocation("Geocoding was not successful. Please check the address.");
+        // }
+      } catch (error) {
+        // setLocation("An error occurred while fetching the coordinates.");
+      }
+    }
+    getLonLat()
+  }, [fullAddress])
+
+
+
 
   const handleSelect = (event, value) => {
     event.preventDefault();
@@ -178,8 +215,8 @@ const showError = (error) => {
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(formData)) {
-      if (key === 'panCard' || key === 'adharCard' || key === 'GST') {
-        if (value === null || value === undefined || (value && value.size === 0)) {
+      if (key === 'panCard' || key === 'adharCard') {
+        if (value === null || value === "" || value === undefined || (value && value.size === 0)) {
           return `Field '${key}' is required here.`;
         }
       }
@@ -189,7 +226,7 @@ const showError = (error) => {
 
     for (const [key, value] of Object.entries(formData)) {
 
- if (formData['CustomerType'] === 'retail') {
+      if (formData['CustomerType'] === 'retail') {
         const requiredFields = ['vehicleNo', 'chassisNo', 'engineNo', 'make', 'model', 'year', 'type', 'application', 'GVW', 'ULW', 'InsuranceName'];
         for (const field of requiredFields) {
           if (!formData[field]) {
@@ -208,6 +245,27 @@ const showError = (error) => {
       return 'Please enter a valid email address.';
     }
 
+    const phoneRegex =  /^[0-9]{10}$/
+    if (!phoneRegex.test(formData.CustomerPhone)) {
+      return 'Please enter a valid Customer Phone Number.';
+    }
+    if (!phoneRegex.test(formData.contactPersonNum)) {
+      console.log("contada", formData.contactPersonNum)
+      return 'Please enter a valid Contact Person Number.';
+    }
+    if (!phoneRegex.test(formData.contactPersonNum2)) {
+      return 'Please enter a valid Secondary Contact Person Number.';
+    }
+
+    const aadhaarRegex = /^\d{12}$/;
+    if (!aadhaarRegex.test(formData.adharNo)) {
+      return 'Please enter a valid Aadhaar Number.';
+    }
+  
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (!panRegex.test(formData.panNo)) {
+      return 'Please enter a valid PAN Number.';
+    }
     return '';
   };
 
@@ -243,11 +301,11 @@ const showError = (error) => {
           adharCard: adharCardRef,
           fleetSize: fleetSizeRef
         };
-  
+
         if (refs[name] && refs[name].current) {
           refs[name].current.value = "";
         }
-  
+
         setFormData(prevState => ({
           ...prevState,
           [name]: null
@@ -263,7 +321,7 @@ const showError = (error) => {
       loadCities(value);
       setFormData(prevState => ({ ...prevState, [name]: value }));
     }
-     else if (name === "pincode") {
+    else if (name === "pincode") {
       const validValue = value.replace(/\D/g, '').slice(0, 6);
       setFormData({
         ...formData,
@@ -285,7 +343,7 @@ const showError = (error) => {
       });
     }
 
-     else {
+    else {
       setFormData(prevState => ({
         ...prevState,
         [name]: value
@@ -301,9 +359,12 @@ const showError = (error) => {
       }
     }
   };
-  
+
 
   console.log("FORm", formData)
+  console.log("LATIIII", latitude)
+  console.log("LONGIIII", longitude)
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -313,6 +374,7 @@ const showError = (error) => {
       setIsLoading(false);
       return;
     }
+
     console.log('Form data submitted:', formData);
     setAlertInfo({ ...alertInfo, show: false });
 
@@ -330,7 +392,7 @@ const showError = (error) => {
     console.log("latitude", latitude, "longitiude", longitude, "location", location)
     if (latitude === "" || longitude === "" || location === "Geolocation is not supported by this browser.") {
       setAlertInfo({ show: true, message: "Please Give latitude and Longitude", severity: 'error' });
-      setIsLoading(false);
+      setIsLoading(true);
       return;
     }
 
@@ -351,13 +413,20 @@ const showError = (error) => {
         }
       })
       console.log("response", response.data);
-    setIsLoading(false);
+      setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
     } catch (error) {
       console.error('Error response:', error.response);
-      const errorMessage = error.response?.data || 'An error occurred';
-    setIsLoading(false);
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      setIsLoading(false);
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+          setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+          setTimeout(() => {
+              window.location.href = '/';
+          }, 2000);
+      } else {
+          setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      }
     }
   };
 
@@ -368,7 +437,7 @@ const showError = (error) => {
     const formDataObj = new FormData();
     for (const key in otherFormData) {
       if (otherFormData[key]) {
-          formDataObj.append(key, otherFormData[key], otherFormData[key].name);
+        formDataObj.append(key, otherFormData[key], otherFormData[key].name);
       }
     }
 
@@ -387,9 +456,16 @@ const showError = (error) => {
         navigate("../Admin");
       }, 2000);
     } catch (error) {
-      const errorMessage = error.response?.data || 'An error occurred';
       setIsLoading(false);
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      }
     }
 
   }
@@ -427,7 +503,7 @@ const showError = (error) => {
         <title>Customer Service - Claimpro</title>
         <meta name="description" content="Customer Service form" />
         <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/CustomerMaster`}/>
+        <link rel='canonical' href={`https://claimpro.in/CustomerMaster`} />
       </Helmet>
 
       <div className="switch-container">
@@ -442,8 +518,8 @@ const showError = (error) => {
 
 
       {!singleCustomer && (
-        <form onSubmit={handleExcelSubmit} className="Customer-master-form">
-          <div className="selected-container">
+        <form onSubmit={handleExcelSubmit} style={{ background: "#f1f1f1" }} className="Customer-master-form">
+          <div>
             <div class="header-container">
               <h3 class="bigtitle">Customer Excel File</h3>
               <span class="mandatory-note">All fields are mandatory</span>
@@ -463,7 +539,7 @@ const showError = (error) => {
                 <label className="form-field" onClick={toggleZoom1}>
                   have a look how structure looks :
                   <img
-                    // src={vendorInfo1}
+                    src={vendorInfo1}
                     alt="Dashboard Icon"
                     style={{
                       height: isZoomed1 ? '90%' : '45px',
@@ -481,7 +557,7 @@ const showError = (error) => {
                 <label className="form-field" onClick={toggleZoom2}>
                   have a look how structure looks for Rest of the Part :
                   <img
-                    // src={vendorInfo2}
+                    src={vendorInfo2}
                     alt="Dashboard Icon"
                     style={{
                       height: isZoomed2 ? '90%' : '45px',
@@ -505,7 +581,7 @@ const showError = (error) => {
             </Alert>
           )}
 
-          <div style={{ textAlign: 'center', marginTop:'30px' }}>
+          <div style={{ textAlign: 'center', marginTop: '30px' }}>
             <button type="submit"
               style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
               disabled={isLoading} // Disable button while loading
@@ -523,488 +599,511 @@ const showError = (error) => {
       )}
 
       {singleCustomer && (
-        <form onSubmit={handleSubmit} className="Customer-master-form">
+        <form onSubmit={handleSubmit}>
 
-        <div class="header-container">
-          <h3 class="bigtitle">Customer Master</h3>
-          <span class="mandatory-note">All fields are mandatory</span>
-        </div>
 
-        <div className='form-row'>
-          <label className="form-field input-group mb-3">
-            System Date:
-            <input
-              type="date"
-              name="systemDate"
-              value={formData.systemDate}
-              onChange={handleChange}
-              className="form-control"
-              readOnly
-            />
-          </label>
-          <label className="form-field input-group mb-3">
-            Accident Place - State:
-            <select
-              name="state"
-              onChange={handleChange}
-              disabled={isLoadingStates}
-              value={formData.state}>
-              <option value="">Select State</option>
-              {states.map(state => (
-                <option key={state.iso2} value={state.iso2}>{state.name}</option>
-              ))}
-            </select>
-          </label>
+          <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
 
-          <label className="form-field input-group mb-3">
-            Accident Place - City:
-            <select
-              name="district"
-              value={formData.district}
-              onChange={handleChange}
-              disabled={isLoadingCities || !formData.state}
-            >
-              <option value="">Select City</option>
-              {!cities.error && cities.map(city => (
-                <option key={city.iso2} value={city.iso2}>{city.name}</option>
-              ))}
-            </select>
-          </label>
-          <label className="form-field input-group mb-3 ">
-            Customer Code: {/* This might not be editable if it's system generated */}
-            <input
-              type="text"
-              name="CustomerCode"
-              value={formData.CustomerCode}
-              className="form-control"
-              readOnly
-            />
-          </label>
+            <div class="header-container">
+              <h3 class="bigtitle">Customer Master</h3>
+              <span class="mandatory-note">All fields are mandatory</span>
+            </div>
 
-        </div>
+            <div className='form-row'>
+              <label className="form-field input-group mb-3">
+                System Date:
+                <input
+                  type="date"
+                  name="systemDate"
+                  value={formData.systemDate}
+                  onChange={handleChange}
+                  className="form-control"
+                  readOnly
+                />
+              </label>
+              <label className="form-field input-group mb-3">
+                Accident Place - State:
+                <select
+                  name="state"
+                  onChange={handleChange}
+                  disabled={isLoadingStates}
+                  value={formData.state}>
+                  <option value="">Select State</option>
+                  {states.map(state => (
+                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                  ))}
+                </select>
+              </label>
 
-        <div className='form-row'>
+              <label className="form-field input-group mb-3">
+                Accident Place - City:
+                <select
+                  name="district"
+                  value={formData.district}
+                  onChange={handleChange}
+                  disabled={isLoadingCities || !formData.state}
+                >
+                  <option value="">Select City</option>
+                  {!cities.error && cities.map(city => (
+                    <option key={city.iso2} value={city.iso2}>{city.name}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="form-field input-group mb-3 ">
+                Customer Code: {/* This might not be editable if it's system generated */}
+                <input
+                  type="text"
+                  name="CustomerCode"
+                  value={formData.CustomerCode}
+                  className="form-control"
+                  readOnly
+                />
+              </label>
 
-        <label className="form-field input-group mb-3">
-            Customer Name:
-            <input
-              type="text"
-              name="CustomerName"
-              value={formData.CustomerName}
-              onChange={handleChange}
-              className="form-control"
-              placeholder='Customer Name'
-              required
-            />
-          </label>
+            </div>
 
-          <label className="form-field input-group mb-3">
-            Customer Type:
-            <select name="CustomerType" value={formData.CustomerType} onChange={handleChange} required>
-              <option value="">Select</option>
-              <option value="retail">Retail</option>
-              <option value="fleetOwner">Fleet Owner</option>
-            </select>
-          </label>
+            <div className='form-row'>
 
-          <label className="form-field">
-            Address  :
-            <textarea name="address" value={formData.address} className="form-control" placeholder='Address' onChange={handleChange} required />
-          </label>
+              <label className="form-field input-group mb-3">
+                Customer Name:
+                <input
+                  type="text"
+                  name="CustomerName"
+                  value={formData.CustomerName}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder='Customer Name'
+                  required
+                />
+              </label>
 
-          <label className="form-field">
-            Pincode:
-            <input
-              type='tel'
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              placeholder='Pincode'
-              required
-              pattern="\d{6}"
-              title="Pincode must be 6 digits"
-              className="form-control"
-            />
-          </label>
-        </div>
+              <label className="form-field input-group mb-3">
+                Customer Type:
+                <select name="CustomerType" value={formData.CustomerType} onChange={handleChange} required>
+                  <option value="">Select</option>
+                  <option value="retail">Retail</option>
+                  <option value="fleetOwner">Fleet Owner</option>
+                </select>
+              </label>
 
-        <div className='form-row'>
-          <label className="form-field">
-            Customer Phone No:
-            <input
-              type='tel'
-              name="CustomerPhone"
-              value={formData.CustomerPhone}
-              placeholder='Customer Phone No'
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="\d{10}"
-              title="Phone number must be 10 digits"
-            />
-          </label>
-          <label className="form-field">
-            E-Mail:
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-              title="Please enter a valid email address."
-            />
-          </label>
-          <label className="form-field">
-            Contact Person:
-            <input
-              type='text'
-              name="contactPerson"
-              value={formData.contactPerson}
-              onChange={handleChange}
-              className="form-control"
-              required />
-          </label>
-          <label className="form-field">
-            Contact Person Number:
-            <input
-              type='tel'
-              name="contactPersonNum"
-              value={formData.contactPersonNum}
-              onChange={handleChange}
-              placeholder='Contact Person Phone'
-              required
-              pattern="\d{10}"
-              className="form-control"
-              title="Phone number must be 10 digits" />
-          </label>
-        </div>
+              <label className="form-field">
+                Address  :
+                <textarea name="address" value={formData.address} className="form-control" placeholder='Address' onChange={handleChange} required />
+              </label>
 
-        <div className='form-row'>
-        <label className="form-field">
-            Contact Person Number 2 :
-            <input
-              type='tel'
-              name="contactPersonNum2"
-              value={formData.contactPersonNum2}
-              placeholder='Contact Person Phone'
-              onChange={handleChange}
-              required
-              pattern="\d{10}"
-              title="Phone number must be 10 digits"
-              className="form-control"
+              <label className="form-field">
+                Pincode:
+                <input
+                  type='tel'
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder='Pincode'
+                  required
+                  pattern="\d{6}"
+                  title="Pincode must be 6 digits"
+                  className="form-control"
+                />
+              </label>
+            </div>
 
-            />
-          </label>
-          <label className="form-field">
-            PAN Number:
-            <input
-              type='text'
-              name="panNo"
-              placeholder='Pan Card Number'
-              value={formData.panNo}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-              title="Please enter a valid PAN number (e.g., ABCDE1234F)."
-            />
-          </label>
-          <label className="form-field">
-            PAN Card :
-            <input
-              type='file'
-              name="panCard"
-              // value={formData.panCard}
-              onChange={handleChange}
-              className="form-control"
-              ref={panRef}
-              accept=".pdf,image/*"
-              required />
-          </label>
-          <label className="form-field">
-            Aadhaar Number:
-            <input
-              type='text'
-              name="adharNo"
-              placeholder='Aadhaar Card Number'
-              value={formData.adharNo}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="\d{12}"
-              title="Aadhaar number must be exactly 12 digits."
-            />
-          </label>
-        </div>
+            <div className='form-row'>
+              <label className="form-field">
+                Customer Phone No:
+                <input
+                  type='tel'
+                  name="CustomerPhone"
+                  value={formData.CustomerPhone}
+                  placeholder='Customer Phone No'
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="\d{10}"
+                  title="Phone number must be 10 digits"
+                />
+              </label>
+              <label className="form-field">
+                E-Mail:
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                  title="Please enter a valid email address."
+                />
+              </label>
+              <label className="form-field">
+                Contact Person:
+                <input
+                  type='text'
+                  name="contactPerson"
+                  value={formData.contactPerson}
+                  onChange={handleChange}
+                  className="form-control"
+                  required />
+              </label>
+              <label className="form-field">
+                Contact Person Number:
+                <input
+                  type='tel'
+                  name="contactPersonNum"
+                  value={formData.contactPersonNum}
+                  onChange={handleChange}
+                  placeholder='Contact Person Phone'
+                  required
+                  pattern="\d{10}"
+                  className="form-control"
+                  title="Phone number must be 10 digits" />
+              </label>
+            </div>
 
-        <div className='form-row'>
-          <label className="form-field">
-            Adhar Card:
-            <input
-              type='file'
-              name="adharCard"
-              // value={formData.adharCard}
-              onChange={handleChange}
-              ref={adharCardRef}
-              className="form-control"
-              accept=".pdf,image/*"
-              required />
-          </label>
-          <label className="form-field">
-            GST Number:
-            <input
-              type='text'
-              name="GSTNo"
-              placeholder='GST Number'
-              value={formData.GSTNo}
-              onChange={handleChange}
-              className="form-control"
-              required
-              pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
-              title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
-            />
-          </label>
+            <div className='form-row'>
+              <label className="form-field">
+                Contact Person Number 2 :
+                <input
+                  type='tel'
+                  name="contactPersonNum2"
+                  value={formData.contactPersonNum2}
+                  placeholder='Contact Person Phone'
+                  onChange={handleChange}
+                  required
+                  pattern="\d{10}"
+                  title="Phone number must be 10 digits"
+                  className="form-control"
 
-          <label className="form-field">
-            GSTIN :
-            <input
-              type='file'
-              name="GST"
-              // value={formData.GST}
-              ref={GSTRef}
-              onChange={handleChange}
-              accept=".pdf,image/*"
-              className="form-control"
-              required />
-          </label>
-          
-          <div className="dropdown green-dropdown form-field">
-            <button
-              className="form-field input-group mb-3"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded={showDropdown}
-              onClick={toggleDropdown}
-            >
-              {formData.choosenPlan || "Select Plan"}
-            </button>
-            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "pro")}>Pro Plan</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "plus")}>Plus Plan</a></li>
-              <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advanced")}>Advanced Plan</a></li>
-            </ul>
+                />
+              </label>
+              <label className="form-field">
+                PAN Number:
+                <input
+                  type='text'
+                  name="panNo"
+                  placeholder='Pan Card Number'
+                  value={formData.panNo}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                  title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+                />
+              </label>
+              <label className="form-field">
+                PAN Card :
+                <input
+                  type='file'
+                  name="panCard"
+                  // value={formData.panCard}
+                  onChange={handleChange}
+                  className="form-control"
+                  ref={panRef}
+                  accept=".pdf,image/*"
+                  required />
+              </label>
+              <label className="form-field">
+                Aadhaar Number:
+                <input
+                  type='text'
+                  name="adharNo"
+                  placeholder='Aadhaar Card Number'
+                  value={formData.adharNo}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="\d{12}"
+                  title="Aadhaar number must be exactly 12 digits."
+                />
+              </label>
+            </div>
+
+            <div className='form-row'>
+              <label className="form-field">
+                Adhar Card:
+                <input
+                  type='file'
+                  name="adharCard"
+                  // value={formData.adharCard}
+                  onChange={handleChange}
+                  ref={adharCardRef}
+                  className="form-control"
+                  accept=".pdf,image/*"
+                  required />
+              </label>
+              <label className="form-field">
+                GST Number:
+                <input
+                  type='text'
+                  name="GSTNo"
+                  placeholder='GST Number'
+                  value={formData.GSTNo}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
+                  title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
+                />
+              </label>
+
+              <label className="form-field">
+                GSTIN :
+                <input
+                  type='file'
+                  name="GST"
+                  // value={formData.GST}
+                  ref={GSTRef}
+                  onChange={handleChange}
+                  accept=".pdf,image/*"
+                  className="form-control"
+                />
+              </label>
+
+              <div className="dropdown green-dropdown form-field">
+                Select Plan :
+                <button
+                  className="form-field input-group mb-3"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded={showDropdown}
+                  onClick={toggleDropdown}
+                >
+                  {formData.choosenPlan || "Select Plan"}
+                </button>
+                <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "pro")}>Pro Plan</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "plus")}>Plus Plan</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advanced")}>Advanced Plan</a></li>
+                </ul>
+              </div>
+            </div>
+          </form>
+
+          <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
+            <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
+            Send Your Current Location (if it's same for filling address):
+            <div className='form-row'>
+              <label className='form-field'>
+                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+              </label>
+            </div>
+
+            Send Location Of Address (this is by your address):
+            <div className='form-row'>
+              <label className='form-field'>
+                Latitude:
+                <input type="text" value={latitude} onChange={handleLatitudeChange} />
+              </label>
+              <label className='form-field'>
+                Longitude:
+                <input type="text" value={longitude} onChange={handleLongitudeChange} />
+              </label>
+              <label className='form-field'></label>
+            </div>
+            {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
+          </form>
+          <div>
+
+            {isFleetOwner && (
+              <div className="selected-container">
+                <div class="header-container">
+                  <h3 class="bigtitle">Fleet Owner</h3>
+                  <span class="mandatory-note">All fields are mandatory</span>
+                </div>
+                <div className='form-row'>
+                  <label className="form-field">
+                    Fleet : (only Excel files should be inserted)
+                    <input
+                      type='file'
+                      name="fleetSize"
+                      ref={fleetSizeRef}
+                      onChange={handleChange}
+                      className="form-control"
+                      required />
+                  </label>
+                  <div className={isZoomed ? "overlay" : ""}>
+                    <label className="form-field" onClick={toggleZoom}>
+                      have a look how structure looks :
+                      <img
+                        src={demoexcel}
+                        alt="Dashboard Icon"
+                        style={{
+                          height: isZoomed ? '90%' : '45px',
+                          width: isZoomed ? '90%' : '80%',
+                          marginRight: '8px',
+                          marginLeft: "8px",
+                          transition: 'transform 0.3s ease',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </label>
+                  </div>
+
+
+                </div>
+              </div>
+            )}
+
           </div>
-        </div>
 
-        <div className='form-row'>
-            <label className='form-field'>
-              <Button variant="contained" onClick={getLocation}>Send Location</Button>
-            </label>
-          </div>
-          {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
-
-        <div>
-
-          {isFleetOwner && (
+          {isRetail && (
             <div className="selected-container">
               <div class="header-container">
-                <h3 class="bigtitle">Fleet Owner</h3>
+                <h3 class="bigtitle">Retail Owner</h3>
                 <span class="mandatory-note">All fields are mandatory</span>
               </div>
-              <div className='form-row'>
-                <label className="form-field">
-                  Fleet : (only Excel files should be inserted)
-                  <input
-                    type='file'
-                    name="fleetSize"
-                    ref={fleetSizeRef}
-                    onChange={handleChange}
-                    className="form-control"
-                    required />
-                </label>
-                <div className={isZoomed ? "overlay" : ""}>
-                  <label className="form-field" onClick={toggleZoom}>
-                  have a look how structure looks : 
-                    <img
-                      src={demoexcel}
-                      alt="Dashboard Icon"
-                      style={{
-                        height: isZoomed ? '90%' : '45px',
-                        width: isZoomed ? '90%' : '80%',
-                        marginRight: '8px',
-                        marginLeft: "8px",
-                        transition: 'transform 0.3s ease', 
-                        cursor: 'pointer' 
-                      }}
-                    />
+              <div>
+                <div className='form-row'>
+                  <label className="form-field">
+                    Vehical Number:
+                    <input
+                      type='text'
+                      name="vehicleNo"
+                      value={formData.vehicleNo}
+                      onChange={handleChange}
+                      required />
                   </label>
+
+                  <label className="form-field">
+                    Chassis Number:
+                    <input
+                      type='text'
+                      name="chassisNo"
+                      value={formData.chassisNo}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                  <label className="form-field">
+                    Engine Number:
+                    <input
+                      type='text'
+                      name="engineNo"
+                      value={formData.engineNo}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
                 </div>
 
+                <div className='form-row'>
+                  <label className="form-field">
+                    Make:
+                    <input
+                      type='text'
+                      name="make"
+                      value={formData.make}
+                      onChange={handleChange}
+                      required />
+                  </label>
 
+                  <label className="form-field">
+                    Model:
+                    <input
+                      type='text'
+                      name="model"
+                      value={formData.model}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                  <label className="form-field">
+                    Year:
+                    <input
+                      type='text'
+                      name="year"
+                      value={formData.year}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                </div>
+
+                <div className='form-row'>
+                  <label className="form-field">
+                    Type:
+                    <input
+                      type='text'
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                  <label className="form-field">
+                    Application:
+                    <input
+                      type='text'
+                      name="application"
+                      value={formData.application}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                  <label className="form-field">
+                    GVW:
+                    <input
+                      type='text'
+                      name="GVW"
+                      value={formData.GVW}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                </div>
+
+                <div className='form-row'>
+                  <label className="form-field">
+                    ULW:
+                    <input
+                      type='text'
+                      name="ULW"
+                      value={formData.ULW}
+                      onChange={handleChange}
+                      required />
+                  </label>
+
+                  <label className="form-field">
+                    InsuranceName:
+                    <input
+                      type='text'
+                      name="InsuranceName"
+                      value={formData.InsuranceName}
+                      onChange={handleChange}
+                      required />
+                  </label>
+                  <label className="form-field"></label>
+                </div>
               </div>
             </div>
           )}
 
-        </div>
-
-        {isRetail && (
-          <div className="selected-container">
-            <div class="header-container">
-              <h3 class="bigtitle">Retail Owner</h3>
-              <span class="mandatory-note">All fields are mandatory</span>
+          {alertInfo.show && (
+            <div style={{ marginTop: "20px" }}>
+              <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                {alertInfo.message}
+              </Alert>
             </div>
-            <div>
-              <div className='form-row'>
-                <label className="form-field">
-                  Vehical Number:
-                  <input
-                    type='text'
-                    name="vehicleNo"
-                    value={formData.vehicleNo}
-                    onChange={handleChange}
-                    required />
-                </label>
+          )}
 
-                <label className="form-field">
-                  Chassis Number:
-                  <input
-                    type='text'
-                    name="chassisNo"
-                    value={formData.chassisNo}
-                    onChange={handleChange}
-                    required />
-                </label>
 
-                <label className="form-field">
-                  Engine Number:
-                  <input
-                    type='text'
-                    name="engineNo"
-                    value={formData.engineNo}
-                    onChange={handleChange}
-                    required />
-                </label>
-
+          <div style={{ textAlign: 'center', marginTop: "40px" }}>
+            <button type="submit"
+              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              disabled={isLoading} // Disable button while loading
+            >
+              {isLoading ? 'Submitting...' : 'Submit'}
+            </button>
+            {isLoading && (
+              <div style={{ marginTop: '10px' }}>
+                <ClipLoader color="#4CAF50" loading={isLoading} />
+                <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
               </div>
-
-              <div className='form-row'>
-                <label className="form-field">
-                  Make:
-                  <input
-                    type='text'
-                    name="make"
-                    value={formData.make}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-                <label className="form-field">
-                  Model:
-                  <input
-                    type='text'
-                    name="model"
-                    value={formData.model}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-                <label className="form-field">
-                  Year:
-                  <input
-                    type='text'
-                    name="year"
-                    value={formData.year}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-              </div>
-
-              <div className='form-row'>
-                <label className="form-field">
-                  Type:
-                  <input
-                    type='text'
-                    name="type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-                <label className="form-field">
-                  Application:
-                  <input
-                    type='text'
-                    name="application"
-                    value={formData.application}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-                <label className="form-field">
-                  GVW:
-                  <input
-                    type='text'
-                    name="GVW"
-                    value={formData.GVW}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-              </div>
-
-              <div className='form-row'>
-                <label className="form-field">
-                  ULW:
-                  <input
-                    type='text'
-                    name="ULW"
-                    value={formData.ULW}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-                <label className="form-field">
-                  InsuranceName:
-                  <input
-                    type='text'
-                    name="InsuranceName"
-                    value={formData.InsuranceName}
-                    onChange={handleChange}
-                    required />
-                </label>
-
-              </div>
-            </div>
+            )}
           </div>
-        )}
-
-        {alertInfo.show && (
-          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-            {alertInfo.message}
-          </Alert>
-        )}
-
-
-<div style={{ textAlign: 'center' }}>
-        <button type="submit"
-          style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-          disabled={isLoading} // Disable button while loading
-        >
-          {isLoading ? 'Submitting...' : 'Submit'}
-        </button>
-        {isLoading && (
-          <div style={{ marginTop: '10px' }}>
-            <ClipLoader color="#4CAF50" loading={isLoading} />
-            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
-          </div>
-        )}
-      </div>
-      </form>
-    )}
+        </form>
+      )}
     </div>
   );
 };

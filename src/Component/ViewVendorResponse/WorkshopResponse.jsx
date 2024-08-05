@@ -12,13 +12,16 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
 import ActivationModel from '../Visitors/ActivationModel';
 import { ClipLoader } from 'react-spinners'; //added
-
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import Modal from 'react-modal';
 
 function WorkshopResponse({ data, onUpdate }) {
     const location = useLocation();
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [action, setAction] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
@@ -28,6 +31,80 @@ function WorkshopResponse({ data, onUpdate }) {
     const [marginLeft, setMarginLeft] = useState('30px');
     const [padding, setPaddingLeft] = useState('30px');
     const [width, setWidth] = useState('100%');
+
+    const generateOfficePreviewLink = (fileUrl) => {
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+      };
+      
+      const generateGooglePreviewLink = (fileUrl) => {
+        return `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+      };
+      
+      const handlePreviewClick = (e, fileUrl) => {
+        e.stopPropagation();
+        const fileExtension = fileUrl.split('.').pop().toLowerCase();
+        let previewLink;
+        if (fileExtension === 'pdf') {
+          previewLink = generateGooglePreviewLink(fileUrl);
+        } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExtension)) {
+          previewLink = generateOfficePreviewLink(fileUrl);
+        } else {
+          alert('Preview not available for this file type.');
+          return;
+        }
+        window.open(previewLink, '_blank');
+      };
+
+    const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
+    const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
+    const [isFrontLHModalOpen, setIsFrontLHModalOpen] = useState(false);
+    const [isFrontRHModalOpen, setIsFrontRHModalOpen] = useState(false);
+
+    const [isFrontViewModalOpen, setIsFrontViewModalOpen] = useState(false);
+    const [isRearRHModalOpen, setIsRearRHModalOpen] = useState(false);
+    const [isRearLHModalOpen, setIsRearLHModalOpen] = useState(false);
+    const [isMajorDamage1ModalOpen, setIsMajorDamage1ModalOpen] = useState(false);
+
+    const [isMajorDamage2ModalOpen, setIsMajorDamage2ModalOpen] = useState(false);
+    const [isMajorDamage3ModalOpen, setIsMajorDamage3ModalOpen] = useState(false);
+    const [isMajorDamage4ModalOpen, setIsMajorDamage4ModalOpen] = useState(false);
+    const [isMajorDamage5ModalOpen, setIsMajorDamage5ModalOpen] = useState(false);
+
+    const openChassisModal = () => setIsChassisModalOpen(true);
+    const closeChassisModal = () => setIsChassisModalOpen(false);
+
+    const openClusterModal = () => setIsClusterModalOpen(true);
+    const closeClusterModal = () => setIsClusterModalOpen(false);
+
+    const openFrontLHModal = () => setIsFrontLHModalOpen(true);
+    const closeFrontLHModal = () => setIsFrontLHModalOpen(false);
+
+    const openFrontRHModal = () => setIsFrontRHModalOpen(true);
+    const closeFrontRHModal = () => setIsFrontRHModalOpen(false);
+
+    const openFrontViewModal = () => setIsFrontViewModalOpen(true);
+    const closeFrontViewModal = () => setIsFrontViewModalOpen(false);
+
+    const openRearRHModal = () => setIsRearRHModalOpen(true);
+    const closeRearRHModal = () => setIsRearRHModalOpen(false);
+
+    const openRearLHModal = () => setIsRearLHModalOpen(true);
+    const closeRearLHModal = () => setIsRearLHModalOpen(false);
+
+    const openMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(true);
+    const closeMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(false);
+
+    const openMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(true);
+    const closeMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(false);
+
+    const openMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(true);
+    const closeMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(false);
+
+    const openMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(true);
+    const closeMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(false);
+
+    const openMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(true);
+    const closeMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(false);
 
     const openModal = (item) => {
         setModalData(item);
@@ -64,7 +141,7 @@ function WorkshopResponse({ data, onUpdate }) {
         reasonOfReject: ""
 
     };
-    const [formData, setFormData] = useState(initialData);
+    const [formData, setFormData] = useState(initialData[0]);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
     // Redirect if no valid token or userId
@@ -113,8 +190,15 @@ function WorkshopResponse({ data, onUpdate }) {
             }
         } catch (error) {
             console.error('Error response:', error.response);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     };
 
@@ -135,8 +219,15 @@ function WorkshopResponse({ data, onUpdate }) {
             }
         } catch (error) {
             console.error('Error response:', error);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     }
 
@@ -191,8 +282,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.ChassisNoView}
                                     alt="Front LH"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openChassisModal}
                                 />
-
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.ChassisNoView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeChassisModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.ChassisNoView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -212,7 +316,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.ClusterView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openClusterModal}
                                 />
+                                <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.ClusterView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeClusterModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -232,7 +350,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.frontLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openFrontLHModal}
                                 />
+                                <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.frontLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.frontLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -257,7 +389,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.frontRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openFrontRHModal}
                                 />
+                                <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.frontRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.frontRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -277,8 +423,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.frontView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openFrontViewModal}
                                 />
-
+                                <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.frontView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontViewModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.frontView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -298,7 +457,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.rearLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openRearLHModal}
                                 />
+                                <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.rearLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.rearLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -322,7 +495,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.rearRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openRearRHModal}
                                 />
+                                <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.rearRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.rearRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -343,8 +530,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages1}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage1Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages1} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p style={{
@@ -364,7 +564,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages2}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage2Modal}
                                 />
+                                <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages2} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -388,7 +602,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages3}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage3Modal}
                                 />
+                                <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages3} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -409,7 +637,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages4}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage4Modal}
                                 />
+                                <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages4} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -430,7 +672,21 @@ function WorkshopResponse({ data, onUpdate }) {
                                     src={formData.MajorDamages5}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    onClick={openMajorDamage5Modal}
                                 />
+                                <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={formData.MajorDamages5} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={formData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
 
                             </>
                         ) : (
@@ -448,43 +704,98 @@ function WorkshopResponse({ data, onUpdate }) {
                 <div class="header-container">
                     <h3 class="bigtitle">Data Uploaded by Workshop</h3>
                     <h5 style={{
-                                color: 'green',
-                                // fontStyle: 'italic',
-                                fontSize: '15px',
-                                marginLeft:'20px',
-                                marginTop:"10px",
-                                textAlign: 'center'
-                                
-                            }}>Last Updated On : {formData.updateResponseOn ? formData.updateResponseOn : formData.firstResponseOn}</h5>
+                        color: 'green',
+                        // fontStyle: 'italic',
+                        fontSize: '15px',
+                        marginLeft: '20px',
+                        marginTop: "10px",
+                        textAlign: 'center'
+
+                    }}>Last Updated On : {formData.updateResponseOn ? formData.updateResponseOn : formData.firstResponseOn}</h5>
                 </div>
                 <div className='form-row'>
                     <label className="form-field">
                         agreement CPA:
-                        {
-                            formData.agreementCPA ? (
-                                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.agreementCPA} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
-                                <p className='notUploaded' style={{ marginTop: "20px" }}>No CPA Agreement uploaded</p>
-                            )
-
-                        }
+                        {formData.agreementCPA ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div >
+                                    <a
+                                        href={formData.agreementCPA}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.agreementCPA)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="notUploaded" >No CPA Agreement uploaded</p>
+                        )}
                     </label>
                     <label className="form-field">
                         All Bill Copy:
                         {
                             formData.allBillCopy ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.allBillCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
+                                <div >
+                                    <a
+                                        href={formData.allBillCopy}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.allBillCopy)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>
+                                ) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Bill Copy uploaded</p>
                             )
                         }
@@ -494,12 +805,40 @@ function WorkshopResponse({ data, onUpdate }) {
                         {
                             formData.deadlineSheet ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.deadlineSheet} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
+                                <div >
+                                    <a
+                                        href={formData.deadlineSheet}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.deadlineSheet)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Deadline Sheet uploaded</p>
                             )
                         }
@@ -521,12 +860,40 @@ function WorkshopResponse({ data, onUpdate }) {
                         {
                             formData.estimateGiven ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.estimateGiven} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
+                                <div >
+                                    <a
+                                        href={formData.estimateGiven}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.estimateGiven)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Estimate uploaded</p>
                             )
                         }
@@ -561,12 +928,40 @@ function WorkshopResponse({ data, onUpdate }) {
                         {
                             formData.preApproval ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.preApproval} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
+                                <div >
+                                    <a
+                                        href={formData.preApproval}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.preApproval)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Pre Approval uploaded</p>
                             )
                         }
@@ -583,12 +978,40 @@ function WorkshopResponse({ data, onUpdate }) {
                         {
                             formData.supplementryEstimate ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.supplementryEstimate} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
+                                <div >
+                                    <a
+                                        href={formData.supplementryEstimate}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.supplementryEstimate)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Supplementry Estimate uploaded</p>
                             )
                         }
@@ -598,12 +1021,40 @@ function WorkshopResponse({ data, onUpdate }) {
                         {
                             formData.vehicleHandover ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div style={{ marginTop: "20px" }}>
-                                        <a href={formData.vehicleHandover} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                            Download
-                                        </a>
-                                    </div>
-                                </div>) : (
+                                <div >
+                                    <a
+                                        href={formData.vehicleHandover}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                        }}
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.vehicleHandover)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '10px 30px',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            backgroundColor: 'lightgrey',
+                                            color: 'white',
+                                            marginTop: '20px',
+                                        }}
+                                    >
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Vehicle Handover Document Uploaded</p>
                             )
                         }

@@ -32,10 +32,10 @@ const MapComponent = ({accidentLocation1, additionalInfo}) => {
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     iconRetinaUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-    iconSize: [20, 35],
+    iconSize: [10, 20],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+    shadowSize: [20, 30]
 });
 
   function haversine(lat1, lon1, lat2, lon2) {
@@ -57,7 +57,7 @@ const MapComponent = ({accidentLocation1, additionalInfo}) => {
     return distance;
   }
   
-  const accidentLocation = { lat: accidentLocation1.latitude || 19.6967, lon: accidentLocation1.longitude || 72.7699 };
+  const accidentLocation = { lat: accidentLocation1.accidentLatitude || 19.6967, lon: accidentLocation1.accidentLongitude || 72.7699 };
   
   const findNearestVendors = (accidentLocation, vendors, maxDistance) => {
     if (!Array.isArray(vendors)) return [];
@@ -90,7 +90,7 @@ const MapComponent = ({accidentLocation1, additionalInfo}) => {
 
   return (
     <div className="map-container" style={{ height: '450px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
-    <MapContainer center={[accidentLocation.lat, accidentLocation.lon]} zoom={13} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
+    <MapContainer center={[accidentLocation.lat, accidentLocation.lon]} zoom={6} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

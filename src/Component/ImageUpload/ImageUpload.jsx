@@ -19,8 +19,8 @@ function ImageUpload({ id, onUpdate }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'error' });
     const [showServices, setShowServices] = useState(true);
     const [formData, setFormData] = useState({});
@@ -54,9 +54,9 @@ function ImageUpload({ id, onUpdate }) {
     const [photoPreviews, setPhotoPreviews] = useState({});
 
     useEffect(() => {
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
     }, [token, userId, navigate]);
 
     useEffect(() => {
@@ -137,7 +137,16 @@ function ImageUpload({ id, onUpdate }) {
             }
         } catch (error) {
             console.error("Error uploading photos:", error);
-            setSnackbarMessage("An error occurred while uploading photos.");
+            setOpenSnackbar(true);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setSnackbarMessage("Your session has expired. Redirecting to login...");
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setSnackbarMessage("An error occurred while uploading photos.");
+            }
         } finally {
             setOpenSnackbar(true);
             setIsSubmitting(false);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../CustomerMaster/CustomerMaster.css'
+import '../VenderMaster/VendorMasterForm.css'
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,8 +32,8 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const today = new Date().toISOString().split('T')[0];
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [comingData, setComingData] = useState([]);
     const location = useLocation();
     // const { id } = location.state || {};
@@ -127,9 +127,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     useEffect(() => {
         loadStates();
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         getDataById(id)
     }, [token, userId, navigate]);
 
@@ -548,9 +548,16 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
             })
         } catch (error) {
             console.error("Error during form submission:", error);
-            const errorMessage = error.response?.data || 'An error occurred';
             setIsLoading(false);
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     };
 
@@ -576,9 +583,15 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 630) {
+            if (window.innerWidth <= 325) {
+                setMarginLeft('5px');
+                setPaddingLeft('5px')
+            }else if(window.innerWidth <= 360){
+                setMarginLeft('10px');
+                setPaddingLeft('15px')
+            }else if(window.innerWidth <= 405){
                 setMarginLeft('15px');
-                setPaddingLeft('30px')
+                setPaddingLeft('25px')
             } else {
                 setMarginLeft('30px');
                 setPaddingLeft("40px")
@@ -726,7 +739,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                     <label className="form-field input-group mb-3">
                         Contact No:
                         <input
-                            type="tel"
+                            type="text"
                             name="contactNo"
                             placeholder='Contact No'
                             value={formData.contactNo}
@@ -740,7 +753,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                     <label className="form-field input-group mb-3">
                         Alternative No:
                         <input
-                            type="tel"
+                            type="text"
                             name="alternativeNo"
                             placeholder='Alternative Contact No'
                             value={formData.alternativeNo}
@@ -1576,7 +1589,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openProfilePictureModal}
                                     />
                                     <Modal isOpen={isProfilePictureModalOpen} onRequestClose={closeProfilePictureModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.profilePicture} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1584,7 +1597,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.profilePicture} alt="Profile Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.profilePicture} alt="Profile Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1615,7 +1630,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openadharFrontModal}
                                     />
                                     <Modal isOpen={isadharFrontModalOpen} onRequestClose={closeadharFrontModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.adharFront} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1623,7 +1638,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.adharFront} alt="Profile Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.adharFront} alt="Profile Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1654,7 +1671,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openadharBackModal}
                                     />
                                     <Modal isOpen={isadharBackModalOpen} onRequestClose={closeadharBackModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.adharBack} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1662,7 +1679,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.adharBack} alt="adharBack Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.adharBack} alt="adharBack Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1693,7 +1712,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openPanFrontModal}
                                     />
                                     <Modal isOpen={isPanFrontModalOpen} onRequestClose={closePanFrontModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.PanFront} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1701,7 +1720,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.PanFront} alt="PanFront Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.PanFront} alt="PanFront Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1738,7 +1759,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openmatricPassingCertModal}
                                     />
                                     <Modal isOpen={ismatricPassingCertModalOpen} onRequestClose={closematricPassingCertModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.matricPassingCert} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1746,7 +1767,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.matricPassingCert} alt="matricPassingCert Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.matricPassingCert} alt="matricPassingCert Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1777,7 +1800,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={opentenandtwoPassingCertModal}
                                     />
                                     <Modal isOpen={istenandtwoPassingCertModalOpen} onRequestClose={closetenandtwoPassingCertModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.tenandtwoPassingCert} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1785,7 +1808,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.tenandtwoPassingCert} alt="tenandtwoPassingCert Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.tenandtwoPassingCert} alt="tenandtwoPassingCert Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1816,7 +1841,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openuGPassingCertModal}
                                     />
                                     <Modal isOpen={isuGPassingCertModalOpen} onRequestClose={closeuGPassingCertModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.uGPassingCert} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1824,7 +1849,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.uGPassingCert} alt="uGPassingCert Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.uGPassingCert} alt="uGPassingCert Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1855,7 +1882,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={openpGPassingCertModal}
                                     />
                                     <Modal isOpen={ispGPassingCertModalOpen} onRequestClose={closepGPassingCertModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.pGPassingCert} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1863,7 +1890,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.pGPassingCert} alt="pGPassingCert Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.pGPassingCert} alt="pGPassingCert Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1898,7 +1927,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                         onClick={opencancelledChequeModal}
                                     />
                                     <Modal isOpen={iscancelledChequeModalOpen} onRequestClose={closecancelledChequeModal} contentLabel="Profile Picture Modal">
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                        <div className='modal-header'>
                                             <IconButton href={formData.cancelledCheque} download color="primary">
                                                 <DownloadIcon />
                                             </IconButton>
@@ -1906,7 +1935,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                                                 <CloseIcon />
                                             </IconButton>
                                         </div>
-                                        <img src={formData.cancelledCheque} alt="cancelledCheque Picture" style={{ width: '100%' }} />
+                                        <div className='modal-image-container'>
+                                            <img src={formData.cancelledCheque} alt="cancelledCheque Picture" style={{ width: '100%' }} />
+                                        </div>
                                     </Modal>
                                 </>
                             ) : (
@@ -1983,11 +2014,13 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                     </label>
                 </div>
 
-                {alertInfo.show && (
-                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                        {alertInfo.message}
-                    </Alert>
-                )}
+                {
+                    alertInfo.show && (
+                        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                            {alertInfo.message}
+                        </Alert>
+                    )
+                }
 
                 <div style={{ textAlign: 'center' }}>
                     {!IsReadOnly && (
@@ -2018,8 +2051,8 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                         </button>
                     )}
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
 
     );
 };

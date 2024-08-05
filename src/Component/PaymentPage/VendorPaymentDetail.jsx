@@ -11,8 +11,8 @@ const VendorPaymentDetail = () => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [recipientName, setRecipientName] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [bankDetails, setBankDetails] = useState({
         bankName: '',
         bankAccount: '',
@@ -118,8 +118,15 @@ const VendorPaymentDetail = () => {
 
             } catch (error) {
                 console.error("Error during form submission:", error);
-                const errorMessage = error.response?.data || 'An error occurred';
-                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+                const errorMessage = error.response?.data?.message || 'An error occurred';
+                if (errorMessage === "jwt expired") {
+                    setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+                }
             }
         }
     };

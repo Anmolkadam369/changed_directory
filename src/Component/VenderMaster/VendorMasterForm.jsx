@@ -24,7 +24,6 @@ const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const VendorMasterForm = () => {
@@ -32,8 +31,8 @@ const VendorMasterForm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const today = new Date().toISOString().split('T')[0];
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -130,13 +129,34 @@ const VendorMasterForm = () => {
     contactPersonNum: "",
     contactPersonNum2: '',
     panNo: "",
-    panCard: "info",
+    panCard: "",
     adharNo: '',
-    adharCard: "info",
+    adharCard: "",
     rate: "" || "0",
     GSTNo: "",
     GST: "info"
   });
+
+  const fullAddress = `${formData.address}, ${formData.district},${formData.pincode}, ${formData.state}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
+
+  useEffect(() => {
+    const getLonLat = async () => {
+      try {
+        console.log("fulladdress", fullAddress)
+        const response = await axios.get(url);
+        console.log("response latitude", response.data)
+        const location = response.data[0];
+        setLatitude(location.lat);
+        setLongitude(location.lon);
+        setLocation(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
+      } catch (error) {
+        // setLocation("An error occurred while fetching the coordinates.");
+      }
+    }
+    getLonLat()
+  }, [fullAddress])
+
 
   const [otherFormData, setOtherFormData] = useState({
     vendorsInfo: ''
@@ -192,6 +212,13 @@ const VendorMasterForm = () => {
     }
   };
 
+  const handleLatitudeChange = (e) => {
+    setLatitude(e.target.value);
+  };
+
+  const handleLongitudeChange = (e) => {
+    setLongitude(e.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, type, files, value } = e.target;
@@ -249,12 +276,13 @@ const VendorMasterForm = () => {
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(formData)) {
-      if (["panCard", "adharCard", "GST"].includes(key)) {
-        if (value === null || value === undefined || value.size === 0)
+      if (["panCard", "adharCard"].includes(key)) {
+        if (value === null || value === undefined || value.size === 0) {
           return `Field '${key}' is required.`;
+        }
       }
-      if (value === '') {
-        return `Field '${key}' is required.`;
+      if ((key !== "GSTNo" && key !== "GST") && value === '') {
+        return `Field '${key}' is requireds.`;
       }
     }
 
@@ -263,8 +291,36 @@ const VendorMasterForm = () => {
       return 'Please enter a valid email address.';
     }
 
+    const phoneRegex = /^[0-9]{10}$/
+    if (!phoneRegex.test(formData.vendorPhone)) {
+      return 'Please enter a valid Vendor Phone Number.';
+    }
+    if (!phoneRegex.test(formData.contactPersonNum)) {
+      console.log("contada", formData.contactPersonNum)
+      return 'Please enter a valid Contact Person Number.';
+    }
+    if (!phoneRegex.test(formData.contactPersonNum2)) {
+      return 'Please enter a valid Secondary Contact Person Number.';
+    }
+
+    const aadhaarRegex = /^\d{12}$/;
+    if (!aadhaarRegex.test(formData.adharNo)) {
+      return 'Please enter a valid Aadhaar Number.';
+    }
+
+    const gstRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z])$/;
+    if (formData.GSTNo !== "" && !gstRegex.test(formData.GSTNo)) {
+      return 'Please enter a valid GST number (e.g., 22ABCDE1234F1Z5).';
+    }
+
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (!panRegex.test(formData.panNo)) {
+      return 'Please enter a valid PAN number (e.g., ABCDE1234F).';
+    }
+
     return '';
   };
+
 
   const validateInnerForm = () => {
     let formErrors = {};
@@ -375,8 +431,8 @@ const VendorMasterForm = () => {
     formDataObj.append('latitude', latitude);
     formDataObj.append('longitude', longitude);
 
-    for(let pair of formDataObj.entries()){
-      console.log(pair[0]  +":"+pair[1])
+    for (let pair of formDataObj.entries()) {
+      console.log(pair[0] + ":" + pair[1])
     }
 
     try {
@@ -390,13 +446,23 @@ const VendorMasterForm = () => {
       });
       setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
-      setTimeout(() => {
-        navigate("../Admin");
-      }, 2000);
+
+      setFormData({});
+      sendData = {};
+      setLatitude("");
+      setLongitude("");
+      
     } catch (error) {
-      const errorMessage = error.response?.data || 'An error occurred';
       setIsLoading(false);
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      }
     }
   }
 
@@ -425,9 +491,16 @@ const VendorMasterForm = () => {
         navigate("../Admin");
       }, 2000);
     } catch (error) {
-      const errorMessage = error.response?.data || 'An error occurred';
       setIsLoading(false);
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      }
     }
 
   }
@@ -493,8 +566,8 @@ const VendorMasterForm = () => {
       </div>
 
       {!singleVendor && (
-        <form onSubmit={handleExcelSubmit} className="Customer-master-form">
-          <div className="selected-container">
+        <form onSubmit={handleExcelSubmit} style={{ background: "#f1f1f1" }} className="Customer-master-form">
+          <div>
             <div class="header-container">
               <h3 class="bigtitle">Vendor Excel File</h3>
               <span class="mandatory-note">All fields are mandatory</span>
@@ -574,317 +647,341 @@ const VendorMasterForm = () => {
       )}
 
       {singleVendor && (
-        <form onSubmit={handleSubmit} className="Customer-master-form">
-          <div class="header-container">
-            <h3 class="bigtitle">Vendor Master</h3>
-            <span class="mandatory-note">All fields are mandatory</span>
-          </div>
+        <form onSubmit={handleSubmit} >
 
-          <div className="form-row">
-            <label className="form-field input-group mb-3">
-              System Date:
-              <input
-                type="date"
-                name="systemDate"
-                value={formData.systemDate}
-                onChange={handleChange}
-                readOnly
-                className="form-control"
-              />
-            </label>
-
-            <label className="form-field input-group mb-3">
-              Vendor Code:
-              <input
-                type="text"
-                name="vendorCode"
-                placeholder='SYSTEM GENERATED'
-                value={formData.vendorCode}
-                className="form-control"
-
-                readOnly
-              />
-            </label>
-            <label className="form-field input-group mb-3">
-              Accident Place - State:
-              <select
-                name="state"
-                onChange={handleChange}
-                disabled={isLoadingStates}
-                value={formData.state}>
-                <option value="">Select State</option>
-                {states.map(state => (
-                  <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                ))}
-              </select>
-            </label>
-
-            <label className="form-field input-group mb-3">
-              Accident Place - City:
-              <select
-                name="district"
-                value={formData.district}
-                onChange={handleChange}
-                disabled={isLoadingCities || !formData.state}
-              >
-                <option value="">Select City</option>
-                {!cities.error && cities.map(city => (
-                  <option key={city.iso2} value={city.iso2}>{city.name}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <div className='form-row'>
-
-            <label className="form-field input-group mb-3">
-              Vendor Name:
-              <input
-                type="text"
-                name="vendorName"
-                placeholder='Vendor Name'
-                value={formData.vendorName}
-                onChange={handleChange}
-                className="form-control"
-                required
-              />
-            </label>
-
-            <div className="dropdown green-dropdown form-field">
-              <button
-                className="form-field input-group mb-3"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                onClick={toggleDropdown}
-              >
-                {formData.vendorType || "Select Vendor Type"}
-              </button>
-              <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
-                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
-                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-              </ul>
+          <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
+            <div class="header-container">
+              <h3 class="bigtitle">Vendor Master</h3>
+              <span class="mandatory-note">* All fields are mandatory</span>
             </div>
-            <label className="form-field">
-              Address  :
-              <textarea
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-                className="form-control"
-                placeholder='Address' />
-            </label>
-            <label className="form-field">
-              Pincode:
-              <input
-                type='tel'
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleChange}
-                placeholder='Pincode'
-                required
-                pattern="\d{6}"
-                title="Pincode must be 6 digits"
-                className="form-control"
-              />
-            </label>
-          </div>
 
-          <div className='form-row'>
-
-            <label className="form-field">
-              Vendor Phone No:
-              <input
-                type='tel'
-                name="vendorPhone"
-                value={formData.vendorPhone}
-                onChange={handleChange}
-                placeholder='Vendor Phone No'
-                required
-                pattern="\d{10}"
-                title="Phone number must be exactly 10 digits"
-                className="form-control"
-              />
-            </label>
-
-            <label className="form-field">
-              E-Mail:
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder='E-Mail'
-                required
-                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                title="Please enter a valid email address."
-                className="form-control"
-              />
-            </label>
-
-            <label className="form-field">
-              Contact Person:
-              <input
-                type='text'
-                name="contactPerson"
-                value={formData.contactPerson}
-                onChange={handleChange}
-                placeholder='Contact Person Name'
-                className="form-control"
-
-                required />
-            </label>
-            <label className="form-field">
-              Contact Person Number:
-              <input
-                type='tel'
-                name="contactPersonNum"
-                value={formData.contactPersonNum}
-                onChange={handleChange}
-                placeholder='Contact Person Phone'
-                required
-                pattern="\d{10}"
-                className="form-control"
-                title="Phone number must be 10 digits" />
-            </label>
-          </div>
-
-          <div className='form-row'>
-            <label className="form-field">
-              Contact Person Number 2 :
-              <input
-                type='tel'
-                name="contactPersonNum2"
-                value={formData.contactPersonNum2}
-                placeholder='Contact Person Phone'
-                onChange={handleChange}
-                required
-                pattern="\d{10}"
-                title="Phone number must be 10 digits"
-                className="form-control"
-
-              />
-            </label>
-            <label className="form-field">
-              PAN Number:
-              <input
-                type='text'
-                name="panNo"
-                placeholder='Pan Card Number'
-                value={formData.panNo}
-                onChange={handleChange}
-                className="form-control"
-                required
-                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-                title="Please enter a valid PAN number (e.g., ABCDE1234F)."
-              />
-            </label>
-            <label className="form-field">
-              PAN Card :
-              <input
-                type='file'
-                name="panCard"
-                onChange={handleChange}
-                accept=".pdf,image/*"
-                className="form-control"
-                ref={panRef}
-                capture="environment"
-                required />
-            </label>
-            <label className="form-field">
-              Aadhaar Number:
-              <input
-                type='text'
-                name="adharNo"
-                placeholder='Aadhaar Card Number'
-                value={formData.adharNo}
-                onChange={handleChange}
-                className="form-control"
-                required
-                pattern="\d{12}"
-                title="Aadhaar number must be exactly 12 digits."
-              />
-            </label>
-          </div>
-
-          <div className='form-row'>
-            <label className="form-field">
-              Adhar Card:
-              <input
-                type='file'
-                name="adharCard"
-                // value={formData.adharCard}
-                onChange={handleChange}
-                accept=".pdf,image/*"
-                ref={adharCardRef}
-                className="form-control"
-                capture="environment"
-                required />
-            </label>
-
-
-
-            <label className="form-field">
-              GST Number:
-              <input
-                type='text'
-                name="GSTNo"
-                placeholder='GST Number'
-                value={formData.GSTNo}
-                onChange={handleChange}
-                className="form-control"
-                required
-                pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
-                title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
-              />
-            </label>
-
-            <label className="form-field">
-              GSTIN :
-              <input
-                type='file'
-                name="GST"
-                // value={formData.GST}
-                onChange={handleChange}
-                accept=".pdf,image/*"
-                ref={GSTRef}
-                capture="environment"
-                className="form-control"
-                required />
-            </label>
-
-            {formData.vendorType == "crain" &&
-              (<label className="form-field">
-                Rate/KM :
+            <div className="form-row">
+              <label className="form-field input-group mb-3">
+                System Date:
                 <input
-                  type='text'
-                  name="rate"
-                  placeholder='Rate Per KM'
-                  value={formData.rate}
+                  type="date"
+                  name="systemDate"
+                  value={formData.systemDate}
+                  onChange={handleChange}
+                  readOnly
+                  className="form-control"
+                />
+              </label>
+
+              <label className="form-field input-group mb-3">
+                Vendor Code:
+                <input
+                  type="text"
+                  name="vendorCode"
+                  placeholder='SYSTEM GENERATED'
+                  value={formData.vendorCode}
+                  className="form-control"
+
+                  readOnly
+                />
+              </label>
+              <label className="form-field input-group mb-3">
+                Accident Place - State:
+                <select
+                  name="state"
+                  onChange={handleChange}
+                  disabled={isLoadingStates}
+                  value={formData.state}>
+                  <option value="">Select State</option>
+                  {states.map(state => (
+                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="form-field input-group mb-3">
+                Accident Place - City:
+                <select
+                  name="district"
+                  value={formData.district}
+                  onChange={handleChange}
+                  disabled={isLoadingCities || !formData.state}
+                >
+                  <option value="">Select City</option>
+                  {!cities.error && cities.map(city => (
+                    <option key={city.iso2} value={city.iso2}>{city.name}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className='form-row'>
+
+              <label className="form-field input-group mb-3">
+                Vendor Name:
+                <input
+                  type="text"
+                  name="vendorName"
+                  placeholder='Vendor Name'
+                  value={formData.vendorName}
                   onChange={handleChange}
                   className="form-control"
-                  title="Aadhaar number must be exactly 12 digits."
+                  required
+                />
+              </label>
+
+              <div className="dropdown green-dropdown form-field">
+                Select Vendor Type:
+                <button
+                  className="form-field input-group mb-3"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  onClick={toggleDropdown}
+                >
+                  {formData.vendorType || "Select Vendor Type"}
+                </button>
+                <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+                </ul>
+              </div>
+              <label className="form-field">
+                Address  :
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  className="form-control"
+                  placeholder='Address' />
+              </label>
+              <label className="form-field">
+                Pincode:
+                <input
+                  type='tel'
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder='Pincode'
+                  required
+                  pattern="\d{6}"
+                  title="Pincode must be 6 digits"
+                  className="form-control"
+                />
+              </label>
+            </div>
+
+            <div className='form-row'>
+
+              <label className="form-field">
+                Vendor Phone No:
+                <input
+                  type='tel'
+                  name="vendorPhone"
+                  value={formData.vendorPhone}
+                  onChange={handleChange}
+                  placeholder='Vendor Phone No'
+                  required
+                  pattern="\d{10}"
+                  title="Phone number must be exactly 10 digits"
+                  className="form-control"
+                />
+              </label>
+
+              <label className="form-field">
+                E-Mail:
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder='E-Mail'
+                  required
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                  title="Please enter a valid email address."
+                  className="form-control"
+                />
+              </label>
+
+              <label className="form-field">
+                Contact Person:
+                <input
+                  type='text'
+                  name="contactPerson"
+                  value={formData.contactPerson}
+                  onChange={handleChange}
+                  placeholder='Contact Person Name'
+                  className="form-control"
+
                   required />
               </label>
+              <label className="form-field">
+                Contact Person Number:
+                <input
+                  type='tel'
+                  name="contactPersonNum"
+                  value={formData.contactPersonNum}
+                  onChange={handleChange}
+                  placeholder='Contact Person Phone'
+                  required
+                  pattern="\d{10}"
+                  className="form-control"
+                  title="Phone number must be 10 digits" />
+              </label>
+            </div>
+
+            <div className='form-row'>
+              <label className="form-field">
+                Contact Person Number 2 :
+                <input
+                  type='tel'
+                  name="contactPersonNum2"
+                  value={formData.contactPersonNum2}
+                  placeholder='Contact Person Phone'
+                  onChange={handleChange}
+                  required
+                  pattern="\d{10}"
+                  title="Phone number must be 10 digits"
+                  className="form-control"
+
+                />
+              </label>
+              <label className="form-field">
+                PAN Number:
+                <input
+                  type='text'
+                  name="panNo"
+                  placeholder='Pan Card Number'
+                  value={formData.panNo}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                  title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+                />
+              </label>
+              <label className="form-field">
+                PAN Card :
+                <input
+                  type='file'
+                  name="panCard"
+                  onChange={handleChange}
+                  accept=".pdf,image/*"
+                  className="form-control"
+                  ref={panRef}
+                  capture="environment"
+                  required />
+              </label>
+              <label className="form-field">
+                Aadhaar Number:
+                <input
+                  type='text'
+                  name="adharNo"
+                  placeholder='Aadhaar Card Number'
+                  value={formData.adharNo}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                  pattern="\d{12}"
+                  title="Aadhaar number must be exactly 12 digits."
+                />
+              </label>
+            </div>
+
+            <div className='form-row'>
+              <label className="form-field">
+                Adhar Card:
+                <input
+                  type='file'
+                  name="adharCard"
+                  // value={formData.adharCard}
+                  onChange={handleChange}
+                  accept=".pdf,image/*"
+                  ref={adharCardRef}
+                  className="form-control"
+                  capture="environment"
+                  required />
+              </label>
+
+
+
+              <label className="form-field">
+                GST Number:
+                <input
+                  type='text'
+                  name="GSTNo"
+                  placeholder='GST Number'
+                  value={formData.GSTNo}
+                  onChange={handleChange}
+                  className="form-control"
+                  // required
+                  pattern="^([0-9]{2})([A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$"
+                  title="Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)."
+                />
+              </label>
+
+              <label className="form-field">
+                GSTIN :
+                <input
+                  type='file'
+                  name="GST"
+                  // value={formData.GST}
+                  onChange={handleChange}
+                  accept=".pdf,image/*"
+                  ref={GSTRef}
+                  capture="environment"
+                  className="form-control"
+                // required
+                />
+              </label>
+
+              {formData.vendorType == "crane" &&
+                (<label className="form-field">
+                  Rate/KM :
+                  <input
+                    type='text'
+                    name="rate"
+                    placeholder='Rate Per KM'
+                    value={formData.rate}
+                    onChange={handleChange}
+                    className="form-control"
+                    title="Aadhaar number must be exactly 12 digits."
+                    required />
+                </label>
+                )}
+              {formData.vendorType != "crane" && (
+                <label className="form-field"></label>
               )}
-            {formData.vendorType != "crain" && (
-              <label className="form-field"></label>
-            )}
-          </div>
+            </div>
 
-          <div className='form-row'>
-            <label className='form-field'>
-              <Button variant="contained" onClick={getLocation}>Send Location</Button>
-            </label>
-          </div>
-          {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
+          </form>
 
 
-          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+
+          <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
+            <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
+            Send Your Current Location (if it's same for filling address):
+            <div className='form-row'>
+              <label className='form-field'>
+                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+              </label>
+            </div>
+
+            Send Location Of Address (this is by your address):
+            <div className='form-row'>
+              <label className='form-field'>
+                Latitude:
+                <input type="text" value={latitude} onChange={handleLatitudeChange} />
+              </label>
+              <label className='form-field'>
+                Longitude:
+                <input type="text" value={longitude} onChange={handleLongitudeChange} />
+              </label>
+              <label className='form-field'></label>
+            </div>
+            {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
+          </form>
+
+          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginBottom: "30px" }}>
             <div class="header-container">
               <h3 class="bigtitle">Bank Information</h3>
             </div>
@@ -998,7 +1095,6 @@ const VendorMasterForm = () => {
               </div>
             )}
           </form>
-
 
 
           {alertInfo.show && (

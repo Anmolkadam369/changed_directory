@@ -11,16 +11,17 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
-
+import { ClipLoader } from 'react-spinners';
 
 function DailyWorkshop() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
-    const { id } = location.state || {};
-    console.log("Received IDssss:", id);
+    const { id, accidendFileNo } = location.state || {};
+    console.log("Received IDssss:", id, accidendFileNo);
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+  const [isLoading, setIsLoading] = useState(false);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [existingData, setExistingData] = useState([]);
@@ -67,9 +68,9 @@ function DailyWorkshop() {
 
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         getDataById(id);
         console.log("comingData.accidentFileNo", comingData.accidentFileNo)
 
@@ -104,7 +105,7 @@ function DailyWorkshop() {
                 rearView: null,
                 CustomerName: comingData.CustomerName || "",
                 choosenPlan: comingData.choosenPlan || '',
-                advocate: "", workshop: '', machanic: "", crain: "",
+                advocate: "", workshop: '', mechanic: "", crane: "",
                 randomId: comingData.randomId || "",
                 vehicleInspection: "",
                 workEstimate: "",
@@ -153,7 +154,7 @@ function DailyWorkshop() {
 
     const handleFileChange = (event, type) => {
         const file = event.target.files[0];
-        if (file && file.size > 102400) {
+        if (file && file.size > 2097152) {
             console.log("File size should be less than 100 KB");
             setAlertInfo({ show: true, message: "File size should be less than 100 KB", severity: 'error' });
             if (photoRefs[type].current) {
@@ -228,19 +229,23 @@ function DailyWorkshop() {
         for (let pair of formDataObj.entries()) {
             console.log(`${pair[0]}:`, pair[1]);
         }
+        console.log(`${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`)
+
 
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/dailyImagesByWorkshop/${userId}`,
+                url: `${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': token
                 }
             });
             console.log("RESPONSE", response)
-            if (response.data.message === "Images added successfully")
-                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+            if (response.status === 200)
+                if (response.status === 200) {
+                setAlertInfo({ show: true, message:"Photos uploaded successfully!" , severity: 'success' });
+            } 
 
         } catch (error) {
             console.error("Error during form submission:", error);
@@ -447,9 +452,21 @@ function DailyWorkshop() {
             }
 
             <div style={{ textAlign: 'center' }}>
-                <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
-                    Submit
-                </button>
+            <div>
+              <button type="submit"
+                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                disabled={isLoading} // Disable button while loading
+                onClick={onSubmit}
+              >
+                {isLoading ? 'Submitting...' : 'Submit'}
+              </button>
+              {isLoading && (
+                <div style={{ marginTop: '10px' }}>
+                  <ClipLoader color="#4CAF50" loading={isLoading} />
+                  <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                </div>
+              )}
+            </div>
             </div>
         </div >
 

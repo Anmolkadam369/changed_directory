@@ -17,14 +17,17 @@ import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const CustomerEnquiry = () => {
 
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [addCustomerEnquiry, setAddCustomerEnquiry] = useState(false)
     const [editCustomerEnquiry, setEditCustomerEnquiry] = useState(false)
     const [isEditing, setIsEditing] = useState(false);
@@ -36,9 +39,9 @@ const CustomerEnquiry = () => {
 
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         getCustomerEnquiry();
     }, [token, userId, navigate]);
     console.log("userIIIIIID", userId);
@@ -51,6 +54,45 @@ const CustomerEnquiry = () => {
             return () => clearTimeout(timer);
         }
     }, [alertInfo]);
+
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+    const handleSetItemPerPage = (e) => {
+        setItemsPerPage(e.target.value);
+    };
+    const filteredData = data.filter(item =>
+        item.customerName && item.customerName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(totalPages, currentPage + 1);
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+    }
 
     const [formData, setFormData] = useState({
         customerName: '',
@@ -371,9 +413,16 @@ const CustomerEnquiry = () => {
             }, 2000);
         } catch (error) {
             console.error("Error during form submission:", error);
-            const errorMessage = error.response?.data || 'An error occurred';
             setIsLoading(false);
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     }
     console.log("edintefor", editedFormData)
@@ -411,9 +460,16 @@ const CustomerEnquiry = () => {
             }, 2000);
         } catch (error) {
             console.error("Error during form submission:", error);
-            const errorMessage = error.response?.data || 'An error occurred';
             setIsLoading(false);
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     }
 
@@ -745,6 +801,29 @@ const CustomerEnquiry = () => {
                             Add New Visitor
                         </button>
                     </div>
+                    <div className="form-search" style={{marginTop:"20px"}}>
+                        <label className='label-class'>
+                            Search by Customer Name
+                            <input
+                                type="text"
+                                placeholder="Search by Customer Name"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                required
+                            />
+                        </label>
+                        <label className='label-class'>
+                            Number Of Items On Page
+                            <input
+                                type="number"
+                                placeholder="Items Show on Page"
+                                value={itemsPerPage}
+                                onChange={handleSetItemPerPage}
+                                required
+                            />
+                        </label>
+                        <label className='label-class'></label>
+                    </div>
                     <div>
                         <div style={{ marginTop: "50px" }}>
                             <div className='responsive-table' style={{ width }}>
@@ -761,14 +840,14 @@ const CustomerEnquiry = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.length === 0 ? (
+                                        {currentItems.length === 0 ? (
                                             <tr>
                                                 <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Data...</td>
                                             </tr>
                                         ) : (
-                                            data.map((person, index) => (
+                                            currentItems.map((person, index) => (
                                                 <tr key={person} >
-                                                    <td>{index + 1}</td>
+                                                    <td>{indexOfFirstItem + index + 1}</td>
                                                     <td>{person.customerName || '---'}</td>
                                                     <td>{person.fleetSize || '---'}</td>
                                                     <td>{person.repairLocations || '---'}</td>
@@ -785,6 +864,25 @@ const CustomerEnquiry = () => {
                                         )}
                                     </tbody>
                                 </table>
+                            </div>
+                            <div className="pagination">
+                                <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+                                    <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                                        <ArrowBack />
+                                    </Button>
+                                    {pageNumbers.map((pageNumber) => (
+                                        <Button
+                                            key={pageNumber}
+                                            onClick={() => handlePageChange(pageNumber)}
+                                            className={currentPage === pageNumber ? 'active' : ''}
+                                        >
+                                            {pageNumber}
+                                        </Button>
+                                    ))}
+                                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                        <ArrowForward />
+                                    </Button>
+                                </ButtonGroup>
                             </div>
                         </div>
                     </div>

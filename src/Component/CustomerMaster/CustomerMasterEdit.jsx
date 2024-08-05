@@ -16,6 +16,10 @@ import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -28,8 +32,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
   // const { id } = location.state || {};
   console.log("Received IDssssssssssssssssssssss:", id);
   const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
   const [comingData, setComingData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,6 +50,42 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
   const [locations, setLocation] = useState(null);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+
+  const [isAgreementPreviewOpen, setIsAgreementPreviewOpen] = useState(false);
+
+  const openPreviewModal = () => {
+    setIsAgreementPreviewOpen(true);
+  };
+
+  const closePreviewModal = () => {
+    setIsAgreementPreviewOpen(false);
+  };
+
+  const generateOfficePreviewLink = (fileUrl) => {
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+  };
+  
+  const generateGooglePreviewLink = (fileUrl) => {
+    return `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+  };
+  
+  const handlePreviewClick = (e, fileUrl) => {
+    e.stopPropagation();
+    const fileExtension = fileUrl.split('.').pop().toLowerCase();
+    let previewLink;
+    if (fileExtension === 'pdf') {
+      previewLink = generateGooglePreviewLink(fileUrl);
+    } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExtension)) {
+      previewLink = generateOfficePreviewLink(fileUrl);
+    } else {
+      alert('Preview not available for this file type.');
+      return;
+    }
+    window.open(previewLink, '_blank');
+  };
+
+
+  console.log("latitude-", latitude, "longitude-", longitude)
 
   useEffect(() => {
     loadStates();
@@ -112,6 +152,78 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       });
   };
 
+
+
+
+
+  const today = new Date().toISOString().split('T')[0];
+  const [isRetail, setIsRetail] = useState(false);
+  const [isFleetOwner, setIsFleetOwner] = useState(false);
+  const [IsReadOnly, setIsReadOnly] = useState(true);
+
+
+  const [formData, setFormData] = useState({
+    systemDate: today,
+    CustomerCode: 'SYSTEM GENERATED',
+    CustomerName: '',
+    CustomerType: '',
+    address: '',
+    city: '',
+    pincode: '',
+    CustomerPhone: '',
+    email: '',
+    contactPerson: '',
+    contactPersonNum: "",
+    contactPersonNum2: '',
+    state: '',
+    panNo: "",
+    panCard: "",
+    adharNo: '',
+    adharCard: "",
+    agreement: "",
+    fleetSize: "",
+    plan: '',
+    GST: "",
+    GSTNo: "",
+    vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "",
+    year: "", type: "", application: "", GVW: "", ULW: "",
+    InsuranceName: "",
+    longitude: '', latitude: ""
+  });
+  console.log("FORDSTA", formData)
+
+  useEffect(() => {
+    if (formData.address|| formData.district|| formData.pincode|| formData.state) {
+      const getLonLat = async () => {
+        try {
+          const fullAddress = `${formData.address}, ${formData.district},${formData.pincode}, ${formData.state}`;
+          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
+          const response = await axios.get(url);
+          const location = response.data[0];
+          if (response.data.length > 0) {
+            setLatitude(location.lat);
+            setLongitude(location.lon);
+            setFormData(prevState => ({
+              ...prevState,
+              latitude: location.lat,
+              longitude: location.lon
+            }));
+            setLocation(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
+          } else {
+            setLocation("Geocoding was not successful. Please check the address.");
+          }
+        } catch (error) {
+          setLocation("An error occurred while fetching the coordinates.");
+        }
+      }
+      getLonLat();
+    }
+  }, [formData.address, formData.district, formData.pincode, formData.state]);
+
+
+
+  console.log("formdata", formData)
+
   useEffect(() => {
     if (comingData) {
       setFormData(prevFormData => ({
@@ -148,48 +260,14 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         InsuranceName: comingData.InsuranceName || "",
         GSTNo: comingData.GSTNo || "",
         GST: comingData.GST || "",
-        fleetSize: comingData.fleetSize || "",
-        longitude : comingData.longitude || "",
-        latitude : comingData.latitude || ""
+        longitude: comingData.longitude !== null ? comingData.longitude : "",
+        latitude: comingData.latitude !== null ? comingData.latitude : ""
       }));
     }
   }, [comingData]);
 
+  console.log("COMINGDATA-DATA", comingData)
 
-  const today = new Date().toISOString().split('T')[0];
-  const [isRetail, setIsRetail] = useState(false);
-  const [isFleetOwner, setIsFleetOwner] = useState(false);
-  const [IsReadOnly, setIsReadOnly] = useState(true);
-
-
-  const [formData, setFormData] = useState({
-    systemDate: today,
-    CustomerCode: 'SYSTEM GENERATED',
-    CustomerName: '',
-    CustomerType: '',
-    address: '',
-    city: '',
-    pincode: '',
-    CustomerPhone: '',
-    email: '',
-    contactPerson: '',
-    contactPersonNum: "",
-    contactPersonNum2: '',
-    state: '',
-    panNo: "",
-    panCard: "",
-    adharNo: '',
-    adharCard: "",
-    agreement: "",
-    fleetSize: "",
-    plan: '',
-    GST: "",
-    GSTNo: "",
-    vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "",
-    year: "", type: "", application: "", GVW: "", ULW: "",
-    InsuranceName: "",
-    longitude:'', latitude:""
-  });
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
@@ -199,10 +277,11 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
   console.log("FORMAT", formData)
 
+
   const getDataById = async (id) => {
     const response = await axios.get(`${backendUrl}/api/getCustomer/${id}`);
     console.log("daa", response.data.data)
-    console.log("response", response.data.data[0]);
+    console.log("response123", response.data.data[0]);
     setComingData(response.data.data[0])
   }
 
@@ -245,6 +324,28 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       return 'Please enter a valid email address.';
     }
 
+    const phoneRegex =  /^[0-9]{10}$/
+    if (!phoneRegex.test(formData.CustomerPhone)) {
+      return 'Please enter a valid Customer Phone Number.';
+    }
+    if (!phoneRegex.test(formData.contactPersonNum)) {
+      console.log("contada", formData.contactPersonNum)
+      return 'Please enter a valid Contact Person Number.';
+    }
+    if (!phoneRegex.test(formData.contactPersonNum2)) {
+      return 'Please enter a valid Secondary Contact Person Number.';
+    }
+
+    const aadhaarRegex = /^\d{12}$/;
+    if (!aadhaarRegex.test(formData.adharNo)) {
+      return 'Please enter a valid Aadhaar Number.';
+    }
+  
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (!panRegex.test(formData.panNo)) {
+      return 'Please enter a valid PAN Number.';
+    }
+
     return ''; // If all checks pass, return an empty string
   };
 
@@ -285,7 +386,6 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     const { name, type, files, value } = e.target;
     if (type === 'file') {
       if (files[0] && files[0].size > 2097152) {
-        console.log("SOM    ")
         setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
         const refs = {
           GST: GSTRef,
@@ -309,34 +409,33 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         ...prevState,
         [name]: files[0]
       }));
-    }
-    else if (name === 'state') {
+    } else if (name === 'state') {
       loadCities(value);
       setFormData(prevState => ({ ...prevState, [name]: value }));
-    }
-    else if (name === "pincode") {
+    } else if (name === "pincode") {
       const validValue = value.replace(/\D/g, '').slice(0, 6);
       setFormData({
         ...formData,
         [name]: validValue,
       });
-    }
-    else if (name === "adharNo") {
+    } else if (name === "adharNo") {
       const validValue = value.replace(/\D/g, '').slice(0, 12);
       setFormData({
         ...formData,
         [name]: validValue,
       });
-    }
-    else if (name === "CustomerPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
+    } else if (name === "CustomerPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
       const validValue = value.replace(/\D/g, '').slice(0, 10);
       setFormData({
         ...formData,
         [name]: validValue,
       });
-    }
-    else {
-      const { value } = e.target;
+    } else if (name === 'latitude' || name === 'longitude') {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    } else {
       setFormData(prevState => ({
         ...prevState,
         [name]: value
@@ -352,6 +451,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       }
     }
   };
+
+
 
 
   const editable = () => {
@@ -402,7 +503,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     }
 
     console.log("latitude", latitude, "longitiude", longitude, "location", location)
-    if (latitude === "" || longitude === "" || location === "Geolocation is not supported by this browser.") {
+    if (formData.latitude === "" || formData.longitude === "" || location === "Geolocation is not supported by this browser.") {
       setAlertInfo({ show: true, message: "Please Give latitude and Longitude", severity: 'error' });
       setIsLoading(false);
       return;
@@ -431,9 +532,16 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     }
     catch (error) {
       console.error("Error during form submission:", error);
-      const errorMessage = error.response?.data || 'An error occurred';
       setIsLoading(false);
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+          setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+          setTimeout(() => {
+              window.location.href = '/';
+          }, 2000);
+      } else {
+          setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      }
     }
   };
 
@@ -479,7 +587,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           </label>
 
           <label className="form-field input-group mb-3">
-            Accident Place - City:
+            Accident - City  : {formData.district}
             <select
               name="district"
               value={formData.district}
@@ -672,11 +780,11 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   <img
                     src={formData.adharCard}
                     alt="Adhar Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' ,   border:'solid black 2px', padding: "3px", marginTop:"6px"   }}
                     onClick={openAdharModal}
                   />
                   <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Adhar Card Modal">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                    <div className="modal-header">
                       <IconButton href={formData.adharCard} download color="primary">
                         <DownloadIcon />
                       </IconButton>
@@ -684,7 +792,9 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                         <CloseIcon />
                       </IconButton>
                     </div>
-                    <img src={formData.adharCard} alt="Adhar Card" style={{ width: '100%' }} />
+                    <div className="modal-image-container">
+                      <img src={formData.adharCard} alt="Adhar Card" style={{ width: '100%' }} />
+                    </div>
                   </Modal>
                 </>
               ) : (
@@ -710,11 +820,11 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   <img
                     src={formData.panCard}
                     alt="PAN Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' ,   border:'solid black 2px', padding: "3px", marginTop:"6px"   }}
                     onClick={openPANModal}
                   />
                   <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                    <div className="modal-header">
                       <IconButton href={formData.panCard} download color="primary">
                         <DownloadIcon />
                       </IconButton>
@@ -722,7 +832,9 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                         <CloseIcon />
                       </IconButton>
                     </div>
-                    <img src={formData.panCard} alt="PAN Card" style={{ width: '100%' }} />
+                    <div className="modal-image-container">
+                      <img src={formData.panCard} alt="PAN Card" style={{ width: '100%' }} />
+                    </div>
                   </Modal>
                 </>
               ) : (
@@ -743,16 +855,16 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           <label className="form-field">
             GSTIN:
             {IsReadOnly ? (
-              formData.GST ? (
+              formData.GST != "default-GST-value" ? (
                 <>
                   <img
                     src={formData.GST}
                     alt="GSTIN"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' ,   border:'solid black 2px', padding: "3px", marginTop:"6px"   }}
                     onClick={openGSTModal}
                   />
                   <Modal isOpen={isGSTModalOpen} onRequestClose={closeGSTModal} contentLabel="GSTIN Modal">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                    <div className="modal-header">
                       <IconButton href={formData.GST} download color="primary">
                         <DownloadIcon />
                       </IconButton>
@@ -760,11 +872,13 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                         <CloseIcon />
                       </IconButton>
                     </div>
-                    <img src={formData.GST} alt="GSTIN" style={{ width: '100%' }} />
+                    <div className="modal-image-container">
+                      <img src={formData.GST} alt="GSTIN" style={{ width: '100%' }} />
+                    </div>
                   </Modal>
                 </>
               ) : (
-                <p>No GST Card uploaded</p>
+                <p  className='notUploaded'>No GST Card uploaded</p>
               )
             ) : (
               <input
@@ -782,41 +896,43 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         </div>
 
         <div className='form-row'>
-
-        <label className='form-field'>
-            {IsReadOnly ? (
-              formData.longitude == "" ? (
-                <p className='notUploaded'>No Location Uploaded</p>
-              ) : (
-                <>
-                  <Button variant="contained" onClick={getLocation}>Send Location</Button>
-                </>
-              )
-            ) : (
-              <>
-                <Button variant="contained" onClick={getLocation}>Send Location</Button>
-                {locations && (
-                  locations.startsWith("Error:") ?
-                    <Alert severity="error">{locations}</Alert> :
-                    <Alert severity="success">{locations}</Alert>
-                )}
-              </>
-            )}
-          </label>
-
           <label className="form-field">
             {IsReadOnly ? (
               <div>
                 {formData.agreement ? (
                   <>
-                    <p style={{ fontWeight: 'bold', marginTop: "20px" }}>Download Agreement
-                      <a href={formData.agreement} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                        Download
+                    Download Agreement
+                    <p>
+                      <a
+                        href={formData.agreement}
+                        className="docx-link"
+                        style={{
+                          cursor: 'pointer',
+                          color:'green'
+                      }}
+                      download
+                  >
+                      <DownloadingOutlinedIcon/> Download
                       </a>
+                      <button
+                        type="button"
+                        onClick={(e) =>  handlePreviewClick(e, formData.agreement)}
+                        style={{
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: "white",
+                          color:"#560303",
+                          fontSize:"13px"
+                      }}
+                  >
+                      <RemoveRedEyeOutlinedIcon/> Preview
+                      </button>
+
+                
                     </p>
                   </>
                 ) : (
-                  <p>No Adhar Card uploaded</p>
+                  <p>No Agreement uploaded</p>
                 )}
               </div>
             ) : null}
@@ -828,25 +944,90 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                 <div>
                   {formData.fleetSize !== "No fleetSize" ? (
                     <>
-                      {/* <img src={formData.fleetSize} style={{ maxWidth: '100px', display: 'block' }} /> */}
-                      Download Fleet-size
-                      <p style={{ fontWeight: 'bold', marginTop: "20px" }}>
-                        <a href={formData.fleetSize} className="docx-link" style={{ marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                          Download
+                      Download Fleet Excel
+                      <p>
+                        <a
+                          href={formData.fleetSize}
+                          className="docx-link"
+                          style={{
+                            cursor: 'pointer',
+                            color:'green'
+                        }}
+                        download
+                    >
+                        <DownloadingOutlinedIcon/> Download
                         </a>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handlePreviewClick(e, formData.fleetSize)}
+                          style={{
+                            cursor: 'pointer',
+                            border: 'none',
+                            background: "white",
+                            color:"#560303",
+                            fontSize:"13px"
+                        }}
+                    >
+                        <RemoveRedEyeOutlinedIcon/> Preview
+                        </button>
+
                       </p>
                     </>
                   ) : (
-                    <p>No Fleet Doc uploaded</p>
+                    <p  className='notUploaded'>No Fleet Doc uploaded</p>
                   )}
                 </div>
               ) : null}
             </label>)}
 
-
+          <label className="form-field"></label>
 
           <label className="form-field"></label>
         </div>
+
+        <label className='form-field'>
+          {IsReadOnly ? (
+            formData.longitude == "" ? (
+              <p className='notUploaded'>No Location Uploaded</p>
+            ) : (
+              <>
+                <Button variant="contained">Send Location</Button>
+              </>
+            )
+          ) : (
+            <>
+              <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+                <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
+                Send Your Current Location (if it's same for filling address):
+                <div className='form-row'>
+                  <label className='form-field'>
+                    <Button variant="contained" onClick={getLocation}>Send Location</Button>
+                  </label>
+                </div>
+
+                Send Location Of Address (this is by your address):
+                <div className='form-row'>
+                  <label className='form-field'>
+                    Latitude:
+                    <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} />
+                  </label>
+                  <label className='form-field'>
+                    Longitude:
+                    <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} />
+                  </label>
+                  <label className='form-field'></label>
+                </div>
+                {typeof location === 'string' && location && (
+                  location.startsWith("Error:") ?
+                    <Alert severity="error">{location}</Alert> :
+                    <Alert severity="success">{location}</Alert>
+                )}
+              </form>
+            </>
+          )}
+        </label>
+
 
         <div className='form-row'>
 

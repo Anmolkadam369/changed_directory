@@ -6,11 +6,18 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
+import { Alert } from '@mui/material';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
+import Modal from 'react-modal';
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import { ClipLoader } from 'react-spinners';
+import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 
 function AddedDataByWorkshop({ id, item, onUpdate }) {
@@ -18,17 +25,65 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
     const location = useLocation();
     // const { id } = location.state || {};
     console.log("Received IDssss:", id);
+    console.log("Received item:", item);
+
+    const [isLoading, setIsLoading] = useState(false);
+
     let adminResponse = "not requested yet";
     if (item.details.length != 0) {
         adminResponse = item.details[0].acceptedByAdmin
     }
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [existingData, setExistingData] = useState([]);
     const [showPopup, setShowPopup] = useState(true);
+
+    const generateOfficePreviewLink = (fileUrl) => {
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+    };
+
+    const generateGooglePreviewLink = (fileUrl) => {
+        return `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+    };
+
+    const handlePreviewClick = (e, fileUrl) => {
+        e.stopPropagation();
+        const fileExtension = fileUrl.split('.').pop().toLowerCase();
+        let previewLink;
+        if (fileExtension === 'pdf') {
+            previewLink = generateGooglePreviewLink(fileUrl);
+        } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExtension)) {
+            previewLink = generateOfficePreviewLink(fileUrl);
+        } else {
+            alert('Preview not available for this file type.');
+            return;
+        }
+        window.open(previewLink, '_blank');
+    };
+
+    const [isChequeModalOpen, setIsChequeModalOpen] = useState(false);
+    const [isOnlinePaymentModalOpen, setIsOnlinePaymentModalOpen] = useState(false);
+
+
+    const openChequeModal = () => {
+        setIsChequeModalOpen(true);
+    };
+
+    const closeChequeModal = () => {
+        setIsChequeModalOpen(false);
+    };
+
+    const openOnlinePaymentModal = () => {
+        setIsOnlinePaymentModalOpen(true);
+    };
+
+    const closeOnlinePaymentModal = () => {
+        setIsOnlinePaymentModalOpen(false);
+    };
+
 
     const [formData, setFormData] = useState({
         agreementCPA: "",
@@ -46,6 +101,12 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
         secondAdvancedPayment: "",
         payment: "",
         feedback: "",
+        feedbackRating: "",
+        transactionId: "",
+        onlinePaymentImg: "",
+        cheque: "",
+        paidByCash: false
+
     });
 
     useEffect(() => {
@@ -66,15 +127,20 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                 secondAdvancedPayment: existingData.secondAdvancedPayment || "",
                 payment: existingData.payment || "",
                 feedback: existingData.feedback || "",
+                feedbackRating: existingData.feedbackRating || "",
+                transactionId: existingData.transactionId || "",
+                onlinePaymentImg: existingData.onlinePaymentImg || "",
+                cheque: existingData.cheque || "",
+                paidByCash: existingData.paidByCash === "true",
             });
         }
     }, [existingData]);
 
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         getDataById(id);
         if (id != null && userId != null) getExistingData(id, userId)
     }, [token, userId, navigate, id]);
@@ -130,9 +196,11 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
     const supplementryEstimate = useRef(null);
     const preApproval = useRef(null);
     const allBillCopy = useRef(null);
+    const onlinePaymentRef = useRef(null);
+    const chequeRef = useRef(null);
 
     const handleChange = (e) => {
-        const { name, type, files } = e.target;
+        const { name, type, files, value, checked } = e.target;
         if (type === 'file') {
             if (files[0] && files[0].size > 2097152) {
                 setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
@@ -143,7 +211,9 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     deadlineSheet: deadlineSheet,
                     supplementryEstimate: supplementryEstimate,
                     preApproval: preApproval,
-                    allBillCopy: allBillCopy
+                    allBillCopy: allBillCopy,
+                    onlinePaymentImg: onlinePaymentRef,
+                    cheque: chequeRef,
                 };
 
                 if (refs[name] && refs[name].current) {
@@ -159,6 +229,11 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
             setFormData(prevState => ({
                 ...prevState,
                 [name]: files[0]
+            }));
+        } else if (type === "checkbox") {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: type === 'checkbox' ? checked : value,
             }));
         } else {
             const { value } = e.target;
@@ -198,6 +273,29 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
         console.log('formData', formData);
         setAlertInfo({ ...alertInfo, show: false });
 
+        if (formData.agreementCPA === "" &&
+            formData.vehicleInspection === "" &&
+            formData.estimateGiven === "" &&
+            formData.deadlineSheet === "" &&
+            formData.supplementryEstimate === "" &&
+            formData.preApproval === "" &&
+            formData.vehicleHandover === "" &&
+            formData.firstAdvancedPayment === "" &&
+            formData.partsOrderStatus === "" &&
+            formData.allBillCopy === "" &&
+            formData.contactofDriver === "" &&
+            formData.driverFeedback === "" &&
+            formData.secondAdvancedPayment === "" &&
+            formData.payment === "" &&
+            formData.feedback === "" &&
+            formData.feedbackRating === "" &&
+            formData.transactionId === "" &&
+            formData.onlinePaymentImg === "" &&
+            formData.cheque === "") {
+            setAlertInfo({ show: true, message: "Please Fill The Details ", severity: 'error' });
+            return;
+        }
+
         const formDataObj = new FormData();
         for (const key in formData) {
             if (formData[key]) {
@@ -225,12 +323,17 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
             });
 
             console.log("RESPONSE", response)
-            if (response.data.message == true)
-                setAlertInfo({ show: true, message: "Information Added successfully", severity: 'success' });
-            console.log("Data sent to the backend:", formDataObj);
-            setTimeout(() => {
-                onUpdate()
-            }, 2000);
+            if (response.data.status === true) {
+                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                console.log("Data sent to the backend:", formDataObj);
+                setTimeout(() => {
+                    onUpdate()
+                }, 2000);
+            }
+            else {
+                const errorMessage = 'An error occurred';
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
 
         } catch (error) {
             console.error("Error during form submission:", error);
@@ -247,6 +350,55 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
     const handleBack = () => {
         onUpdate()
     }
+
+    const [feedbackRating, setfeedbackRating] = useState(null);
+    const [isfeedbackRatingModalOpen, setIsfeedbackRatingModalOpen] = useState(false);
+    const [isCommissionModelOpen, setIsCommissionModelOpen] = useState(false);
+    let [paymentThrough, setPaymentThrough] = useState("");
+
+    const openfeedbackRatingModal = (e) => {
+        e.preventDefault()
+        setIsfeedbackRatingModalOpen(true);
+        setIsCommissionModelOpen(false);
+    };
+    const openCommissionModel = (e) => {
+        e.preventDefault();
+        setIsCommissionModelOpen(true);
+        setIsfeedbackRatingModalOpen(false);
+    }
+    const closefeedbackRatingModal = (e) => {
+        e.preventDefault()
+        setIsfeedbackRatingModalOpen(false);
+    };
+    const closeCommisionModel = (e) => {
+        e.preventDefault()
+        setIsCommissionModelOpen(false);
+    };
+
+    const onfeedbackRatingChange = (e) => {
+        e.preventDefault()
+        const { name, value } = e.target;
+        setfeedbackRating(e.target.value);
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+    const [alreadyRating, setAlreadyRating] = useState(false);
+    console.log("alteaddiaydadfadf", alreadyRating)
+    useEffect(() => {
+        if (formData.feedbackRating != null && formData.feedbackRating != "" && formData.feedbackRating != undefined && feedbackRating == null) {
+            setAlreadyRating(true)
+        }
+    }, [formData.feedbackRating])
+
+    const paymentBy = (value) => {
+        setPaymentThrough(value);
+    }
+
+    const [isReadOnlyPayment, setIsReadOnlyPayment] = useState(true)
+    console.log("SISFSDFDFSDFSFD", isReadOnlyPayment)
+
     return (
 
         <div>
@@ -581,156 +733,298 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                 <br />
 
                 <div className='form-row'>
-
-                    {existingData?.agreementCPA ? (
-                        <>
+                    <label className='form-field'>
+                        Agreement to CPA:
+                        {existingData?.agreementCPA ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <p style={{ margin: '0', padding: '5px' }}>Agreement to CPA:</p>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.agreementCPA} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.agreementCPA}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.agreementCPA)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
                                 </div>
                             </div>
-                        </>
-                    ) : (
-                        <label className="form-field">
-                            Agreement to CPA:
-                            <input
-                                type="file"
-                                name="agreementCPA"
-                                onChange={handleChange}
-                                className='form-control'
-                                accept=".pdf,image/*"
-                                ref={agreementCPA}
-                            />
-                        </label>
-                    )}
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    name="agreementCPA"
+                                    onChange={handleChange}
+                                    className='form-control'
+                                    accept=".pdf,image/*"
+                                    ref={agreementCPA}
+                                />
+                            </label>
+                        )}
+                    </label>
 
-                    {existingData?.vehicleHandover ? (
-                        <>
+                    <label className='form-field'>
+                        Vehicle Handover:
+                        {existingData?.vehicleHandover ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <p style={{ margin: '0', padding: '5px' }}>Vehicle Handover:</p>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.vehicleHandover} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.vehicleHandover}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.vehicleHandover)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
                                 </div>
                             </div>
-                        </>
-                    ) : (
-                        <label className="form-field">
-                            Vehicle Handover:
-                            <input
-                                type="file"
-                                className='form-control'
-                                name="vehicleHandover"
-                                onChange={handleChange}
-                                accept=".pdf,image/*"
-                                ref={vehicleHandover}
-                            />
-                        </label>
-                    )}
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    className='form-control'
+                                    name="vehicleHandover"
+                                    onChange={handleChange}
+                                    accept=".pdf,image/*"
+                                    ref={vehicleHandover}
+                                />
+                            </label>
+                        )}
+                    </label>
 
-
-                    {existingData?.estimateGiven ? (
-                        <>
+                    <label className='form-field'>
+                        Estimate Given:
+                        {existingData?.estimateGiven ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <p style={{ margin: '0', padding: '5px' }}>Estimate Given:</p>
-                                <div style={{ marginTop: "20px" }}>
-                                    <a href={formData.estimateGiven} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                        Download
+                                <div >
+                                    <a
+                                        href={formData.estimateGiven}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.estimateGiven)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
                                 </div>
                             </div>
-                        </>
-                    ) : (
-                        <label className="form-field">
-                            Estimate Given:
-                            <input
-                                type="file"
-                                className='form-control'
-                                name="estimateGiven"
-                                onChange={handleChange}
-                                accept=".pdf,image/*"
-                                ref={estimateGiven}
-                            />
-                        </label>
-                    )}
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    className='form-control'
+                                    name="estimateGiven"
+                                    onChange={handleChange}
+                                    accept=".pdf,image/*"
+                                    ref={estimateGiven}
+                                />
+                            </label>
+                        )}
+                    </label>
 
                 </div>
 
                 <div className='form-row'>
 
-                    {existingData?.deadlineSheet ? (
-                        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                            <p style={{ margin: '0', padding: '5px' }}>Deadline Sheet:</p>
-                            <div style={{ marginTop: "20px" }}>
-                                <a href={existingData.deadlineSheet} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                    Download
-                                </a>
+                    <label className='form-field'>
+                        Deadline Sheet:
+                        {existingData?.deadlineSheet ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div >
+                                    <a
+                                        href={formData.deadlineSheet}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.deadlineSheet)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        <label className="form-field">
-                            Deadline Sheet:
-                            <input
-                                type="file"
-                                className='inputField form-control'
-                                name="deadlineSheet"
-                                onChange={handleChange}
-                                accept=".pdf,image/*"
-                                ref={deadlineSheet}
-                            />
-                        </label>
-                    )}
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    className='inputField form-control'
+                                    name="deadlineSheet"
+                                    onChange={handleChange}
+                                    accept=".pdf,image/*"
+                                    ref={deadlineSheet}
+                                />
+                            </label>
+                        )}
+                    </label>
+
+                    <label className='form-field'>
+                        Supplementary Estimate:
+                        {existingData?.supplementryEstimate ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div >
+                                    <a
+                                        href={formData.supplementryEstimate}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.supplementryEstimate)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    className='inputField form-control'
+                                    name="supplementryEstimate"
+                                    onChange={handleChange}
+                                    accept=".pdf,image/*"
+                                    ref={supplementryEstimate}
+                                />
+                            </label>
+                        )}
+                    </label>
 
 
-                    {existingData?.supplementryEstimate ? (
-                        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                            <p style={{ margin: '0', padding: '5px' }}>Supplementary Estimate:</p>
-                            <div style={{ marginTop: "20px" }}>
-                                <a href={existingData.supplementryEstimate} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                    Download
-                                </a>
-                            </div>
-                        </div>
-                    ) : (
-                        <label className="form-field">
-                            Supplementary Estimate:
-                            <input
-                                type="file"
-                                className='inputField form-control'
-                                name="supplementryEstimate"
-                                onChange={handleChange}
-                                accept=".pdf,image/*"
-                                ref={supplementryEstimate}
-                            />
-                        </label>
-                    )}
+                    <label className='form-field'>
+                        Pre Approval:
+                        {existingData?.preApproval ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div >
+                                    <a
+                                        href={formData.preApproval}
+                                        style={{
 
-                    {existingData?.preApproval ? (
-                        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                            <p style={{ margin: '0', padding: '5px' }}>Pre Approval:</p>
-                            <div style={{ marginTop: "20px" }}>
-                                <a href={existingData.preApproval} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                    Download
-                                </a>
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.preApproval)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        <label className="form-field">
-                            Pre Approval:
-                            <input
-                                type="file"
-                                className='inputField form-control'
-                                name="preApproval"
-                                onChange={handleChange}
-                                accept=".pdf,image/*"
-                                ref={preApproval}
-                            />
-                        </label>
-                    )}
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    className='inputField form-control'
+                                    name="preApproval"
+                                    onChange={handleChange}
+                                    accept=".pdf,image/*"
+                                    ref={preApproval}
+                                />
+                            </label>
+                        )}
+                    </label>
                 </div>
 
                 <div className='form-row'>
@@ -775,8 +1069,6 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
                 <div className='form-row'>
 
-
-
                     <label className="form-field">
                         Inspection And Trial:
                         <input
@@ -817,19 +1109,65 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
                 <div className='form-row'>
 
+                    <label className='form-field'>
+                        All Bill Copy:
+                        {existingData?.allBillCopy ? (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <div >
+                                    <a
+                                        href={formData.allBillCopy}
+                                        style={{
 
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            color: 'green'
+                                        }}
+                                        download
+                                    >
+                                        <DownloadingOutlinedIcon /> Download
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handlePreviewClick(e, formData.allBillCopy)}
+                                        style={{
+
+                                            cursor: 'pointer',
+                                            marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        <RemoveRedEyeOutlinedIcon /> Preview
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <label className="form-field">
+                                <input
+                                    type="file"
+                                    className='inputField form-control'
+                                    name="allBillCopy"
+                                    onChange={handleChange}
+                                    accept=".pdf,image/*"
+                                    ref={allBillCopy}
+                                />
+                            </label>
+                        )}
+                    </label>
 
                     {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
                         <>
                             <label className="form-field">
-                                Feedback:
-                                <textarea
-                                    name="feedback"
-                                    className="inputField form-control"
-                                    value={formData.feedback}
-                                    onChange={handleChange}
-                                    readOnly
-                                />
+                                <button style={{ fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                    Give Feedback
+                                </button>
+                            </label>
+                            <label className="form-field">
+                                <button style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                    Commission
+                                </button>
                             </label>
                             {showPopup && (
                                 <div style={{
@@ -876,47 +1214,269 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     )}
 
                     {adminResponse === 'accept' && (
-                        <label className="form-field">
-                            Feedback:
-                            <textarea
-                                name="feedback"
-                                className="inputField form-control"
-                                value={formData.feedback}
-                                onChange={handleChange}
-                                readOnly={!!existingData?.feedback}
-                            />
-                        </label>
+                        <div className='form-row'>
+                            <button onClick={openfeedbackRatingModal} style={{ fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                Give Feedback
+                            </button>
+                            <button onClick={openCommissionModel} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                Commission
+                            </button>
+                        </div>
                     )}
 
+                    {isfeedbackRatingModalOpen && (
+                        <form className='Customer-master-form' style={{ width: "100%", marginTop: "10px" }}>
+                            <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
+                                <CloseIcon />
+                            </IconButton>
+                            <p>How satisfied are you?</p>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={formData.feedbackRating || 0}
+                                onChange={onfeedbackRatingChange}
+                                className="slider"
+                                name="feedbackRating"
+                                disabled={alreadyRating}
+                                style={{ display: 'block', marginTop: '10px' }}
+                            />
+                            <div style={{ marginBottom: "30px" }}>Satisfied By Customer Response: {formData.feedbackRating}</div>
 
-                    {existingData?.allBillCopy ? (
-                        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                            <p style={{ margin: '0', padding: '5px' }}>All Bill Copy:</p>
+                            <label className="form-field">
+                                Feedback:
+                                <textarea
+                                    name="feedback"
+                                    className="inputField form-control"
+                                    value={formData.feedback}
+                                    onChange={handleChange}
+                                    readOnly={!!existingData?.feedback}
+                                />
+                            </label>
+                        </form>
+                    )}
+
+                    {isCommissionModelOpen && (
+                        <div className='Customer-master-form' style={{ margin: "0px", padding: "10px" }}>
+                            <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
+                                <CloseIcon />
+                            </IconButton>
+
+                            <div style={{ display: "flex", marginTop: "50px" }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                    Cheque
+                                </button>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                    Online Payment
+                                </button>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                    Cash
+                                </button>
+                            </div>
                             <div style={{ marginTop: "20px" }}>
-                                <a href={existingData.allBillCopy} style={{ marginTop: "10px", marginLeft: "10px", padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
-                                    Download
-                                </a>
+                                {paymentThrough === "cheque" && (
+                                    <div>
+                                        <p>Your Cheque Image :</p>
+                                        {isReadOnlyPayment && typeof formData.cheque === 'string' && formData.cheque.startsWith("https") ? (
+                                            <>
+                                                <img
+                                                    src={formData.cheque}
+                                                    alt="cheque"
+                                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                                    onClick={openChequeModal}
+                                                />
+                                                <div style={{ display: 'flex' }}>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setIsReadOnlyPayment(false);
+                                                        }}
+                                                        style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}
+                                                    >
+                                                        Change
+                                                    </button>
+                                                </div>
+
+                                                <Modal isOpen={isChequeModalOpen} onRequestClose={closeChequeModal} contentLabel="Open Cheque Modal">
+                                                    <div className="modal-header">
+                                                        <IconButton href={formData.cheque} download color="primary">
+                                                            <DownloadIcon />
+                                                        </IconButton>
+                                                        <IconButton onClick={closeChequeModal} color="secondary">
+                                                            <CloseIcon />
+                                                        </IconButton>
+                                                    </div>
+                                                    <div className="modal-image-container">
+                                                        <img src={formData.cheque} alt="Cheque Image" className="modal-image" />
+                                                    </div>
+                                                </Modal>
+                                            </>
+                                        ) : (
+                                            <input
+                                                type="file"
+                                                name="cheque"
+                                                onChange={handleChange}
+                                                accept=".pdf,image/*"
+                                                required
+                                                className="form-control"
+                                                style={{ marginTop: "30px" }}
+                                            />
+                                        )}
+                                    </div>
+                                )}
+
+                                {paymentThrough === "onlinePayment" && (
+                                    <div>
+                                        <p>Online Payment: (image Of Payment)</p>
+                                        {isReadOnlyPayment && typeof formData.onlinePaymentImg === 'string' && formData.onlinePaymentImg.startsWith("https") ? (
+                                            <>
+                                                <label className="form-field" style={{ marginTop: "30px" }}>
+                                                    Transaction ID:
+                                                    <input
+                                                        type='text'
+                                                        name="transactionId"
+                                                        placeholder='Transaction ID'
+                                                        value={formData.transactionId}
+                                                        onChange={handleChange}
+                                                        className="form-control"
+                                                        required
+                                                        readOnly
+                                                    />
+                                                </label>
+                                                <img
+                                                    src={formData.onlinePaymentImg}
+                                                    alt="online payment"
+                                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                                    onClick={openOnlinePaymentModal}
+                                                />
+                                                <div style={{ display: 'flex' }}>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setIsReadOnlyPayment(false);
+                                                        }}
+                                                        style={{
+                                                            marginTop: "10px",
+                                                            marginLeft: "10px",
+                                                            border: '1px solid red',
+                                                            borderRadius: '4px',
+                                                            cursor: 'pointer',
+                                                            backgroundColor: 'white',
+                                                            color: 'black'
+                                                        }}
+                                                    >
+                                                        Change
+                                                    </button>
+                                                </div>
+                                                <Modal isOpen={isOnlinePaymentModalOpen} onRequestClose={closeOnlinePaymentModal} contentLabel="Open Online Payment Modal">
+                                                    <div className="modal-header">
+                                                        <IconButton href={formData.onlinePaymentImg} download color="primary">
+                                                            <DownloadIcon />
+                                                        </IconButton>
+                                                        <IconButton onClick={closeOnlinePaymentModal} color="secondary">
+                                                            <CloseIcon />
+                                                        </IconButton>
+                                                    </div>
+                                                    <div className="modal-image-container">
+                                                        <img src={formData.onlinePaymentImg} alt="Online Payment Image" className="modal-image" />
+                                                    </div>
+                                                </Modal>
+                                            </>
+                                        ) : (
+                                            <div>
+                                                <label className="form-field" style={{ marginTop: "30px" }}>
+                                                    Transaction ID:
+                                                    <input
+                                                        type='text'
+                                                        name="transactionId"
+                                                        placeholder='Transaction ID'
+                                                        value={formData.transactionId}
+                                                        onChange={handleChange}
+                                                        className="form-control"
+                                                        required
+                                                    />
+                                                </label>
+                                                <input
+                                                    type="file"
+                                                    name="onlinePaymentImg"
+                                                    onChange={handleChange}
+                                                    accept=".pdf,image/*"
+                                                    required
+                                                    className="form-control"
+                                                    style={{ marginTop: "30px" }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {paymentThrough === "cash" && (
+                                    <div>
+                                        <p>Paid By Cash:</p>
+                                        {isReadOnlyPayment && formData.paidByCash == true ? (
+                                            <>
+                                                <label style={{ display: "flex", alignItems: "center" }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="paidByCash"
+                                                        checked={formData.paidByCash}
+                                                        onChange={handleChange}
+                                                        required
+                                                        style={{ marginRight: "10px" }}
+                                                    />
+                                                    Paid By Cash
+                                                </label>
+                                                <div style={{ display: 'flex' }}>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setIsReadOnlyPayment(false);
+                                                        }}
+                                                        style={{
+                                                            marginTop: "10px",
+                                                            marginLeft: "10px",
+                                                            border: '1px solid red',
+                                                            borderRadius: '4px',
+                                                            cursor: 'pointer',
+                                                            backgroundColor: 'white',
+                                                            color: 'black'
+                                                        }}
+                                                    >
+                                                        Change
+                                                    </button>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <label style={{ display: "flex", alignItems: "center" }}>
+                                                <input
+                                                    type="checkbox"
+                                                    name="paidByCash"
+                                                    checked={formData.paidByCash}
+                                                    onChange={handleChange}
+                                                    required
+                                                    style={{ marginRight: "10px" }}
+                                                />
+                                                Paid By Cash
+                                            </label>
+                                        )}
+                                    </div>
+                                )}
+
+                            </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                                <button onClick={closeCommisionModel} style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                    Save it!!!
+                                </button>
                             </div>
                         </div>
-                    ) : (
-                        <label className="form-field">
-                            All Bill Copy:
-                            <input
-                                type="file"
-                                className='inputField form-control'
-                                name="allBillCopy"
-                                onChange={handleChange}
-                                accept=".pdf,image/*"
-                                ref={allBillCopy}
-                            />
-                        </label>
                     )}
 
-                    <label className="form-field"></label>
 
 
 
                 </div>
+
 
 
 
@@ -929,10 +1489,20 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     )
                 }
 
-                <div style={{ textAlign: 'center' }}>
-                    <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
-                        Submit
+                <div>
+                    <button type="submit"
+                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                        disabled={isLoading} // Disable button while loading
+                        onClick={onSubmit}
+                    >
+                        {isLoading ? 'Submitting...' : 'Submit'}
                     </button>
+                    {isLoading && (
+                        <div style={{ marginTop: '10px' }}>
+                            <ClipLoader color="#4CAF50" loading={isLoading} />
+                            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                        </div>
+                    )}
                 </div>
             </form >
         </div>

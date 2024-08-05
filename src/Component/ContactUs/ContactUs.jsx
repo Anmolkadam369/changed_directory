@@ -6,7 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import '../Login/LoginPage.css';
 import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
-import trucks1 from "../../Assets/trucks3.jpg";
+import trucks1 from "../../Assets/logintime_truck.webp";
 // import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';

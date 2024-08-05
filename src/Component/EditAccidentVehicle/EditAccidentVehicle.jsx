@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './EditAccidentVehicle.css'
+import '../CustomerMaster/CustomerMaster.css'
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,10 @@ import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
 import MapComponent from '../AAAAAAAAAAAAAAAAAA/MapComponent';
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import Modal from 'react-modal';
 
 
 function EditAccidentVehicle({ id, onUpdate }) {
@@ -20,24 +24,85 @@ function EditAccidentVehicle({ id, onUpdate }) {
     // const { id } = location.state || {};
     console.log("Received IDssss:", id);
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [comingData, setComingData] = useState([]);
+    console.log("comingDData", comingData)
+    const [selectedOptionsArray, setSelectedOptionsArray] = useState([]);
+    console.log("SELECTEDOPOPOPOP", selectedOptionsArray)
+    console.log("selectedOptionsArray.includes()", selectedOptionsArray.includes("advocate"))
+    useEffect(() => {
+        if (comingData.selectedOptions != null) {
+            const optionsArray = comingData.selectedOptions.split(',');
+            setSelectedOptionsArray(optionsArray);
+        }
+    }, [comingData])
     const [vendorData, setVendorData] = useState([]);
     const [accidentVehicleData, setAccidentVehicleData] = useState([]);
     console.log("accdient", accidentVehicleData)
+    console.log("Comingdasdas".comingData)
 
     const [IsReadOnly, setIsReadOnly] = useState(true);
     console.log("vendor", vendorData)
     console.log("vendorData type:", typeof vendorData, vendorData);
 
+    const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
+    const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
+    const [isFrontLHModalOpen, setIsFrontLHModalOpen] = useState(false);
+    const [isFrontRHModalOpen, setIsFrontRHModalOpen] = useState(false);
+
+    const [isFrontViewModalOpen, setIsFrontViewModalOpen] = useState(false);
+    const [isRearRHModalOpen, setIsRearRHModalOpen] = useState(false);
+    const [isRearLHModalOpen, setIsRearLHModalOpen] = useState(false);
+    const [isMajorDamage1ModalOpen, setIsMajorDamage1ModalOpen] = useState(false);
+
+    const [isMajorDamage2ModalOpen, setIsMajorDamage2ModalOpen] = useState(false);
+    const [isMajorDamage3ModalOpen, setIsMajorDamage3ModalOpen] = useState(false);
+    const [isMajorDamage4ModalOpen, setIsMajorDamage4ModalOpen] = useState(false);
+    const [isMajorDamage5ModalOpen, setIsMajorDamage5ModalOpen] = useState(false);
+
+    const openChassisModal = () => setIsChassisModalOpen(true);
+    const closeChassisModal = () => setIsChassisModalOpen(false);
+
+    const openClusterModal = () => setIsClusterModalOpen(true);
+    const closeClusterModal = () => setIsClusterModalOpen(false);
+
+    const openFrontLHModal = () => setIsFrontLHModalOpen(true);
+    const closeFrontLHModal = () => setIsFrontLHModalOpen(false);
+
+    const openFrontRHModal = () => setIsFrontRHModalOpen(true);
+    const closeFrontRHModal = () => setIsFrontRHModalOpen(false);
+
+    const openFrontViewModal = () => setIsFrontViewModalOpen(true);
+    const closeFrontViewModal = () => setIsFrontViewModalOpen(false);
+
+    const openRearRHModal = () => setIsRearRHModalOpen(true);
+    const closeRearRHModal = () => setIsRearRHModalOpen(false);
+
+    const openRearLHModal = () => setIsRearLHModalOpen(true);
+    const closeRearLHModal = () => setIsRearLHModalOpen(false);
+
+    const openMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(true);
+    const closeMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(false);
+
+    const openMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(true);
+    const closeMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(false);
+
+    const openMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(true);
+    const closeMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(false);
+
+    const openMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(true);
+    const closeMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(false);
+
+    const openMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(true);
+    const closeMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(false);
 
 
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         getDataById(id);
         getVendorInfo();
         getAccidentDataById(id);
@@ -73,8 +138,8 @@ function EditAccidentVehicle({ id, onUpdate }) {
                 choosenPlan: comingData.choosenPlan || '',
                 advocate: comingData.advocate || "",
                 workshop: comingData.workshop || "",
-                machanic: comingData.machanic || "",
-                crain: comingData.crain || "",
+                mechanic: comingData.mechanic || "",
+                crane: comingData.crane || "",
                 randomId: comingData.randomId || ""
             }));
             console.log("RANDOMID", comingData.randomId)
@@ -85,23 +150,30 @@ function EditAccidentVehicle({ id, onUpdate }) {
     const getAccidentDataById = async (id) => {
         console.log("getdatabyid", id)
         const response = await axios.get(`${backendUrl}/api/getVehicleAccidentById/${id}`);
-        console.log("response", response.data.data[0]);
+        console.log("response123", response.data.data[0]);
         setAccidentVehicleData(response.data.data[0])
     }
 
     const getDataById = async (id) => {
         console.log("getdatabyid", id)
         const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
-        console.log("getDataByID", response)
+        console.log("getDataByID123", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
     const getVendorInfo = async (id) => {
         const response = await axios.get(`${backendUrl}/api/getActiveVendor`);
-        console.log("vendorInfo", response)
+        console.log("vendorInfo123", response)
         console.log("response", response.data);
         setVendorData(response.data)
     }
+
+    const [dummyFormData, setDummyFormData] = useState({
+        advocate: null,
+        workshop: null,
+        mechanic: null,
+        crane: null
+    })
 
     const [formData, setFormData] = useState({
         accidentFileNo: "",
@@ -130,8 +202,8 @@ function EditAccidentVehicle({ id, onUpdate }) {
         choosenPlan: "",
         advocate: null,
         workshop: null,
-        machanic: null,
-        crain: null
+        mechanic: null,
+        crane: null
 
     });
 
@@ -141,10 +213,14 @@ function EditAccidentVehicle({ id, onUpdate }) {
             ...prev,
             [name]: value || null
         }));
+        setDummyFormData(prev => ({
+            ...prev,
+            [name]: value || null
+        }));
     };
     const validateForm = () => {
         if (formData.choosenPlan === "advanced") {
-            const requiredFields = ['advocate', 'workshop', 'machanic', 'crain'];
+            const requiredFields = ['advocate', 'workshop', 'mechanic', 'crane'];
             for (const key of requiredFields) {
                 if (formData[key] === '') {
                     return `Field '${key}' is required.`;
@@ -153,7 +229,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
             return '';
         }
         if (formData.choosenPlan === "plus") {
-            const requiredFields = ['workshop', 'machanic', 'crain'];
+            const requiredFields = ['workshop', 'mechanic', 'crane'];
             for (const key of requiredFields) {
                 if (formData[key] === '') {
                     return `Field '${key}' is required.`;
@@ -184,7 +260,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
         // }
         console.log('Form data submitted:', formData);
         console.log('Form data submitted:', userId);
-    
+
         setAlertInfo({ ...alertInfo, show: false });
         console.log('myformdataformData', formData);
         try {
@@ -210,13 +286,13 @@ function EditAccidentVehicle({ id, onUpdate }) {
             setAlertInfo({ show: true, message: errorMessage.toString(), severity: 'error' });
         }
     };
-    
+
 
 
     console.log("advocate", formData.advocate)
     console.log("workshop", formData.workshop)
-    console.log("machanic", formData.machanic)
-    console.log("crain", formData.crain)
+    console.log("mechanic", formData.mechanic)
+    console.log("crane", formData.crane)
 
     const handleBack = () => {
         // navigate("../Admin")
@@ -226,11 +302,11 @@ function EditAccidentVehicle({ id, onUpdate }) {
         vendorType: "",
         distance: ""
     })
-console.log("sending", sendingData)
+    console.log("sending", sendingData)
 
     const [showDropdown, setShowDropdown] = useState(false);
     const handleSelect = (event, value) => {
-        event.preventDefault(); 
+        event.preventDefault();
         setSendingData({
             ...sendingData,
             vendorType: value
@@ -240,13 +316,25 @@ console.log("sending", sendingData)
     };
     const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-    const handlechanges = (e)=>{
-    const { name, value } = e.target;
-    setSendingData(prevState => ({
-        ...prevState,
-        [name]: value
-      }));
+    const handlechanges = (e) => {
+        const { name, value } = e.target;
+        if (name === "distance") {
+            if (value !== "" && (Number(value) < 0 || Number(value) > 8001)) {
+                return;
+            }
+        }
+        setSendingData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     }
+
+    const isDisabled = (field) => {
+        return (formData[field] !== null && formData[field] !== "")
+            && dummyFormData[field] == null
+            && selectedOptionsArray.includes(field);
+    };
+
 
     return (
         <div>
@@ -258,13 +346,10 @@ console.log("sending", sendingData)
             </Helmet>
             <form className="Customer-master-form" style={{ marginBottom: "50px" }}>
                 <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
-
                     <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
-                </div>
-
-                <div class='header-container'>
                     <h2 className='bigtitle'>Vehicle Information</h2>
                 </div>
+
                 <div className='form-row'>
 
                     <label className="form-field">
@@ -290,10 +375,6 @@ console.log("sending", sendingData)
                             readOnly={IsReadOnly}
                         />
                     </label>
-
-                </div>
-
-                <div className='form-row'>
                     <label className="form-field">
                         Chasis No:
                         <input
@@ -316,6 +397,11 @@ console.log("sending", sendingData)
                             readOnly={IsReadOnly}
                         />
                     </label>
+
+                </div>
+
+                <div className='form-row'>
+
                     <label className="form-field">
                         Make:
                         <input
@@ -338,9 +424,6 @@ console.log("sending", sendingData)
                             readOnly={IsReadOnly}
                         />
                     </label>
-                </div>
-
-                <div className='form-row'>
                     <label className="form-field">
                         Longitude:
                         <input
@@ -363,6 +446,9 @@ console.log("sending", sendingData)
                             readOnly={IsReadOnly}
                         />
                     </label>
+                </div>
+
+                <div className='form-row'>
                     <label className="form-field">
                         accidentFileNo:
                         <input
@@ -385,6 +471,8 @@ console.log("sending", sendingData)
                             readOnly={IsReadOnly}
                         />
                     </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                 </div>
 
             </form>
@@ -396,7 +484,7 @@ console.log("sending", sendingData)
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Chassis Number:
                         {comingData.ChassisNoView ? (
                             <>
@@ -404,25 +492,27 @@ console.log("sending", sendingData)
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={() => openModal(comingData.ChassisNoView)}  // Pass the correct image URL here.
+                                    onClick={openChassisModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={closeModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={currentImage}
-                                                alt="Enlarged view"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ChassisNoView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeChassisModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ChassisNoView} alt="Chassis Card" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Cluster Number:
                         {comingData.ClusterView ? (
                             <>
@@ -430,25 +520,27 @@ console.log("sending", sendingData)
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={() => openModal(comingData.ClusterView)}
+                                    onClick={openClusterModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={closeModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={currentImage}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ClusterView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeClusterModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         FrontLH Number:
                         {comingData.frontLH ? (
                             <>
@@ -456,25 +548,27 @@ console.log("sending", sendingData)
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openFrontLHModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.frontLH}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         frontRH:
                         {comingData.frontRH ? (
                             <>
@@ -482,14 +576,27 @@ console.log("sending", sendingData)
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openFrontRHModal}
                                 />
+                                <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         front View:
                         {comingData.frontView ? (
                             <>
@@ -497,25 +604,27 @@ console.log("sending", sendingData)
                                     src={comingData.frontView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openFrontViewModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.frontView}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontViewModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         rear LH:
                         {comingData.rearLH ? (
                             <>
@@ -523,25 +632,27 @@ console.log("sending", sendingData)
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openRearLHModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.rearLH}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         rear RH:
                         {comingData.rearRH ? (
                             <>
@@ -549,25 +660,27 @@ console.log("sending", sendingData)
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openRearRHModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.rearRH}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Major Damage Photo:
                         {comingData.MajorDamages1 ? (
                             <>
@@ -575,25 +688,27 @@ console.log("sending", sendingData)
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openMajorDamage1Modal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages1}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages1} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Major Damage Photo 2:
                         {comingData.MajorDamages2 ? (
                             <>
@@ -601,25 +716,27 @@ console.log("sending", sendingData)
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openMajorDamage2Modal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages2}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages2} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Major Damage Photo 3:
                         {comingData.MajorDamages3 ? (
                             <>
@@ -627,25 +744,27 @@ console.log("sending", sendingData)
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openMajorDamage3Modal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages3}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages3} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Major Damage Photo 4:
                         {comingData.MajorDamages4 ? (
                             <>
@@ -653,25 +772,27 @@ console.log("sending", sendingData)
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openMajorDamage4Modal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages4}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages4} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
+                    <label className="form-field">
                         Major Damage Photo 5:
                         {comingData.MajorDamages5 ? (
                             <>
@@ -679,311 +800,292 @@ console.log("sending", sendingData)
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openMajorDamage5Modal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages5}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages5} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
-                        Accident Latitude:
-                        <input
-                            type="text"
-                            name="latitude"
-                            className='inputField'
-                            value={accidentVehicleData.latitude}
-                            onChange={handleChange}
-                            readOnly={IsReadOnly}
-                        />
-                    </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}>
-                        Accident Longitude:
-                        <input
-                            type="text"
-                            name="longitude"
-                            className='inputField'
-                            value={accidentVehicleData.longitude}
-                            onChange={handleChange}
-                            readOnly={IsReadOnly}
-                        />
-                    </label>
-                    <label className="form-field" style={{ marginTop: "30px" }}></label>
-                    <label className="form-field" style={{ marginTop: "30px" }}></label>
 
                 </div>
 
             </form>
-            <form className='Customer-master-form'>
-                <div class='header-container'>
-                    <h2 className='bigtitle' style={{ marginTop: '30px', marginBottom: "30px" }}>Assign Vendors To Customer</h2>
 
+            <form className='Customer-master-form'>
+                <div className='header-container'>
+                    <h2 className='bigtitle'>Assign Vendors To Customer</h2>
                 </div>
-                <div style={{ display: 'flex', overflowX: 'auto' }}>
-                    <div style={{ flex: '1 1 auto', minWidth: '300px' }}>
+                <div className='form-container1'>
+                    <div className='map-container1'>
                         <MapComponent accidentLocation1={accidentVehicleData} additionalInfo={sendingData} />
                     </div>
-                    <>
-                        <div style={{ flex: '0 1 200px', marginLeft: '20px', minWidth: '300px' }}>
-                            {formData.choosenPlan === "advanced" && vendorData.length !== 0 && (
-                                <div>
-                                    <label className="form-field" style={{ width: "50%" }}>
-                                        Maximum Vendor Distance:
-                                        <input
-                                            type="text"
-                                            name="distance"
-                                            className='inputField'
-                                            value={sendingData.distance}
-                                            onChange={handlechanges}
-                                        />
-                                    </label>
-                                    <div className="dropdown green-dropdown form-field" style={{ width: "50%" }}>
-                                        <button
-                                            className="form-field input-group mb-3"
-                                            type="button"
-                                            id="dropdownMenuButton"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                            onClick={toggleDropdown}
-                                        >
-                                            {sendingData.vendorType || "Select Vendor Type"}
-                                        </button>
-                                        <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-                                        </ul>
-                                    </div>
+                    <div className='form-fields-container'>
+                        {formData.choosenPlan === "advanced" && vendorData.length !== 0 && (
+                            <div>
+                                <label className="form-field1">
+                                    Maximum Vendor Distance (KM):
+                                    <input
+                                        type="number"
+                                        name="distance"
+                                        className='inputField1'
+                                        value={sendingData.distance}
+                                        onChange={handlechanges}
+                                        min="0"
+                                        max="8001"
+                                        step="1"
+                                    />
+                                </label>
+                                <div className="dropdown green-dropdown form-field" style={{ marginLeft: '10px', width: "93%" }}>
+                                    <button
+                                        className="form-field input-group mb-3"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        onClick={toggleDropdown}
+                                    >
+                                        {sendingData.vendorType || "Select Vendor Type"}
+                                    </button>
+                                    <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+                                    </ul>
+                                </div>
 
-                                    <label className="form-field" style={{ width: "50%" }}>
+                                {selectedOptionsArray.includes("advocate") && (
+                                    <label className="form-field1">
                                         Give Advocate:
                                         <select
                                             type='text'
-                                            className='inputField'
+                                            className='inputField1'
                                             name="advocate"
                                             value={formData.advocate || ""}
                                             onChange={handleChange}
-                                            disabled={formData.advocate !== null && formData.advocate !== ""}
+                                            disabled={(formData.advocate !== null && formData.advocate !== "") && dummyFormData.advocate == null}
                                         >
                                             <option value="">Select a Advocate</option>
                                             {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "advocate").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
                                         </select>
-                                    </label>
-                                    <label className="form-field" style={{ width: "50%" }}>
-                                        Crain:
+                                    </label>)}
+
+                                {selectedOptionsArray.includes("crane") && (
+                                    <label className="form-field1">
+                                        Crane:
                                         <select
-                                            className='inputField'
-                                            name="crain"
-                                            value={formData.crain || ""}
+                                            className='inputField1'
+                                            name="crane"
+                                            value={formData.crane || ""}
                                             onChange={handleChange}
-                                            disabled={formData.crain !== null && formData.crain !== ""}
+                                            disabled={(formData.crane !== null && formData.crane !== "") && dummyFormData.crane == null}
                                         >
-                                            <option value="">Select a Crain</option>
-                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crain").map((vendor) => (
+                                            <option value="">Select a Crane</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crane").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
                                         </select>
-                                    </label>
-                                    <label className="form-field" style={{ width: "50%" }}>
-                                        Machanic:
+                                    </label>)}
+
+                                {selectedOptionsArray.includes("onsite temperory repair") && (
+                                    <label className="form-field1">
+                                        Mechanic:
                                         <select
-                                            className='inputField'
-                                            name="machanic"
-                                            value={formData.machanic || ""}
+                                            className='inputField1'
+                                            name="mechanic"
+                                            value={formData.mechanic || ""}
                                             onChange={handleChange}
-                                            disabled={formData.machanic !== null && formData.machanic !== ""}
+                                            disabled={(formData.mechanic !== null && formData.mechanic !== "") && dummyFormData.mechanic == null}
                                         >
-                                            <option value="">Select a Machanic</option>
-                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "machanic").map((vendor) => (
+                                            <option value="">Select a Mechanic</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "mechanic").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
                                         </select>
-                                    </label>
-                                    <label className="form-field" style={{ width: "50%" }}>
+                                    </label>)}
+
+                                {selectedOptionsArray.includes("workshop") && (
+                                    <label className="form-field1">
                                         WorkShop:
                                         <select
-                                            className='inputField'
+                                            className='inputField1'
                                             name="workshop"
                                             value={formData.workshop || ""}
                                             onChange={handleChange}
-                                            disabled={formData.workshop !== null && formData.workshop !== ""}
+                                            disabled={(formData.workshop !== null && formData.workshop !== "") && dummyFormData.workshop == null}
                                         >
                                             <option value="">Select a Workshop</option>
                                             {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
                                         </select>
-                                    </label>
-                                </div>
-                            )}
-                        {/* </div> */}
-
-                        {/* <div style={{ flex: '0 1 200px', marginLeft: '20px', minWidth: '300px' }}> */}
+                                    </label>)}
+                            </div>
+                        )}
                         {formData.choosenPlan === "plus" && vendorData.length !== 0 && (
                             <div>
-                                    <label className="form-field" style={{ width: "50%" }}>
-                                        Maximum Vendor Distance:
-                                        <input
-                                            type="text"
-                                            name="distance"
-                                            className='inputField'
-                                            value={sendingData.distance}
-                                            onChange={handlechanges}
-                                        />
-                                    </label>
-                                    <div className="dropdown green-dropdown form-field" style={{ width: "50%" }}>
-                                        <button
-                                            className="form-field input-group mb-3"
-                                            type="button"
-                                            id="dropdownMenuButton"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                            onClick={toggleDropdown}
+                                <label className="form-field1">
+                                    Maximum Vendor Distance (KM):
+                                    <input
+                                        type="number"
+                                        name="distance"
+                                        className='inputField1'
+                                        value={sendingData.distance}
+                                        onChange={handlechanges}
+                                        min="0"
+                                        max="8001"
+                                        step="1"
+                                    />
+                                </label>
+                                <div className="dropdown green-dropdown form-field" style={{ marginLeft: '10px', width: "93%" }}>
+                                    <button
+                                        className="form-field input-group mb-3"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        onClick={toggleDropdown}
+                                    >
+                                        {sendingData.vendorType || "Select Vendor Type"}
+                                    </button>
+                                    <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+                                    </ul>
+                                </div>
+                                {selectedOptionsArray.includes("crane") && (
+                                    <label className="form-field1">
+                                        Crane:
+                                        <select
+                                            className='inputField1'
+                                            name="crane"
+                                            value={formData.crane || ""}
+                                            onChange={handleChange}
+                                            disabled={(formData.crane !== null && formData.crane !== "") && dummyFormData.crane == null}
                                         >
-                                            {sendingData.vendorType || "Select Vendor Type"}
-                                        </button>
-                                        <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-                                        </ul>
-                                    </div>
-                                <label className="form-field" style={{ width: "50%" }}>
-                                    Crain:
-                                    <select
-                                        className='inputField'
-                                        name="crain"
-                                        value={formData.crain || ""}
-                                        onChange={handleChange}
-                                        disabled={formData.crain !== null && formData.crain !== ""}
-                                    >
-                                        <option value="">Select a Crain</option>
-                                        {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crain").map((vendor) => (
-                                            <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
-                                        ))}
-                                    </select>
-                                </label>
-                                <label className="form-field" style={{ width: "50%" }}>
-                                    Machanic:
-                                    <select
-                                        className='inputField'
-                                        name="machanic"
-                                        value={formData.machanic || ""}
-                                        onChange={handleChange}
-                                        disabled={formData.machanic !== null && formData.machanic !== ""}
-                                    >
-                                        <option value="">Select a Workshop</option>
-                                        {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "machanic").map((vendor) => (
-                                            <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
-                                        ))}
-                                    </select>
-                                </label>
-                                <label className="form-field" style={{ width: "50%" }}>
-                                    WorkShop:
-                                    <select
-                                        className='inputField'
-                                        name="workshop"
-                                        value={formData.workshop || ""}
-                                        onChange={handleChange}
-                                        disabled={formData.workshop !== null && formData.workshop !== ""}
-                                    >
-                                        <option value="">Select a Workshop</option>
-                                        {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
-                                            <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
-                                        ))}
-                                    </select>
-                                </label>
+                                            <option value="">Select a Crane</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crane").map((vendor) => (
+                                                <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
+                                            ))}
+                                        </select>
+                                    </label>)}
+
+                                {selectedOptionsArray.includes("onsite temperory repair") && (
+                                    <label className="form-field1">
+                                        Mechanic:
+                                        <select
+                                            className='inputField1'
+                                            name="mechanic"
+                                            value={formData.mechanic || ""}
+                                            onChange={handleChange}
+                                            disabled={(formData.mechanic !== null && formData.mechanic !== "") && dummyFormData.mechanic == null}
+                                        >
+                                            <option value="">Select a Mechanic</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "mechanic").map((vendor) => (
+                                                <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
+                                            ))}
+                                        </select>
+                                    </label>)}
+
+                                {selectedOptionsArray.includes("workshop") && (
+                                    <label className="form-field1">
+                                        WorkShop:
+                                        <select
+                                            className='inputField1'
+                                            name="workshop"
+                                            value={formData.workshop || ""}
+                                            onChange={handleChange}
+                                            disabled={(formData.workshop !== null && formData.workshop !== "") && dummyFormData.workshop == null}
+                                        >
+                                            <option value="">Select a Workshop</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
+                                                <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
+                                            ))}
+                                        </select>
+                                    </label>)}
                             </div>
                         )}
-{/* </div> */}
-
-{/* <div style={{ flex: '0 1 200px', marginLeft: '20px', minWidth: '300px' }}> */}
                         {formData.choosenPlan === "pro" && vendorData.length !== 0 && (
                             <div>
-                                    <label className="form-field" style={{ width: "50%" }}>
-                                        Maximum Vendor Distance:
-                                        <input
-                                            type="text"
-                                            name="distance"
-                                            className='inputField'
-                                            value={sendingData.distance}
-                                            onChange={handlechanges}
-                                        />
-                                    </label>
-                                    <div className="dropdown green-dropdown form-field" style={{ width: "50%" }}>
-                                        <button
-                                            className="form-field input-group mb-3"
-                                            type="button"
-                                            id="dropdownMenuButton"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                            onClick={toggleDropdown}
-                                        >
-                                            {sendingData.vendorType || "Select Vendor Type"}
-                                        </button>
-                                        <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crane</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Mechanic</a></li>
-                                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-                                        </ul>
-                                    </div>
-                                <label className="form-field" style={{ width: "50%" }}>
-                                    WorkShop:
-                                    <select
-                                        className='inputField'
-                                        name="workshop"
-                                        value={formData.workshop || ""}
-                                        onChange={handleChange}
-                                        disabled={formData.workshop !== null && formData.workshop !== ""}
-                                    >
-                                        <option value="">Select a Workshop</option>
-                                        {vendorData?.data?.length > 0 ? (
-                                            vendorData.data.filter(vendor => vendor.vendorType === "workshop").map(vendor => (
-                                                <option key={vendor.vendorCode} value={vendor.vendorCode}>
-                                                    {`${vendor.vendorName} - ${vendor.vendorCode}`}
-                                                </option>
-                                            ))
-                                        ) : (
-                                            <option disabled>Loading workshops...</option>
-                                        )}
-                                    </select>
+                                <label className="form-field1">
+                                    Maximum Vendor Distance (KM):
+                                    <input
+                                        type="number"
+                                        name="distance"
+                                        className='inputField1'
+                                        value={sendingData.distance}
+                                        onChange={handlechanges}
+                                        min="0"
+                                        max="8001"
+                                        step="1"
+                                    />
                                 </label>
+                                <div className="dropdown green-dropdown form-field" style={{ marginLeft: '10px', width: "93%" }}>
+                                    <button
+                                        className="form-field input-group mb-3"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        onClick={toggleDropdown}
+                                    >
+                                        {sendingData.vendorType || "Select Vendor Type"}
+                                    </button>
+                                    <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+                                    </ul>
+                                </div>
+                                {selectedOptionsArray.includes("workshop") && (
+                                    <label className="form-field1">
+                                        WorkShop:
+                                        <select
+                                            className='inputField1'
+                                            name="workshop"
+                                            value={formData.workshop || ""}
+                                            onChange={handleChange}
+                                            disabled={(formData.workshop !== null && formData.workshop !== "") && dummyFormData.workshop == null}
+                                        >
+                                            <option value="">Select a Workshop</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
+                                                <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
+                                            ))}
+                                        </select>
+                                    </label>)}
                             </div>
                         )}
-                        </div>
-                    </>
-
+                    </div>
                 </div>
 
                 {alertInfo.show && (
-    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-        {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
-    </Alert>
-)}
-
+                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                        {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
+                    </Alert>
+                )}
 
                 <div style={{ textAlign: 'center' }}>
-                    <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginTop:"30px" }} onClick={submitNow}>
+                    <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginTop: "30px" }} onClick={submitNow}>
                         Submit
                     </button>
                 </div>
             </form>
+
 
 
         </div>

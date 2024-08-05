@@ -9,61 +9,130 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
-
-import MachanicResponse from "../ViewVendorResponse/MachanicResponse"
-import CraineResponse from "../ViewVendorResponse/CraineResponse"
+import MechanicResponse from "../ViewVendorResponse/MechanicResponse"
+import CraneResponse from "../ViewVendorResponse/CraneResponse"
 import AdvocateResponse from "../ViewVendorResponse/AdvocateResponse"
 import WorkshopResponse from "../ViewVendorResponse/WorkshopResponse"
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 
 const ActualVendorResponse = ({ vehicle, onUpdate }) => {
-
+    console.log("HELLO")
     const [mechanicData, setMechanicData] = useState([]);
     const [craneData, setcraneData] = useState([]);
     const [advocateData, setAdvocateData] = useState([]);
     const [workshopData, setWorkshopData] = useState([]);
-
+    const [width, setWidth] = useState('100%');
     const [mainContent, setMainContent] = useState(true)
     const [viewMechanicData, setViewMechanicData] = useState(false);
     const [viewCraneData, setViewCraneData] = useState(false);
     const [viewAdvocateData, setViewAdvocateData] = useState(false);
     const [viewWorkshopData, setViewWorkshopData] = useState(false);
     const [selectedId, setSelectedId] = useState({});
+    const [comingVendorData, setComingVendorData] = useState([]);
+    const[dataFetched, setDataFetched]=useState(false)
+    console.log("VEHICLEs", vehicle)
+    console.log("DATAFETCHED", dataFetched)
+    console.log("setComingVendorData", comingVendorData)
 
     console.log("Advocatedata", advocateData)
     console.log("machaicDaa", mechanicData)
     const navigate = useNavigate();
     const location = useLocation();
-    // const { vehicle } = location.state || {};
-    console.log("VEHICLE", vehicle)
     const [data, setdata] = useState([vehicle]);
-    console.log("datassssssssssssssssssssssssssss", data)
 
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
     }, [token, userId, navigate]);
 
     const [formData, setFormData] = useState({
         vehicleNo: ""
     });
 
-    const viewMachanic = (data) => {
-        console.log("DATA", data)
-        setSelectedId(data)
+    useEffect(() => {
+        const fetchVendorData = async () => {
+            if (vehicle) {
+                let vendors = [];
+                if (vehicle.advocate) vendors.push(vehicle.advocate);
+                if (vehicle.mechanic) vendors.push(vehicle.mechanic);
+                if (vehicle.crane) vendors.push(vehicle.crane);
+                if (vehicle.workshop) vendors.push(vehicle.workshop);
+                console.log("VEDORDSSSDD", vendors)
+                for (const ven of vendors) {
+                    try {
+                        const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${ven}`);
+                        setComingVendorData(prevData => [...prevData, response.data.data[0]]);
+                    } catch (error) {
+                        console.error("Error fetching vendor data:", error);
+                    }
+                }
+                setDataFetched(true);
+            }
+        };
+
+        if (!dataFetched) {
+            fetchVendorData();
+        }
+    }, [vehicle, dataFetched]); 
+
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+    const handleSetItemPerPage = (e) => {
+        setItemsPerPage(e.target.value);
+    };
+    const filteredData = data.filter(item =>
+        item.CustomerName && item.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(totalPages, currentPage + 1);
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+    }
+
+
+    const viewMechanic = (data) => {
+        console.log("viewMechanic", data)
+        setSelectedId(data[0])
         setMainContent(false);
         setViewMechanicData(true);
         setViewCraneData(false);
         setViewAdvocateData(false);
         setViewWorkshopData(false);
-        // navigate("../MachanicResponse", { state: { data } });
     }
 
-    const viewCraine = (data) => {
+    const viewCrane = (data) => {
         console.log("DATA", data);
         setSelectedId(data)
         setMainContent(false);
@@ -71,7 +140,6 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         setViewCraneData(true);
         setViewAdvocateData(false);
         setViewWorkshopData(false);
-        // navigate("../CraineResponse", { state: { data } });
     }
     const viewAdvocate = (data) => {
         console.log("DATA", data);
@@ -81,7 +149,6 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         setViewCraneData(false);
         setViewAdvocateData(true);
         setViewWorkshopData(false);
-        // navigate("../AdvocateResponse", { state: { data } });
     }
     const viewWorkshop = (data) => {
         console.log("DATA", data);
@@ -91,7 +158,6 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         setViewCraneData(false);
         setViewAdvocateData(false);
         setViewWorkshopData(true);
-        // navigate("../WorkshopResponse", { state: { data } });
     }
     const handleBack = () => {
         onUpdate();
@@ -105,17 +171,44 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         setViewWorkshopData(false);
     };
 
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 630) {
+                setWidth('75%');
+            } else {
+                setWidth('100%');
+            }
+        };
+        window.addEventListener('resize', handleResize);
+
+        // Initial check
+        handleResize();
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+    
+    useEffect(()=>{
+
+    },[comingVendorData])
+
+    const uniqueVendors = comingVendorData.filter((vendor, index, self) => 
+        index === self.findIndex((v) => v.vendorCode === vendor.vendorCode)
+      );
 
     return (
         <div>
-            {mainContent && (<div style={{ padding: '0px', margin: '10px' }}>
-                <Helmet>
-                    <title>Actual Vendor Response - Claimpro</title>
-                    <meta name="description" content="Actual Vendor Response" />
-                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-                    <link rel='canonical' href={`https://claimpro.in/ActualVendorResponse`} />
-                </Helmet>
-                <div className="Customer-master-form" style={{ marginBottom: "50px" }}>
+            {mainContent && (
+                <div className="Customer-master-form" style={{ paddingLeft: '10px', paddingRight: "10px", paddingTop: "40px", paddingBottom: "40px" , marginLeft:"5px"}}>
+                    <Helmet>
+                        <title>Actual Vendor Response - Claimpro</title>
+                        <meta name="description" content="Actual Vendor Response" />
+                        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                        <link rel='canonical' href={`https://claimpro.in/ActualVendorResponse`} />
+                    </Helmet>
+                    {/* <div style={{ marginBottom: "50px" }}>
                     <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
                         <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack}></Button>
                         <h3 className="bigtitle">Vendor Response</h3>
@@ -124,7 +217,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                         {data.map((vehicle, vehicleIndex) => (
                             <div key={vehicle.AccidentVehicleCode}>
                                 <h2 className="title1">Mechanic Data</h2>
-                                <div className="responsive-table">
+                                <div className="responsive-table" style={{ width }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "30px" }}>
                                         <thead>
                                             <tr>
@@ -150,7 +243,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                         <td>{item.trial || '---'}</td>
                                                         <td>{item.payment || '---'}</td>
                                                         <td>
-                                                            <button onClick={() => viewMachanic(item)} className='view-button'>View</button>
+                                                            <button onClick={() => viewMechanic(item)} className='view-button'>View</button>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -186,7 +279,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                         <td>{item.advancedPayment || '---'}</td>
                                                         <td>{item.balancePayment || '---'}</td>
                                                         <td>
-                                                            <button onClick={() => viewCraine(item)} className='view-button'>View</button>
+                                                            <button onClick={() => viewCrane(item)} className='view-button'>View</button>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -269,23 +362,145 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                             </div>
                         ))}
                     </div>
+                </div> */}
+
+                    <div style={{ marginTop: "50px" }}>
+                        <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                        <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack}></Button>
+                        <h3 className="bigtitle">Vendor Response Overview (Assigned Only)</h3>
+                    </div>
+
+                        <div className="responsive-table" style={{ width: '100%' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                                <thead>
+                                    <tr>
+                                        {/* <th>Sr. No</th> */}
+                                        <th>Vendor Name</th>
+                                        <th>Type Of Vendor</th>
+                                        <th>Vendor Email</th>
+                                        <th>Accepted</th>
+                                        <th>View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {uniqueVendors.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from this vendor...</td>
+                                        </tr>
+                                    ) : (
+                                        uniqueVendors.map((vendor, index) => (
+                                            <tr key={vendor.vendorCode}>
+                                                {/* <td>{index + 1}</td> */}
+                                                <td>{vendor.vendorName || '---'}</td>
+                                                <td>{vendor.vendorType || '---'}</td>
+                                                <td>{vendor.email || '---'}</td>
+                                                <td>
+                                                    <div>
+                                                        {vendor.vendorType === "crane" && (
+                                                            vehicle.craneData.length === 0 ? (
+                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                            ) : (
+                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.craneData[0].acceptedByAdmin == null? "pending" : vehicle.craneData[0].acceptedByAdmin}</p>
+                                                            )
+                                                        )}
+                                                        {vendor.vendorType === "mechanic" && (
+                                                            vehicle.mechanicData.length === 0 ? (
+                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                            ) : (
+                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin}</p>
+                                                            )
+                                                        )}
+                                                        {vendor.vendorType === "advocate" && (
+                                                            vehicle.advocateData.length === 0 ? (
+                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                            ) : (
+                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin}</p>
+                                                            )
+                                                        )}
+                                                        {vendor.vendorType === "workshop" && (
+                                                            vehicle.workshopData.length === 0 ? (
+                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                            ) : (
+                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin}</p>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        {vendor.vendorType === "crane" && (
+                                                            vehicle.craneData.length === 0 ? (
+                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                            ) : (
+                                                                <button onClick={() => viewCrane(vehicle.craneData)} className='view-button'>View</button>
+                                                            )
+                                                        )}
+                                                        {vendor.vendorType === "mechanic" && (
+                                                            vehicle.mechanicData.length === 0 ? (
+                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                            ) : (
+                                                                <button onClick={() => viewMechanic(vehicle.mechanicData)} className='view-button'>View</button>
+                                                            )
+                                                        )}
+                                                        {vendor.vendorType === "advocate" && (
+                                                            vehicle.advocateData.length === 0 ? (
+                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                            ) : (
+                                                                <button onClick={() => viewAdvocate(vehicle.advocateData)} className='view-button'>View</button>
+                                                            )
+                                                        )}
+                                                        {vendor.vendorType === "workshop" && (
+                                                            vehicle.workshopData.length === 0 ? (
+                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                            ) : (
+                                                                <button onClick={() => viewWorkshop(vehicle.workshopData)} className='view-button'>View</button>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="pagination">
+                            <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+                                <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                                    <ArrowBack />
+                                </Button>
+                                {pageNumbers.map((pageNumber) => (
+                                    <Button
+                                        key={pageNumber}
+                                        onClick={() => handlePageChange(pageNumber)}
+                                        className={currentPage === pageNumber ? 'active' : ''}
+                                    >
+                                        {pageNumber}
+                                    </Button>
+                                ))}
+                                <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                    <ArrowForward />
+                                </Button>
+                            </ButtonGroup>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
             )}
 
             {viewMechanicData && selectedId != {} && (
-                <MachanicResponse data={selectedId} onUpdate={handleUpdate} />
+                <MechanicResponse data={selectedId} onUpdate={handleUpdate} />
             )}
 
-            {viewCraneData && selectedId != {} &&  (
-                <CraineResponse data={selectedId} onUpdate={handleUpdate} />
+            {viewCraneData && selectedId != {} && (
+                <CraneResponse data={selectedId} onUpdate={handleUpdate} />
             )}
 
-            {viewAdvocateData && selectedId != {} &&  (
+            {viewAdvocateData && selectedId != {} && (
                 <AdvocateResponse data={selectedId} onUpdate={handleUpdate} />
             )}
 
-            {viewWorkshopData && selectedId != {} &&  (
+            {viewWorkshopData && selectedId != {} && (
                 <WorkshopResponse data={selectedId} onUpdate={handleUpdate} />
             )}
 

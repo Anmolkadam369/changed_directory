@@ -83,8 +83,8 @@ const CraneDashboard = ({ getData }) => {
     });
 
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         if (token === '' || userId === '') {
@@ -150,8 +150,8 @@ const CraneDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrain/${userId}`);
-            console.log("Total assignedTasksMachanic", response.data.data);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
+            console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {
             console.error("Failed to fetch assigned cases:", error);
@@ -212,8 +212,6 @@ const CraneDashboard = ({ getData }) => {
         try {
             const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
             console.log("responssesesesee", response)
-            // if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
-            // else setAllAccidentVehicleData(response.data.data);
         } catch (error) {
             console.error("Error fetching all accident vehicle data", error);
         }
@@ -280,7 +278,9 @@ const CraneDashboard = ({ getData }) => {
                                 <h3>Pending (Admin and Not Requested)</h3>
                                 <p>{adminPending}</p>
                             </div>
+                        </div>
 
+                        <div className="stat-container">
                             <div className="stat-item">
                                 <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
                                 <h3>Response Given</h3>

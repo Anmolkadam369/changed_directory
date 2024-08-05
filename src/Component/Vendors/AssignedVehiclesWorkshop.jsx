@@ -22,8 +22,8 @@ const AssignedVehicleWorkshop = () => {
   const [paddingLeft, setPaddingLeft] = useState('30px');
 
   const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
   const [showAddedDataByVendor, setShowAddedDataByVendor] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -110,10 +110,9 @@ const AssignedVehicleWorkshop = () => {
   };
 
   function view(id, item) {
-    setSelectedId(id)
-    setSelectedItem(item)
+    setSelectedId(id);
+    setSelectedItem(item);
     setShowAddedDataByVendor(true)
-    // navigate("../AddedDataByWorkshop", { state: { id } });
   }
 
   function addImage(id, accidendFileNo) {
@@ -289,8 +288,8 @@ const AssignedVehicleWorkshop = () => {
                 </button>
                 <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
                   <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crain")}>Crain</a></li>
-                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "machanic")}>Machanic</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
+                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
                   <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
                 </ul>
               </div>
@@ -384,7 +383,7 @@ const AssignedVehicleWorkshop = () => {
                             Upload Data
                           </button>
                         ) : <button
-                          onClick={() => view(item.AccidentVehicleCode, item.accidentFileNo, item)}
+                          onClick={() => view(item.AccidentVehicleCode, item)}
                           className="view-button" style={{ padding: '10px 30px' }}
                         >
                           Upload Data
@@ -394,7 +393,7 @@ const AssignedVehicleWorkshop = () => {
                       <td>
                         {item.details.length > 0 ? (
                           <button
-                            onClick={() => addImage(item.AccidentVehicleCode)}
+                            onClick={() => addImage(item.AccidentVehicleCode, item.accidentFileNo)}
                             className="view-button"
                             disabled={item.details[0].acceptedByAdmin === "reject"}
                             style={{
@@ -408,7 +407,7 @@ const AssignedVehicleWorkshop = () => {
                             Images
                           </button>
                         ) : <button
-                          onClick={() => addImage(item.AccidentVehicleCode)}
+                          onClick={() => addImage(item.AccidentVehicleCode, item.accidentFileNo)}
                           className="view-button" style={{ padding: '10px 30px' }}
                         >
                           Images

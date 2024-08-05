@@ -3,7 +3,7 @@ import './Location1.css';
 import "../ImageUpload/ImageUpload.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { constSelector, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -13,19 +13,19 @@ import { Alert } from '@mui/material';
 import backendUrl from '../../environment';
 import Snackbar from '@mui/material/Snackbar';
 import { Helmet } from 'react-helmet-async';
-
-
+import { ClipLoader } from 'react-spinners';
 
 function Location1({ vehicleData }) {
     console.log("vehicle", vehicleData)
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const [isLoading, setIsLoading] = useState(false);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
-    const [latitude, setLatitude] = useState("");
-    const [longitude, setLongitude] = useState("");
+    const [accidentLatitude, setAccidentLatitude] = useState("");
+    const [accidentLongitude, setAccidentLongitude] = useState("");
     const [location, setLocation] = useState(null);
     const [getData, setGetData] = useState({});
     const [showServices, setShowServices] = useState(true);
@@ -63,16 +63,16 @@ function Location1({ vehicleData }) {
 
     const [formData, setFormData] = useState({
         manualLocation: ""
-    })
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [photoPreviews, setPhotoPreviews] = useState({});
     const [fileName, setFileName] = useState([]);
-    const [showPhotos, setShowPhotos] = useState(false)
-    const [showOptions, setShowOptions] = useState(false)
+    const [showPhotos, setShowPhotos] = useState(false);
+    const [showOptions, setShowOptions] = useState(false);
     const [options, setOptions] = useState([]);
     const choosenPlan = getData.choosenPlan;
-    console.log("choosenpa", choosenPlan)
-    const allOptions = ['advocate', 'workshop', 'onsite temperory repair', 'crain'];
+    console.log("choosenpa", choosenPlan);
+    const allOptions = ['advocate', 'workshop', 'onsite temperory repair', 'crane'];
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     const getOptionsToShow = () => {
@@ -82,7 +82,7 @@ function Location1({ vehicleData }) {
             case 'plus':
                 return allOptions.filter(option => option !== 'advocate');  // Remove 'advocate'
             case 'pro':
-                return allOptions.filter(option => option !== 'advocate' && option !== 'onsite temperory repair' && option !== 'crain');  // Remove 'advocate', 'onsite repair', 'crain'
+                return allOptions.filter(option => option !== 'advocate' && option !== 'onsite temperory repair' && option !== 'crane');  // Remove 'advocate', 'onsite repair', 'crane'
             default:
                 return [];
         }
@@ -90,7 +90,7 @@ function Location1({ vehicleData }) {
 
     const optionstoshow = getOptionsToShow();
 
-    console.log("potion", selectedOptions)
+    console.log("potion", selectedOptions);
 
     const handleCheckboxChange = (option) => {
         setSelectedOptions(prev => {
@@ -103,9 +103,9 @@ function Location1({ vehicleData }) {
     };
 
     useEffect(() => {
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         findUserById(userId);
         setShowPhotos(true);
     }, [token, userId, navigate]);
@@ -113,16 +113,24 @@ function Location1({ vehicleData }) {
     const findUserById = async (id) => {
         const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
         setGetData(response.data.data[0]);
-        console.log(getData)
-    }
+        console.log(getData);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: value
-        }))
-    }
+        }));
+    };
+
+    const handleaccidentLatitudeChange = (e) => {
+        setAccidentLatitude(e.target.value);
+    };
+
+    const handleaccidentLongitudeChange = (e) => {
+        setAccidentLongitude(e.target.value);
+    };
 
     const getLocation = () => {
         if (navigator.geolocation) {
@@ -135,9 +143,8 @@ function Location1({ vehicleData }) {
     const showPosition = (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
-        setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
-        setLatitude(lat);
-        setLongitude(lon);
+        setAccidentLatitude(lat);
+        setAccidentLongitude(lon);
     };
 
     const showError = (error) => {
@@ -161,7 +168,7 @@ function Location1({ vehicleData }) {
         const file = event.target.files[0];
         if (file && file.size > 2097152) {
             console.log("File size should be less than 2 MB!");
-            setAlertInfo({ show: true, message: "File size should be less than 100 KB", severity: 'error' });
+            setAlertInfo({ show: true, message: "File size should be less than 2 MB", severity: 'error' });
             if (photoRefs[type].current) {
                 photoRefs[type].current.value = "";
             }
@@ -171,54 +178,48 @@ function Location1({ vehicleData }) {
                 setPhotos(prev => ({ ...prev, [type]: file }));
                 setPhotoPreviews(prev => ({ ...prev, [type]: reader.result }));
             };
-            console.log("PHOTO", photos)
             reader.readAsDataURL(file);
         }
     };
 
     const validateForm = () => {
-        for (const [key, value] of Object.entries(formData)) {
-            if (key === 'frontLH' || key === 'frontRH' || key === 'rearLH' || key === 'rearRH' || key === 'rearView' || key === 'ChassisNoView' || key === 'ClusterView' || key === 'MajorDamages1' || key === 'MajorDamages2' || key === 'MajorDamages3' || key === 'MajorDamages4' || key === 'MajorDamages5') {
-                if (value === null || value === undefined || value.size === 0)
-                    return `Field '${key}' is required.`;
-            }
-            if (key === 'manualLocation' || latitude != null && longitude != null)
-                return '';
-
-            if (value === '') {
-                return `Field '${key}' is required.`;
+        const requiredPhotos = ['frontLH', 'frontRH', 'rearLH', 'rearRH', 'frontView', 'rearView', 'ChassisNoView', 'ClusterView', 'MajorDamages1', 'MajorDamages2', 'MajorDamages3', 'MajorDamages4', 'MajorDamages5'];
+        for (const photo of requiredPhotos) {
+            if (!photos[photo]) {
+                return `Field '${photo}' is required.`;
             }
         }
+        if (!accidentLatitude || !accidentLongitude) {
+            return 'Accident location coordinates are required.';
+        }
         return '';
-    }
+    };
 
     const handleRemovePhoto = (type) => {
         setPhotos(prev => ({ ...prev, [type]: null }));
         setFileName(prev => ({ ...prev, [type]: null }));
     };
 
-    const accidentDataObject = { ...photos, ...vehicleData, latitude, longitude, ...getData, ...formData, selectedOptions };
-    console.log("accidentData", accidentDataObject)
+    const accidentDataObject = { ...photos, ...vehicleData, accidentLatitude, accidentLongitude, ...getData, ...formData, selectedOptions };
+    console.log("accidentData", accidentDataObject);
+    console.log("accidentLongitude", accidentLongitude, "accidentLatitude", accidentLatitude);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        console.log("some")
+        setIsLoading(true);
         const validationMessage = validateForm();
         if (validationMessage) {
-            setSnackbarMessage(validationMessage);
-            setOpenSnackbar(true);
+            setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+            setIsSubmitting(false);
+            setIsLoading(false);
             return;
         }
 
-        const accidentDataObject = { ...photos, ...vehicleData, latitude, longitude, ...getData, ...formData, selectedOptions };
-        console.log('Form data submitted:', accidentDataObject);
-        console.log("AccidentData", accidentDataObject)
         const formDataObj = new FormData();
         for (const key in accidentDataObject) {
             if (accidentDataObject[key]) {  // Check if the data is not undefined or null
                 if (accidentDataObject[key] instanceof File) {
-                    console.log("FILES")
-                    console.log("file", accidentDataObject[key])
                     formDataObj.append(key, accidentDataObject[key], accidentDataObject[key].name);
                 } else {
                     formDataObj.append(key, accidentDataObject[key]);
@@ -227,31 +228,28 @@ function Location1({ vehicleData }) {
         }
 
         try {
-            try {
-                console.log("FOMRDATA")
-                for (let pair of formDataObj.entries()) {
-                    console.log(`${pair[0]}:`, pair[1]);
+            const response = await axios({
+                method: 'POST',
+                url: `${backendUrl}/addVehicleInfo`,
+                data: formDataObj,
+                headers: {
+                    'Authorization': token
                 }
-                const response = await axios({
-                    method: 'POST',
-                    url: `${backendUrl}/addVehicleInfo`,
-                    data: formDataObj,
-                    headers: {
-                        'Authorization': token
-                    }
-                });
-                console.log("response", response.data);
-                setSnackbarMessage("Form submitted successfully!");
-                setOpenSnackbar(true);
-
-            } catch (error) {
-                console.error("Error during form submission:", error);
-                setSnackbarMessage("Failed to submit the form.");
-                setOpenSnackbar(true);
-            }
+            });
+            setIsLoading(false);
+            setAlertInfo({ show: true, message:"Data Successfully Added", severity: 'success' });
         } catch (error) {
-            console.error('Failed to submit photos:', error);
-            setLocation('Error: Failed to submit photos.');
+            setIsLoading(false);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } finally {
             setIsSubmitting(false);
         }
     };
@@ -259,6 +257,7 @@ function Location1({ vehicleData }) {
     const handleSkip = () => {
         setShowServices(!showServices);  // Hide the services div and show the message
     };
+
 
 
     return (
@@ -270,25 +269,37 @@ function Location1({ vehicleData }) {
                 <link rel='canonical' href={`https://claimpro.in/Location1`} />
             </Helmet>
             <Stack spacing={2}>
+            <p style={{marginTop:'20px'}}>Send Location (Real Time Location):</p>
+
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
-                <p style={{ textAlign: 'center' }}>OR</p>
-                {!location && (
-                    <label className="form-field input-group mb-3">
-                        <p style={{ marginBottom: "20px" }}> Manual Location :</p>
-                        <textarea
-                            name="manualLocation"
-                            value={FormData.manualLocation}
-                            onChange={handleChange}
+
+                <p style={{marginTop:'30px'}}>Send Location Of Address (If You Are Not On The Spot):</p>
+                    <label className='form-field'>
+                        Accident Latitude:
+                        <input
+                            type="text"
+                            placeholder='Accident Latitude'
+                            value={accidentLatitude}
+                            onChange={handleaccidentLatitudeChange}
                             className="form-control"
+                            required
                         />
                     </label>
-                )}
+
+                    <label className='form-field'>
+                        Accident Longitude:
+                        <input
+                            type="text"
+                            placeholder='Accident Longitude'
+                            value={accidentLongitude}
+                            onChange={handleaccidentLongitudeChange}
+                            className="form-control"
+                            required
+                        />
+                    </label>
+
                 {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
-                {alertInfo.show && (
-                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                        {alertInfo.message}
-                    </Alert>
-                )}
+
                 {Object.keys(photos).map((type, index) => (
                     <div key={type} className="photo-input-section">
                         <label>
@@ -297,7 +308,7 @@ function Location1({ vehicleData }) {
                                 type="file"
                                 ref={photoRefs[type]}
                                 accept="image/*"
-                                capture="camera"
+                                capture="environment"
                                 className="form-control"
                                 onChange={(e) => handleFileChange(e, type)}
                             />
@@ -374,21 +385,29 @@ function Location1({ vehicleData }) {
                     )}
 
                 </div>
-                <Snackbar
-                    open={openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={() => setOpenSnackbar(false)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                >
-                    <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
-                        {snackbarMessage}
+
+                {alertInfo.show && (
+                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                        {alertInfo.message}
                     </Alert>
-                </Snackbar>
+                )}
 
+                <div style={{ textAlign: 'center', marginTop: '30px' }}>
+            <button
+              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              disabled={isLoading} // Disable button while loading
+              onClick={handleSubmit}
+            >
+              {isLoading ? 'Submitting...' : 'Submit'}
+            </button>
+            {isLoading && (
+              <div style={{ marginTop: '10px' }}>
+                <ClipLoader color="#4CAF50" loading={isLoading} />
+                <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+              </div>
+            )}
+          </div>
 
-                <Button variant="contained" onClick={handleSubmit} disabled={isSubmitting}>
-                    Submit Photos
-                </Button>
             </Stack>
 
         </div>

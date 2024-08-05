@@ -8,8 +8,8 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 
 function Location2() {
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     useEffect(() => {
         console.log("token", token, userId);
         if (token === "" || userId === "") {

@@ -47,8 +47,8 @@ const UserDashboard = () => {
     });
 
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         if (token === '' || userId === '') {

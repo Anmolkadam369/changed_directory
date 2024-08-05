@@ -20,8 +20,8 @@ const ViewVehicleInfo = () => {
   const [currentPage, setCurrentPage] = useState(1);
   let [itemsPerPage, setItemsPerPage] = useState(10)
   const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
   const [searchQuery, setSearchQuery] = useState('');
   const [width, setWidth] = useState('100%');
 
@@ -38,6 +38,8 @@ const ViewVehicleInfo = () => {
   const [showUploadImage, setShowUploadImage] = useState(false)
 
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedUploadId, setSelectedUploadId] = useState(null);
+
 
   useEffect(() => {
     if (showMainContent) getData();
@@ -136,7 +138,7 @@ const ViewVehicleInfo = () => {
 
   function upload(id) {
     console.log("myId", id)
-    setSelectedId(id);
+    setSelectedUploadId(id);
     setShowEditVehicleInfo(false)
     setShowMainContent(false)
     setShowUploadImage(true)
@@ -151,6 +153,7 @@ const ViewVehicleInfo = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1); 
   };
   const handleSetItemPerPage = (e) => {
     setItemsPerPage(e.target.value);
@@ -305,7 +308,7 @@ const ViewVehicleInfo = () => {
                       <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
                     </td>
                     <td>
-                      <button onClick={() => upload(item.AccidentDataCode)} className="view-button">Upload</button>
+                      <button onClick={() => upload(item.accidentFileNo)} className="view-button">Upload</button>
                     </td>
                   </tr>
                 ))
@@ -314,7 +317,7 @@ const ViewVehicleInfo = () => {
           </table>
         </div>
         <div className='pagination'>
-          <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
+          <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
             <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
             {pageNumbers.map((pageNumber) => (
               <Button
@@ -333,7 +336,7 @@ const ViewVehicleInfo = () => {
         <VehicleClaimEdit id={selectedId} onUpdate={handleUpdate} />
       )}
       {showUploadImage && (
-        <ImageUpload id={selectedId} onUpdate={handleUpdate} />
+        <ImageUpload id={selectedUploadId} onUpdate={handleUpdate} />
       )}
     </div>
   );

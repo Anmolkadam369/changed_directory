@@ -1,0 +1,105 @@
+.some-table-container {
+  width: 100%;
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+
+
+.some-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+  text-align: left;
+  margin-bottom: "130px";
+}
+
+.some-table th,
+.some-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.some-table th {
+  background-color: #f2f2f2;
+  color: green;
+  font-size: 10px;
+}
+
+.some-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.some-table a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.some-table a:hover {
+  text-decoration: underline;
+}
+
+.some-table .badge {
+  display: inline-block;
+  /* padding: 5px 10px; */
+  font-size: 9px;
+  color: #fff;
+  background-color: #ffc107;
+  border-radius: 4px;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 768px) {
+  .some-table th,
+  .some-table td {
+      font-size: 9px;
+      padding: 8px;
+  }
+
+  .some-table .badge {
+      font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 546px) {
+  .some-table th:nth-child(2), .some-table td:nth-child(2) {
+    display: none;
+  }
+  .some-table th:nth-child(5), .some-table td:nth-child(5) {
+    display: none;
+  }
+
+
+  .some-table th,
+  .some-table td {
+      font-size: 8px;
+      padding: 6px;
+  }
+
+  .some-table .badge {
+      font-size: 11px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .some-table th,
+  .some-table td {
+      font-size: 8px;
+      padding: 6px;
+  }
+
+  .some-table .badge {
+      font-size: 7px;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .some-table th,
+  .some-table td {
+      font-size: 7px;
+      padding: 5px;
+  }
+
+  .some-table .badge {
+      font-size: 7px;
+  }
+}

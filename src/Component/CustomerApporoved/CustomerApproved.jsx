@@ -21,8 +21,8 @@ import CustomerMasterEdit from "../CustomerMaster/CustomerMasterEdit"
 const CustomerApproved = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,6 +110,7 @@ const CustomerApproved = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1); 
   };
 
   const handleSetItemPerPage = (e) => {
@@ -183,10 +184,10 @@ const CustomerApproved = () => {
           <h3 className="bigtitle">Customer View / Edit</h3>
           <div className="form-search">
             <label className='label-class'>
-              Search by Vendor Name
+              Search by Customer Name
               <input
                 type="text"
-                placeholder="Search by Vendor Name"
+                placeholder="Search by Customer Name"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 required
@@ -242,6 +243,7 @@ const CustomerApproved = () => {
                 <th>Customer Type</th>
                 <th>Edited By</th>
                 <th>View</th>
+                <th>Performance</th>
                 <th>Active/Deactive</th>
               </tr>
             </thead>
@@ -262,6 +264,9 @@ const CustomerApproved = () => {
                       <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
                     </td>
                     <td>
+                      <button className='view-button'>View</button>
+                    </td>
+                    <td>
                       <button
                         onClick={() => openModal(item)}
                         className="deactivate-button"
@@ -276,7 +281,7 @@ const CustomerApproved = () => {
           </table>
         </div>
         <div className='pagination'>
-          <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
+          <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
             <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
             {pageNumbers.map((pageNumber) => (
               <Button

@@ -29,6 +29,7 @@ import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
 import ViewVehicleInfo from '../ViewVehicleInfo/ViewVehicleInfo';
 import VendorResponse from '../Vendors/VendorsResponse';
 import Visitors from '../Visitors/Visitors';
+import DummyDashboard from './DummyDashboard';
 
 
 
@@ -57,6 +58,7 @@ const Dashboard = () => {
     const [vendorResponsing, setVendorResponsing] = useState(false)
     const [visitorForm, setVisitorForm] = useState(false)
     const [getData, setGetData] = useState({});
+    const [newCase, setNewCase] = useState(false)
     console.log("getdata", getData)
 
 
@@ -68,6 +70,7 @@ const Dashboard = () => {
         setShowVehicleClaimView(false);//view register
         setVendorResponsing(false); //responses
         setVisitorForm(false);
+        setNewCase(false)
     };
 
 
@@ -185,8 +188,8 @@ const Dashboard = () => {
     });
 
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         getVendorData();
@@ -200,13 +203,13 @@ const Dashboard = () => {
         findUserById(userId)
 
         if (token === '' || userId === '') {
-            //   navigate('/');
+              navigate('/');
         }
     }, [token, userId, navigate]);
 
 
     const vendorsByMonth = Array(12).fill(0);
-    const vendorsByType = { crain: 0, advocate: 0, workshop: 0, machanic: 0 };
+    const vendorsByType = { crane: 0, advocate: 0, workshop: 0, machanic: 0 };
 
     const customerByMonth = Array(12).fill(0);
     const customerByType = { fleetOwner: 0, retail: 0 };
@@ -318,7 +321,8 @@ const Dashboard = () => {
     };
 
     const AssignedVendorsRemaining = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor`);
+        const getFilteredData = "partiallyAssigned"
+        const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}`);
         setRemainingAssignedVendors(response.data.data)
     };
 
@@ -375,11 +379,16 @@ const Dashboard = () => {
         resetStates();
         setVisitorForm(true);
     }
+    const newCasesFunc = () => {
+        resetStates()
+        setNewCase(true)
+    }
 
 
     return (
         <div>
-            {dashboardOnly && (<div className="dashboard">
+            {dashboardOnly && (
+                <div className="dashboard">
                 <Helmet>
                     <title>Accident Dashboard - Claimpro</title>
                     <meta name="description" content="Dashboard for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
@@ -419,6 +428,9 @@ const Dashboard = () => {
                 <main className="main-content">
                     <div className='other-content'>
                         <div style={{ display: "relative" }}>
+                        <div className="seehere-container">
+                                        <a onClick={newCasesFunc} className="right-align">See Here</a>
+                                    </div>
 
                             <div className="stat-container">
                                 <div className="stat-item">
@@ -509,7 +521,7 @@ const Dashboard = () => {
 
                                     <div className="charts">
                                         <div className="chart-item">
-                                            <h3 className="chart-title">Customer Type Distribution</h3>
+                                            <h3 className="chart-title">Customer Type</h3>
                                             <Doughnut data={doughnutData2} />
                                         </div>
 
@@ -574,6 +586,11 @@ const Dashboard = () => {
                     </div>
                 </main>
             </div>)}
+
+            {newCase && (
+                <DummyDashboard/>
+
+            )}
             {vendorOnly && (
                 <VendorApproved />
             )}

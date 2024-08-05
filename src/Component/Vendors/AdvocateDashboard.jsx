@@ -83,8 +83,8 @@ const AdvocateDashboard = ({ getData }) => {
     });
 
     const navigate = useNavigate();
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         if (token === '' || userId === '') {
@@ -248,7 +248,7 @@ const AdvocateDashboard = ({ getData }) => {
                 <title>Advocate Dashboard - Claimpro</title>
                 <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Mechanic Dashboard." />
                 <meta name="keywords" content="Mechanic Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
-                <link rel='canonical' href={`https://claimpro.in/MachanicDashboard`} />
+                <link rel='canonical' href={`https://claimpro.in/MechanicDashboard`} />
             </Helmet>
 
             <main className="main-content">
@@ -281,6 +281,8 @@ const AdvocateDashboard = ({ getData }) => {
                                 <p>{adminPending}</p>
                             </div>
 
+                        </div>
+                        <div className="stat-container">
                             <div className="stat-item">
                                 <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
                                 <h3>Response Given</h3>

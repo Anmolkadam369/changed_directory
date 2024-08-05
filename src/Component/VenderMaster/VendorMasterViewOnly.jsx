@@ -169,8 +169,8 @@
 //           <select name="vendorType" value={formData.vendorType} onChange={handleChange} required>
 //             <option value="">Select</option>
 //             <option value="advocate">Advocate</option>
-//             <option value="crain">Crain</option>
-//             <option value="crain">Machnic</option>
+//             <option value="crane">Crane</option>
+//             <option value="crane">Machnic</option>
 //             <option value="workshop">Workshop</option>
 
 
@@ -928,8 +928,8 @@ const VehicleClaimEdit = () => {
     const [comingData, setComingData]=useState([]); 
 
     const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -943,9 +943,9 @@ const VehicleClaimEdit = () => {
         loadStates();
         getDataById(id);
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
     }, [token, userId, navigate]);
 
     const formatDateForInput = (dateStr) => {

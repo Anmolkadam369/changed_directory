@@ -18,8 +18,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
 import { Helmet } from 'react-helmet-async';
+import { useParams } from 'react-router-dom';
+
 
 const CreatePassword = () => {
+  const { userType } = useParams();
   const navigate = useNavigate();
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const [isHovered, setIsHovered] = useState(false);
@@ -69,17 +72,21 @@ const CreatePassword = () => {
     }
 
     if (password !== confirmPassword) {
-      setAlertInfo({ show: true, message: 'Passwords do not match.', severity: 'error' });
+      setAlertInfo({ show: true, message: 'Passwords does not match.', severity: 'error' });
       return;
     }
 
     console.log("email", email, "password", password, "confirmPassword", confirmPassword)
     try {
-      const response = await axios.put(`${backendUrl}/api/changePassword`, {
+      const response = await axios.put(`${backendUrl}/api/changePassword/${userType}`, {
        email,password,confirmPassword
       });
       if (response.status === 200) {
         setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+        setemail('');
+        setPassword('')
+        setConfirmPassword('')
+        window.location.href = 'https://claimpro.in/LoginPage';
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'An error occurred';

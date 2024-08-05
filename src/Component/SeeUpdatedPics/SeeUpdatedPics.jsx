@@ -20,14 +20,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Helmet } from 'react-helmet-async';
 
 
-const SeeUpdatedPics = () => {
+const SeeUpdatedPics = ({id, onUpdate}) => {
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
     console.log("Received ID:", id);
     const navigate = useNavigate();
     const today = new Date().toISOString().split('T')[0];
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [comingData, setComingData] = useState([]);
     console.log("comingData", comingData)
     const [selectedDate, setSelectedDate] = useState(today)
@@ -85,9 +85,9 @@ const SeeUpdatedPics = () => {
 
 
     useEffect(() => {
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         console.log("todya", today)
         getDataByDate(today);
     }, [token, userId, navigate, id]); // Removed comingData from dependencies
@@ -143,7 +143,7 @@ const SeeUpdatedPics = () => {
         setComingData(response.data.data[0])
     }
     const handleBack = () => {
-        navigate("../userDashboard")
+        onUpdate()
     }
 
     const handleChange = (e) => {
@@ -161,7 +161,7 @@ const SeeUpdatedPics = () => {
                 <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
                 <link rel='canonical' href={`https://claimpro.in/SeeUpdatedPics`} />
             </Helmet>
-            <form className="Customer-master-form" style={{ marginBottom: "50px" }}>
+            <form className="Customer-master-form" style={{ marginBottom: "50px", marginLeft:"0px", padding:"20px" }}>
                 <Button startIcon={<ArrowBackIcon />} onClick={handleBack} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h3 className='bigtitle'>See Updated Pics</h3>

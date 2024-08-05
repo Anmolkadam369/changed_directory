@@ -17,7 +17,7 @@ import ImageUpload from '../ImageUpload/ImageUpload';
 import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
 import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
 import VendorResponse from '../Vendors/VendorsResponse';
-import claimproassist from '../../Assets/claimproassist.jpg'
+import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
 import backendUrl from "../../environment";
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -45,6 +45,7 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import userImg from "../../Assets/userImg.jpg";
 import CustomerEnquiry from '../CustomerEnquiry/CustomerEnquiry';
+import DummyDashboard from '../Dashboard/DummyDashboard';
 
 
 const Admin = () => {
@@ -109,29 +110,55 @@ const Admin = () => {
 
     // const token = useRecoilValue(tokenState);
     // const userId = useRecoilValue(userIdState);
-    const token = useRecoilValue(tokenState);
-    const userId = useRecoilValue(userIdState);
-    const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
-    const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    const [refreshToken, setRefreshToken] = useState(localStorage.getItem("token"));
+    const [refreshUserId, setRefreshUserId] = useState(localStorage.getItem("userId"));
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const sidebarRef = useRef(null);
     const [notificationSent, setNotificationSent] = useState(false);
 
     const handleSignOutClick = () => { setModalOpen(true) };
+    
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            handleSignOutClick();
+            event.preventDefault();
+            // event.returnValue = ''; // Necessary for some browsers to show the dialog
+        };
+
+        const handlePopState = () => {
+            handleSignOutClick();
+        };
+
+        // Push a new state to ensure popstate event is triggered on back navigation
+        window.history.pushState(null, null, window.location.pathname);
+
+        // window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
 
     const handleConfirmSignOut = () => {
-        setRefreshToken('');
-        setRefreshUserId('');
+        localStorage.setItem("token", "");
+        localStorage.setItem("userId", "");
+        setRefreshToken("");
+        setRefreshUserId("");
         setModalOpen(false);
     };
 
     const handleCancelSignOut = () => { setModalOpen(false) };
 
-
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        console.log("TOKENISHERE")
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         console.log("USERID", userId);
         if (userId !== '') findUserById(userId);
     }, [token, userId, navigate]);
@@ -306,10 +333,13 @@ const Admin = () => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
             setShowUserId(false);
         }
+        if (window.innerWidth < 768 && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+            setIsSidebarOpen(false);
+        }
     };
 
     useEffect(() => {
-        if (showUserId) {
+        if (showUserId || isSidebarOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         } else {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -318,7 +348,7 @@ const Admin = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showUserId]);
+    }, [showUserId, isSidebarOpen]);
 
     const handleFullScreenToggle = () => {
         if (!document.fullscreenElement) {
@@ -344,9 +374,9 @@ const Admin = () => {
                 <link rel='canonical' href={`https://claimpro.in/Admin`} />
             </Helmet>
             {isSidebarOpen ? (
-                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                <aside ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
                     {window.innerWidth < 768 && (
-                        <div className="close-btn" onClick={toggleSidebar}>×</div>
+                        <div></div>
                     )}
                     <ul>
                         <img src={claimproassist}
@@ -561,33 +591,9 @@ const Admin = () => {
             <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
                 <div className='first-container'>
                     <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
-                        {getData.randomId && (
-                            "Administration"
-                        )}
-                        {getData.department === "Management" && (
-                            "Management"
-                        )}
-                        {getData.department === "IT" && (
-                            "IT"
-                        )}
+
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {/* <label className="form-field search-field" style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '30px', marginBottom: '0px' }}>
-                            <input
-                                type="text"
-                                placeholder="Search"
-                                className="form-control"
-                                style={{ paddingRight: '30px', marginBottom: '0px' }} // Add padding to the right to make space for the icon
-                                required
-                            />
-                            <SearchOutlinedIcon
-                                className="icon2"
-                                onClick={handleSearchClick}
-                                style={{ cursor: 'pointer', position: 'absolute', right: '10px', marginTop: '5px' }} // Position the icon inside the input
-                            />
-                        </label> 
-
-                         <DarkModeOutlinedIcon className="icon2" style={{ cursor: 'pointer', marginRight: '30px', marginBottom: '0px' }} /> */}
                         <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
                         <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
                             {userImage ? (
@@ -600,6 +606,7 @@ const Admin = () => {
                                 <FaUserCircle size={30} />
                             )}
                         </div>
+                        
                         {showUserId && (
                             <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
                                 <div style={{
@@ -640,13 +647,12 @@ const Admin = () => {
                         )}
                     </div>
                 </div>
-                <hr />
                 <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
 
 
                 {
                     startingPage &&
-                    <Dashboard />
+                    <DummyDashboard />
                 }
 
                 {

@@ -20,8 +20,8 @@ import EmployeeFormEdit from './EmployeeFormEdit';
 const EmployeeApproved = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
   const [currentPage, setCurrentPage] = useState(1);
   let [itemsPerPage, setItemsPerPage] = useState(10)
   const [searchQuery, setSearchQuery] = useState('');
@@ -76,6 +76,7 @@ const EmployeeApproved = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1); 
   };
   const handleSetItemPerPage = (e) => {
     setItemsPerPage(e.target.value);
@@ -118,7 +119,7 @@ const EmployeeApproved = () => {
       if (window.innerWidth <= 630) {
         setMarginLeft('0px');
         setPaddingLeft('20px');
-        setWidth('85%');
+        setWidth('95%');
       } else {
         setMarginLeft('30px');
         setPaddingLeft("40px");
@@ -155,7 +156,7 @@ const EmployeeApproved = () => {
             Search by Employee Name
             <input
               type="text"
-              placeholder="Search by Vendor Name"
+              placeholder="Search by Employee Name"
               value={searchQuery}
               onChange={handleSearchChange}
               required
@@ -223,6 +224,7 @@ const EmployeeApproved = () => {
                   <td>{item.gender}</td>
                   <td>{item.addedBy}</td>
                   <td>
+                    {/* {item.companyEmpId} */}
                     <button onClick={() => view(item.companyEmpId)} className='view-button'>View</button>
                   </td>
                 </tr>
@@ -232,7 +234,7 @@ const EmployeeApproved = () => {
         </table>
       </div>
       <div className='pagination'>
-        <ButtonGroup variant="contained" color="primary" aria-label="pagination buttons">
+        <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
           <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
           {pageNumbers.map((pageNumber) => (
             <Button

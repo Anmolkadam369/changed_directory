@@ -16,8 +16,8 @@ const HandoverToWorkshop = () => {
     const location = useLocation();
     const { id } = location.state || {};
     console.log("Received IDssss:", id);
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
@@ -35,9 +35,9 @@ const HandoverToWorkshop = () => {
 
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         console.log("id", id)
         getDataById(id);
         setHandoverData({ accidentFileNo: id });

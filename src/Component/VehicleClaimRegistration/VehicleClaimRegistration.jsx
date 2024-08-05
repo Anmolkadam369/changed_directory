@@ -9,6 +9,12 @@ import { loadStates, loadCities } from '../StateAPI';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import Modal from 'react-modal';
 
 
 const config = {
@@ -16,14 +22,14 @@ const config = {
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VehicleClaimRegistration = () => {
+const VehicleClaimRegistration = ({ id, onUpdate }) => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const location = useLocation();
-    const { id } = location.state || {};
+    // const { id } = location.state || {};
     console.log("Received IDssss:", id);
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
@@ -37,14 +43,79 @@ const VehicleClaimRegistration = () => {
     const [isLoadingCities, setIsLoadingCities] = useState(true);
     const today = new Date().toISOString().split('T')[0];
 
+
+    const [totalDaysFromAccident, setTotalDaysFromAccident] = useState('');
+    const [totalDaysInWorkshop, setTotalDaysInWorkshop] = useState('');
+    const [calculatedDeadlineTAT, setCalculatedDeadlineTAT] = useState('');
+
     const [errorMessage, setErrorMessage] = useState('');
+    const [minDOB, setMinDOB] = useState('');
+
+    const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
+    const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
+    const [isFrontLHModalOpen, setIsFrontLHModalOpen] = useState(false);
+    const [isFrontRHModalOpen, setIsFrontRHModalOpen] = useState(false);
+
+    const [isFrontViewModalOpen, setIsFrontViewModalOpen] = useState(false);
+    const [isRearRHModalOpen, setIsRearRHModalOpen] = useState(false);
+    const [isRearLHModalOpen, setIsRearLHModalOpen] = useState(false);
+    const [isMajorDamage1ModalOpen, setIsMajorDamage1ModalOpen] = useState(false);
+
+    const [isMajorDamage2ModalOpen, setIsMajorDamage2ModalOpen] = useState(false);
+    const [isMajorDamage3ModalOpen, setIsMajorDamage3ModalOpen] = useState(false);
+    const [isMajorDamage4ModalOpen, setIsMajorDamage4ModalOpen] = useState(false);
+    const [isMajorDamage5ModalOpen, setIsMajorDamage5ModalOpen] = useState(false);
+
+    const openChassisModal = () => setIsChassisModalOpen(true);
+    const closeChassisModal = () => setIsChassisModalOpen(false);
+
+    const openClusterModal = () => setIsClusterModalOpen(true);
+    const closeClusterModal = () => setIsClusterModalOpen(false);
+
+    const openFrontLHModal = () => setIsFrontLHModalOpen(true);
+    const closeFrontLHModal = () => setIsFrontLHModalOpen(false);
+
+    const openFrontRHModal = () => setIsFrontRHModalOpen(true);
+    const closeFrontRHModal = () => setIsFrontRHModalOpen(false);
+
+    const openFrontViewModal = () => setIsFrontViewModalOpen(true);
+    const closeFrontViewModal = () => setIsFrontViewModalOpen(false);
+
+    const openRearRHModal = () => setIsRearRHModalOpen(true);
+    const closeRearRHModal = () => setIsRearRHModalOpen(false);
+
+    const openRearLHModal = () => setIsRearLHModalOpen(true);
+    const closeRearLHModal = () => setIsRearLHModalOpen(false);
+
+    const openMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(true);
+    const closeMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(false);
+
+    const openMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(true);
+    const closeMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(false);
+
+    const openMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(true);
+    const closeMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(false);
+
+    const openMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(true);
+    const closeMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(false);
+
+    const openMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(true);
+    const closeMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(false);
+
+
+
+    useEffect(() => {
+        const todayDate = new Date();
+        const minDOBDate = new Date(todayDate.setFullYear(todayDate.getFullYear() - 18));
+        setMinDOB(minDOBDate.toISOString().split('T')[0]);
+    }, []);
 
     useEffect(() => {
         loadStates();
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         console.log("id", id)
         getDataById(id);
         setAccidentData({ accidentFileNo: id });
@@ -115,9 +186,9 @@ const VehicleClaimRegistration = () => {
         reInspectionDate: "",//date
         finallyReleasedDate: "",//date
 
-        totalDaysFromAccident: "",
-        daysInWorkShop: "",
-        deadlineTAT: "",
+        totalDaysFromAccident: totalDaysFromAccident,
+        daysInWorkShop: totalDaysInWorkshop,
+        deadlineTAT: calculatedDeadlineTAT,
 
         docketName: "",
         docketDate: "",//date
@@ -443,14 +514,24 @@ const VehicleClaimRegistration = () => {
                 }
             });
             console.log("response", response.data);
-            setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
             setIsLoading(false);
+            setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+            setTimeout(() => {
+                onUpdate();
+            }, 2000);
         }
         catch (error) {
             console.error('Error response:', error.response);
-            const errorMessage = error.response?.data || 'An error occurred';
-            setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
             setIsLoading(false);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
         }
     };
 
@@ -469,6 +550,89 @@ const VehicleClaimRegistration = () => {
         setCurrentImage(null);
     };
 
+    const handleBack = () => {
+        onUpdate()
+    }
+
+
+    const calculateTotalDaysFromAccident = () => {
+        const { reInspectionDate, reportedFinalDestinationDate } = accidentData;
+        if (reInspectionDate && reportedFinalDestinationDate) {
+            const date1 = new Date(reInspectionDate);
+            console.log("DATE!", date1)
+            const date2 = new Date(reportedFinalDestinationDate);
+            console.log("DATE@", date1)
+            const timeDiff = Math.abs(date1 - date2);
+            console.log("TImedif!", timeDiff)
+
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            setTotalDaysFromAccident(daysDiff);
+            setAccidentData(prevState => ({
+                ...prevState,
+                totalDaysFromAccident: daysDiff
+            }))
+        } else {
+            setTotalDaysFromAccident('');
+            setAccidentData(prevState => ({
+                ...prevState,
+                totalDaysFromAccident: ""
+            }))
+        }
+    };
+
+    const calculateDaysInWorkshop = () => {
+        const { accidentDate, finallyReleasedDate } = accidentData;
+        if (accidentDate && finallyReleasedDate) {
+            const date1 = new Date(accidentDate);
+            const date2 = new Date(finallyReleasedDate);
+            const timeDiff = Math.abs(date1 - date2);
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            setTotalDaysInWorkshop(daysDiff);
+            setAccidentData(prevState => ({
+                ...prevState,
+                daysInWorkShop: daysDiff
+            }));
+        } else {
+            setTotalDaysInWorkshop('');
+            setAccidentData(prevState => ({
+                ...prevState,
+                daysInWorkShop: ''
+            }));
+        }
+    };
+
+    const calculateDeadlineTAT = () => {
+        const { deadLineDate, dateOfFinalSurvey } = accidentData;
+        if (deadLineDate && dateOfFinalSurvey) {
+            const date1 = new Date(deadLineDate);
+            const date2 = new Date(dateOfFinalSurvey);
+            const timeDiff = Math.abs(date1 - date2);
+            console.log("TIMEDIF", timeDiff)
+            const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            console.log("daysDIff", daysDiff)
+            setCalculatedDeadlineTAT(daysDiff);
+            setAccidentData(prevState => ({
+                ...prevState,
+                deadlineTAT: daysDiff
+            }));
+
+        } else {
+            setCalculatedDeadlineTAT('');
+            setAccidentData(prevState => ({
+                ...prevState,
+                deadlineTAT: ''
+            }));
+        }
+    };
+
+    useEffect(() => {
+        calculateTotalDaysFromAccident();
+        calculateDaysInWorkshop();
+        calculateDeadlineTAT();
+    }, [accidentData.accidentDate, accidentData.finallyReleasedDate, accidentData.dateOfFinalSurvey, accidentData.deadLineDate, accidentData.reInspectionDate, accidentData.reportedFinalDestinationDate]);
+
+
+
     return (
         <div className='container'>
             <Helmet>
@@ -478,11 +642,15 @@ const VehicleClaimRegistration = () => {
                 <link rel='canonical' href={`https://claimpro.in/VehicleClaim`} />
             </Helmet>
             <form style={{ backgroundColor: 'white', padding: '30px' }}>
-                <div class='header-container'>
-                    <h2 className='bigtitle'>Accident Images</h2>
+
+                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <div class='header-container'>
+                        <h2 className='bigtitle'>Accident Images</h2>
+                    </div>
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Chassis Number:
                         {comingData.ChassisNoView ? (
@@ -491,19 +659,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={() => openModal(comingData.ChassisNoView)}  // Pass the correct image URL here.
+                                    onClick={openChassisModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={closeModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={currentImage}
-                                                alt="Enlarged view"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ChassisNoView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeChassisModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ChassisNoView} alt="Chassis Card" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
@@ -517,19 +687,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={() => openModal(comingData.ClusterView)}
+                                    onClick={openClusterModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={closeModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={currentImage}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ClusterView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeClusterModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
@@ -543,19 +715,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openFrontLHModal}
                                 />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.frontLH}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
-                                        </div>
+                                <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
                                     </div>
-                                )} */}
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
@@ -569,8 +743,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
+                                    onClick={openFrontRHModal}
                                 />
+                                <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
@@ -584,19 +771,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.frontView}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.frontView}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openFrontViewModal}
+                                    />
+                                    <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.frontView} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeFrontViewModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.frontView} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
@@ -610,19 +799,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.rearLH}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openRearLHModal}
+                                    />
+                                    <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.rearLH} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeRearLHModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.rearLH} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -636,19 +827,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.rearRH}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openRearRHModal}
+                                    />
+                                    <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.rearRH} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeRearRHModal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.rearRH} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -662,19 +855,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages1}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openMajorDamage1Modal}
+                                    />
+                                    <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.MajorDamages1} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -688,19 +883,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages2}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openMajorDamage2Modal}
+                                    />
+                                    <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.MajorDamages2} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -714,19 +911,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages3}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openMajorDamage3Modal}
+                                    />
+                                    <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.MajorDamages3} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -740,19 +939,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages4}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openMajorDamage4Modal}
+                                    />
+                                    <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.MajorDamages4} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -766,19 +967,21 @@ const VehicleClaimRegistration = () => {
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
-                                // onClick={toggleModal}
-                                />
-                                {/* {isModalOpen && (
-                                    <div className="modal-background" onClick={toggleModal}>
-                                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                            <img
-                                                src={comingData.MajorDamages5}
-                                                alt="Chassis Number"
-                                                style={{ maxWidth: '500px', display: 'block' }}
-                                            />
+                                    onClick={openMajorDamage5Modal}
+                                    />
+                                    <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                        <div className="modal-header">
+                                            <IconButton href={comingData.MajorDamages5} download color="primary">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                            <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                                <CloseIcon />
+                                            </IconButton>
                                         </div>
-                                    </div>
-                                )} */}
+                                        <div className="modal-image-container">
+                                            <img src={comingData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                        </div>
+                                    </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -791,7 +994,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Accident Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Accident File No:
                         <input
@@ -841,8 +1044,8 @@ const VehicleClaimRegistration = () => {
                     </label>
 
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
-                <label className="form-field">
+                <div className="form-row" style={{ gap: '0px' }}>
+                    <label className="form-field">
                         Accident Place - State:
                         <select
                             className='inputField'
@@ -898,7 +1101,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Insurance Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Insured By:
                         <input
@@ -919,7 +1122,7 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.intimatedDate}
                             onChange={handleChange}
                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
+                            max={new Date().toISOString().split('T')[0]}
                         />
                     </label>
 
@@ -927,7 +1130,7 @@ const VehicleClaimRegistration = () => {
                         Intimation Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="intimationUpload"
                             ref={intimationUpload}
                             onChange={handleChange}
@@ -952,7 +1155,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Driver Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Driver Name:
                         <input
@@ -989,22 +1192,24 @@ const VehicleClaimRegistration = () => {
                     </label>
 
                     <label className="form-field">
-                        Date Of Birth:
+                        Date Of Birth (Driver):
                         <input
-                            className='inputField'
+                            type='date'
+                            className='inputField form-control'
                             name="DOB"
                             value={accidentData.DOB}
                             onChange={handleChange}
-
+                            max={minDOB} // Set the max attribute to 18 years ago
                         />
                     </label>
+
                     <label className="form-field"></label>
                 </div>
                 <div class='header-container'>
                     <h2 className='bigtitle'>Police Reports</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Police Station:
                         <input
@@ -1034,13 +1239,14 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.firDate}
                             onChange={handleChange}
                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            max={new Date().toISOString().split('T')[0]}
                         />
                     </label>
                     <label className="form-field">
                         FIR Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="firUpload"
                             ref={firUpload}
                             onChange={handleChange}
@@ -1048,8 +1254,8 @@ const VehicleClaimRegistration = () => {
                         />
                     </label>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
-                <label className="form-field">
+                <div className="form-row" style={{ gap: '0px' }}>
+                    <label className="form-field">
                         Advocate's Name :
                         <input
                             className='inputField'
@@ -1097,29 +1303,29 @@ const VehicleClaimRegistration = () => {
                     </label>
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
-                <label className="form-field">
+                <div className="form-row" style={{ gap: '0px' }}>
+                    <label className="form-field">
                         Power Of Attorney:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="POA"
                             ref={POA}
                             onChange={handleChange}
 
                         />
                     </label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                 </div>
-                            
+
 
                 <div class='header-container'>
                     <h2 className='bigtitle'>Surveyor Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Spot Surveyor Name:
                         <input
@@ -1152,7 +1358,7 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.dateOfSurvey}
                             onChange={handleChange}
                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
+                            max={new Date().toISOString().split('T')[0]}
                         />
                     </label>
                     <label className="form-field">
@@ -1167,7 +1373,7 @@ const VehicleClaimRegistration = () => {
                     </label>
                     <label className="form-field"></label>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Material Surveyor Name:
                         <input
@@ -1202,6 +1408,7 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.dateOfMaterialSurvey}
                             onChange={handleChange}
                             min={accidentData.dateOfSurvey || accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            max={new Date().toISOString().split('T')[0]}
 
                         />
                     </label>
@@ -1219,7 +1426,7 @@ const VehicleClaimRegistration = () => {
                     <label className="form-field"></label>
 
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Final Surveyor Name:
                         <input
@@ -1254,6 +1461,7 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.dateOfFinalSurvey}
                             onChange={handleChange}
                             min={accidentData.dateOfMaterialSurvey || accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            max={new Date().toISOString().split('T')[0]}
 
                         />
                     </label>
@@ -1270,7 +1478,7 @@ const VehicleClaimRegistration = () => {
                     </label>
                     <label className="form-field"></label>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Investigator Name:
                         <input
@@ -1305,6 +1513,8 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.investigationDate}
                             onChange={handleChange}
                             min={accidentData.dateOfMaterialSurvey || accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            max={new Date().toISOString().split('T')[0]}
+
                         />
                     </label>
 
@@ -1325,7 +1535,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Action Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Company Representative Name:
                         <input
@@ -1355,7 +1565,7 @@ const VehicleClaimRegistration = () => {
                         Representative Report Upload:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="reportUpload"
                             ref={reportUpload}
                             onChange={handleChange}
@@ -1372,14 +1582,15 @@ const VehicleClaimRegistration = () => {
                             value={accidentData.dateRepairedOnSpot}
                             onChange={handleChange}
                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
+                            max={new Date().toISOString().split('T')[0]}
 
                         />
                     </label>
 
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
-                <label className="form-field">
+                <div className="form-row" style={{ gap: '0px' }}>
+                    <label className="form-field">
                         Material Transshiped in Vehicle No:
                         <input
                             className='inputField'
@@ -1397,9 +1608,8 @@ const VehicleClaimRegistration = () => {
                             name="transshippedDate"
                             value={accidentData.transshippedDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
+                            min={accidentData.accidentDate}
+                            max={new Date().toISOString().split('T')[0]}
                         />
                     </label>
 
@@ -1422,36 +1632,36 @@ const VehicleClaimRegistration = () => {
                             name="reportedFinalDestinationDate"
                             value={accidentData.reportedFinalDestinationDate}
                             onChange={handleChange}
-                            min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
-
+                            min={accidentData.accidentDate}
+                            max={new Date().toISOString().split('T')[0]}
                         />
                     </label>
 
 
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
-                <label className="form-field">
+                <div className="form-row" style={{ gap: '0px' }}>
+                    <label className="form-field">
                         Adhar Card of Company Representative:
                         <input
                             type='file'
-                            className='inputField'
+                            className='inputField form-control'
                             name="companyRepresentativeAdhar"
                             ref={companyRepresentativeAdhar}
                             onChange={handleChange}
 
                         />
                     </label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                 </div>
 
                 <div class='header-container'>
                     <h2 className='bigtitle'>Operational Details</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Deadline Date:
                         <input
@@ -1513,7 +1723,7 @@ const VehicleClaimRegistration = () => {
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Total Days From Accident:
                         <input
@@ -1557,7 +1767,7 @@ const VehicleClaimRegistration = () => {
                     <h2 className='bigtitle'>Docket Information</h2>
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Docket Name:
                         <input
@@ -1609,7 +1819,7 @@ const VehicleClaimRegistration = () => {
 
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Consignor Name:
                         <input
@@ -1662,7 +1872,7 @@ const VehicleClaimRegistration = () => {
 
                 </div>
 
-                <div className="form-row" style={{gap:'0px'}}>
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Material:
                         <input

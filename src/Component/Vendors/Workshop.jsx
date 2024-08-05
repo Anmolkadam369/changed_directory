@@ -22,7 +22,7 @@ import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import AssignedVehicleAdvocate from './AssignedVehiclesAdvocate';
 import AssignedVehicleWorkshop from './AssignedVehiclesWorkshop';
 import backendUrl from '../../environment';
-import claimproassist from '../../Assets/claimproassist.jpg'
+import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
@@ -61,8 +61,8 @@ const Workshop = () => {
     const customerData = [40, 50];
     const customerLabels = ['total cases', 'Days by Each Case'];
 
-  const token = useRecoilValue(tokenState);
-  const userId = useRecoilValue(userIdState);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [refreshToken, setRefreshToken] = useRecoilState(tokenState);
     const [refreshUserId, setRefreshUserId] = useRecoilState(userIdState);
 
@@ -104,9 +104,9 @@ const Workshop = () => {
 
     useEffect(() => {
         console.log("token", token, userId);
-        if (token === "" || userId === "") {
-            navigate("/");
-        }
+        // if (token === "" || userId === "") {
+        //     navigate("/");
+        // }
         console.log("USERID", userId);
         if (userId !== '') findUserById(userId);
     }, [token, userId, navigate]);

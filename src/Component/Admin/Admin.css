@@ -20,8 +20,9 @@ body, html {
 .admin-page .sidebar {
   width: 100%; /* Extend the sidebar to full width */
   height: 10%; /* Set a fixed height */
-  background: #020202;
-  color: white;
+  background: #ffffff;
+  color: teal;
+  font-size: 20px;
   position: fixed;
   top: 0;
   left: 0;
@@ -56,10 +57,11 @@ body, html {
   position: absolute;
   top: 100%;  /* Align right below the Reports menu item */
   left: 0;
-  background: #333;
+  background: white;
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   width: 160px;  
   z-index: 1050;
+  /* margin-top: 9px; */
 }
 
 .admin-page .sidebar li.active > .submenu,
@@ -68,14 +70,14 @@ body, html {
 }
 
 .admin-page .sidebar .submenu li {
-  color: white; /* Submenu text color */
+  color: teal; /* Submenu text color */
   /* padding: 10px; */
   cursor: pointer; /* Make it clear that submenu items are clickable */
   text-align: left;
 }
 
 .admin-page .sidebar .submenu li:hover {
-  background: #444; /* Submenu item hover effect */
+  background: rgb(244, 236, 205);; /* Submenu item hover effect */
 }
 
 .admin-page .content {
@@ -122,16 +124,15 @@ body, html {
     width: 25px; /* Set the width of the sidebar to 250px, or adjust as needed */
     height: 100%; /* Full height to cover the entire screen vertically */
     position: fixed;
-     /* if i keep it relative then the content is also shown and sidebar too*/
     top: 0;
     left: 0; /* Align to the left */
     display: flex; /* Using flexbox */
     flex-direction: column; /* Align children (ul, li) vertically */
     overflow-y: auto; /* Enable scrolling if content overflows vertically */
     z-index: 1000; /* Ensure sidebar stays on top of other content */
-    background: #020202; /* Sidebar background color */
-    color: white; /* Text color for sidebar */
-    transition: none; /* No transition effect is necessary */
+    background: white; /* Sidebar background color */
+    color:teal; /* Text color for sidebar */
+    transition: transform 0.3s ease; /* No transition effect is necessary */
     font-size: 15px;
   }
   .close-btn {
@@ -140,7 +141,7 @@ body, html {
     right: 10px;
     cursor: pointer;
     font-size: 24px;
-    color: white;
+    color: black;
   }
   .menu-btn {
     display: none; /* Hidden by default */
@@ -175,7 +176,6 @@ body, html {
 
   .admin-page .sidebar .submenu {
     position: static; /* Submenus appear within the flow of the document */
-    /* width: 100%; */
     display: none; /* Hidden by default */
   }
 
@@ -361,7 +361,7 @@ body, html {
   }
 
   .company-img{
-    height: 40px;
+    height: 50px;
     width: 60px;
    }
 }
@@ -372,7 +372,7 @@ body, html {
   }
 
   .admin-page .sidebar li {
-    font-size: 8px;
+    font-size: 9px;
   }
   .company-img{
     height: 40px;
@@ -383,15 +383,16 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  margin-right: 30px;
+  /* padding: 10px;*/
+  margin-right: 30px; 
   margin-top: 50px;
   position: relative;
 }
 
 @media (max-width: 495px) {
   .first-container {
-    justify-content: flex-start;
+    /* justify-content: flex-start; */
     margin-left: 15px;
+    margin-top: 0px;
   }
 }

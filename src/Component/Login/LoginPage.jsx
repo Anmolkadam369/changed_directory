@@ -17,6 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
+import logintime_truck from '../../Assets/logintime_truck.webp'
 import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
@@ -62,6 +63,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("userName", username, typeof(username))
+    console.log("password", password)
+
+    if(username == "" || password == ""){
+      setAlertInfo({ show: true, message:"Please Fill Form Properly", severity: 'error' });
+      return; 
+    }
     try {
       const response = await axios.post(`${backendUrl}/api/login`, {
         username,
@@ -89,13 +97,15 @@ const Login = () => {
           navigate("../Admin");
         } else if (response.data.data.vendorType === "advocate") {
           navigate("../advocateDashboard");
-        } else if (response.data.data.vendorType === "machanic") {
-          navigate("../MachanicDashboard");
-        } else if (response.data.data.vendorType === "crain") {
-          navigate("../CrainDashboard");
-        } else if (response.data.data.department === "Administration") {
+        } else if (response.data.data.vendorType === "mechanic") {
+          navigate("../MechanicDashboard");
+        } else if (response.data.data.vendorType === "crane") {
+          navigate("../CraneDashboard");
+        }else if (response.data.data.vendorType === "workshop") {
+          navigate("../WorkshopDashboard");
+        }else if (response.data.data.department === "Administration") {
           navigate("../Administration");
-        } else if (response.data.data.department === "Sales") {
+        }else if (response.data.data.department === "Sales") {
           navigate("../Salesteam");
         }
         // if (response.data.data.type === "advocate") navigate("../advocateDashboard");
