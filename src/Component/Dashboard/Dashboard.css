@@ -120,7 +120,8 @@
   background-color: #faf7f7;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+  box-shadow: 20px 20px 60px #00000041,inset -20px -20px 60px #ffffff47;
   text-align: center;
   width: 280px;
   margin-right: 1rem;
@@ -472,12 +473,16 @@
 }
 
 .topdivs:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .topdivs.selected {
-  background-color: black;
-  color: white;
+  background-color: rgb(247, 240, 12);
+  color: black;
+  font-weight: bold;
+  box-shadow: 20px 20px 60px #00000041 ,inset -20px -20px, 60px #ffffff47  /* Increase shadow on hover */
+  
+
 }
 
 /* @media (max-width : 340px){

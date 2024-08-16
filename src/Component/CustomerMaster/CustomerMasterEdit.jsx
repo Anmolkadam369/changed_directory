@@ -197,8 +197,11 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       const getLonLat = async () => {
         try {
           const fullAddress = `${formData.address}, ${formData.district},${formData.pincode}, ${formData.state}`;
+          
           const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
           const response = await axios.get(url);
+          console.log("fullAddress123", fullAddress)
+          console.log("response123", response)
           const location = response.data[0];
           if (response.data.length > 0) {
             setLatitude(location.lat);
@@ -314,7 +317,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       // }
       if (key === "city") continue;
 
-      if (key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+      if (key !== "GSTNo" && key !== "GST" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
         if (value === '') return `Fields '${key}' is required.`;
       }
     }
@@ -332,13 +335,18 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       console.log("contada", formData.contactPersonNum)
       return 'Please enter a valid Contact Person Number.';
     }
-    if (!phoneRegex.test(formData.contactPersonNum2)) {
+    if (formData.contactPersonNum2 !== "" && !phoneRegex.test(formData.contactPersonNum2)) {
       return 'Please enter a valid Secondary Contact Person Number.';
     }
 
     const aadhaarRegex = /^\d{12}$/;
     if (!aadhaarRegex.test(formData.adharNo)) {
       return 'Please enter a valid Aadhaar Number.';
+    }
+    
+    const gstRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z])$/;
+    if (formData.GSTNo !== "" && !gstRegex.test(formData.GSTNo)) {
+      return 'Please enter a valid GST number (e.g., 22ABCDE1234F1Z5).';
     }
   
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
@@ -775,7 +783,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           <label className="form-field">
             Adhar Card:
             {IsReadOnly ? (
-              formData.adharCard ? (
+              formData.adharCard != "Adhar Value" ? (
                 <>
                   <img
                     src={formData.adharCard}
@@ -798,14 +806,14 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   </Modal>
                 </>
               ) : (
-                <p>No Adhar Card uploaded</p>
+                <p className='notUploaded'>No Adhar Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
                 name="adharCard"
                 onChange={handleChange}
-                accept=".pdf,image/*"
+                accept="image/*"
                 ref={adharCardRef}
                 className="form-control"
                 required
@@ -815,7 +823,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           <label className="form-field">
             PAN Card:
             {IsReadOnly ? (
-              formData.panCard ? (
+              formData.panCard != "Pan Value" ? (
                 <>
                   <img
                     src={formData.panCard}
@@ -838,14 +846,14 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   </Modal>
                 </>
               ) : (
-                <p>No PAN Card uploaded</p>
+                <p className='notUploaded'>No PAN Card uploaded</p>
               )
             ) : (
               <input
                 type="file"
                 name="panCard"
                 onChange={handleChange}
-                accept=".pdf,image/*"
+                accept="image/*"
                 ref={panRef}
                 required
                 className="form-control"
@@ -885,7 +893,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                 type="file"
                 name="GST"
                 onChange={handleChange}
-                accept=".pdf,image/*"
+                accept="image/*"
                 ref={GSTRef}
                 required
                 className="form-control"
@@ -1037,7 +1045,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
             <div className='selected-container'>
               <div class="header-container">
                 <h3 class="bigtitle">Fleet Owner</h3>
-                <span class="mandatory-note">All fields are mandatory</span>
+                <span class="mandatory-note">* All fields are mandatory</span>
               </div>
               <div className='form-row'>
                 <label className="form-field">

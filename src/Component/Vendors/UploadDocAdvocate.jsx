@@ -324,7 +324,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`,
+                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': token

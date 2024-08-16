@@ -3,6 +3,7 @@
     transform: translateX(-100%);
     opacity: 0;
   }
+
   100% {
     transform: translateX(0);
     opacity: 1;
@@ -20,95 +21,104 @@
   /* border-radius: 8px; */
   background-color: white;
   margin-right: 30px;
-  animation: slideInFromLeft 0.9s ease-out; /* Add this line */
+  animation: slideInFromLeft 0.9s ease-out;
+  /* Add this line */
 }
 
-  .Customer-master-form label {
-    display: block;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
+.Customer-master-form label {
+  display: block;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.Customer-master-form .form-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.Customer-master-form .form-field {
+  flex: 1 1 22%;
+  /* Adjust as needed to fit 4 items in a row */
+  /* display: flex; */
+  flex-direction: column;
+  margin-bottom: 20px;
+  /* Space between rows */
+}
+
+.Customer-master-form input,
+v .Customer-master-form textarea,
+.Customer-master-form select {
+  width: 100%;
+  /* The input will take up the full width of its container */
+  padding: 7px;
+  margin-top: 5px;
+  /* Adjust as needed */
+  border: 1px solid #ccc;
+  background-color: #100f0f08;
+  border-radius: 4px;
+}
+
+.Customer-master-form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #cccccc;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  font-size: 9px;
+  box-shadow: 20px 20px 60px #00000041, inset -20px -20px 60px #ffffff47;
+}
+
+.Customer-master-form button:hover {
+  background-color: #6ba870;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.Customer-master-form .required {
+  color: red;
+}
+
+/* Responsive adjustments if necessary */
+@media (max-width: 768px) {
   .Customer-master-form .form-row {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .Customer-master-form .form-field {
-    flex: 1 1 22%; /* Adjust as needed to fit 4 items in a row */
-    /* display: flex; */
     flex-direction: column;
-    margin-bottom: 20px; /* Space between rows */
   }
-  
-  .Customer-master-form input,v
-  .Customer-master-form textarea,
-  .Customer-master-form select {
-    width: 100%; /* The input will take up the full width of its container */
-    padding: 7px;
-    margin-top: 5px; /* Adjust as needed */
-    border: 1px solid #ccc;
-    background-color: #100f0f08;
-    border-radius: 4px;
+
+  .Customer-master-form .form-field {
+    flex: 1 1 100%;
+    /* Full width on small screens */
   }
-  
-  .Customer-master-form button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #cccccc;
-    color: black;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-bottom: 15px;
-    margin-top: 15px;
-    font-size: 9px;
-  }
-  
-  .Customer-master-form button:hover {
-    background-color: #d1ddd2;
-    margin-bottom: 15px;
-    margin-top: 15px;
-  }
-  
+
   .Customer-master-form .required {
     color: red;
   }
-  
-  /* Responsive adjustments if necessary */
-  @media (max-width: 768px) {
-    .Customer-master-form .form-row {
-      flex-direction: column;
-    }
-  
-    .Customer-master-form .form-field {
-      flex: 1 1 100%; /* Full width on small screens */
-    }
-    .Customer-master-form .required {
-        color: red;
-      }
-  }
-  .selected-container {
-    background-color: #f1f1f1; 
-    border: 1px solid #ccc; 
-    padding: 15px; 
-    margin-top: 10px;
-    margin-left:30px;
-    margin-right:30px;
-  }
+}
 
-  .register-container {
-    background-color: #f1f1f1; 
-    border: 1px solid #ccc; 
-    padding: 30px; 
-    margin-top: 10px;
-    margin-bottom : 10px;
-  }
+.selected-container {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
 
-  /* Overlay styles when zoomed in */
+.register-container {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Overlay styles when zoomed in */
 /* .overlay {
   position: fixed; 
   top: 0;
@@ -143,8 +153,10 @@ body.overlay-active {
   padding: 20px !important;
   border-radius: 8px !important;
   background-color: #fff !important;
-  max-height: 80vh; /* Added max height */
-  overflow-y: auto; /* Added overflow for the modal */
+  max-height: 80vh;
+  /* Added max height */
+  overflow-y: auto;
+  /* Added overflow for the modal */
 }
 
 .modal-header {
@@ -155,8 +167,10 @@ body.overlay-active {
 }
 
 .modal-image-container {
-  max-height: 60vh; /* Set the container height */
-  overflow: auto; /* Enable scrolling */
+  max-height: 60vh;
+  /* Set the container height */
+  overflow: auto;
+  /* Enable scrolling */
 }
 
 .modal-image {
@@ -164,6 +178,30 @@ body.overlay-active {
   height: auto;
   object-fit: contain;
 }
+
+@keyframes popUpFade {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0;
+    color: red;
+  }
+  25% {
+    transform: scale(1.5);
+    opacity: 1;
+    color: red;
+  }
+  75% {
+    transform: scale(1.5);
+    opacity: 1;
+    color: red;
+  }
+}
+
+.popUp {
+  animation: popUpFade 2s ease-in-out infinite;
+}
+
+
 
 .close-button {
   position: absolute;
@@ -177,12 +215,16 @@ body.overlay-active {
   cursor: pointer;
 }
 
+.switchparent-container {
+  display: flex;
+}
+
 .switch-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0px;
-  margin-right: 50px;
+  margin-left: auto;
   color: #100f0f08;
 }
 
@@ -191,6 +233,7 @@ body.overlay-active {
   font-size: 16px;
   font-weight: bold;
 }
+
 .modal-content {
   width: 100%;
   height: 100%;
@@ -202,10 +245,11 @@ body.overlay-active {
   flex-wrap: wrap;
 }
 
-.form-container1 > div {
+.form-container1>div {
   flex: 1 1 300px;
   margin: 10px;
 }
+
 .form-field1 {
   display: flex;
   flex-direction: column;
@@ -223,6 +267,7 @@ body.overlay-active {
 .dropdown-menu1 {
   width: 100%;
 }
+
 .dropdown-item1 {
   display: block;
   width: 100%;
@@ -235,6 +280,7 @@ body.overlay-active {
   background-color: transparent;
   border: 0;
 }
+
 .green-dropdown .dropdown-menu1 {
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
@@ -245,7 +291,7 @@ body.overlay-active {
     flex-direction: column;
   }
 
-  .form-container1 > div {
+  .form-container1>div {
     margin-left: 0;
     margin-right: 0;
     min-width: 100%;
@@ -262,9 +308,11 @@ body.overlay-active {
 
   .map-container1 {
     width: 100%;
-    height: 300px; /* Adjust as needed */
+    height: 300px;
+    /* Adjust as needed */
   }
-  .form-fields-container{
+
+  .form-fields-container {
     margin-top: 50px;
   }
 }
@@ -272,6 +320,7 @@ body.overlay-active {
 @media (min-width: 769px) {
   .map-container1 {
     flex: 2;
-    height: 500px; /* Adjust as needed */
+    height: 500px;
+    /* Adjust as needed */
   }
 }

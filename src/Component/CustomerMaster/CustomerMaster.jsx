@@ -14,13 +14,50 @@ import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
-import vendorInfo1 from '../../Assets/vendorInfo1.jpg'
-import vendorInfo2 from '../../Assets/vendorInfo2.jpg'
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { styled } from '@mui/material/styles';
+import customerInfo1 from '../../Assets/customerInfo1.jpg'
+import customerInfo2 from '../../Assets/customerInfo2.jpg'
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
+
+
+const Android12Switch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  '& .MuiSwitch-track': {
+    borderRadius: 22 / 2,
+    '&::before, &::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 16,
+      height: 16,
+    },
+    '&::before': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    '&::after': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxShadow: 'none',
+    width: 15,
+    height: 15,
+    margin: 1.7,
+  },
+}));
+
 
 const CustomerMaster = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -146,14 +183,14 @@ const CustomerMaster = () => {
     email: '',
     contactPerson: '',
     contactPersonNum: "",
-    contactPersonNum2: '',
+    contactPersonNum2: "",
     state: '',
     panNo: "",
     panCard: "",
     adharNo: '',
     adharCard: "",
     rate: "N/A",
-    GSTNo: "N/A",
+    GSTNo: "",
     fleetSize: "",
     plan: '',
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "", year: "", type: "", application: "", GVW: "", ULW: "", InsuranceName: "", choosenPlan: ""
@@ -217,7 +254,7 @@ const CustomerMaster = () => {
     for (const [key, value] of Object.entries(formData)) {
       if (key === 'panCard' || key === 'adharCard') {
         if (value === null || value === "" || value === undefined || (value && value.size === 0)) {
-          return `Field '${key}' is required here.`;
+          return `Fields '${key}' is required here.`;
         }
       }
     }
@@ -235,7 +272,7 @@ const CustomerMaster = () => {
         }
       }
 
-      if (key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+      if (key !== "GSTNo" && key !== "GST" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
         if (value === '') return `Fields '${key}' is required.`;
       }
     }
@@ -245,7 +282,7 @@ const CustomerMaster = () => {
       return 'Please enter a valid email address.';
     }
 
-    const phoneRegex =  /^[0-9]{10}$/
+    const phoneRegex = /^[0-9]{10}$/
     if (!phoneRegex.test(formData.CustomerPhone)) {
       return 'Please enter a valid Customer Phone Number.';
     }
@@ -253,15 +290,20 @@ const CustomerMaster = () => {
       console.log("contada", formData.contactPersonNum)
       return 'Please enter a valid Contact Person Number.';
     }
-    if (!phoneRegex.test(formData.contactPersonNum2)) {
+    if (formData.contactPersonNum2 !== "" && !phoneRegex.test(formData.contactPersonNum2)) {
       return 'Please enter a valid Secondary Contact Person Number.';
+    }
+
+    const gstRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z])$/;
+    if (formData.GSTNo !== "" && !gstRegex.test(formData.GSTNo)) {
+      return 'Please enter a valid GST number (e.g., 22ABCDE1234F1Z5).';
     }
 
     const aadhaarRegex = /^\d{12}$/;
     if (!aadhaarRegex.test(formData.adharNo)) {
       return 'Please enter a valid Aadhaar Number.';
     }
-  
+
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
     if (!panRegex.test(formData.panNo)) {
       return 'Please enter a valid PAN Number.';
@@ -420,12 +462,12 @@ const CustomerMaster = () => {
       setIsLoading(false);
       const errorMessage = error.response?.data?.message || 'An error occurred';
       if (errorMessage === "jwt expired") {
-          setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
-          setTimeout(() => {
-              window.location.href = '/';
-          }, 2000);
+        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
       } else {
-          setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
       }
     }
   };
@@ -506,14 +548,14 @@ const CustomerMaster = () => {
         <link rel='canonical' href={`https://claimpro.in/CustomerMaster`} />
       </Helmet>
 
-      <div className="switch-container">
-        <p></p>
-        <Switch
-          checked={singleCustomer}
-          onChange={handleSwitchChange}
-          color="primary"
-          inputProps={{ 'aria-label': 'single vendor switch' }}
-        />
+      <div className='switchparent-container'>
+        <div className="switch-container">
+          <FormControlLabel
+            control={<Android12Switch defaultChecked />}
+            checked={singleCustomer}
+            onChange={handleSwitchChange}
+          />
+        </div>
       </div>
 
 
@@ -539,7 +581,7 @@ const CustomerMaster = () => {
                 <label className="form-field" onClick={toggleZoom1}>
                   have a look how structure looks :
                   <img
-                    src={vendorInfo1}
+                    src={customerInfo1}
                     alt="Dashboard Icon"
                     style={{
                       height: isZoomed1 ? '90%' : '45px',
@@ -557,7 +599,7 @@ const CustomerMaster = () => {
                 <label className="form-field" onClick={toggleZoom2}>
                   have a look how structure looks for Rest of the Part :
                   <img
-                    src={vendorInfo2}
+                    src={customerInfo2}
                     alt="Dashboard Icon"
                     style={{
                       height: isZoomed2 ? '90%' : '45px',
@@ -606,7 +648,7 @@ const CustomerMaster = () => {
 
             <div class="header-container">
               <h3 class="bigtitle">Customer Master</h3>
-              <span class="mandatory-note">All fields are mandatory</span>
+              <span class="mandatory-note">* All fields are mandatory</span>
             </div>
 
             <div className='form-row'>
@@ -769,7 +811,7 @@ const CustomerMaster = () => {
                   value={formData.contactPersonNum2}
                   placeholder='Contact Person Phone'
                   onChange={handleChange}
-                  required
+                  // required
                   pattern="\d{10}"
                   title="Phone number must be 10 digits"
                   className="form-control"
@@ -799,7 +841,7 @@ const CustomerMaster = () => {
                   onChange={handleChange}
                   className="form-control"
                   ref={panRef}
-                  accept=".pdf,image/*"
+                  accept="image/*"
                   required />
               </label>
               <label className="form-field">
@@ -828,7 +870,7 @@ const CustomerMaster = () => {
                   onChange={handleChange}
                   ref={adharCardRef}
                   className="form-control"
-                  accept=".pdf,image/*"
+                  accept="image/*"
                   required />
               </label>
               <label className="form-field">
@@ -854,7 +896,7 @@ const CustomerMaster = () => {
                   // value={formData.GST}
                   ref={GSTRef}
                   onChange={handleChange}
-                  accept=".pdf,image/*"
+                  accept="image/*"
                   className="form-control"
                 />
               </label>

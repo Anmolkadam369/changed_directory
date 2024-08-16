@@ -201,6 +201,26 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
     const handleChange = (e) => {
         const { name, type, files, value, checked } = e.target;
+
+        const file = e.target.files[0];
+
+        if (file) {
+            const fileType = file.type;
+            if (fileType !== 'application/pdf') {
+                setErrorMessage('Only PDF files are allowed.');
+                // Clear the input file after showing the message
+                e.target.value = null;
+
+                // Remove the error message after 5 seconds
+                setTimeout(() => {
+                    setErrorMessage('');
+                }, 5000);
+            } else {
+                // Handle valid file (PDF)
+                console.log('Valid file selected:', file);
+                setErrorMessage(''); // Clear any previous error message
+            }
+        }
         if (type === 'file') {
             if (files[0] && files[0].size > 2097152) {
                 setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
@@ -315,7 +335,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}`,
+                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': token
@@ -398,6 +418,13 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
     const [isReadOnlyPayment, setIsReadOnlyPayment] = useState(true)
     console.log("SISFSDFDFSDFSFD", isReadOnlyPayment)
+
+
+
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+
 
     return (
 
@@ -774,9 +801,14 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     name="agreementCPA"
                                     onChange={handleChange}
                                     className='form-control'
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={agreementCPA}
                                 />
+                                {errorMessage && (
+                                    <div style={{ color: 'red', marginTop: '5px' }}>
+                                        {errorMessage}
+                                    </div>
+                                )}
                             </label>
                         )}
                     </label>
@@ -822,7 +854,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     className='form-control'
                                     name="vehicleHandover"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={vehicleHandover}
                                 />
                             </label>
@@ -870,7 +902,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     className='form-control'
                                     name="estimateGiven"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={estimateGiven}
                                 />
                             </label>
@@ -922,7 +954,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="deadlineSheet"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={deadlineSheet}
                                 />
                             </label>
@@ -964,13 +996,14 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 </div>
                             </div>
                         ) : (
+
                             <label className="form-field">
                                 <input
                                     type="file"
                                     className='inputField form-control'
                                     name="supplementryEstimate"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={supplementryEstimate}
                                 />
                             </label>
@@ -1019,7 +1052,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="preApproval"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={preApproval}
                                 />
                             </label>
@@ -1150,7 +1183,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="allBillCopy"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf"
                                     ref={allBillCopy}
                                 />
                             </label>
@@ -1158,14 +1191,14 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     </label>
 
                     {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
-                        <>
+                        <div className='form-row'>
                             <label className="form-field">
-                                <button style={{ fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                <button style={{ width: "100%", fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
                                     Give Feedback
                                 </button>
                             </label>
                             <label className="form-field">
-                                <button style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                <button style={{ width: "100%", marginTop: "20px", marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
                                     Commission
                                 </button>
                             </label>
@@ -1210,22 +1243,23 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                     <h3 style={{ margin: '0 20px 0 0' }}>Your Information is not Accepted By the Admin that's why Feedback section is blocked </h3>
                                 </div>
                             )}
-                        </>
+                        </div>
                     )}
 
                     {adminResponse === 'accept' && (
                         <div className='form-row'>
-                            <button onClick={openfeedbackRatingModal} style={{ fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+
+                            <button onClick={openfeedbackRatingModal} style={{ width: "100%", marginTop: "20px", fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
                                 Give Feedback
                             </button>
-                            <button onClick={openCommissionModel} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                            <button onClick={openCommissionModel} style={{ width: "100%", marginTop: "20px", marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
                                 Commission
                             </button>
                         </div>
                     )}
 
                     {isfeedbackRatingModalOpen && (
-                        <form className='Customer-master-form' style={{ width: "100%", marginTop: "10px" }}>
+                        <form className='Customer-master-form' style={{ width: "100%", marginTop: "10px", background:"lightgray" }}>
                             <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
                                 <CloseIcon />
                             </IconButton>
@@ -1257,19 +1291,19 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     )}
 
                     {isCommissionModelOpen && (
-                        <div className='Customer-master-form' style={{ margin: "0px", padding: "10px" }}>
+                        <div className='Customer-master-form' style={{ width: "100%", marginTop: "10px", background:"#a8c1b4" }}>
                             <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
                                 <CloseIcon />
                             </IconButton>
 
                             <div style={{ display: "flex", marginTop: "50px" }}>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
                                     Cheque
                                 </button>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
                                     Online Payment
                                 </button>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
                                     Cash
                                 </button>
                             </div>
@@ -1316,7 +1350,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                                 type="file"
                                                 name="cheque"
                                                 onChange={handleChange}
-                                                accept=".pdf,image/*"
+                                                accept=".pdf"
                                                 required
                                                 className="form-control"
                                                 style={{ marginTop: "30px" }}
@@ -1400,7 +1434,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                                     type="file"
                                                     name="onlinePaymentImg"
                                                     onChange={handleChange}
-                                                    accept=".pdf,image/*"
+                                                    accept=".pdf"
                                                     required
                                                     className="form-control"
                                                     style={{ marginTop: "30px" }}

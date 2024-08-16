@@ -22,8 +22,8 @@ const AccidentVehicleRegUpdate = () => {
 
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [marginLeft, setMarginLeft] = useState('30px');
   const [paddingLeft, setPaddingLeft] = useState('30px');
   const [width, setWidth] = useState('100%');
@@ -44,7 +44,7 @@ const AccidentVehicleRegUpdate = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
   const handleSetItemPerPage = (e) => {
     setItemsPerPage(e.target.value);
@@ -160,7 +160,6 @@ const AccidentVehicleRegUpdate = () => {
     setShowAccidentReg(true)
     setShowChooseOptions(false)
     setShowAccidentTable(false)
-    // navigate("../VehicleClaim", { state: { id } });
   }
 
   function chooseOptions(item) {
@@ -236,12 +235,12 @@ const AccidentVehicleRegUpdate = () => {
       setIsLoading(false);
       const errorMessage = error.response?.data?.message || 'An error occurred';
       if (errorMessage === "jwt expired") {
-          setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
-          setTimeout(() => {
-              window.location.href = '/';
-          }, 2000);
+        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
       } else {
-          setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
       }
     }
   }
@@ -259,39 +258,40 @@ const AccidentVehicleRegUpdate = () => {
             <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
             <link rel='canonical' href={`https://claimpro.in/AccidentVehicleRegUpdate`} />
           </Helmet>
-            <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
-            <div className="form-search">
-              <label className='label-class'>
-                Search by Customer Name
-                <input
-                  type="text"
-                  placeholder="Search by Customer Name"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  required
-                />
-              </label>
-              <label className='label-class'>
-                Number Of Items On Page
-                <input
-                  type="number"
-                  placeholder="Items Show on Page"
-                  value={itemsPerPage}
-                  onChange={handleSetItemPerPage}
-                  required
-                />
-              </label>
-              <label className='label-class'></label>
-            </div>
-            <div className='responsive-table' style={{ width }}>
-            <table style={{ width: '100%', marginLeft: "10px", marginRight: "100px" }}>
+          <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
+          <div className="form-search">
+            <label className='label-class'>
+              Search by Customer Name
+              <input
+                type="text"
+                placeholder="Search by Customer Name"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                required
+              />
+            </label>
+            <label className='label-class'>
+              Number Of Items On Page
+              <input
+                type="number"
+                placeholder="Items Show on Page"
+                value={itemsPerPage}
+                onChange={handleSetItemPerPage}
+                required
+              />
+            </label>
+            <label className='label-class'></label>
+          </div>
+          <div className='responsive-table' style={{ width }}>
+            <table style={{ width: '100%', marginLeft: "0px", borderCollapse: 'collapse', marginBottom: "90px" }}>
               <thead>
                 <tr>
                   <th>Sr. No.</th>
                   <th>User Name</th>
                   <th>Accident File Number</th>
                   <th>Choosen Plan</th>
-                  <th>Selected Options</th>
+                  <th>Selected Services</th>
+                  <th>Add Services</th>
                   <th>View</th>
                 </tr>
               </thead>
@@ -304,18 +304,22 @@ const AccidentVehicleRegUpdate = () => {
                   currentItems.map((item, index) => (
                     <tr key={item.id} style={{ textAlign: "center" }}>
                       <td>{indexOfFirstItem + index + 1}</td>
-                      <td>{item.CustomerName}</td>
-                      <td>{item.accidentFileNo}</td>
-                      <td>{item.choosenPlan}</td>
+                      <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
+                      <td style={{ color: "blue" }}>{item.accidentFileNo}</td>
+                      <td className='badge' style={{ color: "#8e27f1", background: "yellow" }} >{item.choosenPlan.charAt(0).toUpperCase() + item.choosenPlan.slice(1)}</td>
+
                       <td>{item && (item.selectedOptions == "" || item.selectedOptions == null) ? (
-                        <div>
-                          <button onClick={() => chooseOptions(item)} className='view-button'>Choose Vendors</button>
-                        </div>
+                            "___"
                       ) : (
                         <div>
                           {item && item.selectedOptions}
                         </div>
                       )}
+                      </td>
+                      <td>
+                        <div>
+                          <button onClick={() => chooseOptions(item)} className='view-button'>Choose Services</button>
+                        </div>
                       </td>
                       <td>
                         <button onClick={() => view(item.accidentFileNo)} className='view-button'>View here</button>
@@ -328,7 +332,7 @@ const AccidentVehicleRegUpdate = () => {
             </table>
           </div>
           <div className="pagination">
-            <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+            <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
               <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
                 <ArrowBack />
               </Button>

@@ -11,6 +11,17 @@ import { Button } from '@mui/material';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+
+const formatDate =(isoDateString)=>{
+  const date = new Date(isoDateString);
+const day = String(date.getUTCDate()).padStart(2, '0');
+const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+const year = date.getUTCFullYear();
+return (`${day}-${month}-${year}`);
+}
+
 
 const AccidentVehicle = () => {
   const [data, setData] = useState([]);
@@ -30,6 +41,19 @@ const AccidentVehicle = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const [sortDate, setSortDate]=useState("asc");
+
+  const sortDateFunc = ()=>{
+    setSortDate(sortDate == "asc" ? "desc":"asc");
+    const sortedItems = [...data].sort((a,b)=>{
+      const dateA = new Date(a.systemDate).getTime();
+      const dateB = new Date(b.systemDate).getTime();
+      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
+    });
+    setData(sortedItems)
+  }
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -76,6 +100,11 @@ const AccidentVehicle = () => {
   const getData = async (getFilteredData) => {
     const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}`);
     setData(response.data.data);
+  };
+
+  const handleClick = (item) => {
+    setSelectedItem(item);
+    getData(item);
   };
 
   // const handleChange = (e) => {
@@ -157,18 +186,31 @@ const AccidentVehicle = () => {
           <label className='label-class'></label>
         </div>
         <div style={{ display: "flex", margin: "10px" }}>
-          <p className='topdivs' onClick={() => getData("fullyAssigned")}>Fully Assigned </p>
-          <p className='topdivs' onClick={() => getData("partiallyAssigned")}>Partially Assigned </p>
-          <p className='topdivs' onClick={() => getData("NotAssigned")}>Not Assigned </p>
+          <p  className={`topdivs ${selectedItem === "fullyAssigned" ? "selected" : ""}`}  onClick={() => handleClick("fullyAssigned")}>Fully Assigned </p>
+          <p  className={`topdivs ${selectedItem === "partiallyAssigned" ? "selected" : ""}`} onClick={() => handleClick("partiallyAssigned")}  >Partially Assigned </p>
+          <p  className={`topdivs ${selectedItem === "NotAssigned" ? "selected" : ""}`}  onClick={() => handleClick("NotAssigned")}>Not Assigned </p>
+          <p
+          style={{
+            display: 'flex',
+            justifyContent: "right",
+            marginRight: "5px",
+            cursor: "pointer"
+          }}
+          onClick={sortDateFunc}
+        >
+          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+        </p>
         </div>
         <div className="responsive-table" style={{ width }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
                 <th>Sr. No.</th>
-                <th>User Name</th>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Vehicle Number</th>
                 <th>Accident File Number</th>
-                <th>Selected Options</th>
+                <th>Selected Services</th>
                 <th>Choosen Plan</th>
                 <th>View</th>
               </tr>
@@ -182,10 +224,12 @@ const AccidentVehicle = () => {
                 currentItems.map((item, index) => (
                   <tr key={item.id}>
                     <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{item.CustomerName}</td>
-                    <td>{item.accidentFileNo}</td>
-                    <td>{item.selectedOptions}</td>
-                    <td>{item.choosenPlan}</td>
+                    <td>{formatDate(item.systemDate)}</td>
+                    <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
+                    <td>{item.vehicleNo}</td>
+                    <td style={{color : "blue"}}>{item.accidentFileNo}</td>
+                    <td style={{color : "green"}}>{item.selectedOptions}</td>
+                    <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{item.choosenPlan}</td>
                     <td>
                       <button onClick={() => view(item.AccidentVehicleCode)} className='view-button'>View here</button>
                     </td>

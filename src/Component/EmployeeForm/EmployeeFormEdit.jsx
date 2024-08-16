@@ -37,6 +37,28 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     const [comingData, setComingData] = useState([]);
     const location = useLocation();
     // const { id } = location.state || {};
+    const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+    const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
+
+    const toggleStatusDropdown = () => setShowStatusDropdown(!showStatusDropdown);
+    const toggleDepartmentDropdown = () => setShowDepartmentDropdown(!showDepartmentDropdown);
+
+    const handleStatusSelect = (event, value) => {
+        event.preventDefault(); // Prevent default link behavior
+        setFormData({
+            ...formData,
+            maritalStatus: value
+        });
+        setShowStatusDropdown(false); // Close dropdown after selection
+    };
+    const handleDepartmentSelect = (event, value) => {
+        event.preventDefault(); // Prevent default link behavior
+        setFormData({
+            ...formData,
+            department: value
+        });
+        setShowDepartmentDropdown(false); // Close dropdown after selection
+    };
 
     const [marginLeft, setMarginLeft] = useState('30px');
     const [paddingLeft, setPaddingLeft] = useState('30px');
@@ -583,15 +605,9 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 325) {
-                setMarginLeft('5px');
-                setPaddingLeft('5px')
-            }else if(window.innerWidth <= 360){
-                setMarginLeft('10px');
-                setPaddingLeft('15px')
-            }else if(window.innerWidth <= 405){
-                setMarginLeft('15px');
-                setPaddingLeft('25px')
+            if (window.innerWidth <= 630) {
+                setMarginLeft('5x');
+                setPaddingLeft('40px')
             } else {
                 setMarginLeft('30px');
                 setPaddingLeft("40px")
@@ -677,8 +693,8 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 </div>
 
                 <div className="form-row">
-
                     <div className="dropdown green-dropdown form-field">
+                    Select Gender:
                         <button
                             className="form-field input-group mb-3"
                             type="button"
@@ -719,7 +735,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Employee Email Id:
                         <input
                             type="email"
@@ -736,7 +752,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Contact No:
                         <input
                             type="text"
@@ -750,7 +766,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             title="Phone number must be 10 digits"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Alternative No:
                         <input
                             type="text"
@@ -834,7 +850,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                         />
                     </label>
                 </div>
-
+ 
                 <div className="form-row">
                     <label className="form-field input-group mb-3">
                         Nominee Name:
@@ -916,7 +932,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Corresponding Address:
                         <textarea
                             name="correspondingAddress"
@@ -930,7 +946,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Permanent Address:
                         <textarea
                             name="permanentAddress"
@@ -952,7 +968,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         State:
                         <select
                             className='form-control'
@@ -966,7 +982,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             ))}
                         </select>
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         City:
                         <select
                             className='form-control'
@@ -984,7 +1000,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field input-group mb-3">
+                    <label className="form-field">
                         Pincode:
                         <input
                             type='tel'
@@ -999,17 +1015,24 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    <div className="dropdown green-dropdown form-field">
                         Marital Status:
-                        <input
-                            type="text"
-                            name="maritalStatus"
-                            value={formData.maritalStatus}
-                            onChange={handleChange}
-                            readOnly={IsReadOnly}
-                            className="form-control"
-                        />
-                    </label>
+                        <button
+                            className="form-field input-group mb-3"
+                            type="button"
+                            id="dropdownButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            onClick={toggleStatusDropdown}
+                        >
+                            {formData.maritalStatus || "Select Status"}
+                        </button>
+                        <ul className={`dropdown-menu${showStatusDropdown ? " show" : ""}`} aria-labelledby="dropdownButton">
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleStatusSelect(e, "Married")}>Married</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleStatusSelect(e, "Unmarried")}>Unmarried</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleStatusSelect(e, "Divorce")}>Divorce</a></li>
+                        </ul>
+                    </div>
                     <label className="form-field input-group mb-3">
                         Qualification:
                         <input
@@ -1035,6 +1058,28 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 </div>
 
                 <div className="form-row">
+                <div className="dropdown green-dropdown form-field">
+                        Select Department:
+                        <button
+                            className="form-field input-group mb-3"
+                            type="button"
+                            id="dropdownButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            onClick={toggleDepartmentDropdown}
+                        >
+                            {formData.department || "Select Department"}
+                        </button>
+                        <ul className={`dropdown-menu${showDepartmentDropdown ? " show" : ""}`} aria-labelledby="dropdownButton">
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Management")}>Management</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Administration")}>Administration</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Sales")}>Sales</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Billing")}>Billing</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "IT")}>IT</a></li>
+
+
+                        </ul>
+                    </div>
                     <label className="form-field input-group mb-3">
                         Enchashment Name:
                         <input
@@ -1076,7 +1121,11 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             title="Please enter a valid PAN number (e.g., ABCDE1234F)."
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
+                    
+                </div>
+
+                <div className="form-row">
+                <label className="form-field input-group mb-3">
                         UAN No:
                         <input
                             type="text"
@@ -1087,9 +1136,6 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                </div>
-
-                <div className="form-row">
                     <label className="form-field input-group mb-3">
                         ESI No:
                         <input
@@ -1123,9 +1169,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                    <label className="form-field input-group mb-3">
-                    </label>
-                </div>
+                </div> 
 
 
                 <div class="header-container">
@@ -1699,8 +1743,10 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             />
                         )}
                     </label>
+                </div>
 
-                    <label className="form-field">
+                <div className="form-row">
+                <label className="form-field">
                         PAN Front:
                         {IsReadOnly ? (
                             formData.PanFront && formData.PanFront !== "PanFront Value" ? (
@@ -1740,12 +1786,6 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             />
                         )}
                     </label>
-
-
-                </div>
-
-                <div className="form-row">
-
 
                     <label className="form-field">
                         Matric Passing Certificate:
@@ -1828,8 +1868,11 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             />
                         )}
                     </label>
+                </div>
 
-                    <label className="form-field">
+                <div className='form-row'>
+                    
+                <label className="form-field">
                         Under Graduate Passing Certificate:
                         {IsReadOnly ? (
                             formData.uGPassingCert && formData.uGPassingCert !== "uGPassingCert Value" ? (
@@ -1869,7 +1912,6 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             />
                         )}
                     </label>
-
                     <label className="form-field">
                         Post Graduate Passing Certificate:
                         {IsReadOnly ? (
@@ -1910,11 +1952,6 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             />
                         )}
                     </label>
-
-                </div>
-
-                <div className="form-row">
-
                     <label className="form-field">
                         Cancelled Cheque:
                         {IsReadOnly ? (
@@ -1955,13 +1992,8 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             />
                         )}
                     </label>
-
-                    <label className="form-field"></label>
-                    <label className="form-field"></label>
-                    <label className="form-field"></label>
-
-
                 </div>
+
 
                 <div class="header-container">
                     <h3 class="bigtitle">Leave Details</h3>
@@ -2012,7 +2044,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             className="form-control"
                         />
                     </label>
-                </div>
+                </div> 
 
                 {
                     alertInfo.show && (

@@ -314,6 +314,28 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
             return "__";
         }
       };
+
+      
+    const [flexDirection, setFlexDirection] = useState('row');
+    const [chartSize, setChartSize] = useState('100%');
+
+      useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 768) {
+                setFlexDirection('column');
+                setChartSize('50%');
+            } else {
+                setFlexDirection('row');
+                setChartSize('13%');
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     
 
     return (
@@ -328,26 +350,26 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
                         <div className="stat-container">
                             <div className="stat-item">
                                 <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
-                                <h3>Total Cases Assigned</h3>
+                                <h3>Total Cases</h3>
                                 <p>{totalAssignedCases.length}</p>
                             </div>
 
                             <div className="stat-item">
                                 <ThumbUpAltOutlinedIcon className="small-image" />
                                 {/* <img src={SwipeRightAltOutlinedIcon} className="small-image" alt="accpeted By Admin" /> */}
-                                <h3>Accepted By Admin</h3>
+                                <h3>Accepted</h3>
                                 <p>{adminAccepted}</p>
                             </div>
 
                             <div className="stat-item">
                                 <ThumbDownOutlinedIcon className="small-image" />
-                                <h3>Rejected By Admin</h3>
+                                <h3>Rejected</h3>
                                 <p>{adminRejected}</p>
                             </div>
 
                             <div className="stat-item">
                                 <PendingActionsOutlinedIcon className="small-image" />
-                                <h3>Pending (Admin and Not Requested)</h3>
+                                <h3>Pending (Admin/ Not Request)</h3>
                                 <p>{adminPending}</p>
                             </div>
                         </div>
@@ -361,12 +383,12 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
 
                             <div className="stat-item">
                                 <AssignmentTurnedInOutlinedIcon className="small-image" />
-                                <h3>Fully Closed Cases</h3>
+                                <h3>Fully Close</h3>
                                 <p>{fullyClosedCases + adminRejected}</p>
                             </div>
                             <div className="stat-item">
                                 <PendingActionsOutlinedIcon className="small-image" />
-                                <h3>Working Cases</h3>
+                                <h3>Working Case</h3>
                                 <p>{workingCases - adminRejected}</p>
                             </div>
                             <div className="stat-item">
@@ -376,10 +398,11 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
                             </div>
                         </div>
 
-                        <div className="statistics">
+                    </div>
+                        <div  style={{ display: 'flex', flexDirection, gap: '10px', marginTop: '30px' }}>
                             <div className="charts">
 
-                                <div className="chart-item">
+                                <div className="chart-item" style={{ background: "white", marginTop: flexDirection === 'column' ? '30px' : '0', flex: chartSize, maxWidth: "300px" }}>
                                     <h3 className="chart-title"> Vehicle Working Status</h3>
                                     {hasData(doughnutData.datasets[0].data) ? (
                                         <Doughnut data={doughnutData} />
@@ -388,21 +411,22 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
                                     )}
                                 </div>
 
-                                <div className="chart-item">
+                                <div className="chart-item" style={{ background: "white", marginTop: flexDirection === 'column' ? '30px' : '0', flex: chartSize, maxWidth: "300px" }}>
                                     <h3 className="chart-title"> Admin Cases Status</h3>
                                     {hasData(doughnutData.datasets[0].data) ? (
                                         <Doughnut data={doughnutData2} />
                                     ) : (
                                         "No Data"
                                     )}
-                                </div>
+                                </div> 
+                                <div className="chart-item" style={{ background: "transparent", marginTop: flexDirection === 'column' ? '30px' : '0', flex: chartSize, maxWidth: "300px", boxShadow:"none" }}>
                                 <Featured />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    <form class='Customer-master-form' style={{ marginLeft: "0px" }}>
+                    <form class='Customer-master-form'>
                         <div class="header-container">
                             <h3 class="bigtitle">Assigned Vehicles</h3>
                         </div>
@@ -515,8 +539,6 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
 
                         </div>
                     </form>
-
-
 
                     <div className="responsive-table">
                         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>

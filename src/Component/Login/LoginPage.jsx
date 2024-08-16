@@ -19,6 +19,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
 import logintime_truck from '../../Assets/logintime_truck.webp'
 import { Helmet } from 'react-helmet-async';
+import {useDispatch} from 'react-redux'
+import { login } from './authSlice';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ const Login = () => {
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showPassword, setShowPassword] = useState(false);
   const [fontSize, setFontSize] = useState("35px");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("rememberedUsername");
@@ -61,63 +64,67 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("userName", username, typeof(username))
-    console.log("password", password)
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      console.log("userName", username, typeof(username))
+      console.log("password", password)
 
-    if(username == "" || password == ""){
-      setAlertInfo({ show: true, message:"Please Fill Form Properly", severity: 'error' });
-      return; 
-    }
-    try {
-      const response = await axios.post(`${backendUrl}/api/login`, {
-        username,
-        password,
-      });
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.userId);
-        setToken(response.data.token);
-        setUserId(response.data.userId);
-
-        if (rememberMe) {
-          localStorage.setItem("rememberedUsername", username);
-          localStorage.setItem("rememberedPassword", password);
-          localStorage.setItem("rememberMe", true);
-        } else {
-          localStorage.removeItem("rememberedUsername");
-          localStorage.removeItem("rememberedPassword");
-          localStorage.removeItem("rememberMe");
-        }
-
-        setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
-
-        if (response.data.data.username === "admin" ||response.data.data.department === "IT" || response.data.data.department === "Management") {
-          navigate("../Admin");
-        } else if (response.data.data.vendorType === "advocate") {
-          navigate("../advocateDashboard");
-        } else if (response.data.data.vendorType === "mechanic") {
-          navigate("../MechanicDashboard");
-        } else if (response.data.data.vendorType === "crane") {
-          navigate("../CraneDashboard");
-        }else if (response.data.data.vendorType === "workshop") {
-          navigate("../WorkshopDashboard");
-        }else if (response.data.data.department === "Administration") {
-          navigate("../Administration");
-        }else if (response.data.data.department === "Sales") {
-          navigate("../Salesteam");
-        }
-        // if (response.data.data.type === "advocate") navigate("../advocateDashboard");
-        else {
-          navigate('../userDashboard');
-        }
+      if(username == "" || password == ""){
+        setAlertInfo({ show: true, message:"Please Fill Form Properly", severity: 'error' });
+        return; 
       }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'An error occurred';
-      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-    }
-  };
+      try {
+        const response = await axios.post(`${backendUrl}/api/login`, {
+          username,
+          password,
+        });
+        if (response.status === 200) {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userId", response.data.userId);
+          setToken(response.data.token);
+          setUserId(response.data.userId);
+          dispatch(login({ userId, token }));
+          console.log("I AM TOKEN MASTER222222")
+
+
+          if (rememberMe) {
+            localStorage.setItem("rememberedUsername", username);
+            localStorage.setItem("rememberedPassword", password);
+            localStorage.setItem("rememberMe", true);
+          } else {
+            localStorage.removeItem("rememberedaUsername");
+            localStorage.removeItem("rememberedPassword");
+            localStorage.removeItem("rememberMe");
+          }
+
+          setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+
+          if (response.data.data.username === "admin" ||response.data.data.department === "IT" || response.data.data.department === "Management") {
+            navigate("../Admin");
+          } else if (response.data.data.vendorType === "advocate") {
+            navigate("../advocateDashboard");
+          } else if (response.data.data.vendorType === "mechanic") {
+            navigate("../MechanicDashboard");
+          } else if (response.data.data.vendorType === "crane") {
+            navigate("../CraneDashboard");
+          }else if (response.data.data.vendorType === "workshop") {
+            navigate("../WorkshopDashboard");
+          }else if (response.data.data.department === "Administration") {
+            navigate("../Administration");
+          }else if (response.data.data.department === "Sales") {
+            navigate("../Salesteam");
+          }
+          // if (response.data.data.type === "advocate") navigate("../advocateDashboard");
+          else {
+            navigate('../userDashboard');
+          }
+
+        }
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || 'An error occurred';
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+      }
+    };
 
   useEffect(() => {
     const handleResize = () => {

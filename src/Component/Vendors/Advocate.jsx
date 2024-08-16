@@ -291,11 +291,11 @@ const Advocate = () => {
                     <hr />
 
                     <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
-
+{/* 
                     {
                         startingPage &&
                         <AdvocateDashboard getData={getData}/>
-                    }
+                    } */}
 
                     {
                         myAccidentVehicle &&

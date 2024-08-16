@@ -17,7 +17,7 @@ function usePersistedRecoilState(atom, key) {
     }
   }, [key, value]);
 
-  return [value, setValue];
+  return [value, setValue];a
 }
 
 export default usePersistedRecoilState;

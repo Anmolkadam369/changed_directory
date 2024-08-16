@@ -113,6 +113,7 @@ const AssignedVehicleWorkshop = () => {
     setSelectedId(id);
     setSelectedItem(item);
     setShowAddedDataByVendor(true)
+    console.log("ITEMHERE", item)
   }
 
   function addImage(id, accidendFileNo) {
@@ -357,8 +358,8 @@ const AssignedVehicleWorkshop = () => {
                           : "Pending"
                         }
                       </td> */}
-
-                      {item.details == 0 ? (
+                      
+                      {typeof item.details[0]?.firstResponseOn !== "string" ? (
                         <td style={{ textAlign: 'center', color: 'red' }}>Not Requested</td>
                       ) : (
                         <td style={{ textAlign: 'center', color: (item.details.length > 0 && item.details[0].acceptedByAdmin) ? 'darkblue' : 'darkorange' }}>

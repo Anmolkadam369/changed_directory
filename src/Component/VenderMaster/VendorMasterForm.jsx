@@ -19,12 +19,46 @@ import vendorInfo1 from '../../Assets/vendorInfo1.jpg'
 import vendorInfo2 from '../../Assets/vendorInfo2.jpg'
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { styled } from '@mui/material/styles';
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
+const Android12Switch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  '& .MuiSwitch-track': {
+    borderRadius: 22 / 2,
+    '&::before, &::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 16,
+      height: 16,
+    },
+    '&::before': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    '&::after': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxShadow: 'none',
+    width: 15,
+    height: 15,
+    margin: 1.7,
+  },
+}));
 
 const VendorMasterForm = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -281,8 +315,8 @@ const VendorMasterForm = () => {
           return `Field '${key}' is required.`;
         }
       }
-      if ((key !== "GSTNo" && key !== "GST") && value === '') {
-        return `Field '${key}' is requireds.`;
+      if ((key !== "GSTNo" && key !== "GST" && key !== "contactPersonNum2") && value === '') {
+        return `Field '${key}' is required.`;
       }
     }
 
@@ -299,7 +333,7 @@ const VendorMasterForm = () => {
       console.log("contada", formData.contactPersonNum)
       return 'Please enter a valid Contact Person Number.';
     }
-    if (!phoneRegex.test(formData.contactPersonNum2)) {
+    if (formData.contactPersonNum2 !== "" && !phoneRegex.test(formData.contactPersonNum2)) {
       return 'Please enter a valid Secondary Contact Person Number.';
     }
 
@@ -555,14 +589,14 @@ const VendorMasterForm = () => {
         <link rel='canonical' href={`https://claimpro.in/VendorMaster`} />
       </Helmet>
 
-      <div className="switch-container">
-        <p></p>
-        <Switch
-          checked={singleVendor}
-          onChange={handleSwitchChange}
-          color="primary"
-          inputProps={{ 'aria-label': 'single vendor switch' }}
-        />
+      <div className='switchparent-container'>
+        <div className="switch-container">
+          <FormControlLabel
+            control={<Android12Switch defaultChecked />}
+            checked={singleVendor}
+            onChange={handleSwitchChange}
+          />
+        </div>
       </div>
 
       {!singleVendor && (
@@ -838,7 +872,7 @@ const VendorMasterForm = () => {
                   value={formData.contactPersonNum2}
                   placeholder='Contact Person Phone'
                   onChange={handleChange}
-                  required
+                  // required
                   pattern="\d{10}"
                   title="Phone number must be 10 digits"
                   className="form-control"
@@ -865,7 +899,7 @@ const VendorMasterForm = () => {
                   type='file'
                   name="panCard"
                   onChange={handleChange}
-                  accept=".pdf,image/*"
+                  accept="image/*"
                   className="form-control"
                   ref={panRef}
                   capture="environment"
@@ -895,7 +929,7 @@ const VendorMasterForm = () => {
                   name="adharCard"
                   // value={formData.adharCard}
                   onChange={handleChange}
-                  accept=".pdf,image/*"
+                  accept="image/*"
                   ref={adharCardRef}
                   className="form-control"
                   capture="environment"
@@ -926,7 +960,7 @@ const VendorMasterForm = () => {
                   name="GST"
                   // value={formData.GST}
                   onChange={handleChange}
-                  accept=".pdf,image/*"
+                  accept="image/*"
                   ref={GSTRef}
                   capture="environment"
                   className="form-control"

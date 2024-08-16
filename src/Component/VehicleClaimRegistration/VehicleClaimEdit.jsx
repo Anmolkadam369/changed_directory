@@ -936,7 +936,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         </select>
                     </label>
                     <label className="form-field">
-                        Accident Place - City:
+                        Accident Place - City: {accidentData.district}
                         <select
                             className='inputField form-control'
                             name="district"
@@ -1042,7 +1042,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                         </p>
                                     </>
                                 ) : (
-                                    <p>No Agreement uploaded</p>
+                                    <p className='notUploaded'>No Intimation uploaded</p>
                                 )}
                             </div>
                         ) : (
@@ -1197,7 +1197,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                         </p>
                                     </>
                                 ) : (
-                                    <p>No Agreement uploaded</p>
+                                    <p className='notUploaded'>Not uploaded</p>
                                 )}
                             </div>
                         ) : (
@@ -1295,7 +1295,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                         </p>
                                     </>
                                 ) : (
-                                    <p className='notUploaded'>No Agreement uploaded</p>
+                                    <p className='notUploaded'>Not uploaded</p>
                                 )}
                             </div>
                         ) : (
@@ -1612,7 +1612,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                         </p>
                                     </>
                                 ) : (
-                                    <p className='notUploaded'>No Agreement uploaded</p>
+                                    <p className='notUploaded'>Not uploaded</p>
                                 )}
                             </div>
                         ) : (
@@ -1725,7 +1725,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                         </p>
                                     </>
                                 ) : (
-                                    <p className='notUploaded'>No Agreement uploaded</p>
+                                    <p className='notUploaded'>Not uploaded</p>
                                 )}
                             </div>
                         ) : (
@@ -2120,7 +2120,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                                     </p>
                                                 </>
                                             ) : (
-                                                <p className='notUploaded'>No RC Document uploaded</p>
+                                                <p className='notUploaded'>Not uploaded</p>
                                             )}
                                         </div>
                                     ) : (
@@ -2187,7 +2187,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>insurance:</label>
+                                <label>Insurance:</label>
                                 <label>
                                     Yes
                                     <input
@@ -2245,7 +2245,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                                     </p>
                                                 </>
                                             ) : (
-                                                <p className='notUploaded'>No Agreement uploaded</p>
+                                                <p className='notUploaded'>Not uploaded</p>
                                             )}
                                         </div>
                                     ) : (
@@ -2312,7 +2312,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>fitness:</label>
+                                <label>Fitness:</label>
                                 <label>
                                     Yes
                                     <input
@@ -2370,7 +2370,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                                                     </p>
                                                 </>
                                             ) : (
-                                                <p className='notUploaded'>No Agreement uploaded</p>
+                                                <p className='notUploaded'>Not uploaded</p>
                                             )}
                                         </div>
                                     ) : (
@@ -2693,7 +2693,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>tax Token:</label>
+                                <label>Tax token:</label>
                                 <label>
                                     Yes
                                     <input
@@ -3578,7 +3578,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>spotSurvey:</label>
+                                <label>Spot Survey:</label>
                                 <label>
                                     Yes
                                     <input
@@ -3704,7 +3704,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>spotReport:</label>
+                                <label>Spot Report:</label>
                                 <label>
                                     Yes
                                     <input
@@ -3829,7 +3829,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>estimate:</label>
+                                <label>Estimate:</label>
                                 <label>
                                     Yes
                                     <input
@@ -4208,7 +4208,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>2nd/Survey</label>
+                                <label>2nd/Survey:</label>
                                 <label>
                                     Yes
                                     <input
@@ -4462,7 +4462,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>Inspection</label>
+                                <label>Inspection:</label>
                                 <label>
                                     Yes
                                     <input
@@ -4587,7 +4587,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
-                                <label>finalBill:</label>
+                                <label>Final Bill:</label>
                                 <label>
                                     Yes
                                     <input
@@ -4840,7 +4840,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField inputField">
-                                <label>settelMent:</label>
+                                <label>Settelment:</label>
                                 <label>
                                     Yes
                                     <input
@@ -4964,7 +4964,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField inputField">
-                                <label>claimForm:</label>
+                                <label>Claim form:</label>
                                 <label>
                                     Yes
                                     <input

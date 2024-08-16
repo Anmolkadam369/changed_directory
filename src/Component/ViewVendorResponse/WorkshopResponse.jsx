@@ -16,6 +16,9 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
+import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+
 
 function WorkshopResponse({ data, onUpdate }) {
     const location = useLocation();
@@ -718,40 +721,36 @@ function WorkshopResponse({ data, onUpdate }) {
                         agreement CPA:
                         {formData.agreementCPA ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div >
-                                    <a
-                                        href={formData.agreementCPA}
-                                        style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
-                                        }}
-                                        download
-                                    >
-                                        Download
-                                    </a>
-                                    <button
-                                        type="button"
-                                        onClick={(e) => handlePreviewClick(e, formData.agreementCPA)}
-                                        style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
-                                            marginTop: '20px',
-                                        }}
-                                    >
-                                        Preview
-                                    </button>
-                                </div>
+                            <div >
+                                <a
+                                    href={formData.agreementCPA}
+                                    style={{
+
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        color: 'green'
+                                    }}
+                                    download
+                                >
+                                    <DownloadingOutlinedIcon /> Download
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={(e) => handlePreviewClick(e, formData.agreementCPA)}
+                                    style={{
+
+                                        cursor: 'pointer',
+                                        marginTop: '20px',
+                                        border: 'none',
+                                        background: "white",
+                                        color: "#560303",
+                                        fontSize: "13px"
+                                    }}
+                                >
+                                    <RemoveRedEyeOutlinedIcon /> Preview
+                                </button>
                             </div>
+                        </div>
                         ) : (
                             <p className="notUploaded" >No CPA Agreement uploaded</p>
                         )}
@@ -809,36 +808,33 @@ function WorkshopResponse({ data, onUpdate }) {
                                     <a
                                         href={formData.deadlineSheet}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
+                                            marginTop: '20px',
+                                            color: 'green'
                                         }}
                                         download
                                     >
-                                        Download
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
                                     <button
                                         type="button"
                                         onClick={(e) => handlePreviewClick(e, formData.deadlineSheet)}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
                                             marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
                                         }}
                                     >
-                                        Preview
+                                        <RemoveRedEyeOutlinedIcon /> Preview
                                     </button>
                                 </div>
-                            </div>) : (
+                            </div>
+                            ) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Deadline Sheet uploaded</p>
                             )
                         }
@@ -864,36 +860,33 @@ function WorkshopResponse({ data, onUpdate }) {
                                     <a
                                         href={formData.estimateGiven}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
+                                            marginTop: '20px',
+                                            color: 'green'
                                         }}
                                         download
                                     >
-                                        Download
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
                                     <button
                                         type="button"
                                         onClick={(e) => handlePreviewClick(e, formData.estimateGiven)}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
                                             marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
                                         }}
                                     >
-                                        Preview
+                                        <RemoveRedEyeOutlinedIcon /> Preview
                                     </button>
                                 </div>
-                            </div>) : (
+                            </div>
+                            ) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Estimate uploaded</p>
                             )
                         }
@@ -932,36 +925,33 @@ function WorkshopResponse({ data, onUpdate }) {
                                     <a
                                         href={formData.preApproval}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
+                                            marginTop: '20px',
+                                            color: 'green'
                                         }}
                                         download
                                     >
-                                        Download
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
                                     <button
                                         type="button"
                                         onClick={(e) => handlePreviewClick(e, formData.preApproval)}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
                                             marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
                                         }}
                                     >
-                                        Preview
+                                        <RemoveRedEyeOutlinedIcon /> Preview
                                     </button>
                                 </div>
-                            </div>) : (
+                            </div>
+                            ) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Pre Approval uploaded</p>
                             )
                         }
@@ -982,36 +972,33 @@ function WorkshopResponse({ data, onUpdate }) {
                                     <a
                                         href={formData.supplementryEstimate}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
+                                            marginTop: '20px',
+                                            color: 'green'
                                         }}
                                         download
                                     >
-                                        Download
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
                                     <button
                                         type="button"
                                         onClick={(e) => handlePreviewClick(e, formData.supplementryEstimate)}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
                                             marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
                                         }}
                                     >
-                                        Preview
+                                        <RemoveRedEyeOutlinedIcon /> Preview
                                     </button>
                                 </div>
-                            </div>) : (
+                            </div>
+                            ) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Supplementry Estimate uploaded</p>
                             )
                         }
@@ -1025,36 +1012,33 @@ function WorkshopResponse({ data, onUpdate }) {
                                     <a
                                         href={formData.vehicleHandover}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
+                                            marginTop: '20px',
+                                            color: 'green'
                                         }}
                                         download
                                     >
-                                        Download
+                                        <DownloadingOutlinedIcon /> Download
                                     </a>
                                     <button
                                         type="button"
                                         onClick={(e) => handlePreviewClick(e, formData.vehicleHandover)}
                                         style={{
-                                            marginLeft: '10px',
-                                            padding: '10px 30px',
-                                            border: 'none',
-                                            borderRadius: '4px',
+
                                             cursor: 'pointer',
-                                            backgroundColor: 'lightgrey',
-                                            color: 'white',
                                             marginTop: '20px',
+                                            border: 'none',
+                                            background: "white",
+                                            color: "#560303",
+                                            fontSize: "13px"
                                         }}
                                     >
-                                        Preview
+                                        <RemoveRedEyeOutlinedIcon /> Preview
                                     </button>
                                 </div>
-                            </div>) : (
+                            </div>
+                            ) : (
                                 <p className='notUploaded' style={{ marginTop: "20px" }}>No Vehicle Handover Document Uploaded</p>
                             )
                         }

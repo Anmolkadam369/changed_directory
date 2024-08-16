@@ -99,7 +99,7 @@ const DummyDashboard = () => {
 
 
     const [getData, setGetData] = useState({});
-    console.log("getdata", getData)
+    console.log("getdata123456789", getData)
 
     const resetStates = () => {
         setDashboardOnly(false);
@@ -330,7 +330,6 @@ const DummyDashboard = () => {
 
     const findUserById = async (id) => {
         try {
-            console.log("HEY", `${backendUrl}/api/findById/${id}`)
             let response = await axios.get(`${backendUrl}/api/findById/${id}`);
             console.log("daa", response.data)
             if (response.data.message == "No user found") {
@@ -533,6 +532,12 @@ const DummyDashboard = () => {
         };
     }, []);
 
+    const [selected, setSelected] = useState(null);
+      const handleClick = (func, index) => {
+    setSelected(index);
+    func();  // Call the respective function
+  };
+
     return (
 
         <div>
@@ -540,10 +545,25 @@ const DummyDashboard = () => {
             {dashboardOnly && (
                 <div className="dashboard">
                     <main className="main-content">
-                        <div style={{ display: "flex" }}>
-                            <p className='topdivs' onClick={AllDashboardFunc}>Dashboard </p>
-                            <p className='topdivs' onClick={vendorDashboardFunc}>Vendors Dashboard </p>
-                            <p className='topdivs' onClick={customerDashboardFunc}>Customers Dashboard </p>
+                        <div style={{display:'flex'}}>
+                            <p
+                                className={`topdivs ${selected === 1 ? 'selected' : ''}`}
+                                onClick={() => handleClick(AllDashboardFunc, 1)}
+                            >
+                                Dashboard
+                            </p>
+                            <p
+                                className={`topdivs ${selected === 2 ? 'selected' : ''}`}
+                                onClick={() => handleClick(vendorDashboardFunc, 2)}
+                            >
+                                Vendors Dashboard
+                            </p>
+                            <p
+                                className={`topdivs ${selected === 3 ? 'selected' : ''}`}
+                                onClick={() => handleClick(customerDashboardFunc, 3)}
+                            >
+                                Customers Dashboard
+                            </p>
                         </div>
                         {allDashboard && (
                             <div className='other-content'>

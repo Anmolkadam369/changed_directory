@@ -16,11 +16,17 @@ import ActivationModel from '../Visitors/ActivationModel';
 import { Helmet } from 'react-helmet-async';
 import VendorMasterEdit from '../VenderMaster/VendorMasterEdit';
 import VendorPerformance from '../AAAAAAAAAAAAAAAAAA/VendorPerformnce';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+
 
 const VendorApproved = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamp: null });
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
+
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -37,6 +43,18 @@ const VendorApproved = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedVendorCode, setSelectedVendorCode] = useState(null);
   const [selectedVendorType, setSelectedVendorType] = useState(null);
+
+  const [sortDate, setSortDate]=useState("asc");
+
+  const sortDateFunc = ()=>{
+    setSortDate(sortDate == "asc" ? "desc":"asc");
+    const sortedItems = [...data].sort((a,b)=>{
+      const dateA = new Date(a.systemDate).getTime();
+      const dateB = new Date(b.systemDate).getTime();
+      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
+    });
+    setData(sortedItems)
+  }
 
 
   console.log("selectedID", selectedId)
@@ -79,6 +97,11 @@ const VendorApproved = () => {
     setModalOpen(false);
   };
 
+  const handleConfirmDelete = async (vendorCode)=>{
+    await deleteVendor(vendorCode);
+    setModalOpen(false);
+  }
+
   const handleCancel = () => {
     setModalOpen(false);
   };
@@ -88,9 +111,14 @@ const VendorApproved = () => {
     setModalOpen(true);
   };
 
+  const openDeleteModal = (item) => {
+    setDeleteData(item);
+    setModalOpen(true);
+  }
+
   const deactive = async (id, isActivate) => {
     const response = await axios({
-      method: 'POST',
+      method: 'PUT',
       url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
       headers: {
         'Authorization': token
@@ -99,6 +127,20 @@ const VendorApproved = () => {
     getData();
     setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
   };
+
+  const deleteVendor = async (id) => {
+    const response = await axios({
+      method: 'DELETE',
+      url: `${backendUrl}/api/deleteVendor/${userId}/${id}`,
+      headers: {
+        'Authorization': token
+      }
+    });
+    getData();
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+  };
+
+
 
   const getData = async () => {
     const response = await axios.get(`${backendUrl}/api/getVendor`);
@@ -256,6 +298,17 @@ const VendorApproved = () => {
               {alertInfo.message}
             </Alert>
           )}
+          <p
+          style={{
+            display: 'flex',
+            justifyContent: "right",
+            marginRight: "5px",
+            cursor: "pointer"
+          }}
+          onClick={sortDateFunc}
+        >
+          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+        </p>
           <div className='responsive-table'>
             <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
               <thead>
@@ -264,39 +317,46 @@ const VendorApproved = () => {
                   <th>Vendors Name</th>
                   <th>Vendor Email</th>
                   <th>Vendor Type</th>
-                  <th>Edited By</th>
+                  {/* <th>Edited By</th> */}
                   <th>View</th>
                   <th>Performance</th>
                   <th>Action</th>
+                  <th>Delete Vendor</th>
                 </tr>
               </thead>
               <tbody>
                 {currentItems.length === 0 ? (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                    <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
                   </tr>
                 ) : (
                   currentItems.map((item, index) => (
                     <tr key={item.id}>
                       <td>{indexOfFirstItem + index + 1}</td>
-                      <td>{item.vendorName}</td>
-                      <td>{item.email}</td>
-                      <td>{item.vendorType}</td>
-                      <td>{item.EditedBy}</td>
+                      <td>{item.vendorName.charAt(0).toUpperCase() + item.vendorName.slice(1)}</td>
+                      <td>
+                        <a href={`mailto: ${item.email}`} style={{ color: "blue", textDecoration: "none" }}>
+                          {item.email}
+                        </a>
+                      </td>
+                      <td style={{ color: "green" }}>{item.vendorType.charAt(0).toUpperCase() + item.vendorType.slice(1)}</td>
+                      {/* <td>{item.EditedBy != null ? item.EditedBy.charAt(0).toUpperCase() + item.EditedBy.slice(1) : ""}</td> */}
                       <td>
                         <button onClick={() => view(item.id)} className='view-button'>View</button>
                       </td>
                       <td>
-                        <button onClick={() => viewPerformance(item.vendorCode, item.vendorType)} className='view-button'>View</button>
+                        <button onClick={() => viewPerformance(item.vendorCode, item.vendorType)} style={{ background: '#e6e679' }} className='view-button'>View</button>
                       </td>
                       <td>
                         <button
                           onClick={() => openModal(item)}
+                          style={{ background: 'rgb(190 98 98)', color: "white" }}
                           className="deactivate-button"
                         >
                           {item.isActive === "true" ? "Deactivate" : "Activate"}
                         </button>
                       </td>
+                      <td style={{cursor:'pointer'}} onClick={() => openDeleteModal(item)}><DeleteOutlineIcon /></td>
                     </tr>
                   ))
                 )}
@@ -304,7 +364,7 @@ const VendorApproved = () => {
             </table>
           </div>
           <div className="pagination">
-            <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+            <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
               <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
                 <ArrowBack />
               </Button>
@@ -330,6 +390,15 @@ const VendorApproved = () => {
               onCancel={handleCancel}
             />
           )}
+
+          {deleteData && (
+            <ActivationModel
+              isOpen={isModalOpen}
+              onConfirm={() => handleConfirmDelete(deleteData.vendorCode)}
+              onCancel={handleCancel}
+            />
+          )}
+
         </div>)}
       {showVendorMasterEdit && (
         <VendorMasterEdit id={selectedId} onUpdate={handleUpdate} />

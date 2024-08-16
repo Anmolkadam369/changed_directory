@@ -376,7 +376,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
       console.log("contada", formData.contactPersonNum)
       return 'Please enter a valid Contact Person Number.';
     }
-    if (!phoneRegex.test(formData.contactPersonNum2)) {
+    if (formData.contactPersonNum2 !== "" && !phoneRegex.test(formData.contactPersonNum2)) {
       return 'Please enter a valid Secondary Contact Person Number.';
     }
 
@@ -733,7 +733,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                 type="file"
                 name="panCard"
                 onChange={handleChange}
-                accept=".pdf,image/*"
+                accept="image/*"
                 ref={panRef}
                 required
                 className="form-control"
@@ -792,7 +792,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                 type="file"
                 name="adharCard"
                 onChange={handleChange}
-                accept=".pdf,image/*"
+                accept="image/*"
                 ref={adharCardRef}
                 className="form-control"
                 required
@@ -887,7 +887,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                 type="file"
                 name="GST"
                 onChange={handleChange}
-                accept=".pdf,image/*"
+                accept="image/*"
                 ref={GSTRef}
                 required
                 className="form-control"

@@ -26,6 +26,8 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const location = useLocation();
+    const [isHovered, setIsHovered] = useState(false);
+
     // const { id } = location.state || {};
     console.log("Received IDssss:", id);
     const token = localStorage.getItem("token");
@@ -772,20 +774,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openFrontViewModal}
-                                    />
-                                    <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.frontView} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeFrontViewModal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.frontView} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontViewModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
@@ -800,20 +802,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openRearLHModal}
-                                    />
-                                    <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.rearLH} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeRearLHModal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.rearLH} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -828,20 +830,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openRearRHModal}
-                                    />
-                                    <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.rearRH} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeRearRHModal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.rearRH} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -856,20 +858,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openMajorDamage1Modal}
-                                    />
-                                    <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.MajorDamages1} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeMajorDamage1Modal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.MajorDamages1} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages1} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -884,20 +886,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openMajorDamage2Modal}
-                                    />
-                                    <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.MajorDamages2} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeMajorDamage2Modal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.MajorDamages2} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages2} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -912,20 +914,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openMajorDamage3Modal}
-                                    />
-                                    <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.MajorDamages3} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeMajorDamage3Modal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.MajorDamages3} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages3} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -940,20 +942,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openMajorDamage4Modal}
-                                    />
-                                    <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.MajorDamages4} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeMajorDamage4Modal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.MajorDamages4} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages4} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -968,20 +970,20 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     alt="Chassis Number"
                                     style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
                                     onClick={openMajorDamage5Modal}
-                                    />
-                                    <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
-                                        <div className="modal-header">
-                                            <IconButton href={comingData.MajorDamages5} download color="primary">
-                                                <DownloadIcon />
-                                            </IconButton>
-                                            <IconButton onClick={closeMajorDamage5Modal} color="secondary">
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </div>
-                                        <div className="modal-image-container">
-                                            <img src={comingData.MajorDamages5} alt="Cluster Number" className="modal-image" />
-                                        </div>
-                                    </Modal>
+                                />
+                                <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages5} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -1034,12 +1036,11 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                         Time (Railway):
                         <input
                             className='inputField'
-                            type="text"
+                            type="time"
                             name="railwayTime"
                             value={accidentData.railwayTime}
                             onChange={handleChange}
                             placeholder='Time'
-
                         />
                     </label>
 
@@ -1134,7 +1135,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             name="intimationUpload"
                             ref={intimationUpload}
                             onChange={handleChange}
-
+                            accept=".pdf"
                         />
                     </label>
 
@@ -1250,6 +1251,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             name="firUpload"
                             ref={firUpload}
                             onChange={handleChange}
+                            accept=".pdf"
 
                         />
                     </label>
@@ -1312,6 +1314,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             name="POA"
                             ref={POA}
                             onChange={handleChange}
+                            accept=".pdf"
 
                         />
                     </label>
@@ -1569,6 +1572,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             name="reportUpload"
                             ref={reportUpload}
                             onChange={handleChange}
+                            accept=".pdf"
 
                         />
                     </label>
@@ -1649,6 +1653,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             name="companyRepresentativeAdhar"
                             ref={companyRepresentativeAdhar}
                             onChange={handleChange}
+                            accept=".pdf"
 
                         />
                     </label>
@@ -1930,7 +1935,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                     <span class="mandatory-note">All fields are mandatory</span>
                 </div>
                 <div className='form-row'>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>RC:</label>
@@ -1960,7 +1967,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="RCdoc"
                                         ref={RCdoc}
                                         onChange={handleChange}
@@ -1973,7 +1980,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCDate"
                                             value={accidentData.RCnoDate}
                                             onChange={handleChange}
@@ -1984,7 +1991,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.RCassignedTo}
@@ -1994,7 +2001,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="RCremark"
                                             placeholder="Remark"
                                             value={accidentData.RCremark}
@@ -2005,7 +2012,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>insurance:</label>
@@ -2035,7 +2044,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="insurancedoc"
                                         ref={insurancedoc}
                                         onChange={handleChange}
@@ -2048,7 +2057,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insuranceDate"
                                             value={accidentData.insurancenoDate}
                                             onChange={handleChange}
@@ -2059,7 +2068,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insuranceassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.insuranceassignedTo}
@@ -2069,7 +2078,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="insuranceremark"
                                             placeholder="Remark"
                                             value={accidentData.insuranceremark}
@@ -2080,7 +2089,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>fitness:</label>
@@ -2110,7 +2121,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="fitnessdoc"
                                         ref={fitnessdoc}
                                         onChange={handleChange}
@@ -2123,7 +2134,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="fitnessDate"
                                             value={accidentData.fitnessnoDate}
                                             onChange={handleChange}
@@ -2134,7 +2145,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="fitnessassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.fitnessassignedTo}
@@ -2144,7 +2155,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="fitnessremark"
                                             placeholder="Remark"
                                             value={accidentData.fitnessremark}
@@ -2155,7 +2166,14 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+
+                </div>
+
+                <div className='form-row'>
+
+                    <div className='form-field task-details' 
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>1/Y Permit:</label>
@@ -2185,7 +2203,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit1Yeardoc"
                                         ref={nationalPermit1Yeardoc}
                                         onChange={handleChange}
@@ -2198,7 +2216,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1YearDate"
                                             value={accidentData.nationalPermit1YearnoDate}
                                             onChange={handleChange}
@@ -2209,7 +2227,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1YearassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.nationalPermit1YearassignedTo}
@@ -2219,7 +2237,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit1Yearremark"
                                             placeholder="Remark"
                                             value={accidentData.nationalPermit1Yearremark}
@@ -2230,7 +2248,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>5 Year:</label>
@@ -2260,7 +2280,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="nationalPermit5Yeardoc"
                                         ref={nationalPermit5Yeardoc}
                                         onChange={handleChange}
@@ -2273,7 +2293,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5YearDate"
                                             value={accidentData.nationalPermit5YearnoDate}
                                             onChange={handleChange}
@@ -2284,7 +2304,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5YearassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.nationalPermit5YearassignedTo}
@@ -2294,7 +2314,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="nationalPermit5Yearremark"
                                             placeholder="Remark"
                                             value={accidentData.nationalPermit5Yearremark}
@@ -2305,10 +2325,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>tax Token:</label>
@@ -2338,7 +2357,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="taxTokendoc"
                                         ref={taxTokendoc}
                                         onChange={handleChange}
@@ -2351,7 +2370,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokenDate"
                                             value={accidentData.taxTokennoDate}
                                             onChange={handleChange}
@@ -2362,7 +2381,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokenassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.taxTokenassignedTo}
@@ -2372,7 +2391,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="taxTokenremark"
                                             placeholder="Remark"
                                             value={accidentData.taxTokenremark}
@@ -2383,7 +2402,12 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                </div>
+
+                <div className='form-row'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>DL:</label>
@@ -2413,7 +2437,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLicencedoc"
                                         ref={DLicencedoc}
                                         onChange={handleChange}
@@ -2426,7 +2450,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicenceDate"
                                             value={accidentData.DLicencenoDate}
                                             onChange={handleChange}
@@ -2437,7 +2461,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicenceassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.DLicenceassignedTo}
@@ -2447,7 +2471,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLicenceremark"
                                             placeholder="Remark"
                                             value={accidentData.DLicenceremark}
@@ -2458,7 +2482,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>DL Ver:</label>
@@ -2488,7 +2514,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="DLVerdoc"
                                         ref={DLVerdoc}
                                         onChange={handleChange}
@@ -2501,7 +2527,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerDate"
                                             value={accidentData.DLVernoDate}
                                             onChange={handleChange}
@@ -2512,7 +2538,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.DLVerassignedTo}
@@ -2522,7 +2548,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="DLVerremark"
                                             placeholder="Remark"
                                             value={accidentData.DLVerremark}
@@ -2533,7 +2559,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>LR:</label>
@@ -2563,7 +2591,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="LRdoc"
                                         ref={LRdoc}
                                         onChange={handleChange}
@@ -2576,7 +2604,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRDate"
                                             value={accidentData.LRnoDate}
                                             min={accidentData.accidentDate || new Date().toISOString().split('T')[0]}
@@ -2586,7 +2614,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.LRassignedTo}
@@ -2596,7 +2624,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="LRremark"
                                             placeholder="Remark"
                                             value={accidentData.LRremark}
@@ -2607,7 +2635,14 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+
+                </div>
+
+
+                <div className='form-row'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>PUC:</label>
@@ -2637,7 +2672,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="PUCdoc"
                                         ref={PUCdoc}
                                         onChange={handleChange}
@@ -2650,7 +2685,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCDate"
                                             value={accidentData.PUCnoDate}
                                             onChange={handleChange}
@@ -2661,7 +2696,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.PUCassignedTo}
@@ -2671,7 +2706,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="PUCremark"
                                             placeholder="Remark"
                                             value={accidentData.PUCremark}
@@ -2682,11 +2717,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                </div>
-
-
-                <div className='form-row'>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>Report:</label>
@@ -2716,7 +2749,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="policeReportdoc"
                                         ref={policeReportdoc}
                                         onChange={handleChange}
@@ -2729,7 +2762,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportDate"
                                             value={accidentData.policeReportnoDate}
                                             onChange={handleChange}
@@ -2740,7 +2773,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.policeReportassignedTo}
@@ -2750,7 +2783,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="policeReportremark"
                                             placeholder="Remark"
                                             value={accidentData.policeReportremark}
@@ -2761,7 +2794,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>Intimation:</label>
@@ -2791,7 +2826,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="intimationdoc"
                                         ref={intimationdoc}
                                         onChange={handleChange}
@@ -2804,7 +2839,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationDate"
                                             value={accidentData.intimationnoDate}
                                             onChange={handleChange}
@@ -2815,7 +2850,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.intimationassignedTo}
@@ -2825,7 +2860,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="intimationremark"
                                             placeholder="Remark"
                                             value={accidentData.intimationremark}
@@ -2836,7 +2871,13 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+
+                </div>
+
+                <div className='form-row'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>spotSurvey:</label>
@@ -2866,7 +2907,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotSurveydoc"
                                         ref={spotSurveydoc}
                                         onChange={handleChange}
@@ -2879,7 +2920,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveyDate"
                                             value={accidentData.spotSurveynoDate}
                                             onChange={handleChange}
@@ -2890,7 +2931,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveyassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.spotSurveyassignedTo}
@@ -2900,7 +2941,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotSurveyremark"
                                             placeholder="Remark"
                                             value={accidentData.spotSurveyremark}
@@ -2911,7 +2952,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>spotReport:</label>
@@ -2941,7 +2984,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="spotReportdoc"
                                         ref={spotReportdoc}
                                         onChange={handleChange}
@@ -2954,7 +2997,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportDate"
                                             value={accidentData.spotReportnoDate}
                                             onChange={handleChange}
@@ -2965,7 +3008,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.spotReportassignedTo}
@@ -2975,7 +3018,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="spotReportremark"
                                             placeholder="Remark"
                                             value={accidentData.spotReportremark}
@@ -2986,7 +3029,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>estimate:</label>
@@ -3016,7 +3061,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="estimateGivendoc"
                                         ref={estimateGivendoc}
                                         onChange={handleChange}
@@ -3029,7 +3074,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivenDate"
                                             value={accidentData.estimateGivennoDate}
                                             onChange={handleChange}
@@ -3040,7 +3085,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivenassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.estimateGivenassignedTo}
@@ -3050,7 +3095,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="estimateGivenremark"
                                             placeholder="Remark"
                                             value={accidentData.estimateGivenremark}
@@ -3064,7 +3109,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                 </div>
 
                 <div className='form-row'>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>Payment:</label>
@@ -3094,7 +3141,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="advancePaymentdoc"
                                         ref={advancePaymentdoc}
                                         onChange={handleChange}
@@ -3107,7 +3154,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentDate"
                                             value={accidentData.advancePaymentnoDate}
                                             onChange={handleChange}
@@ -3118,7 +3165,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.advancePaymentassignedTo}
@@ -3128,7 +3175,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="advancePaymentremark"
                                             placeholder="Remark"
                                             value={accidentData.advancePaymentremark}
@@ -3139,7 +3186,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>F/survey:</label>
@@ -3169,7 +3218,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalsurveyInitialdoc"
                                         ref={finalsurveyInitialdoc}
                                         onChange={handleChange}
@@ -3182,7 +3231,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialDate"
                                             value={accidentData.finalsurveyInitialnoDate}
                                             onChange={handleChange}
@@ -3193,7 +3242,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.finalsurveyInitialassignedTo}
@@ -3203,7 +3252,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalsurveyInitialremark"
                                             placeholder="Remark"
                                             value={accidentData.finalsurveyInitialremark}
@@ -3214,7 +3263,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>2nd/Survey</label>
@@ -3244,7 +3295,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalSurvey2nddoc"
                                         ref={finalSurvey2nddoc}
                                         onChange={handleChange}
@@ -3257,7 +3308,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2ndDate"
                                             value={accidentData.finalSurvey2ndnoDate}
                                             onChange={handleChange}
@@ -3268,7 +3319,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2ndassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.finalSurvey2ndassignedTo}
@@ -3278,7 +3329,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalSurvey2ndremark"
                                             placeholder="Remark"
                                             value={accidentData.finalSurvey2ndremark}
@@ -3289,7 +3340,12 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                </div>
+
+                <div className='form-row'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>Approval:</label>
@@ -3319,7 +3375,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="workApprovaldoc"
                                         ref={workApprovaldoc}
                                         onChange={handleChange}
@@ -3332,7 +3388,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovalDate"
                                             value={accidentData.workApprovalnoDate}
                                             onChange={handleChange}
@@ -3343,7 +3399,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovalassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.workApprovalassignedTo}
@@ -3353,7 +3409,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="workApprovalremark"
                                             placeholder="Remark"
                                             value={accidentData.workApprovalremark}
@@ -3364,7 +3420,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>Inspection</label>
@@ -3394,7 +3452,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="reinspectiondoc"
                                         ref={reinspectiondoc}
                                         onChange={handleChange}
@@ -3407,7 +3465,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectionDate"
                                             value={accidentData.reinspectionnoDate}
                                             onChange={handleChange}
@@ -3418,7 +3476,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectionassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.reinspectionassignedTo}
@@ -3428,7 +3486,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="reinspectionremark"
                                             placeholder="Remark"
                                             value={accidentData.reinspectionremark}
@@ -3439,10 +3497,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className='form-row'>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>finalBill:</label>
@@ -3472,7 +3529,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="finalBilldoc"
                                         ref={finalBilldoc}
                                         onChange={handleChange}
@@ -3485,7 +3542,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBillDate"
                                             value={accidentData.finalBillnoDate}
                                             onChange={handleChange}
@@ -3496,7 +3553,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBillassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.finalBillassignedTo}
@@ -3506,7 +3563,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="finalBillremark"
                                             placeholder="Remark"
                                             value={accidentData.finalBillremark}
@@ -3517,7 +3574,13 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                </div>
+
+                <div className='form-row'>
+
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField">
                                 <label>Balance:</label>
@@ -3547,7 +3610,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="paymentBalancedoc"
                                         ref={paymentBalancedoc}
                                         onChange={handleChange}
@@ -3560,7 +3623,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalanceDate"
                                             value={accidentData.paymentBalancenoDate}
                                             onChange={handleChange}
@@ -3571,7 +3634,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalanceassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.paymentBalanceassignedTo}
@@ -3581,7 +3644,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="paymentBalanceremark"
                                             placeholder="Remark"
                                             value={accidentData.paymentBalanceremark}
@@ -3592,7 +3655,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField inputField">
                                 <label>settelMent:</label>
@@ -3622,7 +3687,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="settelMentdoc"
                                         ref={settelMentdoc}
                                         onChange={handleChange}
@@ -3635,7 +3700,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentDate"
                                             value={accidentData.settelMentnoDate}
                                             onChange={handleChange}
@@ -3646,7 +3711,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.settelMentassignedTo}
@@ -3656,7 +3721,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="settelMentremark"
                                             placeholder="Remark"
                                             value={accidentData.settelMentremark}
@@ -3667,7 +3732,9 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'>
+                    <div className='form-field task-details'
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
                         <div>
                             <div className="form-row radio-group inputField inputField">
                                 <label>claimForm:</label>
@@ -3697,7 +3764,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <div className="form-field">
                                     <input
                                         type="file"
-                                        className='inputField'
+                                        className='inputField form-control'
                                         name="claimFormdoc"
                                         ref={claimFormdoc}
                                         onChange={handleChange}
@@ -3710,7 +3777,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="date"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormDate"
                                             value={accidentData.claimFormnoDate}
                                             onChange={handleChange}
@@ -3721,7 +3788,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormassignedTo"
                                             placeholder="Assigned to whom"
                                             value={accidentData.claimFormassignedTo}
@@ -3731,7 +3798,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                     <div className="form-field">
                                         <input
                                             type="text"
-                                            className='inputField'
+                                            className='inputField form-control'
                                             name="claimFormremark"
                                             placeholder="Remark"
                                             value={accidentData.claimFormremark}
@@ -3742,7 +3809,6 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                             )}
                         </div>
                     </div>
-                    <div className='form-field'></div>
                 </div>
 
                 {alertInfo.show && (

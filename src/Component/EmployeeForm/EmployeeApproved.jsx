@@ -16,6 +16,22 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import EmployeeFormEdit from './EmployeeFormEdit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Alert } from '@mui/material';
+import ActivationModel from '../Visitors/ActivationModel';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+
+
+const formatDate =(isoDateString)=>{
+  const date = new Date(isoDateString);
+const day = String(date.getUTCDate()).padStart(2, '0');
+const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+const year = date.getUTCFullYear();
+return (`${day}-${month}-${year}`);
+}
+
+
 
 const EmployeeApproved = () => {
   const [data, setData] = useState([]);
@@ -31,9 +47,38 @@ const EmployeeApproved = () => {
   const [marginLeft, setMarginLeft] = useState('30px');
   const [paddingLeft, setPaddingLeft] = useState('30px');
   const [width, setWidth] = useState('100%');
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamp: null });
 
   const [showEmployeeMasterEdit, setShowEmployeeMasterEdit] = useState(false)
   const [selectedId, setSelectedId] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+ const [sortDate, setSortDate]=useState("asc");
+
+
+
+  const sortDateFunc = ()=>{
+    setSortDate(sortDate == "asc" ? "desc":"asc");
+    const sortedItems = [...data].sort((a,b)=>{
+      const dateA = new Date(a.DOJ).getTime();
+      const dateB = new Date(b.DOJ).getTime();
+      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
+    });
+    setData(sortedItems)
+  }
+
+  const deactive = async (id, isActivate) => {
+    const response = await axios({
+      method: 'PUT',
+      url: `${backendUrl}/api/changeActivationEmployee/${userId}/${id}/${isActivate}`,
+      headers: {
+        'Authorization': token
+      }
+    });
+    getData();
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+  };
 
 
   useEffect(() => {
@@ -72,6 +117,39 @@ const EmployeeApproved = () => {
     const response = await axios.get(`${backendUrl}/api/getEmployee`);
     console.log("response", response.data.data);
     setData(response.data.data)
+  };
+
+
+  const deleteEmployee = async (id) => {
+    const response = await axios({
+      method: 'DELETE',
+      url: `${backendUrl}/api/deleteEmployee/${userId}/${id}`,
+      headers: {
+        'Authorization': token
+      }
+    });
+    getData();
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+  };
+
+  const handleConfirmDelete = async (employeeCode)=>{
+    await deleteEmployee(employeeCode);
+    setModalOpen(false);
+  }
+  const handleCancel = () => {
+    setModalOpen(false);
+  };
+  const openModal = (item) => {
+    setModalData(item);
+    setModalOpen(true);
+  };
+  const openDeleteModal = (item) => {
+    setDeleteData(item);
+    setModalOpen(true);
+  }
+  const handleConfirm = (employeeCode, isActive) => {
+    deactive(employeeCode, isActive);
+    setModalOpen(false);
   };
 
   const handleSearchChange = (e) => {
@@ -113,6 +191,7 @@ const EmployeeApproved = () => {
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -197,36 +276,69 @@ const EmployeeApproved = () => {
         </div>
       </div>
 
+      {alertInfo.show && (
+          <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+            {alertInfo.message}
+          </Alert>
+        )}
+         <p
+          style={{
+            display:'flex',
+            justifyContent:"right",
+            marginRight:"5px",
+            cursor: "pointer"
+          }}
+          onClick={sortDateFunc}
+        >
+{sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+        </p>
       <div className='responsive-table' style={{ width }}>
         <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
             <tr>
               <th>Sr. No.</th>
+              <th> Date Of Joining </th>
               <th>Employee Name</th>
               <th>Email</th>
-              <th>Gender</th>
+              <th>Department</th>
               <th>Added By</th>
               <th>View</th>
-
+              <th>Active/Deactive</th>
+              <th>Delete Employee</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                <td colSpan="9" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
               </tr>
             ) : (
               currentItems.map((item, index) => (
                 <tr key={item.id}>
                   <td>{indexOfFirstItem + index + 1}</td>
-                  <td>{item.name}</td>
-                  <td>{item.employeeEmailId}</td>
-                  <td>{item.gender}</td>
-                  <td>{item.addedBy}</td>
+                  <td>{formatDate(item.DOJ)}</td>
+                  <td>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</td>
                   <td>
-                    {/* {item.companyEmpId} */}
+                      <a href={`mailto: ${item.employeeEmailId}`} style={{ color: "blue", textDecoration: "none" }}>
+                        {item.employeeEmailId}
+                      </a>
+                    </td>
+                  <td style={{ color: "green" }}>{item.department? item.department.charAt(0).toUpperCase() + item.department.slice(1):"_"}</td>
+                    <td>{item.addedBy != null ? item.addedBy.charAt(0).toUpperCase() + item.addedBy.slice(1) : ""}</td>
+
+                  <td>
                     <button onClick={() => view(item.companyEmpId)} className='view-button'>View</button>
                   </td>
+                  <td>
+                      <button
+                        onClick={() => openModal(item)}
+                        style={{background:'rgb(190 98 98)', color:"white"}}
+                        className="deactivate-button"
+                      >
+                        {item.isActive === "true" ? "Deactivate" : "Activate"}
+                      </button>
+                    </td>
+                  <td style={{cursor:'pointer'}} onClick={() => openDeleteModal(item)}><DeleteOutlineIcon /></td>
                 </tr>
               ))
             )}
@@ -248,6 +360,22 @@ const EmployeeApproved = () => {
           <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
         </ButtonGroup>
       </div>
+
+      {modalData && (
+          <ActivationModel
+            isOpen={isModalOpen}
+            onConfirm={() => handleConfirm(modalData.companyEmpId, modalData.isActive === "true" ? "false" : "true")}
+            onCancel={handleCancel}
+          />
+        )}
+
+      {deleteData && (
+            <ActivationModel
+              isOpen={isModalOpen}
+              onConfirm={() => handleConfirmDelete(deleteData.companyEmpId)}
+              onCancel={handleCancel}
+            />
+          )}
     </div>)}
 
     {showEmployeeMasterEdit && (

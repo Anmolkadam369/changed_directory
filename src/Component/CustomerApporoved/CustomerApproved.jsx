@@ -16,22 +16,27 @@ import { Alert } from '@mui/material';
 import ActivationModel from '../Visitors/ActivationModel';
 
 import { Helmet } from 'react-helmet-async';
-import CustomerMasterEdit from "../CustomerMaster/CustomerMasterEdit"
+import CustomerMasterEdit from "../CustomerMaster/CustomerMasterEdit";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
 const CustomerApproved = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [isGenerated, setIsGenerated] = useState(false);
   const [generatedExcel, setGeneratedExcel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info',timestamp: null });
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [modalData, setModalData] = useState(null);
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamp: null });
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
+
 
   const [showCustomerMasterEdit, setShowCustomerMasterEdit] = useState(false)
   const [selectedId, setSelectedId] = useState(null);
@@ -55,6 +60,19 @@ const CustomerApproved = () => {
     }
   }, [alertInfo]);
 
+
+  const deleteCustomer = async (id) => {
+    const response = await axios({
+      method: 'DELETE',
+      url: `${backendUrl}/api/deleteCustomer/${userId}/${id}`,
+      headers: {
+        'Authorization': token
+      }
+    });
+    getData();
+    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+  };
+
   const generateFile = async () => {
     try {
       setIsLoading(true);
@@ -73,6 +91,13 @@ const CustomerApproved = () => {
     setModalOpen(false);
   };
 
+  const handleConfirmDelete = async (CustomerCode) => {
+    await deleteCustomer(CustomerCode);
+    setModalOpen(false);
+  }
+
+
+
   const handleCancel = () => {
     setModalOpen(false);
   };
@@ -82,9 +107,25 @@ const CustomerApproved = () => {
     setModalOpen(true);
   };
 
+  const openDeleteModal = (item) => {
+    setDeleteData(item);
+    setModalOpen(true);
+  }
+
+  const [sortDate, setSortDate]=useState("asc");
+  const sortDateFunc = ()=>{
+    setSortDate(sortDate == "asc" ? "desc":"asc");
+    const sortedItems = [...data].sort((a,b)=>{
+      const dateA = new Date(a.systemDate).getTime();
+      const dateB = new Date(b.systemDate).getTime();
+      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
+    });
+    setData(sortedItems)
+  }
+
   const deactive = async (id, isActivate) => {
     const response = await axios({
-      method: 'POST',
+      method: 'PUT',
       url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
       headers: {
         'Authorization': token
@@ -110,7 +151,7 @@ const CustomerApproved = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handleSetItemPerPage = (e) => {
@@ -233,6 +274,18 @@ const CustomerApproved = () => {
             {alertInfo.message}
           </Alert>
         )}
+        
+        <p
+          style={{
+            display: 'flex',
+            justifyContent: "right",
+            marginRight: "5px",
+            cursor: "pointer"
+          }}
+          onClick={sortDateFunc}
+        >
+          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+        </p>
         <div className='responsive-table'>
           <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
             <thead>
@@ -241,10 +294,12 @@ const CustomerApproved = () => {
                 <th>Customer Name</th>
                 <th>Email</th>
                 <th>Customer Type</th>
-                <th>Edited By</th>
+                {/* <th>Edited By</th> */}
                 <th>View</th>
                 <th>Performance</th>
                 <th>Active/Deactive</th>
+                <th>Delete Customer</th>
+
               </tr>
             </thead>
             <tbody>
@@ -256,24 +311,30 @@ const CustomerApproved = () => {
                 currentItems.map((item, index) => (
                   <tr key={item.id}>
                     <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{item.CustomerName}</td>
-                    <td>{item.email}</td>
-                    <td>{item.CustomerType}</td>
-                    <td>{item.EditedBy}</td>
+                    <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
+                    <td>
+                      <a href={`mailto: ${item.email}`} style={{ color: "blue", textDecoration: "none" }}>
+                        {item.email}
+                      </a>
+                    </td>
+                    <td style={{ color: "green" }}>{item.CustomerType.charAt(0).toUpperCase() + item.CustomerType.slice(1)}</td>
+                    {/* <td>{item.EditedBy != null ? item.EditedBy.charAt(0).toUpperCase() + item.EditedBy.slice(1) : ""}</td> */}
                     <td>
                       <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
                     </td>
                     <td>
-                      <button className='view-button'>View</button>
+                      <button style={{ background: '#e6e679' }} className='view-button'>View</button>
                     </td>
                     <td>
                       <button
                         onClick={() => openModal(item)}
+                        style={{ background: 'rgb(190 98 98)', color: "white" }}
                         className="deactivate-button"
                       >
                         {item.isActive === "true" ? "Deactivate" : "Activate"}
                       </button>
                     </td>
+                    <td style={{ cursor: 'pointer' }} onClick={() => openDeleteModal(item)}><DeleteOutlineIcon /></td>
                   </tr>
                 ))
               )}
@@ -281,7 +342,7 @@ const CustomerApproved = () => {
           </table>
         </div>
         <div className='pagination'>
-          <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+          <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
             <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
             {pageNumbers.map((pageNumber) => (
               <Button
@@ -299,6 +360,14 @@ const CustomerApproved = () => {
           <ActivationModel
             isOpen={isModalOpen}
             onConfirm={() => handleConfirm(modalData.CustomerCode, modalData.isActive === "true" ? "false" : "true")}
+            onCancel={handleCancel}
+          />
+        )}
+
+        {deleteData && (
+          <ActivationModel
+            isOpen={isModalOpen}
+            onConfirm={() => handleConfirmDelete(deleteData.CustomerCode)}
             onCancel={handleCancel}
           />
         )}

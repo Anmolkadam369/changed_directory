@@ -14,6 +14,8 @@ import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import ImageUpload from "../ImageUpload/ImageUpload"
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
 const ViewVehicleInfo = () => {
   const [data, setData] = useState([]);
@@ -39,7 +41,17 @@ const ViewVehicleInfo = () => {
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedUploadId, setSelectedUploadId] = useState(null);
+  const [sortDate, setSortDate]=useState("asc");
 
+  const sortDateFunc = ()=>{
+    setSortDate(sortDate == "asc" ? "desc":"asc");
+    const sortedItems = [...data].sort((a,b)=>{
+      const dateA = new Date(a.systemDate).getTime();
+      const dateB = new Date(b.systemDate).getTime();
+      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
+    });
+    setData(sortedItems)
+  }
 
   useEffect(() => {
     if (showMainContent) getData();
@@ -275,15 +287,26 @@ const ViewVehicleInfo = () => {
             </label>
           </div>
         </div>
+        <p
+          style={{
+            display: 'flex',
+            justifyContent: "right",
+            marginRight: "5px",
+            cursor: "pointer"
+          }}
+          onClick={sortDateFunc}
+        >
+          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+        </p>
         <div className='responsive-table' style={{ width }}>
-          <table style={{ width: '100%', marginLeft: '20px', borderCollapse: 'collapse', marginBottom: '90px' }}>
+          <table style={{ width: '100%', marginLeft: '0px', borderCollapse: 'collapse', marginBottom: '90px' }}>
             <thead>
               <tr>
                 <th>Sr. No.</th>
+                <th>Customer Name</th>
                 <th>Reason</th>
-                <th>intimated Date</th>
+                <th>Vehicle No</th>
                 <th>District</th>
-                <th>Insured By</th>
                 <th>Accident No</th>
                 <th>View</th>
                 <th>Upload Photos</th>
@@ -292,23 +315,23 @@ const ViewVehicleInfo = () => {
             <tbody>
               {currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
+                  <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
                 </tr>
               ) : (
 
                 currentItems.map((item, index) => (
                   <tr key={item.id}>
                     <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{item.reason || "---"}</td>
-                    <td>{item.intimatedDate || "---"}</td>
-                    <td>{item.district || "---"}</td>
-                    <td>{item.insuredBy || "---"}</td>
-                    <td>{item.accidentFileNo || "---"}</td>
+                  <td>{item.customerName.charAt(0).toUpperCase() + item.customerName.slice(1)}</td>
+                  <td>{item.reason.charAt(0).toUpperCase() + item.reason.slice(1)  || "___"}</td>
+                    <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{item.vehicleNo || "___"}</td>
+                    <td style={{ color: "green" }}>{item.district || "___"}</td>
+                    <td style={{ color: "blue" }}>{item.accidentFileNo || "___"}</td>
                     <td>
                       <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
                     </td>
                     <td>
-                      <button onClick={() => upload(item.accidentFileNo)} className="view-button">Upload</button>
+                      <button onClick={() => upload(item.accidentFileNo)} className="view-button"  style={{ background: 'rgb(190 98 98)' , color:'white'}}>Upload</button>
                     </td>
                   </tr>
                 ))

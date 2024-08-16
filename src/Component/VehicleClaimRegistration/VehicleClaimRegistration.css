@@ -73,7 +73,7 @@
   border: 1px solid #ccc;
   background-color: #100f0f08;
   border-radius: 4px;
-  font-size: medium;
+  /* font-size: medium; */
 }
 
 .button {
@@ -207,4 +207,17 @@ input[type="radio"] {
 .modal-content img {
   max-height: 70vh;
   max-width: 95vw;
+}
+
+
+.task-details {
+  background: #e8ebff54;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.task-details:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }

@@ -19,8 +19,14 @@ import { Button } from '@mui/material';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+
 
 const Visitors = () => {
+
+
+
 
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
@@ -43,6 +49,15 @@ const Visitors = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+
+    const formatDate = (isoDateString) => {
+        const date = new Date(isoDateString);
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getUTCFullYear();
+        return (`${day}-${month}-${year}`);
+    }
+
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -165,11 +180,25 @@ const Visitors = () => {
     const getVisitor = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/visitors`);
+            console.log("modi",response.data.data)
             setdata(response.data.data)
         } catch (error) {
             console.error("Error during form submission:", error);
             const errorMessage = 'An error occurred';
         }
+    }
+
+    const [sortDate, setSortDate] = useState("asc");
+
+    const sortDateFunc = () => {
+        setSortDate(sortDate == "asc" ? "desc" : "asc");
+        const sortedItems = [...data].sort((a, b) => {
+            const dateA = new Date(a.systemDate).getTime();
+            const dateB = new Date(b.systemDate).getTime();
+            return sortDate == "asc" ? dateA - dateB : dateB - dateA;
+        });
+        console.log("sodI", sortedItems);
+        setdata(sortedItems)
     }
 
     const handleChange = (e) => {
@@ -385,7 +414,7 @@ const Visitors = () => {
             }
             else {
                 // document.querySelector('.visitor-container').classList.remove('mobile');
-                setWidth('100%');
+                setWidth('95%');
             }
         };
 
@@ -413,7 +442,7 @@ const Visitors = () => {
                 <div>
                     <form onSubmit={handleSubmit} className="Customer-master-form" style={{ width }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
-                            <h3 style={{ fontSize: "25px", fontWeight: "bold" }}>Visitors Form</h3>
+                            <h3 style={{ fontSize: "25px", fontWeight: "bold" }}>Add Visitor</h3>
                             <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
                                 <CloseIcon />
                             </button>
@@ -433,9 +462,13 @@ const Visitors = () => {
 
                             <label className="form-field">
                                 Entry Time:
-                                <div className="form-control download-link">
-                                    {formData.VisitorsEntry}
-                                </div>
+                                <input
+                                    type="text"
+                                    name="VisitorsEntry"
+                                    value={formData.VisitorsEntry}
+                                    className="form-control"
+                                    readOnly
+                                />
                             </label>
 
 
@@ -552,7 +585,7 @@ const Visitors = () => {
                             Add New Visitor
                         </button>
                     </div>
-                    <div className="form-search" style={{marginTop:"20px"}}>
+                    <div className="form-search" style={{ marginTop: "20px" }}>
                         <label className='label-class'>
                             Search by Customer Name
                             <input
@@ -577,13 +610,26 @@ const Visitors = () => {
                     </div>
 
 
+
                     <div>
                         <div style={{ marginTop: "50px" }}>
+                            <p
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: "right",
+                                    marginRight: "5px",
+                                    cursor: "pointer"
+                                }}
+                                onClick={sortDateFunc}
+                            >
+                                {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
+                            </p>
                             <div className='responsive-table' style={{ width }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                     <thead>
                                         <tr>
                                             <th>Sr. No</th>
+                                            <th>Date</th>
                                             <th>First Name</th>
                                             <th>Last Name</th>
                                             <th>Phone No</th>
@@ -600,6 +646,7 @@ const Visitors = () => {
                                             currentItems.map((person, index) => (
                                                 <tr key={person} >
                                                     <td>{indexOfFirstItem + index + 1}</td>
+                                                    <td>{formatDate(person.systemDate)}</td>
                                                     <td>{person.VisitorFirstName || '---'}</td>
                                                     <td>{person.VisitorLastName || '---'}</td>
                                                     <td>{person.phoneNo || '---'}</td>
@@ -616,7 +663,7 @@ const Visitors = () => {
                                 </table>
                             </div>
                             <div className="pagination">
-                                <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+                                <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
                                     <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
                                         <ArrowBack />
                                     </Button>
@@ -664,27 +711,14 @@ const Visitors = () => {
 
                             <label className="form-field">
                                 Entry Time:
-                                {!isClicked && (
-                                    <div
-                                        className="form-control generate-button"
-                                        // onClick={entryTimeEdit}
-                                        disabled
-                                    >
-                                        {isLoading ? (
-                                            <ClipLoader color="#b3b3b3" loading={isLoading} />
-                                        ) : (
-                                            <div>{editedFormData.VisitorsEntry}</div>
-
-                                        )}
-                                    </div>
-                                )}
-                                {isClicked && (
-                                    <div className="form-control download-link">
-                                        {editedFormData.VisitorsEntry}
-                                    </div>
-                                )}
+                                <input
+                                    type="text"
+                                    name="VisitorsEntry"
+                                    value={editedFormData.VisitorsEntry}
+                                    className="form-control"
+                                    readOnly
+                                />
                             </label>
-
 
                             <label className="form-field">
                                 Visitors First Name:
@@ -711,7 +745,9 @@ const Visitors = () => {
                                     required
                                 />
                             </label>
+                        </div>
 
+                        <div className="form-row">
                             <label className="form-field">
                                 Address  :
                                 <textarea
@@ -763,8 +799,26 @@ const Visitors = () => {
                                     className="form-control"
                                     placeholder='Reason' />
                             </label>
+                        </div>
 
-                            <label className="form-field">
+                        <div className="form-row">
+                            <label className='form-field'>
+                            Out Time :
+                                <input
+                                    type="text"
+                                    name="VisitorOut"
+                                    onClick={outTimeEdit}
+                                    value={editedFormData.VisitorOut}
+                                    className="form-control"
+                                    readOnly
+                                />
+                            </label>
+                            <label className='form-field'></label>
+                            <label className='form-field'></label>
+                            <label className='form-field'></label>
+                        </div>
+
+                            {/* <label className="form-field">
                                 Out Time :
                                 {!isOutClicked && (
                                     <div
@@ -787,9 +841,8 @@ const Visitors = () => {
                                         {editedFormData.VisitorOut}
                                     </div>
                                 )}
-                            </label>
+                            </label> */}
 
-                        </div>
 
                         {alertInfo.show && (
                             <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
