@@ -136,7 +136,7 @@ const AssignedVehicleAdvocate = () => {
           </Helmet>
 
           <div style={{ position: 'relative' }}>
-            {GetDataOfUser.isActive === "false" && showPopup && (
+            {GetDataOfUser?.isActive === "false" && showPopup && (
               <div style={{
                 position: 'fixed',
                 top: '10px',
@@ -301,7 +301,7 @@ const AssignedVehicleAdvocate = () => {
                       <td>{item.AccidentVehicleCode}</td>
                       <td>{item.assignedBy}</td>
 
-                      {typeof item.details[0].firstResponseOn !== "string" ? (
+                      {typeof item.details[0]?.firstResponseOn !== "string" ? (
                         <td style={{ textAlign: 'center', color: 'red' }}>Not Requested</td>
                       ) : (
                         <td style={{ textAlign: 'center', color: (item.details.length > 0 && item.details[0].acceptedByAdmin) ? 'darkblue' : 'darkorange' }}>

@@ -41,6 +41,8 @@ const VendorResponse = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [marginLeft, setMarginLeft] = useState('30px');
+  const [paddingLeft, setPaddingLeft] = useState('30px');
 
   const [sortDate, setSortDate]=useState("asc");
 
@@ -118,10 +120,12 @@ const VendorResponse = () => {
   };
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 380) {
-        setWidth('90%');
+      if (window.innerWidth <= 630) {
+        setMarginLeft('0px');
+        setPaddingLeft('20px')
       } else {
-        setWidth('100%');
+        setMarginLeft('30px');    
+        setPaddingLeft("40px")
       }
     };
 
@@ -156,7 +160,7 @@ const VendorResponse = () => {
   return (
     <div>
       {!showActualVendorResponse && (
-        <div className="Customer-master-form" style={{ paddingLeft: '10px', paddingRight: "10px", paddingTop: "40px", paddingBottom: "40px" }}>
+        <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
           <Helmet>
             <title>Vendor Response Overview - Claimpro</title>
             <meta name="description" content="View and manage vendor responses for vehicle accidents. Keep track of customer names, vehicle numbers, and actions taken." />
@@ -192,7 +196,6 @@ const VendorResponse = () => {
             <p
           style={{
             display: 'flex',
-            justifyContent: "right",
             marginRight: "5px",
             cursor: "pointer"
           }}
@@ -200,14 +203,14 @@ const VendorResponse = () => {
         >
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p>
-            <div className="responsive-table" style={{ width }}>
+            <div className="responsive-table" >
               <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                 <thead>
                   <tr>
                     <th>Sr. No</th>
                     <th>Assigned On</th>
-                    <th>Customer Name</th>
                     <th>Selected Services</th>
+                    <th>Customer Name</th>
                     <th>Vehicle Number</th>
                     <th>Choosen Plan</th>
                     {/* <th>Last Response</th> */}
@@ -225,8 +228,8 @@ const VendorResponse = () => {
                       <tr key={vehicle.AccidentVehicleCode}>
                         <td>{indexOfFirstItem + index + 1}</td>
                         <td>{vehicle.systemDate ? formatDate(vehicle.systemDate) : "___"}</td>
-                        <td>{vehicle.CustomerName.charAt(0).toUpperCase() + vehicle.CustomerName.slice(1)}</td>
                         <td style={{ color: 'blue' }}>{vehicle.selectedOptions}</td>
+                        <td>{vehicle.CustomerName.charAt(0).toUpperCase() + vehicle.CustomerName.slice(1)}</td>
                         <td  style={{ color: 'Green' }}>{vehicle.vehicleNumber || '---'}</td>
                         <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{vehicle.choosenPlan}</td>
                         {/* <td>{vehicle.lastDate != null ? vehicle.lastDate : ""}</td> */}

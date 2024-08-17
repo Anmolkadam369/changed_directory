@@ -195,5 +195,54 @@ form .signup-link a:hover{
 
 .slide-in {
   animation: slideIn 1s ease-out forwards;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */
+}
+
+
+
+.selecting-container {
+  display: flex;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+.selecting-box {
+  padding: 10px;
+  font-size: 13px; /* Font size */
+  font-weight: bold; /* Font weight */
+  text-align: center; /* Center the text */
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; /* Animation */
+  width: 100px; /* Fixed width for consistent sizing */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.selecting-box:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+}
+
+.vendorselected {
+  border: 1px solid blue;
+  color: black;
+  background-color: white;
+}
+
+.customerselected {
+  border: 1px solid rgb(231, 201, 12);
+  color: black;
+  background-color: white;
+}
+
+.vendorselected.selected {
+  background-color: rgb(247, 240, 12);
+  color: black;
+  font-weight: bold;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.customerselected.selected {
+  background-color: rgb(247, 240, 12);
+  color: black;
+  font-weight: bold;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
 }

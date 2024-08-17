@@ -27,6 +27,7 @@ import UserDashboard from '../Dashboard/UserDashboard';
 import userImg from "../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
+import Login from '../Login/LoginPage';
 
 
 
@@ -35,7 +36,7 @@ const User = () => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [showUserId, setShowUserId] = useState(false);
     const [getData, setGetData] = useState({});
-    console.log("GETDATA", getData)
+    console.log("GETDATA123456", getData)
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [userImage, setUserImage] = useState(true);
     const dropdownRef = useRef(null);
@@ -131,7 +132,7 @@ const User = () => {
         console.log("HEY", id)
         const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
         console.log("daa", response.data)
-        console.log("data", response.data.data[0]);
+        console.log("data1234567890", response.data.data[0]);
         setGetData(response.data.data[0])
     }
 
@@ -169,7 +170,12 @@ const User = () => {
     }
 
     return (
-        <div className="admin-page">
+        <div>
+        {getData == undefined ?(
+            <div>
+                <Login/>
+            </div>
+        ):(<div className="admin-page">
             <Helmet>
                 <title>User Page - Claimpro</title>
                 <meta name="description" content="User Page" />
@@ -363,6 +369,7 @@ const User = () => {
 
             </main>
 
+        </div>)}
         </div>
     );
 };

@@ -535,7 +535,7 @@ const DummyDashboard = () => {
     const [selected, setSelected] = useState(null);
       const handleClick = (func, index) => {
     setSelected(index);
-    func();  // Call the respective function
+    func();  
   };
 
     return (

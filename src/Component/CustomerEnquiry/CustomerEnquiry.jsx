@@ -197,17 +197,18 @@ const CustomerEnquiry = () => {
         }
     }
 
+    const [marginLeft, setMarginLeft] = useState('20px');
+    const [paddingLeft, setPaddingLeft] = useState('20px');
+
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 480) {
-                // document.querySelector('.visitor-container').classList.add('mobile');
-            }
             if (window.innerWidth <= 630) {
-                setWidth('65%');
+                setMarginLeft('0px');
+                setPaddingLeft('10px')
             }
-            else {
-                // document.querySelector('.visitor-container').classList.remove('mobile');
-                setWidth('100%');
+            else{
+                setMarginLeft('20px');
+                setPaddingLeft('20px')
             }
         };
 
@@ -794,7 +795,7 @@ const CustomerEnquiry = () => {
             )}
 
             {showTable && (
-                <div className="Customer-master-form" style={{ padding: '20px', margin: '20px' }}>
+                <div className="Customer-master-form" style={{marginLeft, paddingLeft }}>
                     <div className="visitor-container">
                         <h3 className="bigtitle">Customer Enquiry</h3>
                         <button onClick={add} className="add-button">
@@ -826,7 +827,7 @@ const CustomerEnquiry = () => {
                     </div>
                     <div>
                         <div style={{ marginTop: "50px" }}>
-                            <div className='responsive-table' style={{ width }}>
+                            <div className='responsive-table' >
                                 <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                     <thead>
                                         <tr>

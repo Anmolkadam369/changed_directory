@@ -19,39 +19,56 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
 import logintime_truck from '../../Assets/logintime_truck.webp'
 import { Helmet } from 'react-helmet-async';
-import {useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { login } from './authSlice';
 
 const Login = () => {
   const navigate = useNavigate();
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [token, setToken] = useRecoilState(tokenState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showPassword, setShowPassword] = useState(false);
   const [fontSize, setFontSize] = useState("35px");
+  const [emailError, setEmailError] = useState('');
+  let [passwordError, setPasswordError] = useState('');
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const savedUsername = localStorage.getItem("rememberedUsername");
+    const savedEmail = localStorage.getItem("rememberedEmail");
     const savedPassword = localStorage.getItem("rememberedPassword");
     const rememberMeFlag = localStorage.getItem("rememberMe") === "true";
 
-    if (savedUsername && rememberMeFlag) {
-      setUsername(savedUsername);
+    if (savedEmail && rememberMeFlag) {
+      setEmail(savedEmail);
       setPassword(savedPassword);
       setRememberMe(rememberMeFlag);
     }
   }, []);
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);    
+    if (!emailPattern.test(email)) {
+        setEmailError('Invalid email address');
+    } else {
+        setEmailError('');
+    }
   };
 
   const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
     setPassword(e.target.value);
+    if (!passwordRegex.test(newPassword)) {
+      setPasswordError('Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol.');
+  } else {
+      setPasswordError('');
+  }
   };
 
   const handleRememberMeChange = (e) => {
@@ -64,67 +81,97 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      console.log("userName", username, typeof(username))
-      console.log("password", password)
+  const [selected, setSelected] = useState(0);
+  const handleClick = (index) => {
+    setSelected(index);
+  };
 
-      if(username == "" || password == ""){
-        setAlertInfo({ show: true, message:"Please Fill Form Properly", severity: 'error' });
-        return; 
-      }
-      try {
-        const response = await axios.post(`${backendUrl}/api/login`, {
-          username,
-          password,
-        });
-        if (response.status === 200) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("userId", response.data.userId);
-          setToken(response.data.token);
-          setUserId(response.data.userId);
-          dispatch(login({ userId, token }));
-          console.log("I AM TOKEN MASTER222222")
+  const getStyles = () => {
+    switch (selected) {
+        case 1:
+            return {
+              backgroundColor:"#ffffffa1",
+                border: '1px solid red',
+                boxShadow: 'rgba(0, 0, 0, 0.2) -10px -20px 14px 4px'
+            };
+        case 2:
+            return {
+              backgroundColor:"#ffffffa1",
+                border: '1px solid blue',
+                boxShadow: 'rgba(0, 0, 0, 0.8) 13px -20px 20px'
+            };
+        default:
+            return {
+              backgroundColor:"#ffffffa1",
+                border: '1px solid green', // No border color
+                boxShadow: 'inset rgba(0, 0, 0, 0.8) -3px -1px 20px 0px' // No box-shadow
+            };
+    }
+};
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("userName", email, typeof (email))
+    console.log("password", password)
+
+    if (email == "" || password == "") {
+      setAlertInfo({ show: true, message: "Please Fill Form Properly", severity: 'error' });
+      return;
+    }
+    
+    try {
+      const response = await axios.post(`${backendUrl}/api/login`, {
+        email,
+        password,
+        selected,
+      });
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.userId);
+        setToken(response.data.token);
+        setUserId(response.data.userId);
+        dispatch(login({ userId, token }));
+        console.log("I AM TOKEN MASTER222222")
 
 
-          if (rememberMe) {
-            localStorage.setItem("rememberedUsername", username);
-            localStorage.setItem("rememberedPassword", password);
-            localStorage.setItem("rememberMe", true);
-          } else {
-            localStorage.removeItem("rememberedaUsername");
-            localStorage.removeItem("rememberedPassword");
-            localStorage.removeItem("rememberMe");
-          }
-
-          setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
-
-          if (response.data.data.username === "admin" ||response.data.data.department === "IT" || response.data.data.department === "Management") {
-            navigate("../Admin");
-          } else if (response.data.data.vendorType === "advocate") {
-            navigate("../advocateDashboard");
-          } else if (response.data.data.vendorType === "mechanic") {
-            navigate("../MechanicDashboard");
-          } else if (response.data.data.vendorType === "crane") {
-            navigate("../CraneDashboard");
-          }else if (response.data.data.vendorType === "workshop") {
-            navigate("../WorkshopDashboard");
-          }else if (response.data.data.department === "Administration") {
-            navigate("../Administration");
-          }else if (response.data.data.department === "Sales") {
-            navigate("../Salesteam");
-          }
-          // if (response.data.data.type === "advocate") navigate("../advocateDashboard");
-          else {
-            navigate('../userDashboard');
-          }
-
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+          localStorage.setItem("rememberedPassword", password);
+          localStorage.setItem("rememberMe", true);
+        } else {
+          localStorage.removeItem("rememberedaEmail");
+          localStorage.removeItem("rememberedPassword");
+          localStorage.removeItem("rememberMe");
         }
-      } catch (error) {
-        const errorMessage = error.response?.data?.message || 'An error occurred';
-        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+
+        setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
+
+        console.log("RESPONSEONDSTS", response.data.data)
+        if (response.data.data.email === "admin@gmail.com" || response.data.data.department === "IT" || response.data.data.department === "Management") {
+          navigate("../Admin");
+        } else if (response.data.data.vendorType === "advocate") {
+          navigate("../advocateDashboard");
+        } else if (response.data.data.vendorType === "mechanic") {
+          navigate("../MechanicDashboard");
+        } else if (response.data.data.vendorType === "crane") {
+          navigate("../CraneDashboard");
+        } else if (response.data.data.vendorType === "workshop") {
+          navigate("../WorkshopDashboard");
+        } else if (response.data.data.department === "Administration") {
+          navigate("../Administration");
+        } else if (response.data.data.department === "Sales") {
+          navigate("../Salesteam"); 
+        }
+        else {
+          navigate('../userDashboard');
+        }
+
       }
-    };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -153,7 +200,7 @@ const Login = () => {
   };
 
   const loginContainerStyle = {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.8)',
     paddingTop: '50px',
     paddingBottom: '50px',
     paddingLeft: "20px",
@@ -240,21 +287,42 @@ const Login = () => {
           <img src={claimproassist} style={imgStyle} alt="company logo" />
           <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
         </div>
-        <form onSubmit={handleSubmit}>
+        
+        <div className="selecting-container">
+          <div
+            className={`selecting-box vendorselected ${selected === 1 ? 'selected' : ''}`}
+            onClick={() => handleClick(1)}
+          >
+            Vendor
+          </div>
+          <div
+            className={`selecting-box customerselected ${selected === 2 ? 'selected' : ''}`}
+            onClick={() => handleClick(2)}
+          >
+            Customer
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} style={{
+          marginTop: "20px",
+          padding: "5px",
+          borderRadius: "10px",
+          ...getStyles()
+        }}>
           <div style={formGroupStyle}>
-            <label htmlFor="username" style={labelStyle}>Username</label>
+            <label htmlFor="email" style={labelStyle}>Email : </label>
             <input
               style={inputStyle}
               type="text"
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               required
-              onChange={handleUsernameChange}
-              value={username}
+              onChange={handleEmailChange}
+              value={email}
             />
+            {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
           </div>
           <div style={formGroupStyle}>
-            <label htmlFor="password" style={labelStyle}>Password</label>
+            <label htmlFor="password" style={labelStyle}>Password :</label>
             <Input
               style={inputStyle}
               id="password"
@@ -272,6 +340,8 @@ const Login = () => {
                 </InputAdornment>
               }
             />
+            {passwordError && <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>}
+
           </div>
           <div style={remembermecontainer}>
             <Checkbox

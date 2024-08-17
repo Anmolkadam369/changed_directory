@@ -82,7 +82,7 @@ const ViewVehicleInfo = () => {
     const handleResize = () => {
       if (window.innerWidth <= 630) {
 
-        setWidth('55%');
+        setWidth('90%');
       } else {
 
         setWidth('100%');
@@ -206,12 +206,15 @@ const ViewVehicleInfo = () => {
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
+  const [isSixthColumnVisible, setIsSixthColumnVisible] = useState(true);
+
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 630) {
         setMarginLeft('0px');
-        setPaddingLeft('20px')
+        setPaddingLeft('10px')
+        setIsSixthColumnVisible(false);
       } else {
         setMarginLeft('30px');
         setPaddingLeft("40px")
@@ -290,7 +293,6 @@ const ViewVehicleInfo = () => {
         <p
           style={{
             display: 'flex',
-            justifyContent: "right",
             marginRight: "5px",
             cursor: "pointer"
           }}
@@ -298,16 +300,16 @@ const ViewVehicleInfo = () => {
         >
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p>
-        <div className='responsive-table' style={{ width }}>
-          <table style={{ width: '100%', marginLeft: '0px', borderCollapse: 'collapse', marginBottom: '90px' }}>
+        <div className='responsive-table'>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '90px' }}>
             <thead>
               <tr>
                 <th>Sr. No.</th>
                 <th>Customer Name</th>
                 <th>Reason</th>
                 <th>Vehicle No</th>
-                <th>District</th>
                 <th>Accident No</th>
+                {isSixthColumnVisible && <th>District</th>}
                 <th>View</th>
                 <th>Upload Photos</th>
               </tr>
@@ -325,8 +327,8 @@ const ViewVehicleInfo = () => {
                   <td>{item.customerName.charAt(0).toUpperCase() + item.customerName.slice(1)}</td>
                   <td>{item.reason.charAt(0).toUpperCase() + item.reason.slice(1)  || "___"}</td>
                     <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{item.vehicleNo || "___"}</td>
-                    <td style={{ color: "green" }}>{item.district || "___"}</td>
-                    <td style={{ color: "blue" }}>{item.accidentFileNo || "___"}</td>
+                    <td style={{ color: "green" }}>{item.accidentFileNo || "___"}</td>
+                    {isSixthColumnVisible && <td style={{ color: "blue" }}>{item.district || "___"}</td>}
                     <td>
                       <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
                     </td>

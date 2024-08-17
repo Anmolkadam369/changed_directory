@@ -6,7 +6,7 @@ const NotFoundPage = () => {
   const navigate = useNavigate();
 
   const goHome = () => {
-    navigate('/');
+    navigate('/LoginPage');
   };
 
   return (
@@ -18,7 +18,7 @@ const NotFoundPage = () => {
       </Helmet>
       <h1 style={styles.title}>404 - Page Not Found</h1>
       <p style={styles.message}>Sorry, the page you are looking for does not exist.</p>
-      <button style={styles.button} onClick={goHome}>Go to Home</button>
+      <button style={styles.button} onClick={goHome}>Go to Login</button>
     </div>
   );
 };

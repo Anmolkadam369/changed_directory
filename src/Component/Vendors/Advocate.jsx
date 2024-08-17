@@ -29,6 +29,7 @@ import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
 import userImg from "../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import AdvocateDashboard from './AdvocateDashboard';
+import Login from '../Login/LoginPage';
 
 
 const Advocate = () => {
@@ -176,7 +177,14 @@ const Advocate = () => {
 
 
     return (
-        <div className="admin-page">
+
+        <div>
+            {getData?.vendorType !== "advocate" ? (
+                <div>
+                    <Login/>
+                </div>
+            ):( 
+            <div className="admin-page">
             <Helmet>
                 <title>Advocate Page - Claimpro</title>
                 <meta name="description" content="Advocate Page for BVC ClaimPro Assist" />
@@ -291,11 +299,11 @@ const Advocate = () => {
                     <hr />
 
                     <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
-{/* 
+
                     {
                         startingPage &&
                         <AdvocateDashboard getData={getData}/>
-                    } */}
+                    }
 
                     {
                         myAccidentVehicle &&
@@ -306,6 +314,8 @@ const Advocate = () => {
                 </main>
             </div>
 
+        </div>)
+        }
         </div>
     );
 };

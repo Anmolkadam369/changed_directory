@@ -87,6 +87,10 @@ v .Customer-master-form textarea,
 
 /* Responsive adjustments if necessary */
 @media (max-width: 768px) {
+  .Customer-master-form button {
+    padding: 10px 10px;
+
+  }
   .Customer-master-form .form-row {
     flex-direction: column;
   }

@@ -128,11 +128,11 @@ const AccidentVehicle = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 630) {
-        setMarginLeft('10px');
+        setMarginLeft('0px');
         setPaddingLeft('10px');
         setWidth('80%');
       } else if (window.innerWidth <= 380) {
-        setMarginLeft('10px');
+        setMarginLeft('0px');
         setPaddingLeft('5px');
         setWidth('75%');
       } else {
@@ -192,7 +192,6 @@ const AccidentVehicle = () => {
           <p
           style={{
             display: 'flex',
-            justifyContent: "right",
             marginRight: "5px",
             cursor: "pointer"
           }}
@@ -201,15 +200,15 @@ const AccidentVehicle = () => {
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p>
         </div>
-        <div className="responsive-table" style={{ width }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="responsive-table">
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
             <thead>
               <tr>
                 <th>Sr. No.</th>
                 <th>Date</th>
+                <th>Accident File Number</th>
                 <th>Customer Name</th>
                 <th>Vehicle Number</th>
-                <th>Accident File Number</th>
                 <th>Selected Services</th>
                 <th>Choosen Plan</th>
                 <th>View</th>
@@ -218,16 +217,16 @@ const AccidentVehicle = () => {
             <tbody>
               {currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>All Vehicles are assigned To Vendors...</td>
+                  <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>All Vehicles are assigned To Vendors...</td>
                 </tr>
               ) : (
                 currentItems.map((item, index) => (
                   <tr key={item.id}>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>{formatDate(item.systemDate)}</td>
+                    <td style={{color : "blue"}}>{item.accidentFileNo}</td>
                     <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
                     <td>{item.vehicleNo}</td>
-                    <td style={{color : "blue"}}>{item.accidentFileNo}</td>
                     <td style={{color : "green"}}>{item.selectedOptions}</td>
                     <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{item.choosenPlan}</td>
                     <td>

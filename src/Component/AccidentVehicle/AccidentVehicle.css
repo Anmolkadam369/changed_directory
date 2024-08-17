@@ -22,7 +22,7 @@ margin-bottom: 20px;
   /* .responsive-table th:nth-child(4), .responsive-table td:nth-child(4) {
     display: none;
   } */
-  /* .responsive-table th:nth-child(5), .responsive-table td:nth-child(5) {
+  /* .responsive-table th:nth-child(6), .responsive-table td:nth-child(6) {
     display: none;
   } */
 }
@@ -45,7 +45,7 @@ margin-bottom: 20px;
 @media (max-width: 600px) {
 
   .responsive-table {
-    width: 80%; /* Ensures that the container fits the width of its parent */
+    width: 95%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -56,10 +56,10 @@ margin-bottom: 20px;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 530px) {
 
   .responsive-table {
-    width: 60%; /* Ensures that the container fits the width of its parent */
+    width: 90%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -67,6 +67,118 @@ margin-bottom: 20px;
   
   .vendor-response-responsive-table th, .vendor-response-responsive-table td {
     padding: 8px; /* Reduces padding on smaller screens */
+  }
+}
+
+@media (max-width: 500px) {
+
+  .responsive-table {
+    width: 85%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 6px; /* Reduces padding on smaller screens */
+  }
+}
+
+
+@media (max-width: 450px) {
+
+  .responsive-table {
+    width: 80%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 6px; /* Reduces padding on smaller screens */
+  }
+}
+
+@media (max-width: 425px) {
+
+  .responsive-table {
+    width: 77%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 6px; /* Reduces padding on smaller screens */
+  }
+}
+
+@media (max-width: 400px) {
+
+  .responsive-table {
+    width: 73%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 5px; /* Reduces padding on smaller screens */
+  }
+}
+@media (max-width: 385px) {
+
+  .responsive-table {
+    width: 70%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 5px; /* Reduces padding on smaller screens */
+  }
+}
+
+@media (max-width: 375px) {
+
+  .responsive-table {
+    width: 68%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 5px; /* Reduces padding on smaller screens */
+  }
+}
+@media (max-width: 360px) {
+
+  .responsive-table {
+    width: 62%; /* Ensures that the container fits the width of its parent */
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 5px; /* Reduces padding on smaller screens */
+  }
+}
+
+@media (max-width: 338px) {
+
+  .responsive-table {
+    width: 58%; /* Ensures that the container fits the width of its parent */
+    font-size: 9px;
+  }
+  .vendor-response-responsive-table table {
+    width: auto; /* Ensures the table can expand beyond the screen width */
+  }
+  
+  .vendor-response-responsive-table th, .vendor-response-responsive-table td {
+    padding: 5px; /* Reduces padding on smaller screens */
   }
 }
 
@@ -571,7 +683,7 @@ input[type="number"] {
 
   .label-class {
     flex: 1 1 100%;
-    width: 300px;
+    width: 200px;
     padding-left: 10px;
   }
 
@@ -607,7 +719,7 @@ input[type="number"] {
   .visitor-container {
     flex-direction: column;
     align-items: flex-start;
-    width: 310px;
+    /* width: 310px; */
   }
 
   .visitor-container .add-button {

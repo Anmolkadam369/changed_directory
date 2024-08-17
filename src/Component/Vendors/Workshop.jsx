@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Advocate.css';
 import axios from 'axios';
 import { useNavigate, Outlet } from 'react-router-dom';
@@ -30,6 +30,7 @@ import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
 import userImg from "../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import WorkshopDashboard from './WorkshopDashboard';
+import Login from '../Login/LoginPage';
 
 
 const Workshop = () => {
@@ -171,135 +172,144 @@ const Workshop = () => {
     }
 
     return (
-        <div className="admin-page">
-            <Helmet>
-                <title>Workshop Information - Claimpro</title>
-                <meta name="description" content="Workshop Inteface." />
-                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-                <link rel='canonical' href={`https://claimpro.in/WorkshopDashboard`} />
-            </Helmet>
-            {isSidebarOpen ? (
-                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
-                    {window.innerWidth < 768 && (
-                        <div className="close-btn" onClick={toggleSidebar}>×</div>
-                    )}
-                    <ul>
-                        <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
 
-                        <li onClick={() => {
-                            setShowCustomerOptions(!showCustomerOptions)
-                            setMyAccidentVehicle(false);
-                            setStartingPage(true);
-                        }}>
-                            <SpaceDashboardIcon className="icon" />
-                            Dashboard</li>
-                        <ul>
-                            <li onClick={(e) => {
-                                setShowReportsOptions(!showReportsOptions)
-                                setStartingPage(false);
-                                setMyAccidentVehicle(true);
-                                e.stopPropagation();
-                            }}>
-                            <SummarizeOutlinedIcon className="icon" />
-                                Reports
-                                {showReportsOptions && (
-                                    <ul className='submenu' >
+        <div>
 
-                                        <li onClick={() => {
-                                            setStartingPage(false);
-                                            setMyAccidentVehicle(true)
-                                        }}>
-                                            Cases Assigned
-                                        </li>
-                                    </ul>
-                                )}
-                            </li>
-                        </ul>
-
-                    </ul>
-                </aside>) : (
+            {getData?.vendorType !== "workshop" ? (
                 <div>
-                    {window.innerWidth < 768 && (
-                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
-                    )}
+                    <Login />
                 </div>
-            )}
-            <div className="admin-page">
-                <main className="content" style={{ marginLeft: '0px' }}>
-                <div className='first-container'>
-                    <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
-                    {getData.vendorName}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px',marginBottom: '0px' }} />
-                    <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
-                            {userImage ? (
-                                <img
-                                    src={userImg}
-                                    alt="User"
-                                    style={{ width: '30px', height: '30px', borderRadius: '50%' }}
-                                />
-                            ) : (
-                                <FaUserCircle size={30} />
+            )
+                : (<div className="admin-page">
+                    <Helmet>
+                        <title>Workshop Information - Claimpro</title>
+                        <meta name="description" content="Workshop Inteface." />
+                        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                        <link rel='canonical' href={`https://claimpro.in/WorkshopDashboard`} />
+                    </Helmet>
+                    {isSidebarOpen ? (
+                        <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                            {window.innerWidth < 768 && (
+                                <div className="close-btn" onClick={toggleSidebar}>×</div>
+                            )}
+                            <ul>
+                                <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
+
+                                <li onClick={() => {
+                                    setShowCustomerOptions(!showCustomerOptions)
+                                    setMyAccidentVehicle(false);
+                                    setStartingPage(true);
+                                }}>
+                                    <SpaceDashboardIcon className="icon" />
+                                    Dashboard</li>
+                                <ul>
+                                    <li onClick={(e) => {
+                                        setShowReportsOptions(!showReportsOptions)
+                                        setStartingPage(false);
+                                        setMyAccidentVehicle(true);
+                                        e.stopPropagation();
+                                    }}>
+                                        <SummarizeOutlinedIcon className="icon" />
+                                        Reports
+                                        {showReportsOptions && (
+                                            <ul className='submenu' >
+
+                                                <li onClick={() => {
+                                                    setStartingPage(false);
+                                                    setMyAccidentVehicle(true)
+                                                }}>
+                                                    Cases Assigned
+                                                </li>
+                                            </ul>
+                                        )}
+                                    </li>
+                                </ul>
+
+                            </ul>
+                        </aside>) : (
+                        <div>
+                            {window.innerWidth < 768 && (
+                                <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
                             )}
                         </div>
-                        {showUserId && (
-                            <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
-                                <div style={{
-                                    marginBottom: '10px',
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    color: '#333',
-                                    marginTop: "15px"
-                                }}>
-                                    User Information
+                    )}
+                    <div className="admin-page">
+                        <main className="content" style={{ marginLeft: '0px' }}>
+                            <div className='first-container'>
+                                <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                                    {getData.vendorName}
                                 </div>
-                                <span style={{
-                                    fontSize: '14px',
-                                    color: '#555',
-                                    marginBottom: '10px'
-                                }}>
-                                    User Name: {getData.vendorName} <br />
-                                    User Id: {getData.id}
-                                </span>
-                                <button
-                                    onClick={handleSignOutClick}
-                                    style={{
-                                        padding: '10px 20px',
-                                        fontSize: '14px',
-                                        color: '#fff',
-                                        backgroundColor: '#007bff',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        outline: 'none',
-                                        width: '100%',
-                                        textAlign: 'center',
-                                        marginTop: "15px",
-                                    }}>
-                                    Sign Out
-                                </button>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
+                                    <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+                                        {userImage ? (
+                                            <img
+                                                src={userImg}
+                                                alt="User"
+                                                style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                                            />
+                                        ) : (
+                                            <FaUserCircle size={30} />
+                                        )}
+                                    </div>
+                                    {showUserId && (
+                                        <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
+                                            <div style={{
+                                                marginBottom: '10px',
+                                                fontSize: '16px',
+                                                fontWeight: 'bold',
+                                                color: '#333',
+                                                marginTop: "15px"
+                                            }}>
+                                                User Information
+                                            </div>
+                                            <span style={{
+                                                fontSize: '14px',
+                                                color: '#555',
+                                                marginBottom: '10px'
+                                            }}>
+                                                User Name: {getData.vendorName} <br />
+                                                User Id: {getData.id}
+                                            </span>
+                                            <button
+                                                onClick={handleSignOutClick}
+                                                style={{
+                                                    padding: '10px 20px',
+                                                    fontSize: '14px',
+                                                    color: '#fff',
+                                                    backgroundColor: '#007bff',
+                                                    border: 'none',
+                                                    borderRadius: '5px',
+                                                    cursor: 'pointer',
+                                                    outline: 'none',
+                                                    width: '100%',
+                                                    textAlign: 'center',
+                                                    marginTop: "15px",
+                                                }}>
+                                                Sign Out
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        )}
+                            <hr />
+                            <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
+
+                            {
+                                startingPage &&
+                                <WorkshopDashboard />
+                            }
+
+                            {
+                                myAccidentVehicle &&
+                                <AssignedVehicleWorkshop />
+                            }
+
+
+                        </main>
                     </div>
-                </div>
-                <hr />
-                <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
 
-                    {
-                        startingPage &&
-                        <WorkshopDashboard/>
-                    }
-
-                    {
-                        myAccidentVehicle &&
-                        <AssignedVehicleWorkshop />
-                    }
-
-
-                </main>
-            </div>
-
+                </div>)}
         </div>
     );
 };

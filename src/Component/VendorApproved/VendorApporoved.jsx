@@ -301,7 +301,6 @@ const VendorApproved = () => {
           <p
           style={{
             display: 'flex',
-            justifyContent: "right",
             marginRight: "5px",
             cursor: "pointer"
           }}
@@ -310,18 +309,18 @@ const VendorApproved = () => {
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p>
           <div className='responsive-table'>
-            <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
               <thead>
                 <tr>
                   <th>Sr. No.</th>
                   <th>Vendors Name</th>
-                  <th>Vendor Email</th>
+                  <th>Email</th>
                   <th>Vendor Type</th>
                   {/* <th>Edited By</th> */}
                   <th>View</th>
                   <th>Performance</th>
                   <th>Action</th>
-                  <th>Delete Vendor</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>

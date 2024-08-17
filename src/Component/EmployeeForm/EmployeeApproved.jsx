@@ -197,12 +197,11 @@ const EmployeeApproved = () => {
     const handleResize = () => {
       if (window.innerWidth <= 630) {
         setMarginLeft('0px');
-        setPaddingLeft('20px');
-        setWidth('95%');
+        setPaddingLeft('20px')
       } else {
-        setMarginLeft('30px');
-        setPaddingLeft("40px");
-        setWidth('100%');
+
+        setMarginLeft('30px');    
+        setPaddingLeft("40px")
       }
     };
     window.addEventListener('resize', handleResize);
@@ -284,27 +283,26 @@ const EmployeeApproved = () => {
          <p
           style={{
             display:'flex',
-            justifyContent:"right",
-            marginRight:"5px",
+            marginRight:"35px",
             cursor: "pointer"
           }}
           onClick={sortDateFunc}
         >
 {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p>
-      <div className='responsive-table' style={{ width }}>
-        <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+      <div className='responsive-table'>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
           <thead>
             <tr>
               <th>Sr. No.</th>
               <th> Date Of Joining </th>
-              <th>Employee Name</th>
-              <th>Email</th>
               <th>Department</th>
-              <th>Added By</th>
+              <th>Employee Name</th>
+              {/* <th>Email</th> */}
+              {/* <th>Added By</th> */}
               <th>View</th>
-              <th>Active/Deactive</th>
-              <th>Delete Employee</th>
+              <th>Deactive</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -317,14 +315,14 @@ const EmployeeApproved = () => {
                 <tr key={item.id}>
                   <td>{indexOfFirstItem + index + 1}</td>
                   <td>{formatDate(item.DOJ)}</td>
+                  <td style={{ color: "green" }}>{item.department? item.department.charAt(0).toUpperCase() + item.department.slice(1):"_"}</td>
                   <td>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</td>
-                  <td>
+                  {/* <td>
                       <a href={`mailto: ${item.employeeEmailId}`} style={{ color: "blue", textDecoration: "none" }}>
                         {item.employeeEmailId}
                       </a>
-                    </td>
-                  <td style={{ color: "green" }}>{item.department? item.department.charAt(0).toUpperCase() + item.department.slice(1):"_"}</td>
-                    <td>{item.addedBy != null ? item.addedBy.charAt(0).toUpperCase() + item.addedBy.slice(1) : ""}</td>
+                    </td> */}
+                    {/* <td>{item.addedBy != null ? item.addedBy.charAt(0).toUpperCase() + item.addedBy.slice(1) : ""}</td> */}
 
                   <td>
                     <button onClick={() => view(item.companyEmpId)} className='view-button'>View</button>

@@ -403,18 +403,18 @@ const Visitors = () => {
         setShowTable(true)
         getVisitor()
     }
+    const [marginLeft, setMarginLeft] = useState('20px');
+    const [paddingLeft, setPaddingLeft] = useState('20px');
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 480) {
-                // document.querySelector('.visitor-container').classList.add('mobile');
-            }
             if (window.innerWidth <= 630) {
-                setWidth('60%');
+                setMarginLeft('0px');
+                setPaddingLeft('10px')
             }
-            else {
-                // document.querySelector('.visitor-container').classList.remove('mobile');
-                setWidth('95%');
+            else{
+                setMarginLeft('20px');
+                setPaddingLeft('20px')
             }
         };
 
@@ -440,7 +440,7 @@ const Visitors = () => {
             </Helmet>
             {addVisitor && (
                 <div>
-                    <form onSubmit={handleSubmit} className="Customer-master-form" style={{ width }}>
+                    <form onSubmit={handleSubmit} className="Customer-master-form" >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "20px" }}>
                             <h3 style={{ fontSize: "25px", fontWeight: "bold" }}>Add Visitor</h3>
                             <button onClick={closeAddVisitor} style={{ padding: '0px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'black', background: "white" }}>
@@ -578,7 +578,7 @@ const Visitors = () => {
             )}
 
             {showTable && (
-                <div className="Customer-master-form" style={{ padding: '20px', margin: '20px' }}>
+                <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
                     <div className="visitor-container">
                         <h3 className="bigtitle">Visitor's Data</h3>
                         <button onClick={add} className="add-button">
@@ -624,7 +624,7 @@ const Visitors = () => {
                             >
                                 {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
                             </p>
-                            <div className='responsive-table' style={{ width }}>
+                            <div className='responsive-table'>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                     <thead>
                                         <tr>

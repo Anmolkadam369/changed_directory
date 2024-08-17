@@ -197,7 +197,7 @@ const CustomerApproved = () => {
         setMarginLeft('0px');
         setPaddingLeft('20px')
       } else {
-        setMarginLeft('30px');
+        setMarginLeft('30px');    
         setPaddingLeft("40px")
       }
     };
@@ -278,7 +278,6 @@ const CustomerApproved = () => {
         <p
           style={{
             display: 'flex',
-            justifyContent: "right",
             marginRight: "5px",
             cursor: "pointer"
           }}
@@ -287,7 +286,7 @@ const CustomerApproved = () => {
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p>
         <div className='responsive-table'>
-          <table style={{ width: '100%', marginLeft: "10px", borderCollapse: 'collapse', marginBottom: "90px" }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
             <thead>
               <tr>
                 <th>Sr. No.</th>
@@ -297,8 +296,8 @@ const CustomerApproved = () => {
                 {/* <th>Edited By</th> */}
                 <th>View</th>
                 <th>Performance</th>
-                <th>Active/Deactive</th>
-                <th>Delete Customer</th>
+                <th>Deactive</th>
+                <th>Delete</th>
 
               </tr>
             </thead>
