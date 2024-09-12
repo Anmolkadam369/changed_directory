@@ -12,7 +12,7 @@ import '../CustomerMaster/CustomerMaster.css'
 import SeeUpdatedPics from '../SeeUpdatedPics/SeeUpdatedPics'
 import EditAccidentVehicle from '../EditAccidentVehicle/EditAccidentVehicle';
 import CustomerViewDetails from '../CustomerMaster/CustomerViewDetails';
-
+import DataTable from "react-data-table-component";
 
 
 
@@ -20,8 +20,8 @@ const AccidentVehicleUser = () => {
 
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [showUpdatedPics, setShowUpdatedPics] = useState(false)
   const [showFullDetails, setShowFullDetails] = useState(false)
   const [showTable, setShowTable] = useState(true)
@@ -112,6 +112,7 @@ const AccidentVehicleUser = () => {
       console.log("response123421", response.data.data);
       console.log("data2", response.data.data2);
       setData(response.data.data)
+      setCurrentItems(response.data.data);
     }
   };
   const [showDropdown, setShowDropdown] = useState(false);
@@ -146,6 +147,92 @@ const AccidentVehicleUser = () => {
     };
   }, []);
 
+  const [currentItems, setCurrentItems] = useState(data);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
+  }
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.AccidentVehicleCode === row.AccidentVehicleCode),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
+    }
+  ];
+  const columns = [
+    {
+      name: "Sr. No.",
+      selector: (row, index) => index + 1,
+      sortable: true,
+      width: "80px",
+    },
+    {
+      name: "Accident File No",
+      selector: (row) => row.accidentFileNo,
+      sortable: true,
+    },
+    {
+      name: "Model",
+      selector: (row) => row.model,
+      sortable: true,
+    },
+    {
+      name: "Chassis Number",
+      selector: (row) => row.chassisNo,
+      sortable: true,
+    },
+    {
+      name: "View Details",
+      cell: (row) => (
+        <button
+          onClick={() => viewDetails(row.AccidentVehicleCode)}
+          className="view-button"
+        >
+          View
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "See Updated Pics",
+      cell: (row) => (
+        <button
+          onClick={() => view(row.accidentFileNo)}
+          className="view-button"
+        >
+          Updated Pics
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
+  const tableCustomStyles = {
+    rows: {
+      style: {
+        minHeight: '72px', // override the row height
+      },
+    },
+    headCells: {
+      style: {
+        fontSize: '14px',
+        fontWeight: 'bold',
+      },
+    },
+    cells: {
+      style: {
+        fontSize: '13px',
+      },
+    },
+  };
+
+
 
   return (
     <div>
@@ -156,7 +243,7 @@ const AccidentVehicleUser = () => {
           <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
           <link rel='canonical' href={`https://claimpro.in/AccidentVehicleUser`} />
         </Helmet>
-        <form className='Customer-master-form' style={{ width, marginLeft: "0px", padding:"20px" }}>
+        <form className='Customer-master-form' style={{ width, marginLeft: "0px", padding: "20px" }}>
           <div className="header-container">
             <h3 className="bigtitle">My Vehicles Cases</h3>
           </div>
@@ -270,7 +357,7 @@ const AccidentVehicleUser = () => {
 
           </div>
         </form>
-        <div className='responsive-table'  style={{ width }}>
+        {/* <div className='responsive-table' style={{ width }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
             <thead>
               <tr>
@@ -306,7 +393,22 @@ const AccidentVehicleUser = () => {
               )}
             </tbody>
           </table>
-        </div>
+        </div> */}
+
+<div className="container d-flex justify-content-center" style={{ marginTop: "10px" }}>
+      <div className="container my-5">
+        <DataTable
+          columns={columns}
+          data={currentItems}
+          fixedHeader
+          pagination
+          selectableRows
+          conditionalRowStyles={conditionalRowStyles}
+          onSelectedRowsChange={handleRowsSelected}
+          customStyles={tableCustomStyles}
+        />
+      </div>
+    </div>
 
       </div>)}
 

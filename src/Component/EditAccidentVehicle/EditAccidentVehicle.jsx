@@ -491,7 +491,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openChassisModal}
                                 />
                                 <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
@@ -519,7 +519,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
@@ -547,7 +547,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
@@ -575,7 +575,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
@@ -603,7 +603,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
@@ -631,7 +631,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
@@ -659,7 +659,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
@@ -687,7 +687,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
@@ -715,7 +715,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
@@ -743,7 +743,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -771,7 +771,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
@@ -799,7 +799,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">

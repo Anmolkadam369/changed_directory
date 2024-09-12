@@ -20,8 +20,34 @@ import CustomerMasterEdit from "../CustomerMaster/CustomerMasterEdit";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import DataTable from "react-data-table-component";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import CustomerPerformance from './CustomerPerformance';
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const parseDate = (dateString) => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
+
 
 const CustomerApproved = () => {
+
+  const [modalOpenHere, setModalOpenHere] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalSeverity, setModalSeverity] = useState('');
+
+
+
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -39,10 +65,29 @@ const CustomerApproved = () => {
 
 
   const [showCustomerMasterEdit, setShowCustomerMasterEdit] = useState(false)
+  const [showCustomerPerformance, setShowCustomerPerformance] = useState(false)
+  const [showCustomerTable, setShowCustomerTable] = useState(true)
+
+
   const [selectedId, setSelectedId] = useState(null);
 
   const [marginLeft, setMarginLeft] = useState('30px');
   const [paddingLeft, setPaddingLeft] = useState('30px');
+
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
+  }
+
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.CustomerCode === row.CustomerCode),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
+    }
+  ];
 
   useEffect(() => {
     if (!showCustomerMasterEdit) getData();
@@ -59,6 +104,36 @@ const CustomerApproved = () => {
       return () => clearTimeout(timer);
     }
   }, [alertInfo]);
+
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight: "bold",
+        fontSize: '13px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style: {
+        default: 'red'
+      }
+    },
+    rows: {
+      style: {
+        backgroundColor: '#f2f2f2',
+      }
+    }
+  }
+
 
 
   const deleteCustomer = async (id) => {
@@ -112,109 +187,216 @@ const CustomerApproved = () => {
     setModalOpen(true);
   }
 
-  const [sortDate, setSortDate]=useState("asc");
-  const sortDateFunc = ()=>{
-    setSortDate(sortDate == "asc" ? "desc":"asc");
-    const sortedItems = [...data].sort((a,b)=>{
+  const [sortDate, setSortDate] = useState("asc");
+  const sortDateFunc = () => {
+    setSortDate(sortDate == "asc" ? "desc" : "asc");
+    const sortedItems = [...data].sort((a, b) => {
       const dateA = new Date(a.systemDate).getTime();
       const dateB = new Date(b.systemDate).getTime();
-      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
+      return sortDate == "asc" ? dateA - dateB : dateB - dateA;
     });
     setData(sortedItems)
   }
 
   const deactive = async (id, isActivate) => {
-    const response = await axios({
-      method: 'PUT',
-      url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
-      headers: {
-        'Authorization': token
+    try {
+      const response = await axios({
+        method: 'PUT',
+        url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
+        headers: {
+          'Authorization': token
+        }
+      });
+      getData();
+      setTimeout(() => {
+        setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+      }, 2000)
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      setModalSeverity('error');
+      if (errorMessage === "jwt expired") {
+        setModalMessage("Your session has expired. Redirecting to login...");
+        setModalOpenHere(true);
+      } else {
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
       }
-    });
-    getData();
-    setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+    }
+
   };
 
   const view = (id) => {
     setSelectedId(id);
+    setShowCustomerTable(false)
     setShowCustomerMasterEdit(true)
-    // navigate("../CustomerMasterEdit", { state: { id } });
+    setShowCustomerPerformance(false)
   };
+
+  const viewPerformance = (id) => {
+    setSelectedId(id);
+    setShowCustomerTable(false)
+    setShowCustomerMasterEdit(false);
+    setShowCustomerPerformance(true);
+  }
   const handleUpdate = () => {
+    setShowCustomerTable(true)
     setShowCustomerMasterEdit(false); // Hide VendorMasterEdit
+    setShowCustomerPerformance(false);
   };
 
   const getData = async () => {
     const response = await axios.get(`${backendUrl}/api/getCustomer`);
-    setData(response.data.data);
+    const fetchedData = response.data.data;
+
+    const formattedData = fetchedData.map(item => ({
+      ...item,
+      systemDate: formatDate(item.systemDate),
+    }));
+    setData(formattedData);
+    setCurrentItems(formattedData);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
+  const [currentItems, setCurrentItems] = useState(data);
+  const columns = [
+    {
+      name: "CustomerID",
+      selector: row => row.id, // Raw data for sorting
+      cell: row => <span>{String(row.id).padStart(4, '0')}</span>, // Display formatted value
+      sortable: true,
+      sortFunction: (rowA, rowB) => rowA.id - rowB.id // Custom sort function
+    },
+    {
+      name: "Date",
+      selector: (row) => row.systemDate,
+      sortable: true,
+      sortFunction: (rowA, rowB) => {
+        const dateA = parseDate(rowA.systemDate);
+        const dateB = parseDate(rowB.systemDate);
+        return dateA - dateB; // Ascending order
+      },
+    },
+    {
+      name: "Customer Name", selector: (row) => row.CustomerName, sortable: true, width: "150px",
+      cell: (row) => (
+        <span style={{ color: 'brown' }}>{row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1)}</span>
+      )
+    },
+    {
+      name: "Email Of Customer", selector: (row) => row.email, sortable: true, width: "200px",
+      cell: (row) => (
+        <a href={`mailto:${row.email}`} style={{ color: "blue", textDecoration: "none" }}>
+          {row.email}
+        </a>
+      ),
+    },
+    {
+      name: "Types Of Customer", selector: (row) => row.CustomerType, sortable: true,
+      cell: (row) => (
+        <span style={{ color: 'black', padding: '5px', borderRadius: '4px', border:"2px solid grey" }}>
+          {row.CustomerType ? row.CustomerType.charAt(0).toUpperCase() + row.CustomerType.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    {
+      name: "Modify",
+      selector: (row) => row.EditedBy || '',
+      sortable: true,
+      cell: (row) => {
+        const EditedBy = row.EditedBy ? String(row.EditedBy) : "";
+        return (
+          <span style={{ color: "green" }}>
+            {EditedBy.charAt(0).toUpperCase() + EditedBy.slice(1).toLowerCase()}
+          </span>
+        );
+      },
+    },
+
+    { name: "District", selector: (row) => row.district, sortable: true },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <button
+          onClick={() => view(row.CustomerCode)}
+          className='view-button'
+        >
+          View
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Performance",
+      cell: (row) => (
+        <button
+          onClick={() => viewPerformance(row.CustomerCode)}
+          className='view-button'
+          style={{ background: '#e6e679' }}
+        >
+          Performance
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Activate / Deactivate",
+      cell: (row) => (
+        <button
+          onClick={() => openModal(row)}
+          className='view-button'
+          style={{ background: 'rgb(190 98 98)', color: "white" }}
+        >
+          {row.isActive === "true" ? "Deactivate" : "Activate"}
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Delete Customer",
+      cell: (row) => (
+        <span
+          onClick={() => openDeleteModal(row)}
+          style={{ cursor: 'pointer' }}
+        >
+          <DeleteOutlineIcon />
+        </span>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+
+    const newRows = data.filter((row) => {
+      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
+      const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchValue);
+      const emailValue = (row.email ?? '').toLowerCase().includes(searchValue);
+      const CustomerTypeValue = (row.CustomerType ?? '').toLowerCase().includes(searchValue);
+      const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchValue);
+      const districtValue = (row.district ?? '').toLowerCase().includes(searchValue);
+
+      return dateValue || customerNameValue || emailValue || CustomerTypeValue || editedByValue || districtValue;
+    });
+
+    setCurrentItems(newRows);
   };
 
-  const handleSetItemPerPage = (e) => {
-    setItemsPerPage(e.target.value);
+  const handleLoginAgain = () => {
+    window.location.href = '/';
   };
 
-  const filteredData = data.filter(item =>
-    item.CustomerName && item.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  const startPage = Math.max(1, currentPage - 1);
-  const endPage = Math.min(totalPages, currentPage + 1);
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
-        setMarginLeft('0px');
-        setPaddingLeft('20px')
-      } else {
-        setMarginLeft('30px');    
-        setPaddingLeft("40px")
-      }
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Initial check
-    handleResize();
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   return (
     <div>
-      {!showCustomerMasterEdit && (<div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+      {showCustomerTable && (<div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
         <Helmet>
           <title>Customer Table - Claimpro</title>
           <meta name="description" content="Customer Table BVC claimPro Assist." />
@@ -225,25 +407,15 @@ const CustomerApproved = () => {
           <h3 className="bigtitle">Customer View / Edit</h3>
           <div className="form-search">
             <label className='label-class'>
-              Search by Customer Name
+              Search by
               <input
                 type="text"
-                placeholder="Search by Customer Name"
-                value={searchQuery}
-                onChange={handleSearchChange}
+                placeholder="Search by "
+                onChange={handleSearch}
                 required
               />
             </label>
-            <label className='label-class'>
-              Number Of Items On Page
-              <input
-                type="number"
-                placeholder="Items Show on Page"
-                value={itemsPerPage}
-                onChange={handleSetItemPerPage}
-                required
-              />
-            </label>
+
             <label className="label-class" style={{ marginTop: "20px" }}>
               {!isGenerated && (
                 <div
@@ -274,92 +446,72 @@ const CustomerApproved = () => {
             {alertInfo.message}
           </Alert>
         )}
-        
-        <p
-          style={{
-            display: 'flex',
-            marginRight: "5px",
-            cursor: "pointer"
-          }}
-          onClick={sortDateFunc}
-        >
-          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-        </p>
-        <div className='responsive-table'>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-            <thead>
-              <tr>
-                <th>Sr. No.</th>
-                <th>Customer Name</th>
-                <th>Email</th>
-                <th>Customer Type</th>
-                {/* <th>Edited By</th> */}
-                <th>View</th>
-                <th>Performance</th>
-                <th>Deactive</th>
-                <th>Delete</th>
 
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.length === 0 ? (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
-                </tr>
-              ) : (
-                currentItems.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
-                    <td>
-                      <a href={`mailto: ${item.email}`} style={{ color: "blue", textDecoration: "none" }}>
-                        {item.email}
-                      </a>
-                    </td>
-                    <td style={{ color: "green" }}>{item.CustomerType.charAt(0).toUpperCase() + item.CustomerType.slice(1)}</td>
-                    {/* <td>{item.EditedBy != null ? item.EditedBy.charAt(0).toUpperCase() + item.EditedBy.slice(1) : ""}</td> */}
-                    <td>
-                      <button onClick={() => view(item.CustomerCode)} className='view-button'>View</button>
-                    </td>
-                    <td>
-                      <button style={{ background: '#e6e679' }} className='view-button'>View</button>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => openModal(item)}
-                        style={{ background: 'rgb(190 98 98)', color: "white" }}
-                        className="deactivate-button"
-                      >
-                        {item.isActive === "true" ? "Deactivate" : "Activate"}
-                      </button>
-                    </td>
-                    <td style={{ cursor: 'pointer' }} onClick={() => openDeleteModal(item)}><DeleteOutlineIcon /></td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+        <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+          <div className="container my-5">
+            <DataTable
+              columns={columns}
+              data={currentItems}
+              fixedHeader
+              pagination
+              selectableRows
+              onSelectedRowsChange={handleRowsSelected}
+              conditionalRowStyles={conditionalRowStyles}
+              customStyles={tableCustomStyles}
+            />
+          </div>
         </div>
-        <div className='pagination'>
-          <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
-            <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
-            {pageNumbers.map((pageNumber) => (
-              <Button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                className={currentPage === pageNumber ? 'active' : ''}
-              >
-                {pageNumber}
-              </Button>
-            ))}
-            <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
-          </ButtonGroup>
-        </div>
+
+        <Dialog
+          open={modalOpenHere}
+          sx={{
+            '& .MuiDialog-paper': {
+              borderRadius: '15px',
+              backgroundColor: modalSeverity === 'success' ? '#e0ffe0' : 'white',
+            }
+          }}
+        >
+          <DialogTitle
+            sx={{
+              color: modalSeverity === 'success' ? 'green' : 'red',
+              fontSize: '1.2rem',
+              fontWeight: 'bold',
+            }}
+          >
+            {modalSeverity === 'success' ? 'Success' : 'Session Expired'}
+          </DialogTitle>
+          <DialogContent
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              fontSize: '0.8rem',
+              color: '#333'
+            }}
+          >
+            <p style={{ marginBottom: '20px', textAlign: 'center' }}>{modalMessage}</p>
+            <Button
+              onClick={handleLoginAgain}
+              variant="contained"
+              sx={{
+                backgroundColor: modalSeverity === 'success' ? 'green' : 'grey',
+                color: 'white',
+                fontSize: '0.8rem',
+                '&:hover': { backgroundColor: modalSeverity === 'success' ? 'darkgreen' : 'darkgrey' }
+              }}
+            >
+              Login Again
+            </Button>
+          </DialogContent>
+        </Dialog>
+
+
         {modalData && (
           <ActivationModel
             isOpen={isModalOpen}
             onConfirm={() => handleConfirm(modalData.CustomerCode, modalData.isActive === "true" ? "false" : "true")}
             onCancel={handleCancel}
+
           />
         )}
 
@@ -371,8 +523,13 @@ const CustomerApproved = () => {
           />
         )}
       </div>)}
+
       {showCustomerMasterEdit && (
         <CustomerMasterEdit id={selectedId} onUpdate={handleUpdate} />
+      )}
+
+      {showCustomerPerformance && (
+        <CustomerPerformance customerId={selectedId}  onUpdate={handleUpdate} />
       )}
     </div>
   );

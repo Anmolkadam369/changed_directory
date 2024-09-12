@@ -52,17 +52,17 @@ body, html {
   font-size: 13px;
 }
 
-.admin-page .sidebar .submenu {
-  display: none;  /* Hidden by default, will be shown dynamically */
-  position: absolute;
-  top: 100%;  /* Align right below the Reports menu item */
-  left: 0;
-  background: white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-  width: 160px;  
-  z-index: 1050;
-  /* margin-top: 9px; */
-}
+  .admin-page .sidebar .submenu {
+    display: none;  /* Hidden by default, will be shown dynamically */
+    position: absolute;
+    top: 100%;  /* Align right below the Reports menu item */
+    left: 0;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    width: 160px;  
+    z-index: 1050;
+    /* margin-top: 9px; */
+  }
 
 .admin-page .sidebar li.active > .submenu,
 .admin-page .sidebar li:hover > .submenu {
@@ -328,15 +328,15 @@ body, html {
 }
 
 .icon {
-  font-size: 18px;
+  font-size: 15px;
   color:orange;
   margin-right: 3px;
 }
 
 
 .icon2 {
-  font-size: 18px;
-  color:rgb(12, 13, 14);
+  font-size: 9px;
+  color:rgb(111, 238, 160);
   margin-right: 3px;
 }
 

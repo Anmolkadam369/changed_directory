@@ -98,6 +98,7 @@ v.vendor-master-form {
 
 .green-dropdown .dropdown-menu {
   width: 200px; /* Set width for dropdown menu */
+  text-align: center;
 }
 
 /* Styling for input fields within a label that has 'input-group' class */

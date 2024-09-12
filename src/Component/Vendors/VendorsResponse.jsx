@@ -15,14 +15,24 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import DataTable from "react-data-table-component";
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import TaskIcon from '@mui/icons-material/Task';
 
-const formatDate =(isoDateString)=>{
+const formatDate = (isoDateString) => {
+  if (!isoDateString) return "___"; // Handle null or undefined input
   const date = new Date(isoDateString);
-const day = String(date.getUTCDate()).padStart(2, '0');
-const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
-const year = date.getUTCFullYear();
-return (`${day}-${month}-${year}`);
-}
+  if (isNaN(date.getTime()))
+    return "";
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = date.getUTCFullYear();
+  return `${day}-${month}-${year}`;
+};
+const parseDate = (dateString) => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
 
 const VendorResponse = () => {
   const [data, setData] = useState([]);
@@ -43,53 +53,48 @@ const VendorResponse = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [marginLeft, setMarginLeft] = useState('30px');
   const [paddingLeft, setPaddingLeft] = useState('30px');
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const [sortDate, setSortDate]=useState("asc");
-
-  const sortDateFunc = ()=>{
-    setSortDate(sortDate == "asc" ? "desc":"asc");
-    const sortedItems = [...data].sort((a,b)=>{
-      const dateA = new Date(a.systemDate).getTime();
-      const dateB = new Date(b.systemDate).getTime();
-      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
-    });
-    console.log("sortedItems", sortedItems)
-    setData(sortedItems)
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
   }
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
-  const handleSetItemPerPage = (e) => {
-    setItemsPerPage(e.target.value);
-  };
-  const filteredData = data.filter(item => (item.mechanicData.length != 0) || (item.craneData.length != 0) || (item.advocateData.length != 0) || (item.workshopData.length != 0) &&
-    item.CustomerName && item.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.AccidentVehicleCode === row.AccidentVehicleCode),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
     }
-  };
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  ];
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startPage = Math.max(1, currentPage - 1);
-  const endPage = Math.min(totalPages, currentPage + 1);
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight: "bold",
+        fontSize: '13px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style: {
+        default: 'red'
+      }
+    },
+    rows: {
+      style: {
+        backgroundColor: '#f2f2f2',
+      }
+    }
   }
 
 
@@ -102,9 +107,21 @@ const VendorResponse = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/vendorResponse`);
-      console.log("console data", response.data)
-      setData(response.data.data);
+      const response = await axios ({
+        method : "GET",
+        url : `${backendUrl}/api/vendorResponse/${userId}`,
+        headers: {
+          'Authorization': token
+        }
+      });
+      console.log("console dataMydata", response.data)
+      const fetchedData = response.data.data;
+      const formattedData = fetchedData.map(item => ({
+        ...item,
+        systemDate: item.systemDate ? formatDate(item.systemDate) : "___",
+      }));
+      setData(formattedData);
+      setCurrentItems(formattedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -116,29 +133,10 @@ const VendorResponse = () => {
     setShowActualVendorResponse(true)
   };
   const handleUpdate = () => {
+    getData();
     setShowActualVendorResponse(false); // Hide VendorMasterEdit
   };
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
-        setMarginLeft('0px');
-        setPaddingLeft('20px')
-      } else {
-        setMarginLeft('30px');    
-        setPaddingLeft("40px")
-      }
-    };
 
-    window.addEventListener('resize', handleResize);
-
-    // Initial check
-    handleResize();
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const isAnyPending = (vehicle) => {
     let arr = [];
@@ -147,7 +145,7 @@ const VendorResponse = () => {
     if (vehicle.advocateData.length !== 0) arr.push(vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin)
     if (vehicle.workshopData.length !== 0) arr.push(vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin)
 
-      console.log("arrary", arr)
+    console.log("arrary", arr)
     let count = 0;
     console.log("count123", count)
 
@@ -157,10 +155,130 @@ const VendorResponse = () => {
     return count;
   }
 
+  const [currentItems, setCurrentItems] = useState(data);
+
+  const filteredItems = currentItems.filter(vehicle =>
+    (vehicle.mechanicData && vehicle.mechanicData.length !== 0) ||
+    (vehicle.craneData && vehicle.craneData.length !== 0) ||
+    (vehicle.advocate && vehicle.advocate.length !== 0) ||
+    (vehicle.workshop && vehicle.workshop.length !== 0)
+  );
+
+  const columns = [
+
+    {
+      name: "Assigned On",
+      selector: (row) => row.systemDate,
+      sortable: true, width: "150px",
+      sortFunction: (rowA, rowB) => {
+        const dateA = parseDate(rowA.systemDate);
+        const dateB = parseDate(rowB.systemDate);
+        return dateA - dateB; // Ascending order
+      },
+      cell: (row) => row.systemDate ? formatDate(row.systemDate) : "___",
+    },
+    {
+      name: "Selected Options",
+      selector: (row) => row.selectedOptions,
+      sortable: true, width: "250px",
+      cell: (row) => (
+        <span style={{ color: 'blue' }}>
+          {row.selectedOptions ? row.selectedOptions.charAt(0).toUpperCase() + row.selectedOptions.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    {
+      name: "Customer Name",
+      selector: (row) => row.CustomerName,
+      sortable: true, width: "150px",
+      cell: (row) => row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1),
+    },
+
+    {
+      name: "Vehicle No",
+      selector: (row) => row.vehicleNumber, 
+      sortable: true,
+      cell: (row) => (
+        <span style={{ color: 'green' }}>
+          {row.vehicleNumber || '---'}
+        </span>
+      ),
+    },
+    {
+      name: "Choosen Plan",
+      selector: (row) => row.choosenPlan,
+      sortable: true, width: "150px",
+      cell: (row) => (
+        <span className='badge' style={{ fontSize: "13px", color: "#8e27f1", background: "yellow" }}>
+          {row.choosenPlan.charAt(0).toUpperCase() + row.choosenPlan.slice(1) || '---'}
+        </span>
+      ),
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <button
+          onClick={() => view(row)}
+          className='view-button'
+        >
+          View
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Pending", 
+      width: "100px",
+      sortable: true,
+      sortFunction: (rowA, rowB) => {
+        const noOfCountsA = isAnyPending(rowA);
+        const noOfCountsB = isAnyPending(rowB);
+    
+        if (noOfCountsA > 0 && noOfCountsB === 0) {
+          return -1;
+        } else if (noOfCountsA === 0 && noOfCountsB > 0) {
+          return 1;
+        } else {
+          return 0;
+        }
+      },
+      cell: (row) => {
+        const noOfCounts = isAnyPending(row);
+        return noOfCounts > 0 ? (
+          <span className='popUp'>
+            <PendingActionsIcon style={{ fontSize: '1.0rem', color: "red" }} />
+            <p style={{ fontSize: '0.4rem', color: "red" }}>pending</p>
+          </span>
+        ) : (
+          <span>
+            <TaskIcon style={{ fontSize: '1.4rem', color: "blue" }} />
+            <p style={{ fontSize: '0.6rem', color: "blue" }}>responded</p>
+          </span>
+        );
+      },
+    },
+  ];
+
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+    const newRows = data.filter((row) => {
+      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
+      const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchValue);
+      const vehicleNumberValue = (row.vehicleNumber ?? '').toLowerCase().includes(searchValue);
+      const selectedOptionsValue = (row.selectedOptions ?? '').toLowerCase().includes(searchValue);
+      const choosenPlanValue = (row.choosenPlan ?? '').toLowerCase().includes(searchValue);
+      return dateValue || customerNameValue || vehicleNumberValue || selectedOptionsValue || choosenPlanValue;
+    });
+    setCurrentItems(newRows);
+  };
+
   return (
     <div>
       {!showActualVendorResponse && (
-        <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+        <div className="Customer-master-form" style={{  marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>
             <title>Vendor Response Overview - Claimpro</title>
             <meta name="description" content="View and manage vendor responses for vehicle accidents. Keep track of customer names, vehicle numbers, and actions taken." />
@@ -172,110 +290,31 @@ const VendorResponse = () => {
             <h3 className="bigtitle">Vendor Response Overview</h3>
             <div className="form-search">
               <label className='label-class'>
-                Search by Customer Name
+                Search by
                 <input
                   type="text"
-                  placeholder="Search by Customer Name"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
+                  placeholder="Search by"
+                  onChange={handleSearch}
                   required
                 />
               </label>
-              <label className='label-class'>
-                Number Of Items On Page
-                <input
-                  type="number"
-                  placeholder="Items Show on Page"
-                  value={itemsPerPage}
-                  onChange={handleSetItemPerPage}
-                  required
-                />
-              </label>
+
               <label className='label-class'></label>
             </div>
-            <p
-          style={{
-            display: 'flex',
-            marginRight: "5px",
-            cursor: "pointer"
-          }}
-          onClick={sortDateFunc}
-        >
-          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-        </p>
-            <div className="responsive-table" >
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-                <thead>
-                  <tr>
-                    <th>Sr. No</th>
-                    <th>Assigned On</th>
-                    <th>Selected Services</th>
-                    <th>Customer Name</th>
-                    <th>Vehicle Number</th>
-                    <th>Choosen Plan</th>
-                    {/* <th>Last Response</th> */}
-                    <th>Action</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentItems.length === 0 ? (
-                    <tr>
-                      <td colSpan="4" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from this vendor...</td>
-                    </tr>
-                  ) : (
-                    currentItems.filter(vehicle => (vehicle.mechanicData.length != 0) || (vehicle.craneData.length != 0) || (vehicle.advocate.length != 0) || (vehicle.workshop.length != 0)).map((vehicle, index) => (
-                      <tr key={vehicle.AccidentVehicleCode}>
-                        <td>{indexOfFirstItem + index + 1}</td>
-                        <td>{vehicle.systemDate ? formatDate(vehicle.systemDate) : "___"}</td>
-                        <td style={{ color: 'blue' }}>{vehicle.selectedOptions}</td>
-                        <td>{vehicle.CustomerName.charAt(0).toUpperCase() + vehicle.CustomerName.slice(1)}</td>
-                        <td  style={{ color: 'Green' }}>{vehicle.vehicleNumber || '---'}</td>
-                        <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{vehicle.choosenPlan}</td>
-                        {/* <td>{vehicle.lastDate != null ? vehicle.lastDate : ""}</td> */}
-                        <td>
-                          <div>
-                            <button onClick={() => view(vehicle)} className='view-button'>View</button>
-                          </div>
-                        </td>
-                        <td>
-                          {
-                            <div>
-                              <p style={{ fontSize: "10px", padding: '5px', color: "blue" }}>
-                                {(()=>{
-                                  const noOfCounts = isAnyPending(vehicle);
-                                  return noOfCounts > 0 ? (
-                                    <span className='popUp'>Pending</span>
-                                  ):("")
-                                })()}
-                              </p>
-                            </div>
-                          }
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className="pagination">
-              <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
-                <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                  <ArrowBack />
-                </Button>
-                {pageNumbers.map((pageNumber) => (
-                  <Button
-                    key={pageNumber}
-                    onClick={() => handlePageChange(pageNumber)}
-                    className={currentPage === pageNumber ? 'active' : ''}
-                  >
-                    {pageNumber}
-                  </Button>
-                ))}
-                <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                  <ArrowForward />
-                </Button>
-              </ButtonGroup>
+
+            <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+              <div className="container my-5">
+                <DataTable
+                  columns={columns}
+                  data={filteredItems} // Use the filtered data
+                  fixedHeader
+                  pagination
+                  selectableRows
+                  onSelectedRowsChange={handleRowsSelected}
+                  customStyles={tableCustomStyles}
+                  conditionalRowStyles={conditionalRowStyles}
+                />
+              </div>
             </div>
           </div>
         </div>)}

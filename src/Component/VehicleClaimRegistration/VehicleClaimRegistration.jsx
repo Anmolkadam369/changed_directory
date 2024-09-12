@@ -660,7 +660,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openChassisModal}
                                 />
                                 <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
@@ -688,7 +688,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
@@ -716,7 +716,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
@@ -744,7 +744,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
@@ -772,7 +772,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
@@ -800,7 +800,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
@@ -828,7 +828,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
@@ -856,7 +856,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
@@ -884,7 +884,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
@@ -912,7 +912,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -940,7 +940,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
@@ -968,7 +968,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                                 <img
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
@@ -2171,7 +2171,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
 
                 <div className='form-row'>
 
-                    <div className='form-field task-details' 
+                    <div className='form-field task-details'
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}>
                         <div>
@@ -3821,7 +3821,15 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
 
                 <div style={{ textAlign: 'center' }}>
                     <button type="submit"
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                        style={{
+                            fontSize: "14px",
+                            padding: "5px 20px",
+                            border: "3px solid lightblue",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            backgroundColor: "transparent",
+                            color: "green",
+                        }}
                         disabled={isLoading} // Disable button while loading
                         onClick={handleSubmit}
                     >

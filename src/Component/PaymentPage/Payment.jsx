@@ -43,7 +43,7 @@ function Payment() {
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = `${backendUrl}/api/verify`;
+          const verifyUrl = `${backendUrl}/api/verify/${token}`;
           const { data } = await axios.post(verifyUrl, response);
           console.log("verifyData", data);
         } catch (error) {
@@ -60,7 +60,7 @@ function Payment() {
 
   const handlePayment = async () => {
     try {
-      const orderUrl = `${backendUrl}/api/orders`;
+      const orderUrl = `${backendUrl}/api/orders/${token}`;
       const { data } = await axios.post(orderUrl, {
         amount: book.price
       });

@@ -21,6 +21,12 @@ import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
+import DownloadIcon from '@mui/icons-material/Download';
+import customerInfo from '../../Assets/customerInfo.xlsx';
+import vendorsInfo from '../../Assets/vendorsInfo.xlsx';
+import fleetInfo from '../../Assets/fleetInfo.xlsx';
+import { IconButton } from '@mui/material';
+
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -183,7 +189,8 @@ const VendorMasterForm = () => {
         const location = response.data[0];
         setLatitude(location.lat);
         setLongitude(location.lon);
-        setLocation(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
+        console.log(`ANMOL Latitudehere: ${location.lat}, Longitudehere: ${location.lon}`)
+        setLocation(` Latitude: ${location.lat}, Longitude: ${location.lon}`);
       } catch (error) {
         // setLocation("An error occurred while fetching the coordinates.");
       }
@@ -315,7 +322,7 @@ const VendorMasterForm = () => {
           return `Field '${key}' is required.`;
         }
       }
-      if ((key !== "GSTNo" && key !== "GST" && key !== "contactPersonNum2") && value === '') {
+      if ((key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard"  && key !== "contactPersonNum2") && value === '') {
         return `Field '${key}' is required.`;
       }
     }
@@ -338,7 +345,7 @@ const VendorMasterForm = () => {
     }
 
     const aadhaarRegex = /^\d{12}$/;
-    if (!aadhaarRegex.test(formData.adharNo)) {
+    if (formData.adharNo !== "" && !aadhaarRegex.test(formData.adharNo)) {
       return 'Please enter a valid Aadhaar Number.';
     }
 
@@ -348,7 +355,7 @@ const VendorMasterForm = () => {
     }
 
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    if (!panRegex.test(formData.panNo)) {
+    if (formData.panNo !== "" && !panRegex.test(formData.panNo)) {
       return 'Please enter a valid PAN number (e.g., ABCDE1234F).';
     }
 
@@ -419,12 +426,12 @@ const VendorMasterForm = () => {
       return;
     }
 
-    const innerValidationMessage = validateInnerForm();
-    if (innerValidationMessage) {
-      setAlertInfo({ show: true, message: "Fill form Appropriately.", severity: 'error' });
-      setIsLoading(false);
-      return;
-    }
+    // const innerValidationMessage = validateInnerForm();
+    // if (innerValidationMessage) {
+    //   setAlertInfo({ show: true, message: "Fill form Appropriately.", severity: 'error' });
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     console.log("latitude", latitude, "longitiude", longitude, "location", location)
     if (latitude === "" || longitude === "" || location === "Geolocation is not supported by this browser.") {
@@ -485,7 +492,7 @@ const VendorMasterForm = () => {
       sendData = {};
       setLatitude("");
       setLongitude("");
-      
+
     } catch (error) {
       setIsLoading(false);
       const errorMessage = error.response?.data?.message || 'An error occurred';
@@ -617,6 +624,14 @@ const VendorMasterForm = () => {
                   className="form-control"
                   required />
               </label>
+              <label className="form-field">
+
+                <IconButton href={vendorsInfo} download="vendorsInfo.xlsx" color="primary">
+                  <p style={{ fontSize: "12px" }}>Download Reference Excel File</p>
+                  <DownloadIcon />
+                </IconButton>
+              </label>
+
               <div className={isZoomed ? "overlay" : ""}>
                 <label className="form-field" onClick={toggleZoom}>
                   have a look how structure looks :
@@ -665,7 +680,15 @@ const VendorMasterForm = () => {
 
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
             <button type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              style={{
+                fontSize: "14px",
+                padding: "5px 20px",
+                border: "3px solid lightblue",
+                borderRadius: "4px",
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                color: "green",
+              }}
               disabled={isLoading} // Disable button while loading
             >
               {isLoading ? 'Submitting...' : 'Submit'}
@@ -710,7 +733,6 @@ const VendorMasterForm = () => {
                   placeholder='SYSTEM GENERATED'
                   value={formData.vendorCode}
                   className="form-control"
-
                   readOnly
                 />
               </label>
@@ -729,7 +751,7 @@ const VendorMasterForm = () => {
               </label>
 
               <label className="form-field input-group mb-3">
-                Accident Place - City:
+               Accident Place - City:
                 <select
                   name="district"
                   value={formData.district}
@@ -888,7 +910,7 @@ const VendorMasterForm = () => {
                   value={formData.panNo}
                   onChange={handleChange}
                   className="form-control"
-                  required
+                  // required
                   pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
                   title="Please enter a valid PAN number (e.g., ABCDE1234F)."
                 />
@@ -903,7 +925,8 @@ const VendorMasterForm = () => {
                   className="form-control"
                   ref={panRef}
                   capture="environment"
-                  required />
+                  // required 
+                  />
               </label>
               <label className="form-field">
                 Aadhaar Number:
@@ -914,7 +937,7 @@ const VendorMasterForm = () => {
                   value={formData.adharNo}
                   onChange={handleChange}
                   className="form-control"
-                  required
+                  // required
                   pattern="\d{12}"
                   title="Aadhaar number must be exactly 12 digits."
                 />
@@ -933,7 +956,8 @@ const VendorMasterForm = () => {
                   ref={adharCardRef}
                   className="form-control"
                   capture="environment"
-                  required />
+                  // required
+                   />
               </label>
 
 
@@ -995,10 +1019,9 @@ const VendorMasterForm = () => {
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
             Send Your Current Location (if it's same for filling address):
             <div className='form-row'>
-              <label className='form-field'>
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
-              </label>
             </div>
+
 
             Send Location Of Address (this is by your address):
             <div className='form-row'>
@@ -1015,7 +1038,7 @@ const VendorMasterForm = () => {
             {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
           </form>
 
-          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginBottom: "30px" }}>
+          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginBottom: "30px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2)", borderRadius:"30px" }}>
             <div class="header-container">
               <h3 class="bigtitle">Bank Information</h3>
             </div>
@@ -1140,7 +1163,15 @@ const VendorMasterForm = () => {
 
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
             <button type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              style={{
+                fontSize: "14px",
+                padding: "5px 20px",
+                border: "3px solid lightblue",
+                borderRadius: "4px",
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                color: "green",
+              }}
               disabled={isLoading} // Disable button while loading
             >
               {isLoading ? 'Submitting...' : 'Submit'}
@@ -1155,7 +1186,13 @@ const VendorMasterForm = () => {
 
           {/* <div style={{ textAlign: 'center' }}>
           <button type="submit"
-            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+            style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
             disabled={isLoading} // Disable button while loading
           >{ 'Submit'}
           </button>

@@ -15,6 +15,12 @@ import Snackbar from '@mui/material/Snackbar';
 import { Helmet } from 'react-helmet-async';
 import { ClipLoader } from 'react-spinners';
 
+const config = {
+    cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
+    ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+};
+
+
 function Location1({ vehicleData }) {
     console.log("vehicle", vehicleData)
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -70,6 +76,7 @@ function Location1({ vehicleData }) {
     const [showPhotos, setShowPhotos] = useState(false);
     const [showOptions, setShowOptions] = useState(false);
     const [options, setOptions] = useState([]);
+
     const choosenPlan = getData.choosenPlan;
     console.log("choosenpa", choosenPlan);
     const allOptions = ['advocate', 'workshop', 'onsite temperory repair', 'crane'];
@@ -237,7 +244,7 @@ function Location1({ vehicleData }) {
                 }
             });
             setIsLoading(false);
-            setAlertInfo({ show: true, message:"Data Successfully Added", severity: 'success' });
+            setAlertInfo({ show: true, message: "Data Successfully Added", severity: 'success' });
         } catch (error) {
             setIsLoading(false);
             const errorMessage = error.response?.data?.message || 'An error occurred';
@@ -258,6 +265,84 @@ function Location1({ vehicleData }) {
         setShowServices(!showServices);  // Hide the services div and show the message
     };
 
+    const [fullAddress, setFullAddress] = useState("");
+    const [district, setDistrict] = useState("");
+    const [states, setStates] = useState([]); // Correctly define states to hold the list of states
+    const [selectedState, setSelectedState] = useState(""); // State to track the selected state
+    const [cities, setCities] = useState([]); // State to hold the list of cities
+    const [isLoadingCities, setIsLoadingCities] = useState(true);
+    const [isLoadingStates, setIsLoadingStates] = useState(true);
+
+
+
+    useEffect(() => {
+        loadStates();
+    }, []); // Assuming 'token' and 'userId' are not needed here or should be replaced
+
+    const loadStates = () => {
+        setIsLoadingStates(true);
+        fetch(`${config.cUrl}/states`, {
+            headers: { "X-CSCAPI-KEY": config.ckey }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setStates(data);
+                setIsLoadingStates(false);
+            })
+            .catch(error => {
+                console.error("Error loading states:", error);
+                setIsLoadingStates(false);
+            });
+    };
+
+    const loadCities = (stateCode) => {
+        setIsLoadingCities(true);
+        fetch(`${config.cUrl}/states/${stateCode}/cities`, {
+            headers: { "X-CSCAPI-KEY": config.ckey }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setCities(data);
+                setIsLoadingCities(false);
+            })
+            .catch(error => {
+                console.error("Error loading cities:", error);
+                setIsLoadingCities(false);
+            });
+    };
+    console.log("fullAddresss11222", fullAddress)
+
+    useEffect(() => {
+        const getLonLat = async () => {
+            try {
+                if (fullAddress && fullAddress.trim() !== "") {  // Ensure fullAddress is not null or empty
+                    const fullAddress1 = `${fullAddress}, ${district}, ${selectedState}`;
+                    console.log("Full address:", fullAddress1);
+                    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress1)}`;
+
+                    const response = await axios.get(url);
+                    console.log("Response latitude:", response);
+
+                    const location = response.data[0];
+                    if (location) {
+                        setAccidentLatitude(location.lat);
+                        setAccidentLongitude(location.lon);
+                        console.log(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
+                        setLocation(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
+                    } else {
+                        console.log("No location found");
+                    }
+                } else {
+                    console.log("Full address is null or empty, not making API call.");
+                }
+            } catch (error) {
+                console.error("An error occurred while fetching the coordinates:", error);
+            }
+        };
+
+        getLonLat();
+    }, [fullAddress, district, selectedState]); // Add district and selectedState to dependency array
+
 
 
     return (
@@ -269,11 +354,60 @@ function Location1({ vehicleData }) {
                 <link rel='canonical' href={`https://claimpro.in/Location1`} />
             </Helmet>
             <Stack spacing={2}>
-            <p style={{marginTop:'20px'}}>Send Location (Real Time Location):</p>
+                <p style={{ marginTop: '20px' }}>Send Location (Real Time Location):</p>
 
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
 
-                <p style={{marginTop:'30px'}}>Send Location Of Address (If You Are Not On The Spot):</p>
+
+                <p style={{ marginTop: '30px' }}>Send Location Of Address (If You Are Not On The Spot):</p>
+                <div className='form-row'>
+                    <label className="form-field input-group mb-3">
+                        Accident Place - State:
+                        <select className="form-field input-group mb-3"
+                            name="state"
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setSelectedState(value);
+                                loadCities(value);
+                            }}
+                            disabled={isLoadingStates}
+                            value={selectedState}
+                        >
+                            <option value="">Select State</option>
+                            {states.map((state) => (
+                                <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label className="form-field input-group mb-3">
+                        Accident Place - City:
+                        <select className="form-field input-group mb-3"
+                            name="district"
+                            value={district}
+                            onChange={(e) => setDistrict(e.target.value)}
+                            disabled={isLoadingCities || !selectedState}
+                        >
+                            <option value="">Select City</option>
+                            {cities.map((city) => (
+                                <option key={city.id} value={city.name}>{city.name}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label className="form-field">
+                        Address :
+                        <textarea
+                            name="fullAddress"
+                            value={fullAddress} // Use fullAddress state
+                            onChange={(e) => setFullAddress(e.target.value)} // Update state directly
+                            required
+                            className="form-control"
+                            placeholder="Full Address"
+                        />
+                    </label>
+                    <label className='form-field'></label>
+                </div>
+
+                <div className='form-row'>
                     <label className='form-field'>
                         Accident Latitude:
                         <input
@@ -285,7 +419,6 @@ function Location1({ vehicleData }) {
                             required
                         />
                     </label>
-
                     <label className='form-field'>
                         Accident Longitude:
                         <input
@@ -297,7 +430,9 @@ function Location1({ vehicleData }) {
                             required
                         />
                     </label>
-
+                    <label className='form-field'></label>
+                    <label className='form-field'></label>
+                </div>
                 {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
 
                 {Object.keys(photos).map((type, index) => (
@@ -393,20 +528,28 @@ function Location1({ vehicleData }) {
                 )}
 
                 <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <button
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-              disabled={isLoading} // Disable button while loading
-              onClick={handleSubmit}
-            >
-              {isLoading ? 'Submitting...' : 'Submit'}
-            </button>
-            {isLoading && (
-              <div style={{ marginTop: '10px' }}>
-                <ClipLoader color="#4CAF50" loading={isLoading} />
-                <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
-              </div>
-            )}
-          </div>
+                    <button
+                        style={{
+                            fontSize: "14px",
+                            padding: "5px 20px",
+                            border: "3px solid lightblue",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            backgroundColor: "transparent",
+                            color: "green",
+                        }}
+                        disabled={isLoading} // Disable button while loading
+                        onClick={handleSubmit}
+                    >
+                        {isLoading ? 'Submitting...' : 'Submit'}
+                    </button>
+                    {isLoading && (
+                        <div style={{ marginTop: '10px' }}>
+                            <ClipLoader color="#4CAF50" loading={isLoading} />
+                            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                        </div>
+                    )}
+                </div>
 
             </Stack>
 

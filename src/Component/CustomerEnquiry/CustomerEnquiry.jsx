@@ -20,6 +20,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import DataTable from "react-data-table-component";
+
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+};
+
+const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
 
 const CustomerEnquiry = () => {
 
@@ -35,7 +49,144 @@ const CustomerEnquiry = () => {
     const [data, setData] = useState([]);
     const [comingData, setComingData] = useState([]);
     const [width, setWidth] = useState('100%');
-    const [customerEnquiryId, setCustomerEnquiryId]= useState(null)
+    const [customerEnquiryId, setCustomerEnquiryId] = useState(null);
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const handleRowsSelected = (state) => {
+        setSelectedRows(state.selectedRows);
+    }
+
+    const conditionalRowStyles = [
+        {
+            when: (row) => selectedRows.some(selected => selected.CustomerEnquiryCode === row.CustomerEnquiryCode),
+            style: {
+                backgroundColor: '#bdb6b6',
+            },
+        }
+    ];
+
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffff',
+                backgroundColor: 'rgb(169 187 169)',
+                fontWeight: "bold",
+                fontSize: '13px'
+            },
+        },
+        pagination: {
+            style: {
+                button: {
+                    background: 'none',
+                    boxShadow: "none"
+                },
+            },
+        },
+        striped: {
+            style: {
+                default: 'red'
+            }
+        },
+        rows: {
+            style: {
+                backgroundColor: '#f2f2f2',
+            }
+        }
+    }
+
+    const [currentItems, setCurrentItems] = useState(data);
+    const columns = [
+        {
+            name: "Date",
+            selector: (row) => row.systemDate,
+            sortable: true,
+            sortFunction: (rowA, rowB) => {
+                const dateA = parseDate(rowA.systemDate);
+                const dateB = parseDate(rowB.systemDate);
+                return dateA - dateB;
+            },
+        },
+        {
+            name: "Customer Name", selector: (row) => row.customerName, sortable: true, width: "200px",
+            cell: (row) => (
+                <span style={{ color: 'brown' }}>{row.customerName.charAt(0).toUpperCase() + row.customerName.slice(1)}</span>
+            )
+        },
+        {
+            name: "Fleet Size", selector: (row) => row.fleetSize, sortable: true,
+            cell: (row) => (
+                <span style={{ color: '#fff', backgroundColor: '#ffc107', padding: '5px', borderRadius: '4px' }}>{row.fleetSize.charAt(0).toUpperCase() + row.fleetSize.slice(1)}</span>
+            )
+        },
+        {
+            name: "Repair Location", selector: (row) => row.repairLocations, sortable: true, width: "150px",
+            cell: (row) => (
+                <span>{row.repairLocations.charAt(0).toUpperCase() + row.repairLocations.slice(1)}</span>
+            )
+        },
+        {
+            name: "Major Clients", selector: (row) => row.majorClients, sortable: true, width: "150px",
+            cell: (row) => (
+                <span>{row.majorClients ? row.majorClients.charAt(0).toUpperCase() + row.majorClients.slice(1) : ""}</span>
+            )
+        },
+        {
+            name: "Insurance Type", selector: (row) => row.insuranceType, sortable: true,width : "150px",
+            cell: (row) => (
+                <span>
+                    {row.insuranceType ? row.insuranceType.charAt(0).toUpperCase() + row.insuranceType.slice(1).toLowerCase() : ""}
+                </span>
+            ),
+        },
+        {
+            name: "Operation Mode", selector: (row) => row.operationMode, sortable: true,width : "150px",
+            cell: (row) => (
+                <span>
+                    {row.operationMode ? row.operationMode.charAt(0).toUpperCase() + row.operationMode.slice(1).toLowerCase() : ""}
+                </span>
+            ),
+        },
+        {
+            name: "Broker Name", selector: (row) => row.brokerName, sortable: true,width : "150px",
+            cell: (row) => (
+                <span>
+                    {row.brokerName ? row.brokerName.charAt(0).toUpperCase() + row.brokerName.slice(1).toLowerCase() : ""}
+                </span>
+            ),
+        },
+        {
+            name: "Actions",width : "100px",
+            cell: (row) => (
+                <button
+                    onClick={() => view(row.CustomerEnquiryCode)}
+                    className='view-button'
+                >
+                    Edit 
+                </button>
+            ),
+            
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+    ];
+
+    const handleSearch = (e) => {
+        const searchValue = e.target.value.toLowerCase();
+
+        const newRows = data.filter((row) => {
+            const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
+            const customerNameValue = (row.customerName ?? '').toLowerCase().includes(searchValue);
+            const fleetSizeValue = (row.fleetSize ?? '').toLowerCase().includes(searchValue);
+            const repairLocationsValue = (row.repairLocations ?? '').toLowerCase().includes(searchValue);
+            const operationModeValue = (row.operationMode ?? '').toLowerCase().includes(searchValue);
+            const brokerNameValue = (row.brokerName ?? '').toLowerCase().includes(searchValue);
+
+            return repairLocationsValue || dateValue || customerNameValue || brokerNameValue || operationModeValue || fleetSizeValue;
+        });
+
+        setCurrentItems(newRows);
+    };
 
     useEffect(() => {
         console.log("token", token, userId);
@@ -55,44 +206,6 @@ const CustomerEnquiry = () => {
         }
     }, [alertInfo]);
 
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-        setCurrentPage(1);
-    };
-    const handleSetItemPerPage = (e) => {
-        setItemsPerPage(e.target.value);
-    };
-    const filteredData = data.filter(item =>
-        item.customerName && item.customerName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const startPage = Math.max(1, currentPage - 1);
-    const endPage = Math.min(totalPages, currentPage + 1);
-    const pageNumbers = [];
-    for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(i);
-    }
 
     const [formData, setFormData] = useState({
         customerName: '',
@@ -138,30 +251,30 @@ const CustomerEnquiry = () => {
         hoContactPerson: ''
     })
 
-    useEffect(()=>{
-        if(comingData) {
+    useEffect(() => {
+        if (comingData) {
             setEditedFormData({
-            customerName: comingData.customerName || '',
-            fleetSize: comingData.fleetSize || '',
-            vehiclesUnderAccident: comingData.vehiclesUnderAccident || '',
-            spendForCrane: comingData.spendForCrane || '',
-            pendingClaims: comingData.pendingClaims || '',
-            accidentRatio: comingData.accidentRatio || '',
-            repairLocations: comingData.repairLocations || '',
-            majorClients: comingData.majorClients || '',
-            route: comingData.route || '',
-            operationMode: comingData.operationMode || '',
-            numberOfDrivers: comingData.numberOfDrivers || '',
-            oemName: comingData.oemName || '',
-            bodyType: comingData.bodyType || '',
-            brokerName: comingData.brokerName || '',
-            insuranceType: comingData.insuranceType || '',
-            repairHead: comingData.repairHead || '',
-            repairHeadEmail: comingData.repairHeadEmail || '',
-            ho: comingData.ho || '',
-            hoContactPerson: comingData.hoContactPerson || ''
-        });
-    }
+                customerName: comingData.customerName || '',
+                fleetSize: comingData.fleetSize || '',
+                vehiclesUnderAccident: comingData.vehiclesUnderAccident || '',
+                spendForCrane: comingData.spendForCrane || '',
+                pendingClaims: comingData.pendingClaims || '',
+                accidentRatio: comingData.accidentRatio || '',
+                repairLocations: comingData.repairLocations || '',
+                majorClients: comingData.majorClients || '',
+                route: comingData.route || '',
+                operationMode: comingData.operationMode || '',
+                numberOfDrivers: comingData.numberOfDrivers || '',
+                oemName: comingData.oemName || '',
+                bodyType: comingData.bodyType || '',
+                brokerName: comingData.brokerName || '',
+                insuranceType: comingData.insuranceType || '',
+                repairHead: comingData.repairHead || '',
+                repairHeadEmail: comingData.repairHeadEmail || '',
+                ho: comingData.ho || '',
+                hoContactPerson: comingData.hoContactPerson || ''
+            });
+        }
     }, [comingData])
 
 
@@ -190,7 +303,13 @@ const CustomerEnquiry = () => {
     const getCustomerEnquiry = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/getCustomerEnquiry`);
-            setData(response.data.data)
+            const fetchedData = response.data.data;
+            const formattedData = fetchedData.map(item => ({
+                ...item,
+                systemDate: formatDate(item.systemDate),
+            }));
+            setData(formattedData);
+            setCurrentItems(formattedData);
         } catch (error) {
             console.error("Error during form submission:", error);
             const errorMessage = 'An error occurred';
@@ -199,29 +318,6 @@ const CustomerEnquiry = () => {
 
     const [marginLeft, setMarginLeft] = useState('20px');
     const [paddingLeft, setPaddingLeft] = useState('20px');
-
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth <= 630) {
-                setMarginLeft('0px');
-                setPaddingLeft('10px')
-            }
-            else{
-                setMarginLeft('20px');
-                setPaddingLeft('20px')
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        // Initial check
-        handleResize();
-
-        // Cleanup event listener on component unmount
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     const add = () => {
         setAddCustomerEnquiry(true)
@@ -778,7 +874,13 @@ const CustomerEnquiry = () => {
 
                     <div style={{ textAlign: 'center' }}>
                         <button type="submit"
-                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                            style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
                             disabled={isLoading} // Disable button while loading
                         >
                             {isLoading ? 'Submitting...' : 'Submit'}
@@ -795,31 +897,20 @@ const CustomerEnquiry = () => {
             )}
 
             {showTable && (
-                <div className="Customer-master-form" style={{marginLeft, paddingLeft }}>
+                <div className="Customer-master-form" style={{  marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px'  }}>
                     <div className="visitor-container">
                         <h3 className="bigtitle">Customer Enquiry</h3>
                         <button onClick={add} className="add-button">
                             Add New Visitor
                         </button>
                     </div>
-                    <div className="form-search" style={{marginTop:"20px"}}>
+                    <div className="form-search" style={{ marginTop: "20px" }}>
                         <label className='label-class'>
-                            Search by Customer Name
+                            Search by
                             <input
                                 type="text"
-                                placeholder="Search by Customer Name"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                required
-                            />
-                        </label>
-                        <label className='label-class'>
-                            Number Of Items On Page
-                            <input
-                                type="number"
-                                placeholder="Items Show on Page"
-                                value={itemsPerPage}
-                                onChange={handleSetItemPerPage}
+                                placeholder="Search by "
+                                onChange={handleSearch}
                                 required
                             />
                         </label>
@@ -827,63 +918,19 @@ const CustomerEnquiry = () => {
                     </div>
                     <div>
                         <div style={{ marginTop: "50px" }}>
-                            <div className='responsive-table' >
-                                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Customer Name</th>
-                                            <th>Fleet Size</th>
-                                            <th>Repair Locations</th>
-                                            <th>Major Clients</th>
-                                            <th>Operation Mode</th>
-                                            <th>Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentItems.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Data...</td>
-                                            </tr>
-                                        ) : (
-                                            currentItems.map((person, index) => (
-                                                <tr key={person} >
-                                                    <td>{indexOfFirstItem + index + 1}</td>
-                                                    <td>{person.customerName || '---'}</td>
-                                                    <td>{person.fleetSize || '---'}</td>
-                                                    <td>{person.repairLocations || '---'}</td>
-                                                    <td>{person.majorClients || '---'}</td>
-                                                    <td>{person.operationMode || '---'}</td>
-
-                                                    <td>
-                                                        <div>
-                                                            <button onClick={() => view(person.CustomerEnquiryCode)} className='view-button' >View</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="pagination">
-                                <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
-                                    <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                                        <ArrowBack />
-                                    </Button>
-                                    {pageNumbers.map((pageNumber) => (
-                                        <Button
-                                            key={pageNumber}
-                                            onClick={() => handlePageChange(pageNumber)}
-                                            className={currentPage === pageNumber ? 'active' : ''}
-                                        >
-                                            {pageNumber}
-                                        </Button>
-                                    ))}
-                                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                                        <ArrowForward />
-                                    </Button>
-                                </ButtonGroup>
+                            <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+                                <div className="container my-5">
+                                    <DataTable
+                                        columns={columns}
+                                        data={currentItems}
+                                        fixedHeader
+                                        pagination
+                                        selectableRows
+                                        onSelectedRowsChange={handleRowsSelected}
+                                        conditionalRowStyles={conditionalRowStyles}
+                                        customStyles={tableCustomStyles}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1181,35 +1228,47 @@ const CustomerEnquiry = () => {
                         </Alert>
                     )}
 
-<div style={{ textAlign: 'center' }}>
-        {isEditing && (
-            <div>
-              <button type="submit"
-                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                disabled={isLoading} // Disable button while loading
-                onClick={handleEditSubmit}
-              >
-                {isLoading ? 'Submitting...' : 'Submit'}
-              </button>
-              {isLoading && (
-                <div style={{ marginTop: '10px' }}>
-                  <ClipLoader color="#4CAF50" loading={isLoading} />
-                  <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
-                </div>
-              )}
-            </div>
-          )}
+                    <div style={{ textAlign: 'center' }}>
+                        {isEditing && (
+                            <div>
+                                <button type="submit"
+                                    style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
+                                    disabled={isLoading} // Disable button while loading
+                                    onClick={handleEditSubmit}
+                                >
+                                    {isLoading ? 'Submitting...' : 'Submit'}
+                                </button>
+                                {isLoading && (
+                                    <div style={{ marginTop: '10px' }}>
+                                        <ClipLoader color="#4CAF50" loading={isLoading} />
+                                        <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
-          {!isEditing && (
-            <button
-              type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-              onClick={toggleEditing}
-            >
-              EDIT
-            </button>
-          )}
-        </div>
+                        {!isEditing && (
+                            <button
+                                type="submit"
+                                style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
+                                onClick={toggleEditing}
+                            >
+                                EDIT
+                            </button>
+                        )}
+                    </div>
                 </form>
             )}
 

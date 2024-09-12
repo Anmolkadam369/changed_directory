@@ -53,11 +53,12 @@ const Login = () => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);    
-    if (!emailPattern.test(email)) {
-        setEmailError('Invalid email address');
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (!emailPattern.test(newEmail)) {
+      setEmailError('Invalid email address');
     } else {
-        setEmailError('');
+      setEmailError('');
     }
   };
 
@@ -66,9 +67,9 @@ const Login = () => {
     setPassword(e.target.value);
     if (!passwordRegex.test(newPassword)) {
       setPasswordError('Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol.');
-  } else {
+    } else {
       setPasswordError('');
-  }
+    }
   };
 
   const handleRememberMeChange = (e) => {
@@ -82,32 +83,32 @@ const Login = () => {
   };
 
   const [selected, setSelected] = useState(0);
-  const handleClick = (index) => {
-    setSelected(index);
+  const handleClick = (value) => {
+    setSelected((prevSelected) => (prevSelected === value ? null : value));
   };
 
   const getStyles = () => {
     switch (selected) {
-        case 1:
-            return {
-              backgroundColor:"#ffffffa1",
-                border: '1px solid red',
-                boxShadow: 'rgba(0, 0, 0, 0.2) -10px -20px 14px 4px'
-            };
-        case 2:
-            return {
-              backgroundColor:"#ffffffa1",
-                border: '1px solid blue',
-                boxShadow: 'rgba(0, 0, 0, 0.8) 13px -20px 20px'
-            };
-        default:
-            return {
-              backgroundColor:"#ffffffa1",
-                border: '1px solid green', // No border color
-                boxShadow: 'inset rgba(0, 0, 0, 0.8) -3px -1px 20px 0px' // No box-shadow
-            };
+      case 1:
+        return {
+          backgroundColor: "#ffffffa1",
+          border: '1px solid red',
+          boxShadow: 'rgba(0, 0, 0, 0.2) -10px -20px 14px 4px'
+        };
+      case 2:
+        return {
+          backgroundColor: "#ffffffa1",
+          border: '1px solid blue',
+          boxShadow: 'rgba(0, 0, 0, 0.8) 13px -20px 20px'
+        };
+      default:
+        return {
+          // backgroundColor:"#ffffffa1",
+          border: '1px solid green', // No border color
+          // boxShadow: 'inset rgba(0, 0, 0, 0.8) -3px -1px 20px 0px' // No box-shadow
+        };
     }
-};
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -118,7 +119,7 @@ const Login = () => {
       setAlertInfo({ show: true, message: "Please Fill Form Properly", severity: 'error' });
       return;
     }
-    
+
     try {
       const response = await axios.post(`${backendUrl}/api/login`, {
         email,
@@ -147,7 +148,7 @@ const Login = () => {
         setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
 
         console.log("RESPONSEONDSTS", response.data.data)
-        if (response.data.data.email === "admin@gmail.com" || response.data.data.department === "IT" || response.data.data.department === "Management") {
+        if (response.data.data?.userType === "admin" || response.data.data.department === "IT" || response.data.data.department === "Management") {
           navigate("../Admin");
         } else if (response.data.data.vendorType === "advocate") {
           navigate("../advocateDashboard");
@@ -160,7 +161,7 @@ const Login = () => {
         } else if (response.data.data.department === "Administration") {
           navigate("../Administration");
         } else if (response.data.data.department === "Sales") {
-          navigate("../Salesteam"); 
+          navigate("../Salesteam");
         }
         else {
           navigate('../userDashboard');
@@ -209,6 +210,9 @@ const Login = () => {
     maxWidth: '400px',
     width: '100%',
     margin: '10px',
+    backgroundColor: `rgba(255, 255, 255, 0.63)`,
+    border: `1px solid green`,
+    boxShadow: `rgba(0, 0, 0, 0.8) -3px -1px 20px 0px inset`,
   };
 
   const formGroupStyle = {
@@ -287,7 +291,7 @@ const Login = () => {
           <img src={claimproassist} style={imgStyle} alt="company logo" />
           <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
         </div>
-        
+
         <div className="selecting-container">
           <div
             className={`selecting-box vendorselected ${selected === 1 ? 'selected' : ''}`}

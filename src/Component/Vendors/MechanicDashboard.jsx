@@ -26,11 +26,13 @@ const MechanicDashboard = ({ getData }) => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [vendorData, setVendorData] = useState([])
     const [gotResponse, setGotResponse] = useState([]);
+    console.log("gotResonse123456789", gotResponse)
     const [allAccidentVehicleData, setAllAccidentVehicleData] = useState([]);
     const [adminAccepted, setAdminAccepted] = useState(0)
     const [adminRejected, setAdminRejected] = useState(0)
     const [adminPending, setAdminPending] = useState(0)
     const [workingCases, setWorkingCases] = useState(0)
+    console.log("WORINGCASE", workingCases)
     const [fullyClosedCases, setFullyClosedCases] = useState(0)
 
 
@@ -98,8 +100,8 @@ const MechanicDashboard = ({ getData }) => {
     useEffect(() => {
 
         const totalCases = totalAssignedCases.length;
-        const fullyClosedCasesVendor = fullyClosedCases+adminRejected;
-        const workingCasesVendor = workingCases-adminRejected;
+        const fullyClosedCasesVendor = fullyClosedCases + adminRejected;
+        const workingCasesVendor = workingCases - adminRejected;
         const NonworkingCasesVehicle = totalAssignedCases.length - gotResponse.length; // Update this with the actual resolved vehicles count
 
         setDoughnutData((prevData) => ({
@@ -135,7 +137,14 @@ const MechanicDashboard = ({ getData }) => {
         try {
             const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
-            setGotResponse(response.data.data);
+            const filteredResponse = [];
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].firstResponseOn != null) {
+                    console.log("response.data.data.firstResponseOn", response.data.data[i].firstResponseOn);
+                    filteredResponse.push(response.data.data[i]);
+                }
+            }
+            setGotResponse(filteredResponse);
         } catch (error) {
             console.error("Failed to fetch existing data", error.response || error);
             if (error.response) {
@@ -168,13 +177,15 @@ const MechanicDashboard = ({ getData }) => {
             for (let i = 0; i < gotResponse.length; i++) {
                 let caseIsFullyClosed = true;
                 const caseFields = gotResponse[i];
+                console.log("keyincasefield", gotResponse[i].cheque)
                 for (let key in caseFields) {
-                    if (caseFields[key] === null || caseFields[key] === "") {
-                        caseIsFullyClosed = false;
-                        break;
+                    if (key == "cheque" || key == "onlinePaymentImg" || key == "paidByCash") continue;
+                        if (caseFields[key] === null || caseFields[key] === "") {
+                            caseIsFullyClosed = false;
+                            break;  
                     }
                 }
-                if (caseIsFullyClosed) {
+                if (caseIsFullyClosed && (gotResponse[i].cheque != null || gotResponse[i].onlinePaymentImg != null || gotResponse[i].paidByCash != null)) {
                     fullyClosedCount++;
                 } else {
                     workingCount++;
@@ -281,7 +292,7 @@ const MechanicDashboard = ({ getData }) => {
                                 <p>{adminPending}</p>
                             </div>
                         </div>
-                            <div className="stat-container">
+                        <div className="stat-container">
 
                             <div className="stat-item">
                                 <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
@@ -292,15 +303,15 @@ const MechanicDashboard = ({ getData }) => {
                             <div className="stat-item">
                                 <AssignmentTurnedInOutlinedIcon className="small-image" />
                                 <h3>Fully Closed Cases</h3>
-                                <p>{fullyClosedCases+adminRejected}</p>
+                                <p>{fullyClosedCases + adminRejected}</p>
                             </div>
                             <div className="stat-item">
-                            <PendingActionsOutlinedIcon className="small-image" />
+                                <PendingActionsOutlinedIcon className="small-image" />
                                 <h3>Working Cases</h3>
-                                <p>{workingCases-adminRejected}</p>
+                                <p>{workingCases - adminRejected}</p>
                             </div>
                             <div className="stat-item">
-                            <PendingOutlinedIcon className="small-image" />
+                                <PendingOutlinedIcon className="small-image" />
                                 <h3>Non Started Cases</h3>
                                 <p>{totalAssignedCases.length - gotResponse.length}</p>
                             </div>

@@ -16,6 +16,21 @@ import WorkshopResponse from "../ViewVendorResponse/WorkshopResponse"
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import DataTable from "react-data-table-component";
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`; 
+};
+
+const parseDate = (dateString) => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
+
 
 
 const ActualVendorResponse = ({ vehicle, onUpdate }) => {
@@ -197,6 +212,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     const uniqueVendors = comingVendorData.filter((vendor, index, self) => 
         index === self.findIndex((v) => v.vendorCode === vendor.vendorCode)
       );
+
 
     return (
         <div>

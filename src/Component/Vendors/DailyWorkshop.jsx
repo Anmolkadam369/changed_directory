@@ -21,7 +21,7 @@ function DailyWorkshop() {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-  const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [comingData, setComingData] = useState([]);
     const [IsReadOnly, setIsReadOnly] = useState(true);
     const [existingData, setExistingData] = useState([]);
@@ -244,8 +244,8 @@ function DailyWorkshop() {
             console.log("RESPONSE", response)
             if (response.status === 200)
                 if (response.status === 200) {
-                setAlertInfo({ show: true, message:"Photos uploaded successfully!" , severity: 'success' });
-            } 
+                    setAlertInfo({ show: true, message: "Photos uploaded successfully!", severity: 'success' });
+                }
 
         } catch (error) {
             console.error("Error during form submission:", error);
@@ -267,7 +267,7 @@ function DailyWorkshop() {
         navigate("../WorkshopDashboard")
     }
     return (
-        <div className='container'>
+        <div className='Customer-master-form'>
             <Helmet>
                 <title>Daily Workshop Images - ClaimProAssist</title>
                 <meta name="description" content="Daily Workshop Images BVC Claimoro Asist" />
@@ -303,9 +303,6 @@ function DailyWorkshop() {
                     />
                 </label>
 
-            </div>
-
-            <div className='form-row'>
                 <label className="form-field">
                     Chasis No:
                     <input
@@ -316,6 +313,7 @@ function DailyWorkshop() {
                         readOnly={IsReadOnly}
                     />
                 </label>
+
                 <label className="form-field">
                     Engine No:
                     <input
@@ -326,6 +324,11 @@ function DailyWorkshop() {
                         readOnly={IsReadOnly}
                     />
                 </label>
+
+            </div>
+
+            <div className='form-row'>
+
                 <label className="form-field">
                     Make:
                     <input
@@ -346,9 +349,7 @@ function DailyWorkshop() {
                         readOnly={IsReadOnly}
                     />
                 </label>
-            </div>
 
-            <div className='form-row'>
                 <label className="form-field">
                     Longitude:
                     <input
@@ -369,6 +370,10 @@ function DailyWorkshop() {
                         readOnly={IsReadOnly}
                     />
                 </label>
+            </div>
+
+            <div className='form-row'>
+
                 <label className="form-field">
                     accidentFileNo:
                     <input
@@ -389,6 +394,8 @@ function DailyWorkshop() {
                         readOnly={IsReadOnly}
                     />
                 </label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
             </div>
 
             <div class='header-container'>
@@ -452,21 +459,29 @@ function DailyWorkshop() {
             }
 
             <div style={{ textAlign: 'center' }}>
-            <div>
-              <button type="submit"
-                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
-                disabled={isLoading} // Disable button while loading
-                onClick={onSubmit}
-              >
-                {isLoading ? 'Submitting...' : 'Submit'}
-              </button>
-              {isLoading && (
-                <div style={{ marginTop: '10px' }}>
-                  <ClipLoader color="#4CAF50" loading={isLoading} />
-                  <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                <div>
+                    <button type="submit"
+                        style={{
+                            fontSize: "14px",
+                            padding: "5px 20px",
+                            border: "3px solid lightblue",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            backgroundColor: "transparent",
+                            color: "green",
+                        }}
+                        disabled={isLoading} // Disable button while loading
+                        onClick={onSubmit}
+                    >
+                        {isLoading ? 'Submitting...' : 'Submit'}
+                    </button>
+                    {isLoading && (
+                        <div style={{ marginTop: '10px' }}>
+                            <ClipLoader color="#4CAF50" loading={isLoading} />
+                            <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                        </div>
+                    )}
                 </div>
-              )}
-            </div>
             </div>
         </div >
 

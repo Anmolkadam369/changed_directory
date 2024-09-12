@@ -19,7 +19,22 @@ import VendorPerformance from '../AAAAAAAAAAAAAAAAAA/VendorPerformnce';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import DataTable from "react-data-table-component";
+import VendorByMap from './VendorByMap';
 
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const parseDate = (dateString) => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
 
 const VendorApproved = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamp: null });
@@ -39,22 +54,28 @@ const VendorApproved = () => {
   const [showVendorMasterEdit, setShowVendorMasterEdit] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
   const [showVendorTable, setShowVendorTable] = useState(true);
+  const [showMap, setShowMap] = useState(false);
+
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedVendorCode, setSelectedVendorCode] = useState(null);
   const [selectedVendorType, setSelectedVendorType] = useState(null);
 
-  const [sortDate, setSortDate]=useState("asc");
+  const [sortDate, setSortDate] = useState("asc");
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const sortDateFunc = ()=>{
-    setSortDate(sortDate == "asc" ? "desc":"asc");
-    const sortedItems = [...data].sort((a,b)=>{
-      const dateA = new Date(a.systemDate).getTime();
-      const dateB = new Date(b.systemDate).getTime();
-      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
-    });
-    setData(sortedItems)
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
   }
+
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.id === row.id),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
+    }
+  ];
 
 
   console.log("selectedID", selectedId)
@@ -62,6 +83,35 @@ const VendorApproved = () => {
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
   const [searchQuery, setSearchQuery] = useState('');
+
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight : "bold",
+        fontSize : '13px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style:{
+        default: 'red'
+      }
+    },
+    rows : {
+      style:{
+        backgroundColor: '#f2f2f2',
+      }
+    }
+  }
 
   useEffect(() => {
     if (!showVendorMasterEdit) getData();
@@ -97,7 +147,7 @@ const VendorApproved = () => {
     setModalOpen(false);
   };
 
-  const handleConfirmDelete = async (vendorCode)=>{
+  const handleConfirmDelete = async (vendorCode) => {
     await deleteVendor(vendorCode);
     setModalOpen(false);
   }
@@ -144,43 +194,31 @@ const VendorApproved = () => {
 
   const getData = async () => {
     const response = await axios.get(`${backendUrl}/api/getVendor`);
-    setData(response.data.data);
+    const fetchedData = response.data.data;
+
+    const formattedData = fetchedData.map(item => ({
+      ...item,
+      systemDate: formatDate(item.systemDate),
+    }));
+    setData(formattedData);
+    setCurrentItems(formattedData);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
 
-  const handleSetItemPerPage = (e) => {
-    setItemsPerPage(e.target.value);
-  };
-
-  const filteredData = data.filter(item =>
-    item.vendorName && item.vendorName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
   const view = (id) => {
     setSelectedId(id);
     setShowVendorMasterEdit(true)
     setShowPerformance(false)
     setShowVendorTable(false)
+    setShowMap(false);
+
+  }
+  const handleMap =()=>{
+    setShowVendorMasterEdit(false)
+    setShowPerformance(false)
+    setShowVendorTable(false);
+    setShowMap(true);
   }
 
   const viewPerformance = (id, type) => {
@@ -191,6 +229,8 @@ const VendorApproved = () => {
     setShowPerformance(true)
     setShowVendorMasterEdit(false)
     setShowVendorTable(false)
+    setShowMap(false);
+
   }
 
 
@@ -198,44 +238,177 @@ const VendorApproved = () => {
     setShowVendorMasterEdit(false);
     setShowPerformance(false)
     setShowVendorTable(true)
+    setShowMap(false);
+
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startPage = Math.max(1, currentPage - 1);
-  const endPage = Math.min(totalPages, currentPage + 1);
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
-        setMarginLeft('0px');
-        setPaddingLeft('20px')
-      } else {
-        setMarginLeft('30px');
-        setPaddingLeft("40px")
-      }
+
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (window.innerWidth <= 630) {
+  //       setMarginLeft('0px');
+  //       setPaddingLeft('20px')
+  //     } else {
+  //       setMarginLeft('30px');
+  //       setPaddingLeft("40px")
+  //     }
+  //   };
+  //   window.addEventListener('resize', handleResize);
+
+  //   // Initial check
+  //   handleResize();
+
+  //   // Cleanup event listener on component unmount
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
+
+  const [currentItems, setCurrentItems] = useState(data);
+
+  const columns = [
+    {
+      name: "VendorID",
+      selector: row => row.id, // Raw data for sorting
+      cell: row => <span>{String(row.id).padStart(4, '0')}</span>, // Display formatted value
+      sortable: true,
+      sortFunction: (rowA, rowB) => rowA.id - rowB.id, // Custom sort function
+      style:{width:"200px"},
+    },
+    
+    {
+      name: "Date",
+      selector: (row) => row.systemDate,
+      sortable: true,
+      sortFunction: (rowA, rowB) => {
+        const dateA = parseDate(rowA.systemDate);
+        const dateB = parseDate(rowB.systemDate);
+        return dateA - dateB; // Ascending order
+      },
+    },
+    {
+      name: "Name", selector: (row) => row.vendorName, sortable: true,width:"150px",
+      cell: (row) => (
+        <span style={{ color: 'brown' }}>{row.vendorName.charAt(0).toUpperCase() + row.vendorName.slice(1)}</span>
+      )
+    },
+    {
+      name: "Email", selector: (row) => row.email, sortable: true,width:"200px",
+      cell: (row) => (
+        <a href={`mailto:${row.email}`} style={{ color: "blue", textDecoration: "none" }}>
+          {row.email}
+        </a>
+      ),
+    },
+    {
+      name: "Type", selector: (row) => row.vendorType, sortable: true,
+      cell: (row) => (
+        <span style={{ color: 'black', padding: '5px', borderRadius: '4px', border:"2px solid grey"}}>
+          {row.vendorType ? row.vendorType.charAt(0).toUpperCase() + row.vendorType.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    {
+      name: "Modify",
+      selector: (row) => row.EditedBy || '',
+      sortable: true,
+      cell: (row) => {
+        const EditedBy = row.EditedBy ? String(row.EditedBy) : "";
+        return (
+          <span style={{ color: "green" }}>
+            {EditedBy.charAt(0).toUpperCase() + EditedBy.slice(1).toLowerCase()}
+          </span>
+        );
+      },
+    },
+
+    { name: "District", selector: (row) => row.district, sortable: true },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <button
+          onClick={() => view(row.id)}
+          className='view-button'
+        >
+          View
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Performance",
+      cell: (row) => (
+        <button
+          onClick={() => viewPerformance(row.vendorCode, row.vendorType)}
+          className='view-button'
+          style={{ background: '#e6e679' }}
+        >
+          Performance
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Activate / Deactivate",
+      cell: (row) => (
+        <button
+          onClick={() => openModal(row)}
+          className='view-button'
+          style={{ background: 'rgb(190 98 98)', color: "white" }}
+        >
+          {row.isActive === "true" ? "Deactivate" : "Activate"}
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "Delete Vendor",
+      cell: (row) => (
+        <span
+          onClick={() => openDeleteModal(row)}
+          style={{ cursor: 'pointer' }}
+        >
+          <DeleteOutlineIcon />
+        </span>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
+  const [searchValue, setSearchValue] = useState('');
+
+    const handleSearch = (e) => {
+      const value = e.target.value.toLowerCase();
+      setSearchValue(value);
+
+      const newRows = data.filter((row) => {
+        const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
+        const vendorNameValue = (row.vendorName ?? '').toLowerCase().includes(searchValue);
+        const emailValue = (row.email ?? '').toLowerCase().includes(searchValue);
+        const vendorTypeValue = (row.vendorType ?? '').toLowerCase().includes(searchValue);
+        const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchValue);
+        const districtValue = (row.district ?? '').toLowerCase().includes(searchValue);
+
+        return dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
+      });
+
+      setCurrentItems(newRows);
     };
-    window.addEventListener('resize', handleResize);
-
-    // Initial check
-    handleResize();
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   return (
     <div>
       {showVendorTable && (
-        <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+        <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>
             <title>Vendor Information - Claimpro</title>
             <meta name="description" content="Vendor Information Claimpro." />
@@ -247,25 +420,16 @@ const VendorApproved = () => {
             <h3 className="bigtitle">Vendor View / Edit</h3>
             <div className="form-search">
               <label className='label-class'>
-                Search by Vendor Name
+                Search by
                 <input
-                  type="text"
-                  placeholder="Search by Vendor Name"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  required
+                  type="search"
+                  className="form-control-sm border ps-3"
+                  placeholder="Search"
+                  value={searchValue}
+                  onChange={handleSearch}
                 />
               </label>
-              <label className='label-class'>
-                Number Of Items On Page
-                <input
-                  type="number"
-                  placeholder="Items Show on Page"
-                  value={itemsPerPage}
-                  onChange={handleSetItemPerPage}
-                  required
-                />
-              </label>
+
               <label className="label-class" style={{ marginTop: "20px" }}>
                 {!isGenerated && (
                   <div
@@ -287,6 +451,11 @@ const VendorApproved = () => {
                     Download Excel File
                   </a>
                 )}
+              <div className='form-control generate-button' style={{ padding:"4px", border:"3px solid lightgreen", marginLeft:"10px"}} onClick={handleMap}>Vendor By Map</div> 
+              </label>
+
+
+              <label className="label-class">
               </label>
 
             </div>
@@ -298,7 +467,7 @@ const VendorApproved = () => {
               {alertInfo.message}
             </Alert>
           )}
-          <p
+          {/* <p
           style={{
             display: 'flex',
             marginRight: "5px",
@@ -307,80 +476,22 @@ const VendorApproved = () => {
           onClick={sortDateFunc}
         >
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-        </p>
-          <div className='responsive-table'>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-              <thead>
-                <tr>
-                  <th>Sr. No.</th>
-                  <th>Vendors Name</th>
-                  <th>Email</th>
-                  <th>Vendor Type</th>
-                  {/* <th>Edited By</th> */}
-                  <th>View</th>
-                  <th>Performance</th>
-                  <th>Action</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
-                  </tr>
-                ) : (
-                  currentItems.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{indexOfFirstItem + index + 1}</td>
-                      <td>{item.vendorName.charAt(0).toUpperCase() + item.vendorName.slice(1)}</td>
-                      <td>
-                        <a href={`mailto: ${item.email}`} style={{ color: "blue", textDecoration: "none" }}>
-                          {item.email}
-                        </a>
-                      </td>
-                      <td style={{ color: "green" }}>{item.vendorType.charAt(0).toUpperCase() + item.vendorType.slice(1)}</td>
-                      {/* <td>{item.EditedBy != null ? item.EditedBy.charAt(0).toUpperCase() + item.EditedBy.slice(1) : ""}</td> */}
-                      <td>
-                        <button onClick={() => view(item.id)} className='view-button'>View</button>
-                      </td>
-                      <td>
-                        <button onClick={() => viewPerformance(item.vendorCode, item.vendorType)} style={{ background: '#e6e679' }} className='view-button'>View</button>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => openModal(item)}
-                          style={{ background: 'rgb(190 98 98)', color: "white" }}
-                          className="deactivate-button"
-                        >
-                          {item.isActive === "true" ? "Deactivate" : "Activate"}
-                        </button>
-                      </td>
-                      <td style={{cursor:'pointer'}} onClick={() => openDeleteModal(item)}><DeleteOutlineIcon /></td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        </p> */}
+          <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+            <div className="container my-5">
+              <DataTable
+                columns={columns}
+                data={currentItems}
+                fixedHeader
+                pagination
+                selectableRows
+                onSelectedRowsChange={handleRowsSelected}
+                conditionalRowStyles={conditionalRowStyles}
+                customStyles={tableCustomStyles}
+              />
+            </div>
           </div>
-          <div className="pagination">
-            <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
-              <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                <ArrowBack />
-              </Button>
-              {pageNumbers.map((pageNumber) => (
-                <Button
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  className={currentPage === pageNumber ? 'active' : ''}
-                >
-                  {pageNumber}
-                </Button>
-              ))}
-              <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                <ArrowForward />
-              </Button>
-            </ButtonGroup>
-          </div>
+
 
           {modalData && (
             <ActivationModel
@@ -404,6 +515,9 @@ const VendorApproved = () => {
       )}
       {showPerformance && (
         <VendorPerformance id={selectedVendorCode} type={selectedVendorType} onUpdate={handleUpdate} />
+      )}
+      {showMap && (
+        <VendorByMap onUpdate={handleUpdate}/>
       )}
     </div>
   );

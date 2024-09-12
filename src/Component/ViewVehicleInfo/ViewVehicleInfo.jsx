@@ -16,6 +16,21 @@ import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import ImageUpload from "../ImageUpload/ImageUpload"
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import DataTable from "react-data-table-component";
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`; 
+};
+
+const parseDate = (dateString) => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
+
 
 const ViewVehicleInfo = () => {
   const [data, setData] = useState([]);
@@ -41,17 +56,50 @@ const ViewVehicleInfo = () => {
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedUploadId, setSelectedUploadId] = useState(null);
-  const [sortDate, setSortDate]=useState("asc");
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const sortDateFunc = ()=>{
-    setSortDate(sortDate == "asc" ? "desc":"asc");
-    const sortedItems = [...data].sort((a,b)=>{
-      const dateA = new Date(a.systemDate).getTime();
-      const dateB = new Date(b.systemDate).getTime();
-      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
-    });
-    setData(sortedItems)
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
   }
+
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.accidentFileNo === row.accidentFileNo),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
+    }
+  ];
+
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight : "bold",
+        fontSize : '13px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style:{
+        default: 'red'
+      }
+    },
+    rows : {
+      style:{
+        backgroundColor: '#f2f2f2',
+      }
+    }
+  }
+
 
   useEffect(() => {
     if (showMainContent) getData();
@@ -78,26 +126,7 @@ const ViewVehicleInfo = () => {
       console.error(error.message);
     }
   }
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
 
-        setWidth('90%');
-      } else {
-
-        setWidth('100%');
-      }
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Initial check
-    handleResize();
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
 
   async function generateToken() {
@@ -159,82 +188,109 @@ const ViewVehicleInfo = () => {
 
   const getData = async (e) => {
     const response = await axios.get(`${backendUrl}/api/vehicleClaim`);
-    console.log("response", response.data.data);
-    setData(response.data.data)
+    const fetchedData = response.data.data;
+    const formattedData = fetchedData.map(item => ({
+      ...item,
+      accidentDate: item.accidentDate? formatDate(item.accidentDate) : "",
+    }));
+    setData(formattedData);
+    setCurrentItems(formattedData);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1); 
-  };
-  const handleSetItemPerPage = (e) => {
-    setItemsPerPage(e.target.value);
-  };
-  const filteredData = data.filter(item =>
-    item.district && item.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.insuredBy && item.insuredBy.toLowerCase().includes(searchQuery.toLowerCase())
-
-  );
-
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const [currentItems, setCurrentItems] = useState(data);
+  const columns = [
+    {
+      name: "Date",
+      selector: (row) => row.accidentDate,
+      sortable: true,
+    
+      sortFunction: (rowA, rowB) => {
+        const dateA = parseDate(rowA.accidentDate);
+        const dateB = parseDate(rowB.accidentDate);
+        return dateA - dateB; // Ascending order
+      },
+    },
+    { name: "Customer Name", selector: (row) => row.customerName, sortable: true ,
+      cell: (row) => (
+        <span style={{color:'brown'}}>{row.customerName ? row.customerName.charAt(0).toUpperCase() + row.customerName.slice(1):""}</span>
+      )
+    },
+    { name: "Reason Of Accident", selector: (row) => row.reason, sortable: true ,width:'200px',
+      cell: (row) => (
+      <span style={{color:'green'}}>
+        {row.reason}
+      </span>
+    ),},  
+    { name: "Vehicle No", selector: (row) => row.vehicleNo, sortable: true,width:"120px",
+      cell: (row) => (
+        <span style={{color: '#fff', backgroundColor: '#ffc107', padding: '5px 10px 5px 10px', borderRadius: '4px'}}>
+            {row.vehicleNo ? row.vehicleNo.toUpperCase() : ""}
+        </span>
+      ),
+    },
+    { name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true,width:'200px',
+      cell: (row) => (
+        <span style={{color: 'black', border:"1px solid red", padding: '5px', borderRadius: '4px', margin:"5px"}}>
+            {row.accidentFileNo ? row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    { name: "Insurance Company", selector: (row) => row.insuredBy, sortable: true },
+    { name: "District", selector: (row) => row.district, sortable: true,
+      cell: (row) => (
+        <span style={{color:'blue'}}>{row.district ? row.district.charAt(0).toUpperCase() + row.district.slice(1):""}</span>
+      )
+     },
+    { name: "Actions",
+      cell: (row) => (
+        <button
+          onClick={() => view(row.AccidentDataCode)}
+          className='view-button'
+        >
+          View
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    { name: "Upload Images",
+      cell: (row) => (
+        <button
+          onClick={() => upload(row.accidentFileNo)}
+          className='view-button'
+          style={{ background: 'rgb(190 98 98)', color: "white" }}
+        >
+         Upload
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
     }
+  ];
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+  
+    const newRows = data.filter((row) => {
+      const dateValue = (formatDate(row.accidentDate) ?? '').toLowerCase().includes(searchValue);
+      const customerNameValue = (row.customerName ?? '').toLowerCase().includes(searchValue);
+      const reasonValue = (row.reason ?? '').toLowerCase().includes(searchValue);
+      const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchValue);
+      const districtValue = (row.district ?? '').toLowerCase().includes(searchValue);
+      const insuredByValue = (row.insuredBy ?? '').toLowerCase().includes(searchValue);
+
+      return dateValue || customerNameValue || reasonValue || vehicleNoValue || districtValue || insuredByValue;
+
+    });
+  
+    setCurrentItems(newRows);
   };
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  const startPage = Math.max(1, currentPage - 1);
-  const endPage = Math.min(totalPages, currentPage + 1);
-  const pageNumbers = [];
-
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
-  const [isSixthColumnVisible, setIsSixthColumnVisible] = useState(true);
-
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
-        setMarginLeft('0px');
-        setPaddingLeft('10px')
-        setIsSixthColumnVisible(false);
-      } else {
-        setMarginLeft('30px');
-        setPaddingLeft("40px")
-      }
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Initial check
-    handleResize();
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  console.log("dddddddddddddddddddd", data.data)
   return (
     <div>
-      {showMainContent && (<div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+      {showMainContent && (<div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px'}}>
         <Helmet>
           <title>Accident Vehicle Infomation - Claimpro</title>
           <meta name="description" content="Accident Vehicle Infomation" />
@@ -245,23 +301,12 @@ const ViewVehicleInfo = () => {
         <div>
           <h3 className="bigtitle">Accident Vehicle View / Edit</h3>
           <div className="form-search">
-            <label className='label-class'>
-              Search by District Name
+          <label className='label-class'>
+              Search by 
               <input
                 type="text"
-                placeholder="Search by District Name"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                required
-              />
-            </label>
-            <label className='label-class'>
-              Number Of Items On Page
-              <input
-                type="number"
-                placeholder="Items Show on Page"
-                value={itemsPerPage}
-                onChange={handleSetItemPerPage}
+                placeholder="Search by "
+                onChange={handleSearch}
                 required
               />
             </label>
@@ -288,74 +333,26 @@ const ViewVehicleInfo = () => {
                 </a>
               )}
             </label>
+
+            <label className='label-class'></label>
           </div>
         </div>
-        <p
-          style={{
-            display: 'flex',
-            marginRight: "5px",
-            cursor: "pointer"
-          }}
-          onClick={sortDateFunc}
-        >
-          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-        </p>
-        <div className='responsive-table'>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '90px' }}>
-            <thead>
-              <tr>
-                <th>Sr. No.</th>
-                <th>Customer Name</th>
-                <th>Reason</th>
-                <th>Vehicle No</th>
-                <th>Accident No</th>
-                {isSixthColumnVisible && <th>District</th>}
-                <th>View</th>
-                <th>Upload Photos</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.length === 0 ? (
-                <tr>
-                  <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>No data is there...</td>
-                </tr>
-              ) : (
 
-                currentItems.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                  <td>{item.customerName.charAt(0).toUpperCase() + item.customerName.slice(1)}</td>
-                  <td>{item.reason.charAt(0).toUpperCase() + item.reason.slice(1)  || "___"}</td>
-                    <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{item.vehicleNo || "___"}</td>
-                    <td style={{ color: "green" }}>{item.accidentFileNo || "___"}</td>
-                    {isSixthColumnVisible && <td style={{ color: "blue" }}>{item.district || "___"}</td>}
-                    <td>
-                      <button onClick={() => view(item.AccidentDataCode)} className="view-button">View</button>
-                    </td>
-                    <td>
-                      <button onClick={() => upload(item.accidentFileNo)} className="view-button"  style={{ background: 'rgb(190 98 98)' , color:'white'}}>Upload</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className='pagination'>
-          <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
-            <Button onClick={handlePreviousPage} disabled={currentPage === 1}><ArrowBack /></Button>
-            {pageNumbers.map((pageNumber) => (
-              <Button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                className={currentPage === pageNumber ? 'active' : ''}
-              >
-                {pageNumber}
-              </Button>
-            ))}
-            <Button onClick={handleNextPage} disabled={currentPage === totalPages}><ArrowForward /></Button>
-          </ButtonGroup>
-        </div>
+        <div className="container d-flex justify-content-center " style={{marginTop:"10px"}}>
+            <div className="container my-5">
+              <DataTable
+                  columns={columns}
+                  data={currentItems}
+                  fixedHeader
+                  pagination
+                  selectableRows
+                  onSelectedRowsChange={handleRowsSelected}
+                  conditionalRowStyles={conditionalRowStyles}
+                  customStyles={tableCustomStyles}
+              />
+            </div>
+          </div>
+
       </div>)}
       {showEditVehicleInfo && (
         <VehicleClaimEdit id={selectedId} onUpdate={handleUpdate} />

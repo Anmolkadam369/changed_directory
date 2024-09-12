@@ -287,10 +287,10 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openChassisModal}
                                 />
-                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Number Modal">
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
                                     <div className="modal-header">
                                         <IconButton href={formData.ChassisNoView} download color="primary">
                                             <DownloadIcon />
@@ -300,18 +300,12 @@ function AdvocateResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.ChassisNoView} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData.ChassisNoView} alt="Chassis Card" className="modal-image" />
                                     </div>
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No Chassis Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -321,7 +315,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
@@ -339,13 +333,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No Chassis Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -355,7 +343,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
@@ -371,22 +359,11 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.frontLH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No FrontLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
                         )}
                     </label>
-
-                </div>
-
-                <div className="form-row">
                     <label className="form-field">
                         frontRH:
                         {formData.frontRH ? (
@@ -394,7 +371,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
@@ -412,13 +389,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No frontRH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -428,7 +399,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
@@ -446,13 +417,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No front View Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -462,7 +427,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
@@ -478,21 +443,11 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.rearLH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                </div>
-
-                <div className="form-row">
                     <label className="form-field">
                         rear RH:
                         {formData.rearRH ? (
@@ -500,7 +455,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
@@ -516,16 +471,9 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.rearRH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -535,7 +483,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
@@ -553,13 +501,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -569,7 +511,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
@@ -585,21 +527,11 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.MajorDamages2} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                </div>
-
-                <div className='form-row'>
                     <label className="form-field">
                         Major Damage Photo 3:
                         {formData.MajorDamages3 ? (
@@ -607,7 +539,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -623,16 +555,9 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.MajorDamages3} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -642,7 +567,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
@@ -658,16 +583,9 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.MajorDamages4} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
@@ -677,7 +595,7 @@ function AdvocateResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
@@ -693,20 +611,13 @@ function AdvocateResponse({ data, onUpdate }) {
                                         <img src={formData.MajorDamages5} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                </div>
 
+                </div>
             <div class="header-container">
                 <h3 class="bigtitle">Data Uploaded by Advocate</h3>
                 <h5 style={{

@@ -130,6 +130,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const countVendors = (data) => {
   const vendorCounts = {};
 
+
   data.forEach((item) => {
     ['mechanic', 'crane', 'advocate', 'workshop'].forEach((type) => {
       const vendorId = item[type];
@@ -155,13 +156,21 @@ const AssignedVendorsTable = () => {
   const [selectedType, setSelectedType] = useState('crane');
   const [showDropdown, setShowDropdown] = useState(false);
   const [height, setHeight] = useState('400px');
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     getData();
   }, []);
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/vendorResponse`);
+    const response = await axios ({
+      method : "GET",
+      url : `${backendUrl}/api/vendorResponse/${userId}`,
+      headers: {
+        'Authorization': token
+      }
+    });
     if (response && response.data.message !== "No accident vehicle data found.") {
       setData(response.data.data);
     }

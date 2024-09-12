@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
 import backendUrl from '../../environment';
+import DataTable from 'react-data-table-component';
 import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
@@ -29,6 +30,7 @@ const VendorIndPerf = () => {
     const getData = async () => {
         const response = await axios.get(`${backendUrl}/api/getVendor`);
         setData(response.data.data);
+        setCurrentItems(response.data.data)
     };
 
     const viewPerformance = (id, type) => {
@@ -55,8 +57,94 @@ const VendorIndPerf = () => {
   };
 
 
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight : "bold",
+        fontSize : '9px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style:{
+        default: 'red'
+      }
+    },
+    rows : {
+      style:{
+        backgroundColor: '#f2f2f2',
+      }
+    }
+  }
+  const [currentItems, setCurrentItems] = useState(data);
+
+  const columns = [
+    {
+      name: "No",
+      selector: (row) => row.id,
+      width:"60px",
+      sortable: true,
+      style: { fontSize: '10px', padding: '5px' },
+    },    
+    {
+      name: "Added",
+      selector: (row) =>formatDate(row.systemDate),
+      style: { fontSize: '10px', padding: '5px' },
+      width:"80px",
+      sortable: true,
+      sortFunction: (rowA, rowB) => {
+        const dateA = new Date(rowA.systemDate);
+        const dateB = new Date(rowB.systemDate);
+        return dateA - dateB; // Ascending order
+      },
+    },
+    {
+      name: "Name",
+      selector: (row) => row.vendorName,
+      sortable: true,
+      width: "80px",
+      cell: (row) => (
+        <span style={{ color: 'brown',fontSize: '10px', padding: '5px' }}>{row.vendorName.charAt(0).toUpperCase() + row.vendorName.slice(1)}</span>
+      ),
+    },
+    {
+      name: "Email",
+      selector: (row) => row.email,
+      sortable: true,
+      width: "120px",
+      cell: (row) => (
+        <a href={`mailto:${row.email}`} style={{ color: "blue", textDecoration: "none", fontSize: '10px', padding: '5px' }}>
+          {row.email}
+        </a>
+      ),
+    },
+    {
+      name: "Type",
+      selector: (row) => row.vendorType,
+      sortable: true,
+      width:"100px",
+      cell: (row) => (
+        <span style={{ color: '#fff', backgroundColor: '#ffc107', padding: '5px', borderRadius: '4px' ,fontSize: '10px'}}>
+          {row.vendorType ? row.vendorType.charAt(0).toUpperCase() + row.vendorType.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    { name: "Contact",width:"90px",style: { fontSize: '10px', padding: '5px'}, selector: (row) => row.vendorPhone, sortable: true },
+    { name: "State",width:"70px",style: { fontSize: '10px', padding: '5px'}, selector: (row) => row.state, sortable: true },
+    { name: "District",width:"80px",style: { fontSize: '10px', padding: '5px'}, selector: (row) => row.district, sortable: true },
+  ]
+
     return (
-        <div >
+        <div style={{  display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
 
 {showVendorTable && (
     <div className="some-table-container">
@@ -99,6 +187,19 @@ const VendorIndPerf = () => {
             </tbody>
         </table>
     </div>
+
+    // <div  >
+    //     <DataTable
+    //     columns={columns}
+    //     data={currentItems}
+    //     pagination
+    //     responsive
+    //     striped
+    //     highlightOnHover
+    //     defaultSortFieldId="id"
+    //     customStyles={tableCustomStyles}
+    //   />
+    // </div>
 )}
 
         </div>

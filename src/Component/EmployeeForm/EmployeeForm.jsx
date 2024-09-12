@@ -250,6 +250,7 @@ const EmployeeForm = () => {
                 [name]: validValue,
             });
         }
+        
         else if (name === 'passingYear' || name === 'passingYearCollege' || name === "passingYearUGCollege" || name === "passingYearPGCollege") {
             if (value.match(/^\d{0,4}$/)) {
                 setFormData({ ...formData, [name]: value });
@@ -276,6 +277,7 @@ const EmployeeForm = () => {
                 [name]: validValue,
             });
         }
+
         else {
             const { value } = e.target;
             setFormData(prevState => ({
@@ -288,22 +290,34 @@ const EmployeeForm = () => {
     const validateForm = () => {
 
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(formData.email)) {
+        if (!emailRegex.test(formData.employeeEmailId)) {
             return 'Please enter a valid email address.';
+        }
+
+        console.log("myfromdataBranch" )
+        if (formData.branch === "" || formData.branch == undefined || formData.branch == null) {
+            console.log("STATESSSSSSSSSSSSSSSS")
+            setAlertInfo({ show: true, message: "Branch is mandatory", severity: 'error' });
+            return 'Branch is mandatory.';
         }
 
         return '';
     };
     console.log("userid", userId)
     console.log("link", `${backendUrl}/api/createNewEmployee/${userId}`)
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationMessage = validateForm();
+        if (validationMessage) {
+            console.log(validationMessage);
+            return;
+        }
         setIsLoading(true);
-
-
         console.log('Form data submitted:', formData);
         setAlertInfo({ ...alertInfo, show: false });
-
+        
+        
         const formDataObj = new FormData();
         for (const key in formData) {
             if (formData[key]) {
@@ -314,7 +328,7 @@ const EmployeeForm = () => {
                 }
             }
         }
-
+        
         for (let pair of formDataObj.entries()) {
             console.log(`${pair[0]}:`, pair[1]);
         }
@@ -1513,7 +1527,13 @@ const EmployeeForm = () => {
 
                 <div style={{ textAlign: 'center' }}>
                     <button type="submit"
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                        style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
                         disabled={isLoading} // Disable button while loading
                     >
                         {isLoading ? 'Submitting...' : 'Submit'}

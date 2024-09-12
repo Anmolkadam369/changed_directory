@@ -1465,7 +1465,13 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
 
                 <div>
                     <button type="submit"
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                        style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
                         disabled={isLoading} // Disable button while loading
                         onClick={onSubmit}
                     >

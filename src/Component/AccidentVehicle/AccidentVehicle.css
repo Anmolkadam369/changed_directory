@@ -84,7 +84,6 @@ margin-bottom: 20px;
   }
 }
 
-
 @media (max-width: 450px) {
 
   .responsive-table {
@@ -595,11 +594,11 @@ input[type='date'] {
   width: 100%;
   text-align: center;
   padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
+  background-color: transparent;
+  color: black;
+  border: 5px solid #96a3e4;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 10px;
   text-decoration: none;
 }
 

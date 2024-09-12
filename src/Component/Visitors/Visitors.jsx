@@ -21,13 +21,22 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import DataTable from "react-data-table-component";
 
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+};
+
+const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
 
 const Visitors = () => {
-
-
-
-
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -40,8 +49,8 @@ const Visitors = () => {
     const [editVisitor, setEditVisitor] = useState(false)
     const [showTable, setShowTable] = useState(true)
     const [width, setWidth] = useState('100%');
-
-    const [data, setdata] = useState([]);
+    const [startDate, setStartDate] = useState(new Date());
+    const [data, setData] = useState([]);
     const [comingData, setComingData] = useState([]);
     const [currentTiming, setCurrentTiming] = useState("")
 
@@ -50,49 +59,134 @@ const Visitors = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
-    const formatDate = (isoDateString) => {
-        const date = new Date(isoDateString);
-        const day = String(date.getUTCDate()).padStart(2, '0');
-        const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
-        const year = date.getUTCFullYear();
-        return (`${day}-${month}-${year}`);
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const handleRowsSelected = (state) => {
+        setSelectedRows(state.selectedRows);
     }
 
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-        setCurrentPage(1);
-    };
-    const handleSetItemPerPage = (e) => {
-        setItemsPerPage(e.target.value);
-    };
-    const filteredData = data.filter(item =>
-        item.VisitorFirstName && item.VisitorFirstName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+    const conditionalRowStyles = [
+        {
+            when: (row) => selectedRows.some(selected => selected.visitorId === row.visitorId),
+            style: {
+                backgroundColor: '#bdb6b6',
+            },
         }
-    };
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
+    ];
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const startPage = Math.max(1, currentPage - 1);
-    const endPage = Math.min(totalPages, currentPage + 1);
-    const pageNumbers = [];
-    for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(i);
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffff',
+                backgroundColor: 'rgb(169 187 169)',
+                fontWeight: "bold",
+                fontSize: '13px'
+            },
+        },
+        pagination: {
+            style: {
+                button: {
+                    background: 'none',
+                    boxShadow: "none"
+                },
+            },
+        },
+        striped: {
+            style: {
+                default: 'red'
+            }
+        },
+        rows: {
+            style: {
+                backgroundColor: '#f2f2f2',
+            }
+        }
     }
+
+    const [currentItems, setCurrentItems] = useState(data);
+    console.log("HOMEDATA", currentItems)
+    const columns = [
+        {
+            name: "Date",
+            selector: (row) => row.systemDate,
+            sortable: true,
+            sortFunction: (rowA, rowB) => {
+                const dateA = parseDate(rowA.systemDate);
+                const dateB = parseDate(rowB.systemDate);
+                return dateA - dateB;
+            },
+        },
+        {
+            name: "First Name", selector: (row) => row.VisitorFirstName, sortable: true, width: "150px",
+            cell: (row) => (
+                <span style={{ color: 'brown' }}>{row.VisitorFirstName.charAt(0).toUpperCase() + row.VisitorFirstName.slice(1)}</span>
+            )
+        },
+        {
+            name: "Last Name", selector: (row) => row.VisitorLastName, sortable: true, width: "150px",
+            cell: (row) => (
+                <span style={{ color: 'green' }}>{row.VisitorLastName.charAt(0).toUpperCase() + row.VisitorLastName.slice(1)}</span>
+            )
+        },
+        {
+            name: "Visitors Entry", selector: (row) => row.VisitorsEntry, sortable: true, width: "150px",
+            cell: (row) => (
+                <span style={{ color: '#fff', backgroundColor: '#ffc107', padding: '5px', borderRadius: '4px' }}>{row.VisitorsEntry.charAt(0).toUpperCase() + row.VisitorsEntry.slice(1)}</span>
+            )
+        },
+        {
+            name: "Visitors Out", selector: (row) => row.VisitorOut, sortable: true, width: "150px",
+            cell: (row) => (
+                <span style={{ color: '#fff', backgroundColor: '#ffc107', padding: '5px', borderRadius: '4px' }}>{row.VisitorOut ? row.VisitorOut.charAt(0).toUpperCase() + row.VisitorOut.slice(1):""}</span>
+            )
+        },
+        {
+            name: "Email", selector: (row) => row.email, sortable: true, width: "200px",
+            cell: (row) => (
+                <a href={`mailto:${row.email}`} style={{ color: "blue", textDecoration: "none" }}>
+                    {row.email}
+                </a>
+            ),
+        },
+        {
+            name: "Phone Number", selector: (row) => row.phoneNo, sortable: true,
+            cell: (row) => (
+                <span>
+                    {row.phoneNo ? row.phoneNo.charAt(0).toUpperCase() + row.phoneNo.slice(1).toLowerCase() : ""}
+                </span>
+            ),
+        },
+        {
+            name: "Actions",
+            cell: (row) => (
+                <button
+                    onClick={() => view(row.visitorId)}
+                    className='view-button'
+                >
+                    Edit Visitor's
+                </button>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+    ];
+
+    const handleSearch = (e) => {
+        const searchValue = e.target.value.toLowerCase();
+
+        const newRows = data.filter((row) => {
+            const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
+            const VisitorFirstNameValue = (row.VisitorFirstName ?? '').toLowerCase().includes(searchValue);
+            const emailValue = (row.email ?? '').toLowerCase().includes(searchValue);
+            const phoneNoValue = (row.phoneNo ?? '').toLowerCase().includes(searchValue);
+            const VisitorLastNameValue = (row.VisitorLastName ?? '').toLowerCase().includes(searchValue);
+
+            return dateValue || VisitorFirstNameValue || emailValue || phoneNoValue || VisitorLastNameValue;
+        });
+
+        setCurrentItems(newRows);
+    };
 
 
 
@@ -180,8 +274,14 @@ const Visitors = () => {
     const getVisitor = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/visitors`);
-            console.log("modi",response.data.data)
-            setdata(response.data.data)
+            const fetchedData = response.data.data;
+
+            const formattedData = fetchedData.map(item => ({
+                ...item,
+                systemDate: formatDate(item.systemDate),
+            }));
+            setData(formattedData);
+            setCurrentItems(formattedData);
         } catch (error) {
             console.error("Error during form submission:", error);
             const errorMessage = 'An error occurred';
@@ -190,16 +290,6 @@ const Visitors = () => {
 
     const [sortDate, setSortDate] = useState("asc");
 
-    const sortDateFunc = () => {
-        setSortDate(sortDate == "asc" ? "desc" : "asc");
-        const sortedItems = [...data].sort((a, b) => {
-            const dateA = new Date(a.systemDate).getTime();
-            const dateB = new Date(b.systemDate).getTime();
-            return sortDate == "asc" ? dateA - dateB : dateB - dateA;
-        });
-        console.log("sodI", sortedItems);
-        setdata(sortedItems)
-    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -412,7 +502,7 @@ const Visitors = () => {
                 setMarginLeft('0px');
                 setPaddingLeft('10px')
             }
-            else{
+            else {
                 setMarginLeft('20px');
                 setPaddingLeft('20px')
             }
@@ -560,7 +650,13 @@ const Visitors = () => {
 
                         <div style={{ textAlign: 'center' }}>
                             <button type="submit"
-                                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                                style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
                                 disabled={isLoading} // Disable button while loading
                             >
                                 {isLoading ? 'Submitting...' : 'Submit'}
@@ -578,7 +674,7 @@ const Visitors = () => {
             )}
 
             {showTable && (
-                <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+                <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
                     <div className="visitor-container">
                         <h3 className="bigtitle">Visitor's Data</h3>
                         <button onClick={add} className="add-button">
@@ -587,100 +683,35 @@ const Visitors = () => {
                     </div>
                     <div className="form-search" style={{ marginTop: "20px" }}>
                         <label className='label-class'>
-                            Search by Customer Name
+                            Search by
                             <input
                                 type="text"
-                                placeholder="Search by Customer Name"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
+                                placeholder="Search by "
+                                onChange={handleSearch}
                                 required
                             />
                         </label>
-                        <label className='label-class'>
-                            Number Of Items On Page
-                            <input
-                                type="number"
-                                placeholder="Items Show on Page"
-                                value={itemsPerPage}
-                                onChange={handleSetItemPerPage}
-                                required
-                            />
-                        </label>
+
                         <label className='label-class'></label>
                     </div>
 
-
-
                     <div>
                         <div style={{ marginTop: "50px" }}>
-                            <p
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: "right",
-                                    marginRight: "5px",
-                                    cursor: "pointer"
-                                }}
-                                onClick={sortDateFunc}
-                            >
-                                {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-                            </p>
-                            <div className='responsive-table'>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Date</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Phone No</th>
-                                            <th>Email Id</th>
-                                            <th>Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentItems.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Data...</td>
-                                            </tr>
-                                        ) : (
-                                            currentItems.map((person, index) => (
-                                                <tr key={person} >
-                                                    <td>{indexOfFirstItem + index + 1}</td>
-                                                    <td>{formatDate(person.systemDate)}</td>
-                                                    <td>{person.VisitorFirstName || '---'}</td>
-                                                    <td>{person.VisitorLastName || '---'}</td>
-                                                    <td>{person.phoneNo || '---'}</td>
-                                                    <td>{person.email || '---'}</td>
-                                                    <td>
-                                                        <div>
-                                                            <button onClick={() => view(person.visitorId)} className='view-button' >View</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
+                            <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+                                <div className="container my-5">
+                                    <DataTable
+                                        columns={columns}
+                                        data={currentItems}
+                                        fixedHeader
+                                        pagination
+                                        selectableRows
+                                        onSelectedRowsChange={handleRowsSelected}
+                                        conditionalRowStyles={conditionalRowStyles}
+                                        customStyles={tableCustomStyles}
+                                    />
+                                </div>
                             </div>
-                            <div className="pagination">
-                                <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
-                                    <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                                        <ArrowBack />
-                                    </Button>
-                                    {pageNumbers.map((pageNumber) => (
-                                        <Button
-                                            key={pageNumber}
-                                            onClick={() => handlePageChange(pageNumber)}
-                                            className={currentPage === pageNumber ? 'active' : ''}
-                                        >
-                                            {pageNumber}
-                                        </Button>
-                                    ))}
-                                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                                        <ArrowForward />
-                                    </Button>
-                                </ButtonGroup>
-                            </div>
+
                         </div>
                     </div>
                 </div>)}
@@ -803,7 +834,7 @@ const Visitors = () => {
 
                         <div className="form-row">
                             <label className='form-field'>
-                            Out Time :
+                                Out Time :
                                 <input
                                     type="text"
                                     name="VisitorOut"
@@ -818,7 +849,7 @@ const Visitors = () => {
                             <label className='form-field'></label>
                         </div>
 
-                            {/* <label className="form-field">
+                        {/* <label className="form-field">
                                 Out Time :
                                 {!isOutClicked && (
                                     <div
@@ -852,7 +883,13 @@ const Visitors = () => {
 
                         <div style={{ textAlign: 'center' }}>
                             <button type="submit" onClick={editFormSubmit}
-                                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                                style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
                                 disabled={isLoading} // Disable button while loading
                             >
                                 {isLoading ? 'Submitting...' : 'Submit'}

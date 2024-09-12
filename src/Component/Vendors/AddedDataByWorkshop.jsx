@@ -64,6 +64,59 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
         window.open(previewLink, '_blank');
     };
 
+
+    
+    const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
+    const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
+    const [isFrontLHModalOpen, setIsFrontLHModalOpen] = useState(false);
+    const [isFrontRHModalOpen, setIsFrontRHModalOpen] = useState(false);
+
+    const [isFrontViewModalOpen, setIsFrontViewModalOpen] = useState(false);
+    const [isRearRHModalOpen, setIsRearRHModalOpen] = useState(false);
+    const [isRearLHModalOpen, setIsRearLHModalOpen] = useState(false);
+    const [isMajorDamage1ModalOpen, setIsMajorDamage1ModalOpen] = useState(false);
+
+    const [isMajorDamage2ModalOpen, setIsMajorDamage2ModalOpen] = useState(false);
+    const [isMajorDamage3ModalOpen, setIsMajorDamage3ModalOpen] = useState(false);
+    const [isMajorDamage4ModalOpen, setIsMajorDamage4ModalOpen] = useState(false);
+    const [isMajorDamage5ModalOpen, setIsMajorDamage5ModalOpen] = useState(false);
+
+    const openChassisModal = () => setIsChassisModalOpen(true);
+    const closeChassisModal = () => setIsChassisModalOpen(false);
+
+    const openClusterModal = () => setIsClusterModalOpen(true);
+    const closeClusterModal = () => setIsClusterModalOpen(false);
+
+    const openFrontLHModal = () => setIsFrontLHModalOpen(true);
+    const closeFrontLHModal = () => setIsFrontLHModalOpen(false);
+
+    const openFrontRHModal = () => setIsFrontRHModalOpen(true);
+    const closeFrontRHModal = () => setIsFrontRHModalOpen(false);
+
+    const openFrontViewModal = () => setIsFrontViewModalOpen(true);
+    const closeFrontViewModal = () => setIsFrontViewModalOpen(false);
+
+    const openRearRHModal = () => setIsRearRHModalOpen(true);
+    const closeRearRHModal = () => setIsRearRHModalOpen(false);
+
+    const openRearLHModal = () => setIsRearLHModalOpen(true);
+    const closeRearLHModal = () => setIsRearLHModalOpen(false);
+
+    const openMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(true);
+    const closeMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(false);
+
+    const openMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(true);
+    const closeMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(false);
+
+    const openMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(true);
+    const closeMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(false);
+
+    const openMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(true);
+    const closeMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(false);
+
+    const openMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(true);
+    const closeMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(false);
+
     const [isChequeModalOpen, setIsChequeModalOpen] = useState(false);
     const [isOnlinePaymentModalOpen, setIsOnlinePaymentModalOpen] = useState(false);
 
@@ -571,7 +624,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     <h2 className='bigtitle'>Accident Images</h2>
                 </div>
 
-                <div className="form-row">
+                <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Chassis Number:
                         {comingData.ChassisNoView ? (
@@ -579,8 +632,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openChassisModal}
                                 />
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ChassisNoView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeChassisModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ChassisNoView} alt="Chassis Card" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
@@ -593,8 +660,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openClusterModal}
                                 />
+                                <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ClusterView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeClusterModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
@@ -607,9 +688,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openFrontLHModal}
                                 />
-
+                                <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
@@ -622,8 +716,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openFrontRHModal}
                                 />
+                                <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
@@ -636,9 +744,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openFrontViewModal}
                                 />
-
+                                <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontViewModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
@@ -651,9 +772,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openRearLHModal}
                                 />
-
+                                <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -666,9 +800,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openRearRHModal}
                                 />
-
+                                <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -681,9 +828,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openMajorDamage1Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages1} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -696,9 +856,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openMajorDamage2Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages2} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -711,9 +884,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openMajorDamage3Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages3} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -726,9 +912,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openMajorDamage4Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages4} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -741,9 +940,22 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius:"10px" }}
+                                    onClick={openMajorDamage5Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages5} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -1525,7 +1737,13 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
                 <div>
                     <button type="submit"
-                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                        style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
                         disabled={isLoading} // Disable button while loading
                         onClick={onSubmit}
                     >

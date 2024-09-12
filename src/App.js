@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 
 import Home from './Component/Home/Home';
@@ -92,6 +93,8 @@ import Table from './Component/AAAAAAAAAAAAAAAAAA/Table';
 import { Provider } from 'react-redux';
 import store from './Component/Login/store';
 import ProtectedRoute from './Component/Login/ProtectedRoute';
+import KanduTable from './Component/VendorApproved/KanduTable';
+import SidebarWithSubmenus from './Component/AAAAAAAAAAAAAAAAAA/SidebarWithSubmenus';
 
 function App() {
   return (
@@ -101,11 +104,13 @@ function App() {
           <Route exact path='/' element={<Home />} />
           {/* <Route path='/Dashboard' element={<Dashboard/>}/> */}
           <Route path='/ContactUs' element={<ContactUs />} />
+          <Route path='/SidebarWithSubmenus' element={<SidebarWithSubmenus/>}/>
 
           <Route exact path='/LoginPage' element={<LoginPage />} />
           {/* <Route path='/Register' element={<Registration />} /> */}
+          <Route path= "/KanduTable" element={<ProtectedRoute element={<KanduTable/>}/>}/>
           
-          {/* <Route path='/Location' element={<ProtectedRoute element={<Location />} />} /> */}
+          {/* <Route paath='/Location' element={<ProtectedRoute element={<Location />} />} /> */}
           {/* <Route path='/Location1' element={<ProtectedRoute element={<Location1 />} />} /> */}
           {/* <Route path='/UserIV' element={<ProtectedRoute element={<UserIV />} />} /> */}
           {/* <Route path='/UserIV1' element={<ProtectedRoute element={<UserIV1 />} />} /> */}
@@ -155,9 +160,9 @@ function App() {
           <Route path='/AdvocateResponse' element={<ProtectedRoute element={<AdvocateResponse />} />} />
           <Route path='/WorkshopResponse' element={<ProtectedRoute element={<WorkshopResponse />} />} />
           <Route path='/ActualVendorResponse' element={<ProtectedRoute element={<ActualVendorResponse />} />} /> */}
-{/* 
+ 
           <Route path='/DailyWorkshop' element={<ProtectedRoute element={<DailyWorkshop />} />} />
-          <Route path='/HandoverToWorkshop' element={<ProtectedRoute element={<HandoverToWorkshop />} />} />
+  {/*        <Route path='/HandoverToWorkshop' element={<ProtectedRoute element={<HandoverToWorkshop />} />} />
           <Route path='/Notification' element={<ProtectedRoute element={<Notification />} />} /> */}
 
           {/* <Route path='/EmployeeForm' element={<ProtectedRoute element={<EmployeeForm />} />} />

@@ -1,0 +1,25 @@
+/* DataTable.module.css */
+.tableContainer {
+    height: 400px;
+    overflow-y: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.dataTable {
+    width: 100%;
+}
+
+
+/* styles.css or your main stylesheet */
+
+.custom-table-header {
+    background-color: #f0f0f0; /* Background color for the table header */
+    color: #333; /* Text color */
+    font-weight: bold; /* Optional: make the header text bold */
+  }
+  
+  .custom-table-header th {
+    padding: 10px; /* Optional: padding for header cells */
+  }
+  

@@ -6,9 +6,6 @@ import backendUrl from '../../environment';
 import axios from 'axios';
 import iarkerIcon from '../../Assets/markerIcon1.png'
 
-// Function to calculate the distance between two coordinates
-
-
 const MapComponent = ({accidentLocation1, additionalInfo}) => {
   console.log("accidentLocation1 ",accidentLocation1,additionalInfo)
   console.log("accienent latitude ", accidentLocation1.latitude)
@@ -90,7 +87,7 @@ const MapComponent = ({accidentLocation1, additionalInfo}) => {
 
   return (
     <div className="map-container" style={{ height: '450px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
-    <MapContainer center={[accidentLocation.lat, accidentLocation.lon]} zoom={6} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
+    <MapContainer center={[accidentLocation.lat, accidentLocation.lon]} zoom={4} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

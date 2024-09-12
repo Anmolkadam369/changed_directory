@@ -247,7 +247,12 @@ function Home() {
         const element = document.getElementById('target-section');
         element.scrollIntoView({ behavior: 'smooth' });
     };
-
+    const scrollToTop = () => {
+        console.log("Scrolling to the top...");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+        document.body.scrollTo({ top: 0, behavior: 'smooth' });
+    };
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
     const [isClicked, setIsClicked] = useState(false);
@@ -311,7 +316,9 @@ function Home() {
                             {isOpen && (
                                 <div className="menu-card" ref={menuRef}>
                                     <ul>
-                                        <li><a href="#home">Home</a></li>
+                                        <li>
+                                            <a href="#home" onClick={scrollToTop}>Home</a>
+                                        </li>
                                         <li onClick={scrollToSection}><a href="#faq">FAQ</a></li>
                                         <li onClick={navigateToContactUs}><a href="#contact">Contact Us</a></li>
                                         <li onClick={scrollToSection}><a href="#blog">Blog</a></li>

@@ -168,7 +168,13 @@
 //             )}
 
 //             <div style={{ textAlign: 'center' }}>
-//                 <button type="submit" onClick={onSubmit} style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+//                 <button type="submit" onClick={onSubmit} style={{                     fontSize: "14px",
+                    // padding: "5px 20px",
+                    // border: "3px solid lightblue",
+                    // borderRadius: "4px",
+                    // cursor: "pointer",
+                    // backgroundColor: "transparent",
+                    // color: "green",}}>
 //                     Submit
 //                 </button>
 //             </div>
@@ -409,20 +415,21 @@ function MechanicResponse({ data, onUpdate }) {
                     <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
                     <h2 className='bigtitle'>Accident Images</h2>
                 </div>
+
                 <div className="form-row">
                     <label className="form-field">
                         Chassis Number:
-                        {formData.ChassisNoView ? (
+                        {formData .ChassisNoView ? (
                             <>
                                 <img
-                                    src={formData.ChassisNoView}
+                                    src={formData .ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openChassisModal}
                                 />
-                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Number Modal">
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.ChassisNoView} download color="primary">
+                                        <IconButton href={formData .ChassisNoView} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeChassisModal} color="secondary">
@@ -430,33 +437,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.ChassisNoView} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .ChassisNoView} alt="Chassis Card" className="modal-image" />
                                     </div>
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No Chassis Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         Cluster Number:
-                        {formData.ClusterView ? (
+                        {formData .ClusterView ? (
                             <>
                                 <img
-                                    src={formData.ClusterView}
+                                    src={formData .ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.ClusterView} download color="primary">
+                                        <IconButton href={formData .ClusterView} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeClusterModal} color="secondary">
@@ -464,33 +465,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .ClusterView} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No Chassis Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         FrontLH Number:
-                        {formData.frontLH ? (
+                        {formData .frontLH ? (
                             <>
                                 <img
-                                    src={formData.frontLH}
+                                    src={formData .frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.frontLH} download color="primary">
+                                        <IconButton href={formData .frontLH} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeFrontLHModal} color="secondary">
@@ -498,38 +493,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.frontLH} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .frontLH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No FrontLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
                         )}
                     </label>
-
-                </div>
-
-                <div className="form-row">
                     <label className="form-field">
                         frontRH:
-                        {formData.frontRH ? (
+                        {formData .frontRH ? (
                             <>
                                 <img
-                                    src={formData.frontRH}
+                                    src={formData .frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.frontRH} download color="primary">
+                                        <IconButton href={formData .frontRH} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeFrontRHModal} color="secondary">
@@ -537,33 +521,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.frontRH} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .frontRH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No frontRH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         front View:
-                        {formData.frontView ? (
+                        {formData .frontView ? (
                             <>
                                 <img
-                                    src={formData.frontView}
+                                    src={formData .frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.frontView} download color="primary">
+                                        <IconButton href={formData .frontView} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeFrontViewModal} color="secondary">
@@ -571,33 +549,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.frontView} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .frontView} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No front View Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         rear LH:
-                        {formData.rearLH ? (
+                        {formData .rearLH ? (
                             <>
                                 <img
-                                    src={formData.rearLH}
+                                    src={formData .rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.rearLH} download color="primary">
+                                        <IconButton href={formData .rearLH} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeRearLHModal} color="secondary">
@@ -605,37 +577,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.rearLH} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .rearLH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                </div>
-
-                <div className="form-row">
                     <label className="form-field">
                         rear RH:
-                        {formData.rearRH ? (
+                        {formData .rearRH ? (
                             <>
                                 <img
-                                    src={formData.rearRH}
+                                    src={formData .rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.rearRH} download color="primary">
+                                        <IconButton href={formData .rearRH} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeRearRHModal} color="secondary">
@@ -643,34 +605,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.rearRH} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .rearRH} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         Major Damage Photo:
-                        {formData.MajorDamages1 ? (
+                        {formData .MajorDamages1 ? (
                             <>
                                 <img
-                                    src={formData.MajorDamages1}
+                                    src={formData .MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.MajorDamages1} download color="primary">
+                                        <IconButton href={formData .MajorDamages1} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeMajorDamage1Modal} color="secondary">
@@ -678,33 +633,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .MajorDamages1} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         Major Damage Photo 2:
-                        {formData.MajorDamages2 ? (
+                        {formData .MajorDamages2 ? (
                             <>
                                 <img
-                                    src={formData.MajorDamages2}
+                                    src={formData .MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.MajorDamages2} download color="primary">
+                                        <IconButton href={formData .MajorDamages2} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeMajorDamage2Modal} color="secondary">
@@ -712,37 +661,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .MajorDamages2} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                </div>
-
-                <div className='form-row'>
                     <label className="form-field">
                         Major Damage Photo 3:
-                        {formData.MajorDamages3 ? (
+                        {formData .MajorDamages3 ? (
                             <>
                                 <img
-                                    src={formData.MajorDamages3}
+                                    src={formData .MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.MajorDamages3} download color="primary">
+                                        <IconButton href={formData .MajorDamages3} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeMajorDamage3Modal} color="secondary">
@@ -750,34 +689,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .MajorDamages3} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         Major Damage Photo 4:
-                        {formData.MajorDamages4 ? (
+                        {formData .MajorDamages4 ? (
                             <>
                                 <img
-                                    src={formData.MajorDamages4}
+                                    src={formData .MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.MajorDamages4} download color="primary">
+                                        <IconButton href={formData .MajorDamages4} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeMajorDamage4Modal} color="secondary">
@@ -785,34 +717,27 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .MajorDamages4} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
                     <label className="form-field">
                         Major Damage Photo 5:
-                        {formData.MajorDamages5 ? (
+                        {formData .MajorDamages5 ? (
                             <>
                                 <img
-                                    src={formData.MajorDamages5}
+                                    src={formData .MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
                                     <div className="modal-header">
-                                        <IconButton href={formData.MajorDamages5} download color="primary">
+                                        <IconButton href={formData .MajorDamages5} download color="primary">
                                             <DownloadIcon />
                                         </IconButton>
                                         <IconButton onClick={closeMajorDamage5Modal} color="secondary">
@@ -820,21 +745,15 @@ function MechanicResponse({ data, onUpdate }) {
                                         </IconButton>
                                     </div>
                                     <div className="modal-image-container">
-                                        <img src={formData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                        <img src={formData .MajorDamages5} alt="Cluster Number" className="modal-image" />
                                     </div>
                                 </Modal>
-
                             </>
                         ) : (
-                            <p style={{
-                                color: 'red',
-                                fontStyle: 'italic',
-                                fontSize: '14px',
-                                margin: '10px 0',
-                                textAlign: 'center'
-                            }}>No rearLH Photo uploaded</p>
+                            <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
+
                 </div>
 
                 <div className="header-container">

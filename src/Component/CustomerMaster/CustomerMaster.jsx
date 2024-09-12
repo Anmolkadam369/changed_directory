@@ -18,6 +18,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import customerInfo1 from '../../Assets/customerInfo1.jpg'
 import customerInfo2 from '../../Assets/customerInfo2.jpg'
+import customerInfo from '../../Assets/customerInfo.xlsx';
+import fleetInfo from '../../Assets/fleetInfo.xlsx';
+import { IconButton } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -251,13 +256,13 @@ const CustomerMaster = () => {
   const customersInfoRef = useRef(null);
 
   const validateForm = () => {
-    for (const [key, value] of Object.entries(formData)) {
-      if (key === 'panCard' || key === 'adharCard') {
-        if (value === null || value === "" || value === undefined || (value && value.size === 0)) {
-          return `Fields '${key}' is required here.`;
-        }
-      }
-    }
+    // for (const [key, value] of Object.entries(formData)) {
+    //   if (key === 'panCard' || key === 'adharCard') {
+    //     if (value === null || value === "" || value === undefined || (value && value.size === 0)) {
+    //       return `Fields '${key}' is required here.`;
+    //     }
+    //   }
+    // }
     console.log("type", formData['CustomerType'])
 
 
@@ -272,7 +277,7 @@ const CustomerMaster = () => {
         }
       }
 
-      if (key !== "GSTNo" && key !== "GST" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+      if (key !== "GSTNo" && key !== "GST" && key !== "adharNo" &&  key !== "panNo"  && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
         if (value === '') return `Fields '${key}' is required.`;
       }
     }
@@ -300,12 +305,12 @@ const CustomerMaster = () => {
     }
 
     const aadhaarRegex = /^\d{12}$/;
-    if (!aadhaarRegex.test(formData.adharNo)) {
+    if (formData.adharNo !== "" && !aadhaarRegex.test(formData.adharNo)) {
       return 'Please enter a valid Aadhaar Number.';
     }
 
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    if (!panRegex.test(formData.panNo)) {
+    if ( formData.panNo !== "" && !panRegex.test(formData.panNo)) {
       return 'Please enter a valid PAN Number.';
     }
     return '';
@@ -577,6 +582,12 @@ const CustomerMaster = () => {
                   className="form-control"
                   required />
               </label>
+              <label className='form-field'>
+              <IconButton href={customerInfo} download="customerInfo.xlsx" color="primary">
+                    <p style={{fontSize:"12px"}}>Download Reference Excel File</p>
+                      <DownloadIcon />
+                    </IconButton>
+              </label>
               <div className={isZoomed1 ? "overlay" : ""}>
                 <label className="form-field" onClick={toggleZoom1}>
                   have a look how structure looks :
@@ -625,7 +636,13 @@ const CustomerMaster = () => {
 
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
             <button type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
               disabled={isLoading} // Disable button while loading
             >
               {isLoading ? 'Submitting...' : 'Submit'}
@@ -827,7 +844,7 @@ const CustomerMaster = () => {
                   value={formData.panNo}
                   onChange={handleChange}
                   className="form-control"
-                  required
+                  // required
                   pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
                   title="Please enter a valid PAN number (e.g., ABCDE1234F)."
                 />
@@ -842,7 +859,8 @@ const CustomerMaster = () => {
                   className="form-control"
                   ref={panRef}
                   accept="image/*"
-                  required />
+                  // required 
+                  />
               </label>
               <label className="form-field">
                 Aadhaar Number:
@@ -853,7 +871,7 @@ const CustomerMaster = () => {
                   value={formData.adharNo}
                   onChange={handleChange}
                   className="form-control"
-                  required
+                  // required
                   pattern="\d{12}"
                   title="Aadhaar number must be exactly 12 digits."
                 />
@@ -871,7 +889,8 @@ const CustomerMaster = () => {
                   ref={adharCardRef}
                   className="form-control"
                   accept="image/*"
-                  required />
+                  // required 
+                  />
               </label>
               <label className="form-field">
                 GST Number:
@@ -926,9 +945,7 @@ const CustomerMaster = () => {
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
             Send Your Current Location (if it's same for filling address):
             <div className='form-row'>
-              <label className='form-field'>
                 <Button variant="contained" onClick={getLocation}>Send Location</Button>
-              </label>
             </div>
 
             Send Location Of Address (this is by your address):
@@ -963,6 +980,12 @@ const CustomerMaster = () => {
                       onChange={handleChange}
                       className="form-control"
                       required />
+                  </label>
+                  <label className="form-field">
+                    <IconButton href={fleetInfo} download="fleetInfo.xlsx" color="primary">
+                    <p style={{fontSize:"12px"}}>Download Reference Excel File</p>
+                      <DownloadIcon />
+                    </IconButton>
                   </label>
                   <div className={isZoomed ? "overlay" : ""}>
                     <label className="form-field" onClick={toggleZoom}>
@@ -1132,7 +1155,13 @@ const CustomerMaster = () => {
 
           <div style={{ textAlign: 'center', marginTop: "40px" }}>
             <button type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              style={{                     fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",}}
               disabled={isLoading} // Disable button while loading
             >
               {isLoading ? 'Submitting...' : 'Submit'}

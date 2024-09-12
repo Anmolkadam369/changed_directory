@@ -29,6 +29,8 @@ const AssignVendorsDoughnut = () => {
   const [newResponseData, setNewResponseData] = useState([]);
   const [selectedType, setSelectedType] = useState("mechanic");
   const [showDropdown, setShowDropdown] = useState(false);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   const [doughnutData, setDoughnutData] = useState({
     labels: [],
@@ -62,7 +64,13 @@ const AssignVendorsDoughnut = () => {
   }, [newResponseData, selectedType]);
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/vendorResponse`);
+    const response = await axios ({
+      method : "GET",
+      url : `${backendUrl}/api/vendorResponse/${userId}`,
+      headers: {
+        'Authorization': token
+      }
+    });
     if (response && response.message !== "No accident vehicle data found.") {
       setNewResponseData(response.data.data);
     }

@@ -207,6 +207,7 @@ body.overlay-active {
 
 
 
+
 .close-button {
   position: absolute;
   top: 10px;
@@ -250,7 +251,7 @@ body.overlay-active {
 }
 
 .form-container1>div {
-  flex: 1 1 300px;
+  /* flex: 1 1 300px; */
   margin: 10px;
 }
 

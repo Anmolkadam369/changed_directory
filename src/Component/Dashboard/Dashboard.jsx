@@ -327,7 +327,13 @@ const Dashboard = () => {
     };
 
     const allVendorResponse = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/vendorResponse`);
+        const response = await axios ({
+            method : "GET",
+            url : `${backendUrl}/api/vendorResponse/${userId}`,
+            headers: {
+              'Authorization': token
+            }
+          });
         setVendorResponse(response.data.data)
     };
 

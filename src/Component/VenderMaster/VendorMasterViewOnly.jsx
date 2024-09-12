@@ -345,7 +345,13 @@
 //       </div>
 
 //       <div style={{ textAlign: 'center'}}>
-//   <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+//   <button type="submit" style={{                     fontSize: "14px",
+                    // padding: "5px 20px",
+                    // border: "3px solid lightblue",
+                    // borderRadius: "4px",
+                    // cursor: "pointer",
+                    // backgroundColor: "transparent",
+                    // color: "green",}}>
 //     Submit
 //   </button>
 // </div>
@@ -888,7 +894,13 @@
 
 
 //       <div style={{ textAlign: 'center'}}>
-//   <button type="submit" style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}>
+//   <button type="submit" style={{                     fontSize: "14px",
+                    // padding: "5px 20px",
+                    // border: "3px solid lightblue",
+                    // borderRadius: "4px",
+                    // cursor: "pointer",
+                    // backgroundColor: "transparent",
+                    // color: "green",}}>
 //     Submit
 //   </button>
 // </div>

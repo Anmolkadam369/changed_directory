@@ -13,6 +13,8 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import DataTable from "react-data-table-component";
+
 
 const formatDate =(isoDateString)=>{
   const date = new Date(isoDateString);
@@ -21,6 +23,11 @@ const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zer
 const year = date.getUTCFullYear();
 return (`${day}-${month}-${year}`);
 }
+
+const parseDate = (dateString) => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+};
 
 
 const AccidentVehicle = () => {
@@ -43,51 +50,48 @@ const AccidentVehicle = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const [sortDate, setSortDate]=useState("asc");
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const sortDateFunc = ()=>{
-    setSortDate(sortDate == "asc" ? "desc":"asc");
-    const sortedItems = [...data].sort((a,b)=>{
-      const dateA = new Date(a.systemDate).getTime();
-      const dateB = new Date(b.systemDate).getTime();
-      return sortDate == "asc" ? dateA - dateB : dateB - dateA; 
-    });
-    setData(sortedItems)
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
   }
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
-  const handleSetItemPerPage = (e) => {
-    setItemsPerPage(e.target.value);
-  };
-  const filteredData = data.filter(item =>
-    item.CustomerName && item.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.CustomerCode === row.CustomerCode),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
     }
-  };
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  ];
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startPage = Math.max(1, currentPage - 1);
-  const endPage = Math.min(totalPages, currentPage + 1);
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight : "bold",
+        fontSize : '13px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style:{
+        default: 'red'
+      }
+    },
+    rows : {
+      style:{
+        backgroundColor: '#f2f2f2',
+      }
+    }
   }
 
   useEffect(() => {
@@ -99,7 +103,13 @@ const AccidentVehicle = () => {
 
   const getData = async (getFilteredData) => {
     const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}`);
-    setData(response.data.data);
+    const fetchedData = response.data.data;
+    const formattedData = fetchedData.map(item => ({
+      ...item,
+      systemDate: formatDate(item.systemDate),
+    }));
+    setData(formattedData);
+    setCurrentItems(formattedData);
   };
 
   const handleClick = (item) => {
@@ -125,36 +135,100 @@ const AccidentVehicle = () => {
     setShowEditAccidentVehicle(false); // Hide VendorMasterEdit
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
-        setMarginLeft('0px');
-        setPaddingLeft('10px');
-        setWidth('80%');
-      } else if (window.innerWidth <= 380) {
-        setMarginLeft('0px');
-        setPaddingLeft('5px');
-        setWidth('75%');
-      } else {
-        setMarginLeft('30px');
-        setPaddingLeft('30px');
-        setWidth('100%');
-      }
-    };
-    window.addEventListener('resize', handleResize);
+  const [currentItems, setCurrentItems] = useState(data);
+  const columns = [
+    {
+      name: "Date",
+      selector: (row) => row.systemDate,
+      sortable: true,
+      sortFunction: (rowA, rowB) => {
+        const dateA = parseDate(rowA.systemDate);
+        const dateB = parseDate(rowB.systemDate);
+        return dateA - dateB; // Ascending order
+      },
+    },
+    { name: "Customer Name", selector: (row) => row.CustomerName, sortable: true ,width:"150px",
+      cell: (row) => (
+        <span style={{color:'blue'}}>{row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1)}</span>
+      )
+    },
+    { name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true ,width:"200px",
+      cell: (row) => (
+        <span style={{color:'brown'}}>{row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1)}</span>
+      )
+    },
+    { name: "Vehicle No", selector: (row) => row.vehicleNo, sortable: true ,
+      cell: (row) => (
+        <span style={{color: '#fff', backgroundColor: 'lightblue', padding: '5px', borderRadius: '4px'}}>
+            {/* {row.vehicleNo ? row.vehicleNo.charAt(0).toUpperCase() + row.vehicleNo.slice(1).toLowerCase() : ""} */}
+            {row.vehicleNo ? row.vehicleNo.toUpperCase() : ""}
 
-    // Initial check
-    handleResize();
+        </span>
+    ),},
+    { name: "Selected Services", selector: (row) => row.selectedOptions, sortable: true, width : "300px",
+      cell: (row) => (
+<span style={{color: 'blue', padding: '5px 20px 5px 20px'}}>
+  {row.selectedOptions
+    ? row.selectedOptions
+        .split(',')
+        .map((option, index) => (
+          <React.Fragment key={index}>
+            {index + 1}. {option.trim().charAt(0).toUpperCase() + option.trim().slice(1).toLowerCase()}
+            <br />
+          </React.Fragment>
+        ))
+    : ""}
+</span>    
+      ),
+    },
+    {
+      name: "Choosen Plan",
+      selector: (row) => row.choosenPlan || '',
+      sortable: true,
+      cell: (row) => {
+        const choosenPlan = row.choosenPlan ? String(row.choosenPlan) : "";
+        return (
+          <span style={{ color: "green" }}>
+            {choosenPlan.charAt(0).toUpperCase() + choosenPlan.slice(1).toLowerCase()}
+          </span>
+        );
+      },
+    },
+    
+    { name: "Actions",
+      cell: (row) => (
+        <button
+          onClick={() => view(row.AccidentVehicleCode)}
+          className='view-button'
+        >
+          View
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
 
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+  
+    const newRows = data.filter((row) => {
+      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
+      const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchValue);
+      const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchValue);
+      const selectedOptionsValue = (row.selectedOptions ?? '').toLowerCase().includes(searchValue);
+      const choosenPlanValue = (row.choosenPlan ?? '').toLowerCase().includes(searchValue);
+  
+      return dateValue || customerNameValue || vehicleNoValue || selectedOptionsValue || choosenPlanValue ;
+    });
+  
+    setCurrentItems(newRows);
+  };
 
   return (
     <div>
-      {!showEditAccidentVehicle && (<div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+      {!showEditAccidentVehicle && (<div className="Customer-master-form" style={{  marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
         <Helmet>
           <title>Accident Vehicle Service - Claimpro</title>
           <meta name="description" content="Accident Vehicle Service." />
@@ -164,24 +238,13 @@ const AccidentVehicle = () => {
         <h3 className="bigtitle">Assign Vendor to Accident Vehicle</h3>
         <div className="form-search">
           <label className='label-class'>
-            Search by Customer Name
+            Search by
             <input
-              type="text"
-              placeholder="Search by Customer Name"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              required
-            />
-          </label>
-          <label className='label-class'>
-            Number Of Items On Page
-            <input
-              type="number"
-              placeholder="Items Show on Page"
-              value={itemsPerPage}
-              onChange={handleSetItemPerPage}
-              required
-            />
+                type="text"
+                placeholder="Search by"
+                onChange={handleSearch}
+                required
+              />
           </label>
           <label className='label-class'></label>
         </div>
@@ -189,75 +252,23 @@ const AccidentVehicle = () => {
           <p  className={`topdivs ${selectedItem === "fullyAssigned" ? "selected" : ""}`}  onClick={() => handleClick("fullyAssigned")}>Fully Assigned </p>
           <p  className={`topdivs ${selectedItem === "partiallyAssigned" ? "selected" : ""}`} onClick={() => handleClick("partiallyAssigned")}  >Partially Assigned </p>
           <p  className={`topdivs ${selectedItem === "NotAssigned" ? "selected" : ""}`}  onClick={() => handleClick("NotAssigned")}>Not Assigned </p>
-          <p
-          style={{
-            display: 'flex',
-            marginRight: "5px",
-            cursor: "pointer"
-          }}
-          onClick={sortDateFunc}
-        >
-          {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
-        </p>
+        
         </div>
-        <div className="responsive-table">
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-            <thead>
-              <tr>
-                <th>Sr. No.</th>
-                <th>Date</th>
-                <th>Accident File Number</th>
-                <th>Customer Name</th>
-                <th>Vehicle Number</th>
-                <th>Selected Services</th>
-                <th>Choosen Plan</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.length === 0 ? (
-                <tr>
-                  <td colSpan="8" style={{ textAlign: "center", fontWeight: "bold" }}>All Vehicles are assigned To Vendors...</td>
-                </tr>
-              ) : (
-                currentItems.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{formatDate(item.systemDate)}</td>
-                    <td style={{color : "blue"}}>{item.accidentFileNo}</td>
-                    <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
-                    <td>{item.vehicleNo}</td>
-                    <td style={{color : "green"}}>{item.selectedOptions}</td>
-                    <td className='badge' style={{ color: "#8e27f1", background: "yellow" }}>{item.choosenPlan}</td>
-                    <td>
-                      <button onClick={() => view(item.AccidentVehicleCode)} className='view-button'>View here</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="pagination">
-          <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
-            <Button onClick={handlePreviousPage} disabled={currentPage === 1} style={{ boxShadow: 'none' }}>
-              <ArrowBack />
-            </Button>
-            {pageNumbers.map((pageNumber) => (
-              <Button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                className={currentPage === pageNumber ? 'active' : ''}
-                style={{ boxShadow: 'none' }} // Ensure inline style is also set to none
-              >
-                {pageNumber}
-              </Button>
-            ))}
-            <Button onClick={handleNextPage} disabled={currentPage === totalPages} style={{ boxShadow: 'none' }}>
-              <ArrowForward />
-            </Button>
-          </ButtonGroup>
-        </div>
+        <div className="container d-flex justify-content-center " style={{marginTop:"10px"}}>
+            <div className="container my-5">
+              <DataTable
+                  columns={columns}
+                  data={currentItems}
+                  fixedHeader
+                  pagination
+                  selectableRows
+                  onSelectedRowsChange={handleRowsSelected}
+                  conditionalRowStyles={conditionalRowStyles}
+                  customStyles={tableCustomStyles}
+              />
+            </div>
+          </div>
+
       </div>)}
       {showEditAccidentVehicle && (
         <EditAccidentVehicle id={selectedId} onUpdate={handleUpdate} />

@@ -32,8 +32,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
   // const { id } = location.state || {};
   console.log("Received IDssssssssssssssssssssss:", id);
   const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [comingData, setComingData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,15 +64,23 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
   const generateOfficePreviewLink = (fileUrl) => {
     return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
   };
-  
+
   const generateGooglePreviewLink = (fileUrl) => {
     return `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
   };
-  
+
   const handlePreviewClick = (e, fileUrl) => {
     e.stopPropagation();
+
+    // Ensure the file URL is valid and up to date
+    if (!fileUrl) {
+      alert('No file selected for preview.');
+      return;
+    }
+
     const fileExtension = fileUrl.split('.').pop().toLowerCase();
     let previewLink;
+
     if (fileExtension === 'pdf') {
       previewLink = generateGooglePreviewLink(fileUrl);
     } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExtension)) {
@@ -81,8 +89,11 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       alert('Preview not available for this file type.');
       return;
     }
+
+    // Open the new preview link in a new tab
     window.open(previewLink, '_blank');
   };
+
 
 
   console.log("latitude-", latitude, "longitude-", longitude)
@@ -188,44 +199,54 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "",
     year: "", type: "", application: "", GVW: "", ULW: "",
     InsuranceName: "",
-    longitude: '', latitude: ""
+    longitude: '', latitude: "", id:""
   });
   console.log("FORDSTA", formData)
 
+  const [coordinates, setCoordinates] = useState("Fetching location...");
+
+  const fullAddress = `${formData.address}, ${formData.district}, ${formData.pincode}, ${formData.state}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&timestamp=${new Date().getTime()}`;
+  
   useEffect(() => {
-    if (formData.address|| formData.district|| formData.pincode|| formData.state) {
-      const getLonLat = async () => {
-        try {
-          const fullAddress = `${formData.address}, ${formData.district},${formData.pincode}, ${formData.state}`;
-          
-          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
-          const response = await axios.get(url);
-          console.log("fullAddress123", fullAddress)
-          console.log("response123", response)
-          const location = response.data[0];
-          if (response.data.length > 0) {
-            setLatitude(location.lat);
-            setLongitude(location.lon);
-            setFormData(prevState => ({
-              ...prevState,
-              latitude: location.lat,
-              longitude: location.lon
-            }));
-            setLocation(`Latitude: ${location.lat}, Longitude: ${location.lon}`);
-          } else {
-            setLocation("Geocoding was not successful. Please check the address.");
+    if (!IsReadOnly) {
+      const debounceTimer = setTimeout(() => {
+        const getLonLat = async () => {
+          try {
+            console.log("FULL ADDRESS:", fullAddress);
+            const response = await axios.get(url);
+            console.log("Response data:", response.data);
+  
+            const location = response.data[0];
+            if (location) {
+              setLatitude(location.lat);
+              setLongitude(location.lon);
+              console.log(`ANMOL Latitude: ${location.lat}, Longitude: ${location.lon}`);
+              setCoordinates(`ANMOL Latitude: ${location.lat}, Longitude: ${location.lon}`);
+              setFormData(prevState => ({
+                ...prevState,
+                latitude: location.lat,
+                longitude: location.lon,
+              }));
+            } else {
+              console.error(" ANMOL Latitude No location data found.");
+              setCoordinates("No location data found.");
+            }
+          } catch (error) {
+            console.error("Error fetching coordinates:", error);
+            setCoordinates("An error occurred while fetching the coordinates.");
           }
-        } catch (error) {
-          setLocation("An error occurred while fetching the coordinates.");
-        }
-      }
-      getLonLat();
+        };
+        getLonLat();
+      }, 500); // Adjust the debounce time as necessary
+  
+      return () => clearTimeout(debounceTimer);
     }
-  }, [formData.address, formData.district, formData.pincode, formData.state]);
+  }, [fullAddress, IsReadOnly]);
 
 
 
-  console.log("formdata", formData)
+  console.log("formdataCustomer", formData)
 
   useEffect(() => {
     if (comingData) {
@@ -264,7 +285,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         GSTNo: comingData.GSTNo || "",
         GST: comingData.GST || "",
         longitude: comingData.longitude !== null ? comingData.longitude : "",
-        latitude: comingData.latitude !== null ? comingData.latitude : ""
+        latitude: comingData.latitude !== null ? comingData.latitude : "", 
+        id:comingData.id
       }));
     }
   }, [comingData]);
@@ -327,7 +349,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       return 'Please enter a valid email address.';
     }
 
-    const phoneRegex =  /^[0-9]{10}$/
+    const phoneRegex = /^[0-9]{10}$/
     if (!phoneRegex.test(formData.CustomerPhone)) {
       return 'Please enter a valid Customer Phone Number.';
     }
@@ -340,17 +362,17 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     }
 
     const aadhaarRegex = /^\d{12}$/;
-    if (!aadhaarRegex.test(formData.adharNo)) {
+    if (formData.adharNo !== "N/A"  && !aadhaarRegex.test(formData.adharNo)) {
       return 'Please enter a valid Aadhaar Number.';
     }
-    
+
     const gstRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z])$/;
-    if (formData.GSTNo !== "" && !gstRegex.test(formData.GSTNo)) {
+    if (formData.GSTNo !== "N/A" && !gstRegex.test(formData.GSTNo)) {
       return 'Please enter a valid GST number (e.g., 22ABCDE1234F1Z5).';
     }
-  
+
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    if (!panRegex.test(formData.panNo)) {
+    if (formData.panNo !== "N/A"  && !panRegex.test(formData.panNo)) {
       return 'Please enter a valid PAN Number.';
     }
 
@@ -543,12 +565,12 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       setIsLoading(false);
       const errorMessage = error.response?.data?.message || 'An error occurred';
       if (errorMessage === "jwt expired") {
-          setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
-          setTimeout(() => {
-              window.location.href = '/';
-          }, 2000);
+        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
       } else {
-          setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+        setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
       }
     }
   };
@@ -570,6 +592,16 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           </div>
         </div>
         <div className="form-row">
+        <label className="form-field">
+            Customer Id:
+            <input
+              type="text"c
+              className="form-control"
+              name="id"
+              value={String(formData.id).padStart(4, '0')}
+              readOnly
+            />
+          </label>
           <label className="form-field">
             System Date:
             <input
@@ -608,16 +640,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
               ))}
             </select>
           </label>
-          <label className="form-field">
-            Customer Code:
-            <input
-              type="text"
-              className="form-control"
-              name="CustomerCode"
-              value={formData.CustomerCode}
-              readOnly
-            />
-          </label>
+
 
         </div>
 
@@ -773,7 +796,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
               className="form-control"
               required
               pattern="\d{12}"
-              readOnlyj={IsReadOnly}
+              readOnly={IsReadOnly}
               title="Aadhaar number must be exactly 12 digits."
             />
           </label>
@@ -788,7 +811,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   <img
                     src={formData.adharCard}
                     alt="Adhar Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' ,   border:'solid black 2px', padding: "3px", marginTop:"6px"   }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                     onClick={openAdharModal}
                   />
                   <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Adhar Card Modal">
@@ -828,7 +851,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   <img
                     src={formData.panCard}
                     alt="PAN Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' ,   border:'solid black 2px', padding: "3px", marginTop:"6px"   }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                     onClick={openPANModal}
                   />
                   <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
@@ -868,7 +891,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   <img
                     src={formData.GST}
                     alt="GSTIN"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' ,   border:'solid black 2px', padding: "3px", marginTop:"6px"   }}
+                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
                     onClick={openGSTModal}
                   />
                   <Modal isOpen={isGSTModalOpen} onRequestClose={closeGSTModal} contentLabel="GSTIN Modal">
@@ -886,7 +909,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                   </Modal>
                 </>
               ) : (
-                <p  className='notUploaded'>No GST Card uploaded</p>
+                <p className='notUploaded'>No GST Card uploaded</p>
               )
             ) : (
               <input
@@ -916,27 +939,28 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                         className="docx-link"
                         style={{
                           cursor: 'pointer',
-                          color:'green'
-                      }}
-                      download
-                  >
-                      <DownloadingOutlinedIcon/> Download
+                          color: 'green'
+                        }}
+                        download
+                      >
+                        <DownloadingOutlinedIcon /> Download
                       </a>
                       <button
                         type="button"
-                        onClick={(e) =>  handlePreviewClick(e, formData.agreement)}
+                        onClick={(e) => handlePreviewClick(e, formData.agreement)}
                         style={{
                           cursor: 'pointer',
                           border: 'none',
                           background: "white",
-                          color:"#560303",
-                          fontSize:"13px"
-                      }}
-                  >
-                      <RemoveRedEyeOutlinedIcon/> Preview
+                          color: "#560303",
+                          fontSize: "13px",
+                          boxShadow: "none"
+                        }}
+                      >
+                        <RemoveRedEyeOutlinedIcon /> Preview
                       </button>
 
-                
+
                     </p>
                   </>
                 ) : (
@@ -950,7 +974,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
             <label className="form-field">
               {IsReadOnly ? (
                 <div>
-                  {formData.fleetSize !== "No fleetSize" ? (
+                  {formData.fleetSize !== "" ? (
                     <>
                       Download Fleet Excel
                       <p>
@@ -959,11 +983,11 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                           className="docx-link"
                           style={{
                             cursor: 'pointer',
-                            color:'green'
-                        }}
-                        download
-                    >
-                        <DownloadingOutlinedIcon/> Download
+                            color: 'green'
+                          }}
+                          download
+                        >
+                          <DownloadingOutlinedIcon /> Download
                         </a>
 
                         <button
@@ -973,17 +997,17 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                             cursor: 'pointer',
                             border: 'none',
                             background: "white",
-                            color:"#560303",
-                            fontSize:"13px"
-                        }}
-                    >
-                        <RemoveRedEyeOutlinedIcon/> Preview
+                            color: "#560303",
+                            fontSize: "13px",
+                            boxShadow: "none"
+                          }}
+                        >
+                          <RemoveRedEyeOutlinedIcon /> Preview
                         </button>
-
                       </p>
                     </>
                   ) : (
-                    <p  className='notUploaded'>No Fleet Doc uploaded</p>
+                    <p className='notUploaded'>No Fleet Doc uploaded</p>
                   )}
                 </div>
               ) : null}
@@ -1001,6 +1025,17 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
             ) : (
               <>
                 <Button variant="contained">Send Location</Button>
+                <div className='form-row'>
+                  <label className='form-field'>
+                    Latitude:
+                    <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
+                  </label>
+                  <label className='form-field'>
+                    Longitude:
+                    <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
+                  </label>
+                  <label className='form-field'></label>
+                </div>
               </>
             )
           ) : (
@@ -1009,9 +1044,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                 <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
                 Send Your Current Location (if it's same for filling address):
                 <div className='form-row'>
-                  <label className='form-field'>
                     <Button variant="contained" onClick={getLocation}>Send Location</Button>
-                  </label>
                 </div>
 
                 Send Location Of Address (this is by your address):
@@ -1232,7 +1265,15 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           {!IsReadOnly && (
             <div>
               <button type="submit"
-                style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                style={{
+                  fontSize: "14px",
+                  padding: "5px 20px",
+                  border: "3px solid lightblue",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  backgroundColor: "transparent",
+                  color: "green",
+                }}
                 disabled={isLoading} // Disable button while loading
                 onClick={handleSubmit}
               >
@@ -1250,7 +1291,15 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           {IsReadOnly && (
             <button
               type="submit"
-              style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+              style={{
+                fontSize: "14px",
+                padding: "5px 20px",
+                border: "3px solid lightblue",
+                borderRadius: "4px",
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                color: "green",
+              }}
               onClick={editable}
             >
               EDIT

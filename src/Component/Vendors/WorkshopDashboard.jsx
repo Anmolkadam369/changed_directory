@@ -135,7 +135,14 @@ const WorkshopDashboard = ({ getData }) => {
         try {
             const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
-            setGotResponse(response.data.data);
+            const filteredResponse = [];
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].firstResponseOn != null) {
+                    console.log("response.data.data.firstResponseOn", response.data.data[i].firstResponseOn);
+                    filteredResponse.push(response.data.data[i]);
+                }
+            }
+            setGotResponse(filteredResponse);
         } catch (error) {
             console.error("Failed to fetch existing data", error.response || error);
             if (error.response) {

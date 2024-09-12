@@ -32,6 +32,15 @@ function ImageUpload({ id, onUpdate }) {
         frontRH: null,
         rearLH: null,
         rearRH: null,
+        ChassisNoView: null,
+        ClusterView: null,
+        frontView: null,
+        rearView: null,
+        MajorDamages1: null,
+        MajorDamages2: null,
+        MajorDamages3: null,
+        MajorDamages4: null,
+        MajorDamages5: null,
     });
 
     const [additionalPhotos, setAdditionalPhotos] = useState([]);  // Initialize as an array

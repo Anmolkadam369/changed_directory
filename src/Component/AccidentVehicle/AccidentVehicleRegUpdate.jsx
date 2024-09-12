@@ -16,7 +16,16 @@ import { Alert } from '@mui/material';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import DataTable from "react-data-table-component";
 
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
 
 const AccidentVehicleRegUpdate = () => {
 
@@ -42,42 +51,51 @@ const AccidentVehicleRegUpdate = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
-  const handleSetItemPerPage = (e) => {
-    setItemsPerPage(e.target.value);
-  };
-  const filteredData = data.filter(item =>
-    item.CustomerName && item.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startPage = Math.max(1, currentPage - 1);
-  const endPage = Math.min(totalPages, currentPage + 1);
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
+
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleRowsSelected = (state) => {
+    setSelectedRows(state.selectedRows);
   }
 
+  const conditionalRowStyles = [
+    {
+      when: (row) => selectedRows.some(selected => selected.accidentFileNo === row.accidentFileNo),
+      style: {
+        backgroundColor: '#bdb6b6',
+      },
+    }
+  ];
 
-  // console.log("seletdid", selectedId, "acidentreg", showAccidentReg)
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffff',
+        backgroundColor: 'rgb(169 187 169)',
+        fontWeight: "bold",
+        fontSize: '13px'
+      },
+    },
+    pagination: {
+      style: {
+        button: {
+          background: 'none',
+          boxShadow: "none"
+        },
+      },
+    },
+    striped: {
+      style: {
+        default: 'red'
+      }
+    },
+    rows: {
+      style: {
+        backgroundColor: '#f2f2f2',
+      }
+    }
+  }
+
   useEffect(() => {
     getData();
     console.log("token", token, userId);
@@ -124,8 +142,6 @@ const AccidentVehicleRegUpdate = () => {
     });
   };
 
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'pincode' || name === 'vendorPhone' || name === "contactPersonNum" || name === "contactPersonNum2") {
@@ -152,6 +168,14 @@ const AccidentVehicleRegUpdate = () => {
     const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo`);
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
+    const fetchedData = response.data.data;
+
+    const formattedData = fetchedData.map(item => ({
+      ...item,
+      systemDate: formatDate(item.systemDate),
+    }));
+    setData(formattedData);
+    setCurrentItems(formattedData);
   };
 
   function view(id) {
@@ -176,28 +200,6 @@ const AccidentVehicleRegUpdate = () => {
     setShowAccidentTable(true)
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 630) {
-        setMarginLeft('0px');
-        setPaddingLeft('20px')
-        setWidth('70%');
-      } else {
-        setMarginLeft('30px');
-        setPaddingLeft("40px")
-        setWidth('100%');
-      }
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Initial check
-    handleResize();
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const validateForm = () => {
     if (selectedOptions.length == 0) {
@@ -245,13 +247,103 @@ const AccidentVehicleRegUpdate = () => {
     }
   }
 
+  const [currentItems, setCurrentItems] = useState(data);
+  const columns = [
+    {
+      name: "Name", selector: (row) => row.CustomerName, sortable: true,
+      cell: (row) => (
+        <span style={{ color: 'brown' }}>{row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1)}</span>
+      )
+    },
+    {
+      name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true,
+      cell: (row) => (
+        <span style={{
+          color: 'darkblue', padding: '5px', borderRadius: '4px', border: "4px solid darkgrey"
+        }}>
+          {row.accidentFileNo ? row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    {
+      name: "Choosen Plan", selector: (row) => row.choosenPlan, sortable: true,
+      cell: (row) => (
+        <span style={{ color: '#fff', backgroundColor: '#ffc107', padding: '5px 20px 5px 20px', borderRadius: '4px' }}>
+          {row.choosenPlan ? row.choosenPlan.charAt(0).toUpperCase() + row.choosenPlan.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+
+    {
+      name: "Selected Options", selector: (row) => row.selectedOptions, sortable: true,
+      cell: (row) => (
+<span style={{color: 'blue', padding: '5px 20px 5px 20px'}}>
+  {row.selectedOptions
+    ? row.selectedOptions
+        .split(',')
+        .map((option, index) => (
+          <React.Fragment key={index}>
+            {index + 1}. {option.trim().charAt(0).toUpperCase() + option.trim().slice(1).toLowerCase()}
+            <br />
+          </React.Fragment>
+        ))
+    : ""}
+</span>      
+      ),
+    },
+
+    {
+      name: "Add Services",
+      cell: (row) => (
+        <button
+          onClick={() => chooseOptions(row)}
+          className='view-button'
+        >
+          Edit Choosen Services
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "View",
+      cell: (row) => (
+        <button
+          onClick={() => view(row.accidentFileNo)}
+          className='view-button'
+          style={{ background: 'rgb(190 98 98)', color: "white" }}
+        >
+          View 
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+
+    const newRows = data.filter((row) => {
+      const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchValue);
+      const accidentFileNoValue = (row.accidentFileNo ?? '').toLowerCase().includes(searchValue);
+      const choosenPlanValue = (row.choosenPlan ?? '').toLowerCase().includes(searchValue);
+      const selectedOptionsValue = (row.selectedOptions ?? '').toLowerCase().includes(searchValue);
+
+      return customerNameValue || accidentFileNoValue || choosenPlanValue || selectedOptionsValue;
+    });
+
+    setCurrentItems(newRows);
+  };
 
 
   return (
 
     <div>
       {showAccidentTable && (
-        <div className="Customer-master-form" style={{ marginLeft, paddingLeft }}>
+        <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>
             <title>Accident Vehicle Information Register Update - Claimpro</title>
             <meta name="description" content="Accident Vehicle Information Register Update Claimpro Assist" />
@@ -261,94 +353,32 @@ const AccidentVehicleRegUpdate = () => {
           <h3 className='bigtitle'>Create Register (New Accident Vehicle)</h3>
           <div className="form-search">
             <label className='label-class'>
-              Search by Customer Name
+              Search by
               <input
                 type="text"
-                placeholder="Search by Customer Name"
-                value={searchQuery}
-                onChange={handleSearchChange}
+                placeholder="Search by "
+                onChange={handleSearch}
                 required
               />
             </label>
-            <label className='label-class'>
-              Number Of Items On Page
-              <input
-                type="number"
-                placeholder="Items Show on Page"
-                value={itemsPerPage}
-                onChange={handleSetItemPerPage}
-                required
+            <label className="label-class"></label>
+            <label className="label-class"></label>
+
+
+          </div>
+          <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+            <div className="container my-5">
+              <DataTable
+                columns={columns}
+                data={currentItems}
+                fixedHeader
+                pagination
+                selectableRows
+                onSelectedRowsChange={handleRowsSelected}
+                conditionalRowStyles={conditionalRowStyles}
+                customStyles={tableCustomStyles}
               />
-            </label>
-            <label className='label-class'></label>
-          </div>
-          <div className='responsive-table' style={{ width }}>
-            <table style={{ width: '100%', marginLeft: "0px", borderCollapse: 'collapse', marginBottom: "90px" }}>
-              <thead>
-                <tr>
-                  <th>Sr. No.</th>
-                  <th>User Name</th>
-                  <th>Accident File Number</th>
-                  <th>Choosen Plan</th>
-                  <th>Selected Services</th>
-                  <th>Add Services</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Case Found...</td>
-                  </tr>
-                ) : (
-                  currentItems.map((item, index) => (
-                    <tr key={item.id} style={{ textAlign: "center" }}>
-                      <td>{indexOfFirstItem + index + 1}</td>
-                      <td>{item.CustomerName.charAt(0).toUpperCase() + item.CustomerName.slice(1)}</td>
-                      <td style={{ color: "blue" }}>{item.accidentFileNo}</td>
-                      <td className='badge' style={{ color: "#8e27f1", background: "yellow" }} >{item.choosenPlan.charAt(0).toUpperCase() + item.choosenPlan.slice(1)}</td>
-
-                      <td>{item && (item.selectedOptions == "" || item.selectedOptions == null) ? (
-                            "___"
-                      ) : (
-                        <div>
-                          {item && item.selectedOptions}
-                        </div>
-                      )}
-                      </td>
-                      <td>
-                        <div>
-                          <button onClick={() => chooseOptions(item)} className='view-button'>Choose Services</button>
-                        </div>
-                      </td>
-                      <td>
-                        <button onClick={() => view(item.accidentFileNo)} className='view-button'>View here</button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-
-            </table>
-          </div>
-          <div className="pagination">
-            <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
-              <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                <ArrowBack />
-              </Button>
-              {pageNumbers.map((pageNumber) => (
-                <Button
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  className={currentPage === pageNumber ? 'active' : ''}
-                >
-                  {pageNumber}
-                </Button>
-              ))}
-              <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                <ArrowForward />
-              </Button>
-            </ButtonGroup>
+            </div>
           </div>
         </div>)}
       {showAccidentReg && (
@@ -366,13 +396,13 @@ const AccidentVehicleRegUpdate = () => {
           </div>
           <div style={{
             padding: '20px',
-            backgroundColor: 'rgb(233 223 223)',
+            // backgroundColor: 'rgb(233 223 223)',
             borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            boxShadow: 'rgba(0, 0, 0, 0.1) 11px 0px 4px'
           }}>
 
             <div style={{ position: 'relative', color: '#333', marginBottom: '15px' }}>
-              <h3>Select Your Services</h3>
+              <h3 style={{ fontSize: "15px", fontWeight: "bold", color: "green" }}>Select Your Services</h3>
               {allOptionToShow.map((option, index) => (
                 <label key={index} style={{
                   display: 'block',
@@ -384,7 +414,7 @@ const AccidentVehicleRegUpdate = () => {
                   {option.charAt(0).toUpperCase() + option.slice(1)}
                   <input
                     type="checkbox"
-                    style={{ marginRight: '10px', marginLeft: "10px" }}
+                    style={{ marginRight: '10px', marginLeft: "10px", color: "lightblue" }}
                     checked={selectedOptions.includes(option)}
                     onChange={() => handleCheckboxChange(option)}
                   />
@@ -392,7 +422,15 @@ const AccidentVehicleRegUpdate = () => {
               ))}
               <div style={{ textAlign: 'center', marginTop: "40px" }}>
                 <button
-                  style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white' }}
+                  style={{
+                    fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",
+                  }}
                   disabled={isLoading} // Disable button while loading
                   onClick={sendSelectedOptions}
                 >
