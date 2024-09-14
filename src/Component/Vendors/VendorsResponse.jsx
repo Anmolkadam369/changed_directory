@@ -178,12 +178,19 @@ const VendorResponse = () => {
       cell: (row) => row.systemDate ? formatDate(row.systemDate) : "___",
     },
     {
-      name: "Selected Options",
-      selector: (row) => row.selectedOptions,
-      sortable: true, width: "250px",
+      name: "Selected Services", selector: (row) => row.selectedOptions, sortable: true, width: "300px",
       cell: (row) => (
-        <span style={{ color: 'blue' }}>
-          {row.selectedOptions ? row.selectedOptions.charAt(0).toUpperCase() + row.selectedOptions.slice(1).toLowerCase() : ""}
+        <span style={{ color: 'blue', padding: '5px 20px 5px 20px' }}>
+          {row.selectedOptions
+            ? row.selectedOptions
+              .split(',')
+              .map((option, index) => (
+                <React.Fragment key={index}>
+                  {index + 1}. {option.trim().charAt(0).toUpperCase() + option.trim().slice(1).toLowerCase()}
+                  <br />
+                </React.Fragment>
+              ))
+            : ""}
         </span>
       ),
     },
@@ -249,12 +256,12 @@ const VendorResponse = () => {
         return noOfCounts > 0 ? (
           <span className='popUp'>
             <PendingActionsIcon style={{ fontSize: '1.0rem', color: "red" }} />
-            <p style={{ fontSize: '0.4rem', color: "red" }}>pending</p>
+            <p style={{ fontSize: '0.4rem', color: "red" }}>Admin pending</p>
           </span>
         ) : (
           <span>
             <TaskIcon style={{ fontSize: '1.4rem', color: "blue" }} />
-            <p style={{ fontSize: '0.6rem', color: "blue" }}>responded</p>
+            <p style={{ fontSize: '0.6rem', color: "blue" }}>Admin response</p>
           </span>
         );
       },

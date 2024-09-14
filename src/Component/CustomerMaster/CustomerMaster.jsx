@@ -277,7 +277,7 @@ const CustomerMaster = () => {
         }
       }
 
-      if (key !== "GSTNo" && key !== "GST" && key !== "adharNo" &&  key !== "panNo"  && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+      if (key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "panNo" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
         if (value === '') return `Fields '${key}' is required.`;
       }
     }
@@ -310,7 +310,7 @@ const CustomerMaster = () => {
     }
 
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    if ( formData.panNo !== "" && !panRegex.test(formData.panNo)) {
+    if (formData.panNo !== "" && !panRegex.test(formData.panNo)) {
       return 'Please enter a valid PAN Number.';
     }
     return '';
@@ -583,45 +583,48 @@ const CustomerMaster = () => {
                   required />
               </label>
               <label className='form-field'>
-              <IconButton href={customerInfo} download="customerInfo.xlsx" color="primary">
-                    <p style={{fontSize:"12px"}}>Download Reference Excel File</p>
-                      <DownloadIcon />
-                    </IconButton>
+                <IconButton href={customerInfo} download="customerInfo.xlsx" color="primary">
+                  <p style={{ fontSize: "12px" }}>Download Reference Excel File</p>
+                  <DownloadIcon />
+                </IconButton>
               </label>
-              <div className={isZoomed1 ? "overlay" : ""}>
-                <label className="form-field" onClick={toggleZoom1}>
-                  have a look how structure looks :
-                  <img
-                    src={customerInfo1}
-                    alt="Dashboard Icon"
-                    style={{
-                      height: isZoomed1 ? '90%' : '45px',
-                      width: isZoomed1 ? '90%' : '80%',
-                      marginRight: '8px',
-                      marginLeft: "8px",
-                      transition: 'transform 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                  />
-                </label>
-              </div>
+              <div style={{ border: "2px solid lightblue", padding: "20px", borderRadius: "10px" }}>
+                <p style={{ fontSize: "13px", fontWeight: "bold" }}>have a look how structure looks :</p>
+                <div className={isZoomed1 ? "overlay" : ""}>
+                  <label className="form-field" onClick={toggleZoom1}>
+                    <img
+                      src={customerInfo1}
+                      alt="Dashboard Icon"
+                      style={{
+                        height: isZoomed1 ? '90%' : '35px',
+                        width: isZoomed1 ? '90%' : '90%',
+                        marginRight: '8px',
+                        marginLeft: "8px",
+                        transition: 'transform 0.3s ease',
+                        cursor: 'pointer',
+                        border: "#aa98d6"
+                      }}
+                    />
+                  </label>
+                </div>
 
-              <div className={isZoomed2 ? 'overlay' : ''}>
-                <label className="form-field" onClick={toggleZoom2}>
-                  have a look how structure looks for Rest of the Part :
-                  <img
-                    src={customerInfo2}
-                    alt="Dashboard Icon"
-                    style={{
-                      height: isZoomed2 ? '90%' : '45px',
-                      width: isZoomed2 ? '90%' : '80%',
-                      marginRight: '8px',
-                      marginLeft: "8px",
-                      transition: 'transform 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                  />
-                </label>
+                <div className={isZoomed2 ? 'overlay' : ''}>
+                  <label className="form-field" onClick={toggleZoom2}>
+                    <img
+                      src={customerInfo2}
+                      alt="Dashboard Icon"
+                      style={{
+                        height: isZoomed2 ? '90%' : '35px',
+                        width: isZoomed2 ? '90%' : '80%',
+                        marginRight: '8px',
+                        marginLeft: "8px",
+                        transition: 'transform 0.3s ease',
+                        cursor: 'pointer',
+                        border: "#aa98d6"
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
 
 
@@ -636,13 +639,15 @@ const CustomerMaster = () => {
 
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
             <button type="submit"
-              style={{                     fontSize: "14px",
-                    padding: "5px 20px",
-                    border: "3px solid lightblue",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    color: "green",}}
+              style={{
+                fontSize: "14px",
+                padding: "5px 20px",
+                border: "3px solid lightblue",
+                borderRadius: "4px",
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                color: "green",
+              }}
               disabled={isLoading} // Disable button while loading
             >
               {isLoading ? 'Submitting...' : 'Submit'}
@@ -859,8 +864,8 @@ const CustomerMaster = () => {
                   className="form-control"
                   ref={panRef}
                   accept="image/*"
-                  // required 
-                  />
+                // required 
+                />
               </label>
               <label className="form-field">
                 Aadhaar Number:
@@ -889,8 +894,8 @@ const CustomerMaster = () => {
                   ref={adharCardRef}
                   className="form-control"
                   accept="image/*"
-                  // required 
-                  />
+                // required 
+                />
               </label>
               <label className="form-field">
                 GST Number:
@@ -945,7 +950,7 @@ const CustomerMaster = () => {
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
             Send Your Current Location (if it's same for filling address):
             <div className='form-row'>
-                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+              <Button variant="contained" onClick={getLocation}>Send Location</Button>
             </div>
 
             Send Location Of Address (this is by your address):
@@ -983,7 +988,7 @@ const CustomerMaster = () => {
                   </label>
                   <label className="form-field">
                     <IconButton href={fleetInfo} download="fleetInfo.xlsx" color="primary">
-                    <p style={{fontSize:"12px"}}>Download Reference Excel File</p>
+                      <p style={{ fontSize: "12px" }}>Download Reference Excel File</p>
                       <DownloadIcon />
                     </IconButton>
                   </label>
@@ -1155,13 +1160,15 @@ const CustomerMaster = () => {
 
           <div style={{ textAlign: 'center', marginTop: "40px" }}>
             <button type="submit"
-              style={{                     fontSize: "14px",
-                    padding: "5px 20px",
-                    border: "3px solid lightblue",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    color: "green",}}
+              style={{
+                fontSize: "14px",
+                padding: "5px 20px",
+                border: "3px solid lightblue",
+                borderRadius: "4px",
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                color: "green",
+              }}
               disabled={isLoading} // Disable button while loading
             >
               {isLoading ? 'Submitting...' : 'Submit'}

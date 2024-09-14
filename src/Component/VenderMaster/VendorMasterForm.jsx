@@ -322,7 +322,7 @@ const VendorMasterForm = () => {
           return `Field '${key}' is required.`;
         }
       }
-      if ((key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard"  && key !== "contactPersonNum2") && value === '') {
+      if ((key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
         return `Field '${key}' is required.`;
       }
     }
@@ -632,43 +632,44 @@ const VendorMasterForm = () => {
                 </IconButton>
               </label>
 
-              <div className={isZoomed ? "overlay" : ""}>
-                <label className="form-field" onClick={toggleZoom}>
-                  have a look how structure looks :
-                  <img
-                    src={vendorInfo1}
-                    alt="Dashboard Icon"
-                    style={{
-                      height: isZoomed ? '90%' : '45px',
-                      width: isZoomed ? '90%' : '80%',
-                      marginRight: '8px',
-                      marginLeft: "8px",
-                      transition: 'transform 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                  />
-                </label>
+
+
+              <div style={{ border: "2px solid lightblue", padding: "20px", borderRadius: "10px" }}>
+                <p style={{ fontSize: "13px", fontWeight: "bold" }}>have a look how structure looks :</p>
+                <div className={isZoomed ? "overlay" : ""}>
+                  <label className="form-field" onClick={toggleZoom}>
+                    <img
+                      src={vendorInfo1}
+                      alt="Dashboard Icon"
+                      style={{
+                        height: isZoomed ? '90%' : '35px',
+                        width: isZoomed ? '90%' : '90%',
+                        marginRight: '8px',
+                        marginLeft: "8px",
+                        transition: 'transform 0.3s ease',
+                        cursor: 'pointer'
+                      }}
+                    />
+                  </label>
+                </div>
+
+                <div className={isZoomed1 ? 'overlay' : ''}>
+                  <label className="form-field" onClick={toggleZoom1}>
+                    <img
+                      src={vendorInfo2}
+                      alt="Dashboard Icon"
+                      style={{
+                        height: isZoomed ? '90%' : '35px',
+                        width: isZoomed ? '90%' : '90%',
+                        marginRight: '8px',
+                        marginLeft: "8px",
+                        transition: 'transform 0.3s ease',
+                        cursor: 'pointer'
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
-
-              <div className={isZoomed1 ? 'overlay' : ''}>
-                <label className="form-field" onClick={toggleZoom1}>
-                  have a look how structure looks for Rest of the Part :
-                  <img
-                    src={vendorInfo2}
-                    alt="Dashboard Icon"
-                    style={{
-                      height: isZoomed ? '90%' : '45px',
-                      width: isZoomed ? '90%' : '80%',
-                      marginRight: '8px',
-                      marginLeft: "8px",
-                      transition: 'transform 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                  />
-                </label>
-              </div>
-
-
             </div>
           </div>
 
@@ -751,7 +752,7 @@ const VendorMasterForm = () => {
               </label>
 
               <label className="form-field input-group mb-3">
-               Accident Place - City:
+                Accident Place - City:
                 <select
                   name="district"
                   value={formData.district}
@@ -925,8 +926,8 @@ const VendorMasterForm = () => {
                   className="form-control"
                   ref={panRef}
                   capture="environment"
-                  // required 
-                  />
+                // required 
+                />
               </label>
               <label className="form-field">
                 Aadhaar Number:
@@ -956,8 +957,8 @@ const VendorMasterForm = () => {
                   ref={adharCardRef}
                   className="form-control"
                   capture="environment"
-                  // required
-                   />
+                // required
+                />
               </label>
 
 
@@ -1019,7 +1020,7 @@ const VendorMasterForm = () => {
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
             Send Your Current Location (if it's same for filling address):
             <div className='form-row'>
-                <Button variant="contained" onClick={getLocation}>Send Location</Button>
+              <Button variant="contained" onClick={getLocation}>Send Location</Button>
             </div>
 
 
@@ -1038,7 +1039,7 @@ const VendorMasterForm = () => {
             {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
           </form>
 
-          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginBottom: "30px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2)", borderRadius:"30px" }}>
+          <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginBottom: "30px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2)", borderRadius: "30px" }}>
             <div class="header-container">
               <h3 class="bigtitle">Bank Information</h3>
             </div>

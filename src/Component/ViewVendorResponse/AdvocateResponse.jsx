@@ -1060,7 +1060,7 @@ function AdvocateResponse({ data, onUpdate }) {
                     >
                         Reject
                     </button>
-                    {fullInfomation && (
+                    {/* {fullInfomation && (
                         <div
                             className="form-control generate-button"
                             onClick={handlePayment}
@@ -1100,7 +1100,7 @@ function AdvocateResponse({ data, onUpdate }) {
                         >
                             Pay Now
                         </a>
-                    )}
+                    )} */}
                 </div>
 
             {modalData && (

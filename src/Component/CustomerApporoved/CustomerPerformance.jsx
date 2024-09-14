@@ -113,9 +113,9 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
             console.log("responssesesesee", response)
             if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
             else {
-        setAllAccidentVehicleData(response.data.data);
-        setCurrentItems(response.data.data)
-    }
+                setAllAccidentVehicleData(response.data.data);
+                setCurrentItems(response.data.data)
+            }
 
         } catch (error) {
             console.error("Error fetching all accident vehicle data", error);
@@ -138,59 +138,78 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     const [currentItems, setCurrentItems] = useState(allAccidentVehicleData);
     const [selectedRows, setSelectedRows] = useState([]);
-  
+
     const handleRowsSelected = (state) => {
-      setSelectedRows(state.selectedRows);
+        setSelectedRows(state.selectedRows);
     }
     const conditionalRowStyles = [
-      {
-        when: (row) => selectedRows.some(selected => selected.AccidentVehicleCode === row.AccidentVehicleCode),
-        style: {
-          backgroundColor: '#bdb6b6',
-        },
-      }
+        {
+            when: (row) => selectedRows.some(selected => selected.AccidentVehicleCode === row.AccidentVehicleCode),
+            style: {
+                backgroundColor: '#bdb6b6',
+            },
+        }
     ];
     const columns = [
-      {
-        name: "Sr. No.",
-        selector: (row, index) => index + 1,
-        sortable: true,
-        width: "80px",
-      },
-      {
-        name: "Accident File No",
-        selector: (row) => row.accidentFileNo,
-        sortable: true,
-      },
-      {
-        name: "Model",
-        selector: (row) => row.model,
-        sortable: true,
-      },
-      {
-        name: "Chassis Number",
-        selector: (row) => row.chassisNo,
-        sortable: true,
-      }
+        {
+            name: "Sr. No.",
+            selector: (row, index) => index + 1,
+            sortable: true,
+            width: "80px",
+        },
+        {
+            name: "Accident File No",
+            selector: (row) => row.accidentFileNo,
+            sortable: true,
+        },
+        
+        
+        {
+            name: "Selected Options", selector: (row) => row.selectedOptions, sortable: true,
+            cell: (row) => (
+                <span style={{ color: 'blue', padding: '5px 20px 5px 20px' }}>
+                    {row.selectedOptions
+                        ? row.selectedOptions
+                            .split(',')
+                            .map((option, index) => (
+                                <React.Fragment key={index}>
+                                    {index + 1}. {option.trim().charAt(0).toUpperCase() + option.trim().slice(1).toLowerCase()}
+                                    <br />
+                                </React.Fragment>
+                            ))
+                        : ""}
+                </span>
+            ),
+        },
+        {
+            name: "Model",
+            selector: (row) => row.model,
+            sortable: true,
+        },
+        {
+            name: "Chassis Number",
+            selector: (row) => row.chassisNo,
+            sortable: true,
+        }
     ];
-  
+
     const tableCustomStyles = {
-      rows: {
-        style: {
-          minHeight: '72px', // override the row height
+        rows: {
+            style: {
+                minHeight: '72px', // override the row height
+            },
         },
-      },
-      headCells: {
-        style: {
-          fontSize: '14px',
-          fontWeight: 'bold',
+        headCells: {
+            style: {
+                fontSize: '14px',
+                fontWeight: 'bold',
+            },
         },
-      },
-      cells: {
-        style: {
-          fontSize: '13px',
+        cells: {
+            style: {
+                fontSize: '13px',
+            },
         },
-      },
     };
 
     return (
@@ -254,19 +273,19 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
 
                 <div className="container d-flex justify-content-center" style={{ marginTop: "10px" }}>
-      <div className="container my-5">
-        <DataTable
-          columns={columns}
-          data={currentItems}
-          fixedHeader
-          pagination
-          selectableRows
-          onSelectedRowsChange={handleRowsSelected}
-          conditionalRowStyles={conditionalRowStyles}
-          customStyles={tableCustomStyles}
-        />
-      </div>
-    </div>
+                    <div className="container my-5">
+                        <DataTable
+                            columns={columns}
+                            data={currentItems}
+                            fixedHeader
+                            pagination
+                            selectableRows
+                            onSelectedRowsChange={handleRowsSelected}
+                            conditionalRowStyles={conditionalRowStyles}
+                            customStyles={tableCustomStyles}
+                        />
+                    </div>
+                </div>
 
             </main>
         </div>

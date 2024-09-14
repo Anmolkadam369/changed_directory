@@ -1018,7 +1018,7 @@ function WorkshopResponse({ data, onUpdate }) {
                     >
                         Reject
                     </button>
-                    {fullInfomation && (
+                    {/* {fullInfomation && (
                         <div
                             className="form-control generate-button"
                             onClick={handlePayment}
@@ -1058,7 +1058,7 @@ function WorkshopResponse({ data, onUpdate }) {
                         >
                             Pay Now
                         </a>
-                    )}
+                    )} */}
                 </div>
                 {modalData && (
                     <ActivationModel

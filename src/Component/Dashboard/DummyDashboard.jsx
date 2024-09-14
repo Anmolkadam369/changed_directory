@@ -46,6 +46,7 @@ import VendorIndPerf from '../AAAAAAAAAAAAAAAAAA/VendorIndPerf';
 import VendorRating from '../AAAAAAAAAAAAAAAAAA/VendorRating';
 import CustomerRatings from '../AAAAAAAAAAAAAAAAAA/CustomerRatings';
 import MostNumberOfVehicle from '../AAAAAAAAAAAAAAAAAA/MostNumberOfVehicle';
+import EmployeeApproved from '../EmployeeForm/EmployeeApproved';
 
 
 
@@ -82,6 +83,7 @@ const DummyDashboard = () => {
     const [dashboardOnly, setDashboardOnly] = useState(true)
     const [vendorOnly, setVendorOnly] = useState(false)
     const [showViewCustomer, setShowViewCustomer] = useState(false)
+    const [showViewEmployee, setShowViewEmployee] = useState(false)
     const [newCase, setNewCase] = useState(false)
     const [accidentVehicle, setAccidentVehicle] = useState(false)
     const [showVehicleClaimView, setShowVehicleClaimView] = useState(false)
@@ -92,9 +94,6 @@ const DummyDashboard = () => {
     const [customerDashboard, setCustomerDashboard] = useState(false)
     const [personalVehicleInfo, setPersonalVehicleInfo] = useState([])
     const [personalAccidentVehicle, setPersonalAccidentVehicle] = useState([])
-
-
-
 
 
 
@@ -391,13 +390,13 @@ const DummyDashboard = () => {
     };
 
     const allVendorResponse = async (e) => {
-        const response = await axios ({
-            method : "GET",
-            url : `${backendUrl}/api/vendorResponse/${userId}`,
+        const response = await axios({
+            method: "GET",
+            url: `${backendUrl}/api/vendorResponse/${userId}`,
             headers: {
-              'Authorization': token
+                'Authorization': token
             }
-          });
+        });
         setVendorResponse(response.data.data)
     };
 
@@ -458,6 +457,11 @@ const DummyDashboard = () => {
         setShowViewCustomer(true)
     }
 
+    const employeeInfo = () => {
+        resetStates()
+        setShowViewEmployee(true)
+    }
+
     const accidentInfo = () => {
         resetStates()
         setAccidentVehicle(true)
@@ -488,13 +492,13 @@ const DummyDashboard = () => {
 
     const tableData = async () => {
         try {
-            const response = await axios ({
-                method : "GET",
-                url : `${backendUrl}/api/vendorResponse/${userId}`,
+            const response = await axios({
+                method: "GET",
+                url: `${backendUrl}/api/vendorResponse/${userId}`,
                 headers: {
-                  'Authorization': token
+                    'Authorization': token
                 }
-              });
+            });
             console.log("console data", response.data)
             setData(response.data.data);
         } catch (error) {
@@ -545,10 +549,10 @@ const DummyDashboard = () => {
     }, []);
 
     const [selected, setSelected] = useState(null);
-      const handleClick = (func, index) => {
-    setSelected(index);
-    func();  
-  };
+    const handleClick = (func, index) => {
+        setSelected(index);
+        func();
+    };
 
     return (
 
@@ -557,7 +561,7 @@ const DummyDashboard = () => {
             {dashboardOnly && (
                 <div className="dashboard">
                     <main className="main-content">
-                        <div style={{display:'flex'}}>
+                        <div style={{ display: 'flex' }}>
                             <p
                                 className={`topdivs ${selected === 1 ? 'selected' : ''}`}
                                 onClick={() => handleClick(AllDashboardFunc, 1)}
@@ -603,6 +607,9 @@ const DummyDashboard = () => {
                                             <img src={remainingComplaints} className="small-image" alt="Vendor Types" />
                                             <h3>Employees</h3>
                                             <p>{getEmployees.length}</p>
+                                            {(getData.randomId || getData.department === "Management" || getData.department === "IT") && (
+                                                <h6 onClick={employeeInfo} className="see-list">see employee list</h6>
+                                            )}
                                         </div>
 
                                         <div className="stat-item" onClick={() => handleStatClick('incomingComplaints')}>
@@ -1026,6 +1033,9 @@ const DummyDashboard = () => {
             )}
             {showViewCustomer && (
                 <CustomerApproved />
+            )}
+            {showViewEmployee && (
+                <EmployeeApproved />
             )}
             {accidentVehicle && (
                 <AccidentVehicle />

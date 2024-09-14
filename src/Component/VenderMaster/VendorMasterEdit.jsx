@@ -724,28 +724,75 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           <label className="form-field">
             PAN Card:
             {IsReadOnly ? (
-              formData.panCard !== "Pan Value" ? (
-                <>
-                  <img
-                    src={formData.panCard}
-                    alt="PAN Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
-                    onClick={openPANModal}
-                  />
-                  <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
-                    <div className="modal-header">
-                      <IconButton href={formData.panCard} download color="primary">
-                        <DownloadIcon />
-                      </IconButton>
-                      <IconButton onClick={closePANModal} color="secondary">
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                    <div className="modal-image-container">
-                      <img src={formData.panCard} alt="PAN Card" className="modal-image" />
-                    </div>
-                  </Modal>
-                </>
+              formData.panCard && formData.panCard !== "Pan Value" ? (
+                formData.panCard.endsWith(".jpg") ||
+                  formData.panCard.endsWith(".jpeg") ||
+                  formData.panCard.endsWith(".webp") ||
+                  formData.panCard.endsWith(".jfif") ||
+                  formData.panCard.endsWith(".png") ||
+                  formData.panCard.endsWith(".gif") ||
+                  formData.panCard.endsWith(".bmp") ||
+                  formData.panCard.endsWith(".tiff") ||
+                  formData.panCard.endsWith(".svg") ? (
+                  <>
+                    <img
+                      src={formData.panCard}
+                      alt="PAN Card"
+                      style={{
+                        maxWidth: '100px',
+                        display: 'block',
+                        cursor: 'pointer',
+                        border: 'solid black 2px',
+                        padding: '3px',
+                        marginTop: '6px'
+                      }}
+                      onClick={openPANModal}
+                    />
+                    <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
+                      <div className="modal-header">
+                        <IconButton href={formData.panCard} download color="primary">
+                          <DownloadIcon />
+                        </IconButton>
+                        <IconButton onClick={closePANModal} color="secondary">
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <div className="modal-image-container">
+                        <img src={formData.panCard} alt="PAN Card" style={{ width: '100%' }} />
+                      </div>
+                    </Modal>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <a
+                        href={formData.panCard}
+                        className="docx-link"
+                        style={{
+                          cursor: 'pointer',
+                          color: 'green'
+                        }}
+                        download
+                      >
+                        <DownloadingOutlinedIcon /> Download
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handlePreviewClick(e, formData.panCard)}
+                        style={{
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: 'white',
+                          color: '#560303',
+                          fontSize: '13px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <RemoveRedEyeOutlinedIcon /> Preview
+                      </button>
+                    </p>
+                  </>
+                )
               ) : (
                 <p className='notUploaded'>No PAN Card uploaded</p>
               )
@@ -782,32 +829,79 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         <div className='form-row'>
 
           <label className="form-field">
-            Adhar Card:
+            Aadhaar Card:
             {IsReadOnly ? (
-              formData.adharCard !== "Adhar Value" ? (
-                <>
-                  <img
-                    src={formData.adharCard}
-                    alt="Adhar Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
-                    onClick={openAdharModal}
-                  />
-                  <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Adhar Card Modal">
-                    <div className='modal-header'>
-                      <IconButton href={formData.adharCard} download color="primary">
-                        <DownloadIcon />
-                      </IconButton>
-                      <IconButton onClick={closeAdharModal} color="secondary">
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                    <div className="modal-image-container">
-                      <img src={formData.adharCard} alt="Adhar Card" className="modal-image" />
-                    </div>
-                  </Modal>
-                </>
+              formData.adharCard && formData.adharCard !== "Adhar Value" ? (
+                formData.adharCard.endsWith(".jpg") ||
+                  formData.adharCard.endsWith(".jpeg") ||
+                  formData.adharCard.endsWith(".webp") ||
+                  formData.adharCard.endsWith(".jfif") ||
+                  formData.adharCard.endsWith(".png") ||
+                  formData.adharCard.endsWith(".gif") ||
+                  formData.adharCard.endsWith(".bmp") ||
+                  formData.adharCard.endsWith(".tiff") ||
+                  formData.adharCard.endsWith(".svg") ? (
+                  <>
+                    <img
+                      src={formData.adharCard}
+                      alt="Aadhaar Card"
+                      style={{
+                        maxWidth: '100px',
+                        display: 'block',
+                        cursor: 'pointer',
+                        border: 'solid black 2px',
+                        padding: '3px',
+                        marginTop: '6px'
+                      }}
+                      onClick={openAdharModal}
+                    />
+                    <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Aadhaar Card Modal">
+                      <div className="modal-header">
+                        <IconButton href={formData.adharCard} download color="primary">
+                          <DownloadIcon />
+                        </IconButton>
+                        <IconButton onClick={closeAdharModal} color="secondary">
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <div className="modal-image-container">
+                        <img src={formData.adharCard} alt="Aadhaar Card" className="modal-image" />
+                      </div>
+                    </Modal>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <a
+                        href={formData.adharCard}
+                        className="docx-link"
+                        style={{
+                          cursor: 'pointer',
+                          color: 'green'
+                        }}
+                        download
+                      >
+                        <DownloadingOutlinedIcon /> Download
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handlePreviewClick(e, formData.adharCard)}
+                        style={{
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: 'white',
+                          color: '#560303',
+                          fontSize: '13px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <RemoveRedEyeOutlinedIcon /> Preview
+                      </button>
+                    </p>
+                  </>
+                )
               ) : (
-                <p className='notUploaded'>No Adhar Card uploaded</p>
+                <p className='notUploaded'>No Aadhaar Card uploaded</p>
               )
             ) : (
               <input
@@ -838,7 +932,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                         download
                       >
                         <DownloadingOutlinedIcon /> Download
-                  c    </a>
+                      </a>
 
                       <button
                         type="button"
@@ -881,7 +975,15 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             GSTIN:
             {IsReadOnly ? (
               formData.GST && formData.GST !== "default-GST-value" ? (
-                formData.GST.endsWith(".jpg") || formData.GST.endsWith(".jpeg") || formData.GST.endsWith(".webp") ? (
+                formData.GST.endsWith(".jpg") ||
+                  formData.GST.endsWith(".jpeg") ||
+                  formData.GST.endsWith(".webp") ||
+                  formData.GST.endsWith(".jfif") ||
+                  formData.GST.endsWith(".png") ||
+                  formData.GST.endsWith(".gif") ||
+                  formData.GST.endsWith(".bmp") ||
+                  formData.GST.endsWith(".tiff") ||
+                  formData.GST.endsWith(".svg") ? (
                   <>
                     <img
                       src={formData.GST}

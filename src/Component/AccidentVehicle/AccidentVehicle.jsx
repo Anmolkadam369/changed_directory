@@ -16,12 +16,12 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
 
 
-const formatDate =(isoDateString)=>{
+const formatDate = (isoDateString) => {
   const date = new Date(isoDateString);
-const day = String(date.getUTCDate()).padStart(2, '0');
-const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
-const year = date.getUTCFullYear();
-return (`${day}-${month}-${year}`);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = date.getUTCFullYear();
+  return (`${day}-${month}-${year}`);
 }
 
 const parseDate = (dateString) => {
@@ -70,8 +70,8 @@ const AccidentVehicle = () => {
       style: {
         color: '#ffff',
         backgroundColor: 'rgb(169 187 169)',
-        fontWeight : "bold",
-        fontSize : '13px'
+        fontWeight: "bold",
+        fontSize: '13px'
       },
     },
     pagination: {
@@ -83,12 +83,12 @@ const AccidentVehicle = () => {
       },
     },
     striped: {
-      style:{
+      style: {
         default: 'red'
       }
     },
-    rows : {
-      style:{
+    rows: {
+      style: {
         backgroundColor: '#f2f2f2',
       }
     }
@@ -147,38 +147,43 @@ const AccidentVehicle = () => {
         return dateA - dateB; // Ascending order
       },
     },
-    { name: "Customer Name", selector: (row) => row.CustomerName, sortable: true ,width:"150px",
+    {
+      name: "Customer Name", selector: (row) => row.CustomerName, sortable: true, width: "150px",
       cell: (row) => (
-        <span style={{color:'blue'}}>{row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1)}</span>
+        <span style={{ color: 'blue' }}>{row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1)}</span>
       )
     },
-    { name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true ,width:"200px",
+    {
+      name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true, width: "200px",
       cell: (row) => (
-        <span style={{color:'brown'}}>{row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1)}</span>
+        <span style={{ color: 'brown' }}>{row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1)}</span>
       )
     },
-    { name: "Vehicle No", selector: (row) => row.vehicleNo, sortable: true ,
+    {
+      name: "Vehicle No", selector: (row) => row.vehicleNo, sortable: true,
       cell: (row) => (
-        <span style={{color: '#fff', backgroundColor: 'lightblue', padding: '5px', borderRadius: '4px'}}>
-            {/* {row.vehicleNo ? row.vehicleNo.charAt(0).toUpperCase() + row.vehicleNo.slice(1).toLowerCase() : ""} */}
-            {row.vehicleNo ? row.vehicleNo.toUpperCase() : ""}
+        <span style={{ color: '#fff', backgroundColor: 'lightblue', padding: '5px', borderRadius: '4px' }}>
+          {/* {row.vehicleNo ? row.vehicleNo.charAt(0).toUpperCase() + row.vehicleNo.slice(1).toLowerCase() : ""} */}
+          {row.vehicleNo ? row.vehicleNo.toUpperCase() : ""}
 
         </span>
-    ),},
-    { name: "Selected Services", selector: (row) => row.selectedOptions, sortable: true, width : "300px",
+      ),
+    },
+    {
+      name: "Selected Services", selector: (row) => row.selectedOptions, sortable: true, width: "300px",
       cell: (row) => (
-<span style={{color: 'blue', padding: '5px 20px 5px 20px'}}>
-  {row.selectedOptions
-    ? row.selectedOptions
-        .split(',')
-        .map((option, index) => (
-          <React.Fragment key={index}>
-            {index + 1}. {option.trim().charAt(0).toUpperCase() + option.trim().slice(1).toLowerCase()}
-            <br />
-          </React.Fragment>
-        ))
-    : ""}
-</span>    
+        <span style={{ color: 'blue', padding: '5px 20px 5px 20px' }}>
+          {row.selectedOptions
+            ? row.selectedOptions
+              .split(',')
+              .map((option, index) => (
+                <React.Fragment key={index}>
+                  {index + 1}. {option.trim().charAt(0).toUpperCase() + option.trim().slice(1).toLowerCase()}
+                  <br />
+                </React.Fragment>
+              ))
+            : ""}
+        </span>
       ),
     },
     {
@@ -194,8 +199,9 @@ const AccidentVehicle = () => {
         );
       },
     },
-    
-    { name: "Actions",
+
+    {
+      name: "Actions",
       cell: (row) => (
         <button
           onClick={() => view(row.AccidentVehicleCode)}
@@ -212,23 +218,23 @@ const AccidentVehicle = () => {
 
   const handleSearch = (e) => {
     const searchValue = e.target.value.toLowerCase();
-  
+
     const newRows = data.filter((row) => {
       const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
       const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchValue);
       const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchValue);
       const selectedOptionsValue = (row.selectedOptions ?? '').toLowerCase().includes(searchValue);
       const choosenPlanValue = (row.choosenPlan ?? '').toLowerCase().includes(searchValue);
-  
-      return dateValue || customerNameValue || vehicleNoValue || selectedOptionsValue || choosenPlanValue ;
+
+      return dateValue || customerNameValue || vehicleNoValue || selectedOptionsValue || choosenPlanValue;
     });
-  
+
     setCurrentItems(newRows);
   };
 
   return (
     <div>
-      {!showEditAccidentVehicle && (<div className="Customer-master-form" style={{  marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
+      {!showEditAccidentVehicle && (<div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
         <Helmet>
           <title>Accident Vehicle Service - Claimpro</title>
           <meta name="description" content="Accident Vehicle Service." />
@@ -240,34 +246,34 @@ const AccidentVehicle = () => {
           <label className='label-class'>
             Search by
             <input
-                type="text"
-                placeholder="Search by"
-                onChange={handleSearch}
-                required
-              />
+              type="text"
+              placeholder="Search by"
+              onChange={handleSearch}
+              required
+            />
           </label>
           <label className='label-class'></label>
         </div>
         <div style={{ display: "flex", margin: "10px" }}>
-          <p  className={`topdivs ${selectedItem === "fullyAssigned" ? "selected" : ""}`}  onClick={() => handleClick("fullyAssigned")}>Fully Assigned </p>
-          <p  className={`topdivs ${selectedItem === "partiallyAssigned" ? "selected" : ""}`} onClick={() => handleClick("partiallyAssigned")}  >Partially Assigned </p>
-          <p  className={`topdivs ${selectedItem === "NotAssigned" ? "selected" : ""}`}  onClick={() => handleClick("NotAssigned")}>Not Assigned </p>
-        
+          <p className={`topdivs ${selectedItem === "fullyAssigned" ? "selected" : ""}`} onClick={() => handleClick("fullyAssigned")}>Fully Assigned </p>
+          <p className={`topdivs ${selectedItem === "partiallyAssigned" ? "selected" : ""}`} onClick={() => handleClick("partiallyAssigned")}  >Partially Assigned </p>
+          <p className={`topdivs ${selectedItem === "NotAssigned" ? "selected" : ""}`} onClick={() => handleClick("NotAssigned")}>Not Assigned </p>
+
         </div>
-        <div className="container d-flex justify-content-center " style={{marginTop:"10px"}}>
-            <div className="container my-5">
-              <DataTable
-                  columns={columns}
-                  data={currentItems}
-                  fixedHeader
-                  pagination
-                  selectableRows
-                  onSelectedRowsChange={handleRowsSelected}
-                  conditionalRowStyles={conditionalRowStyles}
-                  customStyles={tableCustomStyles}
-              />
-            </div>
+        <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+          <div className="container my-5">
+            <DataTable
+              columns={columns}
+              data={currentItems}
+              fixedHeader
+              pagination
+              selectableRows
+              onSelectedRowsChange={handleRowsSelected}
+              conditionalRowStyles={conditionalRowStyles}
+              customStyles={tableCustomStyles}
+            />
           </div>
+        </div>
 
       </div>)}
       {showEditAccidentVehicle && (

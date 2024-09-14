@@ -372,18 +372,25 @@ const CustomerApproved = () => {
     },
   ];
 
+  const [searchValue, setSearchValue] = useState('');
+
   const handleSearch = (e) => {
-    const searchValue = e.target.value.toLowerCase();
+        const value = e.target.value.toLowerCase();
+    setSearchValue(value);
 
     const newRows = data.filter((row) => {
-      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
-      const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchValue);
-      const emailValue = (row.email ?? '').toLowerCase().includes(searchValue);
-      const CustomerTypeValue = (row.CustomerType ?? '').toLowerCase().includes(searchValue);
-      const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchValue);
-      const districtValue = (row.district ?? '').toLowerCase().includes(searchValue);
+      const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
+      const searchLower = value;
 
-      return dateValue || customerNameValue || emailValue || CustomerTypeValue || editedByValue || districtValue;
+      const idValue = formattedId.includes(searchLower);
+      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchLower)
+      const customerNameValue = (row.CustomerName ?? '').toLowerCase().includes(searchLower);
+      const emailValue = (row.email ?? '').toLowerCase().includes(searchLower);
+      const CustomerTypeValue = (row.CustomerType ?? '').toLowerCase().includes(searchLower);
+      const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchLower);
+      const districtValue = (row.district ?? '').toLowerCase().includes(searchLower);
+
+      return idValue || dateValue || customerNameValue || emailValue || CustomerTypeValue || editedByValue || districtValue;
     });
 
     setCurrentItems(newRows);
@@ -411,8 +418,8 @@ const CustomerApproved = () => {
               <input
                 type="text"
                 placeholder="Search by "
+                value={searchValue}
                 onChange={handleSearch}
-                required
               />
             </label>
 

@@ -471,6 +471,37 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
     const [isReadOnlyPayment, setIsReadOnlyPayment] = useState(true)
     console.log("SISFSDFDFSDFSFD", isReadOnlyPayment)
+    
+    const [notRequestedLink, setNotRequestedLink] = useState(true);
+    const [comingLink , setComingLink] = useState("");
+
+    const handlePayment = async () => {  // added
+        const id = userId;// added
+        try {
+            setIsLoading(true);
+            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${id}`);
+            console.log("handlepayment", response.data)
+            if (response.data.message === "successfully created") {
+                setNotRequestedLink(false)
+                setIsLoading(false);
+                setComingLink(response.data.data);
+            } else {
+                const errorMessage = 'An error occurred';
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } catch (error) {
+            console.error('Error response:', error);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        }
+    }
 
 
 
@@ -1469,13 +1500,15 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                             </button>
                         </div>
                     )}
+                </div>
 
                     {isfeedbackRatingModalOpen && (
-                        <form className='Customer-master-form' style={{ width: "100%", marginTop: "10px", background:"lightgray" }}>
+                        <form className='Customer-master-form' style={{  margin: "0px", padding: "10px", background: "#cbcbe5", borderRadius: "10px",
+                            boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"}}>
                             <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
                                 <CloseIcon />
                             </IconButton>
-                            <p>How satisfied are you?</p>
+                            <p style={{ fontWeight: "bold" }}>How satisfied are you?</p>
                             <input
                                 type="range"
                                 min="0"
@@ -1503,19 +1536,23 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                     )}
 
                     {isCommissionModelOpen && (
-                        <div className='Customer-master-form' style={{ width: "100%", marginTop: "10px", background:"#a8c1b4" }}>
+                        <div className='Customer-master-form' style={{   margin: "0px", padding: "10px", background: "#e6efe0", borderRadius: "10px",
+                            boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)" }}>
                             <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
                                 <CloseIcon />
                             </IconButton>
 
                             <div style={{ display: "flex", marginTop: "50px" }}>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer',background: 'linear-gradient(to right, lightblue, white)',
+                                color: 'blue' }}>
                                     Cheque
                                 </button>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer',background: 'linear-gradient(to right, lightblue, white)',
+                                color: 'blue' }}>
                                     Online Payment
                                 </button>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '5px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer',background: 'linear-gradient(to right, lightblue, white)',
+                                color: 'blue' }}>
                                     Cash
                                 </button>
                             </div>
@@ -1574,6 +1611,44 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
                                 {paymentThrough === "onlinePayment" && (
                                     <div>
                                         <p>Online Payment: (image Of Payment)</p>
+                                        
+                                    {notRequestedLink && (
+                                        <div
+                                            className="form-control generate-button"
+                                            onClick={handlePayment}
+                                            style={{
+                                                fontSize: "12px",
+                                                padding: '10px 10px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                background: 'linear-gradient(to right, lightblue, white)',
+                                                color: 'blue'
+                                            }}
+                                        >
+                                            {isLoading ? (
+                                                <ClipLoader color="#ffffff" loading={isLoading} />
+                                            ) : (
+                                                'Payment Request'
+                                            )}
+                                        </div>
+                                    )}
+                                    {comingLink && (
+                                        <a
+                                            href={comingLink}
+                                            className="form-control download-link"
+                                            style={{
+                                                fontSize: "12px",
+                                                padding: '10px 10px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                background: 'linear-gradient(to right, lightyellow, white)',
+                                                color: 'Green'
+                                            }}
+                                        >
+                                            Pay Now
+                                        </a>
+                                    )}
+
                                         {isReadOnlyPayment && typeof formData.onlinePaymentImg === 'string' && formData.onlinePaymentImg.startsWith("https") ? (
                                             <>
                                                 <label className="form-field" style={{ marginTop: "30px" }}>
@@ -1721,7 +1796,6 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
 
 
-                </div>
 
 
 

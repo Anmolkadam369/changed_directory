@@ -31,7 +31,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
     let adminResponse = "not requested yet";
     if (item.details.length != 0) {
         adminResponse = item.details[0].acceptedByAdmin
-        
+
     }
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -256,19 +256,19 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
         event.preventDefault();
         console.log('formData', formData, id, userId);
         try {
-            if (formData.vehicleInspection === ""&&
-                formData.labourEstimate === ""&&
-                formData.partsArrangment === ""&&
-                formData.trial === ""&&
-                formData.payment === ""&&
-                formData.feedback === ""&&
-                formData.feedbackRating === ""&&
-                formData.transactionId === ""&&
-                formData.onlinePaymentImg === ""&&
-                formData.cheque=== ""){
+            if (formData.vehicleInspection === "" &&
+                formData.labourEstimate === "" &&
+                formData.partsArrangment === "" &&
+                formData.trial === "" &&
+                formData.payment === "" &&
+                formData.feedback === "" &&
+                formData.feedbackRating === "" &&
+                formData.transactionId === "" &&
+                formData.onlinePaymentImg === "" &&
+                formData.cheque === "") {
                 setAlertInfo({ show: true, message: "Please Fill The Details ", severity: 'error' });
-                    return;
-                }
+                return;
+            }
             const formDataObj = new FormData();
             for (const key in formData) {
                 if (formData[key] !== undefined && formData[key] !== null && formData[key] !== "") {
@@ -370,6 +370,37 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
 
     const [isReadOnlyPayment, setIsReadOnlyPayment] = useState(true)
     console.log("SISFSDFDFSDFSFD", isReadOnlyPayment)
+
+    const [notRequestedLink, setNotRequestedLink] = useState(true);
+    const [comingLink, setComingLink] = useState("");
+
+    const handlePayment = async () => {  // added
+        const id = userId;// added
+        try {
+            setIsLoading(true);
+            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${id}`);
+            console.log("handlepayment", response.data)
+            if (response.data.message === "successfully created") {
+                setNotRequestedLink(false)
+                setIsLoading(false);
+                setComingLink(response.data.data);
+            } else {
+                const errorMessage = 'An error occurred';
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } catch (error) {
+            console.error('Error response:', error);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        }
+    }
 
 
 
@@ -523,7 +554,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openChassisModal}
                                 />
                                 <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
@@ -551,7 +582,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
@@ -579,7 +610,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
@@ -607,7 +638,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
@@ -635,7 +666,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
@@ -663,7 +694,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
@@ -691,7 +722,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
@@ -719,7 +750,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
@@ -747,7 +778,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
@@ -775,7 +806,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -803,7 +834,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
@@ -831,7 +862,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
@@ -923,13 +954,13 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
 
                     {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
                         <>
-                        <label className="form-field">
-                                <button style={{width:"100%",marginTop:"20px", fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                            <label className="form-field">
+                                <button style={{  fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
                                     Give Feedback
                                 </button>
                             </label>
                             <label className="form-field">
-                                <button style={{width:"100%", marginTop: "20px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                <button style={{fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black'}} disabled>
                                     Commission
                                 </button>
                             </label>
@@ -979,65 +1010,74 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                         </>
                     )}
 
+                </div>
                     {adminResponse === 'accept' && (
                         <div className='form-row'>
-                            <button onClick={openfeedbackRatingModal} style={{width:"100%", marginTop: "20px", marginLeft: "10px", padding: '20px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'lightblue', color: 'white' }}>
+                            <label className='form-field'>
+                            <button onClick={openfeedbackRatingModal} style={{  fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
                                 Give Feedback
                             </button>
-                            <button onClick={openCommissionModel} style={{ width:"100%",marginTop: "20px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                            </label>
+                            <label className='form-field'>
+                            <button onClick={openCommissionModel} style={{  fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black'  }}>
                                 Commission
                             </button>
+                            </label>
+                            <label className='form-field'></label>
+                            <label className='form-field'></label>
+
                         </div>
                     )}
 
-                    {isfeedbackRatingModalOpen && (
-                        <form className='Customer-master-form' style={{ width: "100%", marginTop: "10px" }}>
-                            <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
-                                <CloseIcon />
-                            </IconButton>
-                            <p>How satisfied are you?</p>
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={formData.feedbackRating || 0}
-                                onChange={onfeedbackRatingChange}
-                                className="slider"
-                                name="feedbackRating"
-                                disabled={alreadyRating}
-                                style={{ display: 'block', marginTop: '10px' }}
+                {isfeedbackRatingModalOpen && (
+                    <form className='Customer-master-form' style={{  margin: "0px", padding: "10px", background: "#cbcbe5", borderRadius: "10px",
+                        boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"}}>
+                        <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
+                            <CloseIcon />
+                        </IconButton>
+                        <p style={{ fontWeight: "bold" }}> How satisfied are you?</p>
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={formData.feedbackRating || 0}
+                            onChange={onfeedbackRatingChange}
+                            className="slider"
+                            name="feedbackRating"
+                            disabled={alreadyRating}
+                            style={{ display: 'block', marginTop: '10px' }}
+                        />
+                        <div style={{ marginBottom: "30px" }}>Satisfied By Customer Response: {formData.feedbackRating}</div>
+
+                        <label className="form-field">
+                            Feedback:
+                            <textarea
+                                name="feedback"
+                                className="inputField form-control"
+                                value={formData.feedback}
+                                onChange={handleChange}
+                                readOnly={!!existingData?.feedback}
                             />
-                            <div style={{ marginBottom: "30px" }}>Satisfied By Customer Response: {formData.feedbackRating}</div>
-
-                            <label className="form-field">
-                                Feedback:
-                                <textarea
-                                    name="feedback"
-                                    className="inputField form-control"
-                                    value={formData.feedback}
-                                    onChange={handleChange}
-                                    readOnly={!!existingData?.feedback}
-                                />
-                            </label>
-                        </form>
-                    )}
-
-                </div>
+                        </label>
+                    </form>
+                )}
 
                 {isCommissionModelOpen && (
-                    <div className='Customer-master-form' style={{ margin: "0px", padding: "10px" }}>
+                    <div className='Customer-master-form' style={{   
+                        margin: "0px", padding: "10px", background: "#e6efe0", borderRadius: "10px",
+                        boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)" }}>
                         <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
                             <CloseIcon />
                         </IconButton>
 
                         <div style={{ display: "flex", marginTop: "50px" }}>
-                            <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
                                 Cheque
                             </button>
-                            <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
                                 Online Payment
                             </button>
-                            <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "12px", marginLeft: "5px", padding: '3px', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
                                 Cash
                             </button>
                         </div>
@@ -1096,6 +1136,43 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
                             {paymentThrough === "onlinePayment" && (
                                 <div>
                                     <p>Online Payment: (image Of Payment)</p>
+                                    {notRequestedLink && (
+                                        <div
+                                            className="form-control generate-button"
+                                            onClick={handlePayment}
+                                            style={{
+                                                fontSize: "12px",
+                                                padding: '10px 10px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                background: 'linear-gradient(to right, lightblue, white)',
+                                                color: 'blue'
+                                            }}
+                                        >
+                                            {isLoading ? (
+                                                <ClipLoader color="#ffffff" loading={isLoading} />
+                                            ) : (
+                                                'Payment Request'
+                                            )}
+                                        </div>
+                                    )}
+                                    {comingLink && (
+                                        <a
+                                            href={comingLink}
+                                            className="form-control download-link"
+                                            style={{
+                                                fontSize: "12px",
+                                                padding: '10px 10px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                background: 'linear-gradient(to right, lightyellow, white)',
+                                                color: 'Green'
+                                            }}
+                                        >
+                                            Pay Now
+                                        </a>
+                                    )}
+
                                     {isReadOnlyPayment && typeof formData.onlinePaymentImg === 'string' && formData.onlinePaymentImg.startsWith("https") ? (
                                         <>
                                             <label className="form-field" style={{ marginTop: "30px" }}>
@@ -1248,13 +1325,15 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
 
                 <div>
                     <button type="submit"
-                        style={{                     fontSize: "14px",
-                    padding: "5px 20px",
-                    border: "3px solid lightblue",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    color: "green",}}
+                        style={{
+                            fontSize: "14px",
+                            padding: "5px 20px",
+                            border: "3px solid lightblue",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            backgroundColor: "transparent",
+                            color: "green",
+                        }}
                         disabled={isLoading} // Disable button while loading
                         onClick={onSubmit}
                     >

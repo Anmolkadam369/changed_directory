@@ -28,6 +28,58 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
     if (item.details.length != 0) {
         adminResponse = item.details[0].acceptedByAdmin
     }
+
+    const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
+    const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
+    const [isFrontLHModalOpen, setIsFrontLHModalOpen] = useState(false);
+    const [isFrontRHModalOpen, setIsFrontRHModalOpen] = useState(false);
+
+    const [isFrontViewModalOpen, setIsFrontViewModalOpen] = useState(false);
+    const [isRearRHModalOpen, setIsRearRHModalOpen] = useState(false);
+    const [isRearLHModalOpen, setIsRearLHModalOpen] = useState(false);
+    const [isMajorDamage1ModalOpen, setIsMajorDamage1ModalOpen] = useState(false);
+
+    const [isMajorDamage2ModalOpen, setIsMajorDamage2ModalOpen] = useState(false);
+    const [isMajorDamage3ModalOpen, setIsMajorDamage3ModalOpen] = useState(false);
+    const [isMajorDamage4ModalOpen, setIsMajorDamage4ModalOpen] = useState(false);
+    const [isMajorDamage5ModalOpen, setIsMajorDamage5ModalOpen] = useState(false);
+
+    const openChassisModal = () => setIsChassisModalOpen(true);
+    const closeChassisModal = () => setIsChassisModalOpen(false);
+
+    const openClusterModal = () => setIsClusterModalOpen(true);
+    const closeClusterModal = () => setIsClusterModalOpen(false);
+
+    const openFrontLHModal = () => setIsFrontLHModalOpen(true);
+    const closeFrontLHModal = () => setIsFrontLHModalOpen(false);
+
+    const openFrontRHModal = () => setIsFrontRHModalOpen(true);
+    const closeFrontRHModal = () => setIsFrontRHModalOpen(false);
+
+    const openFrontViewModal = () => setIsFrontViewModalOpen(true);
+    const closeFrontViewModal = () => setIsFrontViewModalOpen(false);
+
+    const openRearRHModal = () => setIsRearRHModalOpen(true);
+    const closeRearRHModal = () => setIsRearRHModalOpen(false);
+
+    const openRearLHModal = () => setIsRearLHModalOpen(true);
+    const closeRearLHModal = () => setIsRearLHModalOpen(false);
+
+    const openMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(true);
+    const closeMajorDamage1Modal = () => setIsMajorDamage1ModalOpen(false);
+
+    const openMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(true);
+    const closeMajorDamage2Modal = () => setIsMajorDamage2ModalOpen(false);
+
+    const openMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(true);
+    const closeMajorDamage3Modal = () => setIsMajorDamage3ModalOpen(false);
+
+    const openMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(true);
+    const closeMajorDamage4Modal = () => setIsMajorDamage4ModalOpen(false);
+
+    const openMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(true);
+    const closeMajorDamage5Modal = () => setIsMajorDamage5ModalOpen(false);
+
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -409,6 +461,37 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
     const [isReadOnlyPayment, setIsReadOnlyPayment] = useState(true)
     console.log("SISFSDFDFSDFSFD", isReadOnlyPayment)
 
+    const [notRequestedLink, setNotRequestedLink] = useState(true);
+    const [comingLink, setComingLink] = useState("");
+
+    const handlePayment = async () => {  // added
+        const id = userId;// added
+        try {
+            setIsLoading(true);
+            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${id}`);
+            console.log("handlepayment", response.data)
+            if (response.data.message === "successfully created") {
+                setNotRequestedLink(false)
+                setIsLoading(false);
+                setComingLink(response.data.data);
+            } else {
+                const errorMessage = 'An error occurred';
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } catch (error) {
+            console.error('Error response:', error);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        }
+    }
+
     return (
         <div>
             <form className='Customer-master-form'>
@@ -561,8 +644,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openChassisModal}
                                 />
+                                <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ChassisNoView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeChassisModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ChassisNoView} alt="Chassis Card" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
@@ -575,8 +672,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openClusterModal}
                                 />
+                                <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.ClusterView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeClusterModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.ClusterView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
@@ -589,9 +700,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openFrontLHModal}
                                 />
-
+                                <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
@@ -604,8 +728,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openFrontRHModal}
                                 />
+                                <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
@@ -618,9 +756,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openFrontViewModal}
                                 />
-
+                                <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.frontView} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeFrontViewModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.frontView} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
@@ -633,9 +784,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openRearLHModal}
                                 />
-
+                                <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearLH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearLHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearLH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -648,9 +812,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openRearRHModal}
                                 />
-
+                                <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.rearRH} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeRearRHModal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.rearRH} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -663,9 +840,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openMajorDamage1Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages1} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage1Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages1} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -678,9 +868,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openMajorDamage2Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages2} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage2Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages2} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -693,9 +896,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openMajorDamage3Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages3} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage3Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages3} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -708,9 +924,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openMajorDamage4Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages4} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage4Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages4} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -723,9 +952,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", border: "3px solid grey", borderRadius: "10px", cursor: "pointer" }}
+                                    onClick={openMajorDamage5Modal}
                                 />
-
+                                <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
+                                    <div className="modal-header">
+                                        <IconButton href={comingData.MajorDamages5} download color="primary">
+                                            <DownloadIcon />
+                                        </IconButton>
+                                        <IconButton onClick={closeMajorDamage5Modal} color="secondary">
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className="modal-image-container">
+                                        <img src={comingData.MajorDamages5} alt="Cluster Number" className="modal-image" />
+                                    </div>
+                                </Modal>
                             </>
                         ) : (
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
@@ -772,7 +1014,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                                 border: 'none',
                                                 background: "white",
                                                 color: "#560303",
-                                                fontSize: "13px"
+                                                fontSize: "13px",
+                                                boxShadow: "none"
                                             }}
                                         >
                                             <RemoveRedEyeOutlinedIcon /> Preview
@@ -786,7 +1029,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         name="firCopy"
                                         onChange={handleChange}
                                         className='form-control'
-                                        accept=".pdf,image/*"
+                                        accept=".pdf/*"
                                         ref={firCopy}
                                     />
                                 </label>
@@ -821,7 +1064,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -835,7 +1079,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='form-control'
                                     name="POA"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={POA}
                                 />
                             </label>
@@ -869,7 +1113,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -884,7 +1129,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="petitionCopy"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={petitionCopy}
                                 />
                             </label>
@@ -918,7 +1163,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -932,7 +1178,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="policeReportCopy"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={policeReportCopy}
                                 />
                             </label>
@@ -969,7 +1215,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -983,7 +1230,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="bailerDetails"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={bailerDetails}
                                 />
                             </label>
@@ -1017,7 +1264,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -1031,7 +1279,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="releaseOrderCopy"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={releaseOrderCopy}
                                 />
                             </label>
@@ -1065,7 +1313,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -1079,7 +1328,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="releaseUpload"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={releaseUpload}
                                 />
                             </label>
@@ -1113,7 +1362,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
-                                            fontSize: "13px"
+                                            fontSize: "13px",
+                                            boxShadow: "none"
                                         }}
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -1127,7 +1377,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     className='inputField form-control'
                                     name="indemnityBondCopy"
                                     onChange={handleChange}
-                                    accept=".pdf,image/*"
+                                    accept=".pdf/*"
                                     ref={indemnityBondCopy}
                                 />
                             </label>
@@ -1140,16 +1390,16 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                     <label className="form-field">
                         {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
                             <>
-                        <label className="form-field">
-                                <button style={{ fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
-                                    Give Feedback
-                                </button>
-                            </label>
-                            <label className="form-field">
-                                <button style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
-                                    Commission
-                                </button>
-                            </label>
+                                <label className="form-field">
+                                    <button style={{ fontSize: "14px", fontWeight: "bold", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                        Give Feedback
+                                    </button>
+                                </label>
+                                <label className="form-field">
+                                    <button style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }} disabled>
+                                        Commission
+                                    </button>
+                                </label>
                                 {showPopup && (
                                     <div style={{
                                         position: 'fixed',
@@ -1208,230 +1458,240 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                         )}
                     </label>
 
-                    {isfeedbackRatingModalOpen && (
-                        <form className='Customer-master-form' style={{ width: "100%", marginTop: "10px" }}>
-                            <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
-                                <CloseIcon />
-                            </IconButton>
-                            <p>How satisfied are you?</p>
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={formData.feedbackRating || 0}
-                                onChange={onfeedbackRatingChange}
-                                className="slider"
-                                name="feedbackRating"
-                                disabled={alreadyRating}
-                                style={{ display: 'block', marginTop: '10px' }}
-                            />
-                            <div style={{ marginBottom: "30px" }}>Satisfied By Customer Response: {formData.feedbackRating}</div>
-
-                            <label className="form-field">
-                                Feedback:
-                                <textarea
-                                    name="feedback"
-                                    className="inputField form-control"
-                                    value={formData.feedback}
-                                    onChange={handleChange}
-                                    readOnly={!!existingData?.feedback}
-                                />
-                            </label>
-                        </form>
-                    )}
                 </div>
+                {isfeedbackRatingModalOpen && (
+                    <form className='Customer-master-form' style={{
+                        margin: "0px", padding: "10px", background: "#cbcbe5", borderRadius: "10px",
+                        boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"
+                    }}>
+                        <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
+                            <CloseIcon />
+                        </IconButton>
+                        <p style={{ fontWeight: "bold" }}>How satisfied are you?</p>
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={formData.feedbackRating || 0}
+                            onChange={onfeedbackRatingChange}
+                            className="slider"
+                            name="feedbackRating"
+                            disabled={alreadyRating}
+                            style={{ display: 'block', marginTop: '10px' }}
+                        />
+                        <div style={{ marginBottom: "30px" }}>Satisfied By Customer Response: {formData.feedbackRating}</div>
 
-                    {isCommissionModelOpen && (
-                        <div className='Customer-master-form'>
-                            <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
-                                <CloseIcon />
-                            </IconButton>
+                        <label className="form-field">
+                            Feedback:
+                            <textarea
+                                name="feedback"
+                                className="inputField form-control"
+                                value={formData.feedback}
+                                onChange={handleChange}
+                                readOnly={!!existingData?.feedback}
+                            />
+                        </label>
+                    </form>
+                )}
 
-                            <div style={{ display: "flex" }}>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'teal', color: 'white' }}>
-                                    Cheque
-                                </button>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'teal', color: 'white' }}>
-                                    Online Payment
-                                </button>
-                                <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'teal', color: 'white' }}>
-                                    Cash
-                                </button>
-                            </div>
-                            <div style={{ marginTop: "20px" }}>
-                                {paymentThrough === "cheque" && (
-                                    <div>
-                                        <p>Your Cheque Image :</p>
-                                        {isReadOnlyPayment && typeof formData.cheque === 'string' && formData.cheque.startsWith("https") ? (
-                                            <>
-                                                <img
-                                                    src={formData.cheque}
-                                                    alt="cheque"
-                                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
-                                                    onClick={openChequeModal}
-                                                />
-                                                <div style={{ display: 'flex' }}>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            setIsReadOnlyPayment(false);
-                                                        }}
-                                                        style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}
-                                                    >
-                                                        Change
-                                                    </button>
+                {isCommissionModelOpen && (
+                    <div className='Customer-master-form' style={{
+                        margin: "0px", padding: "10px", background: "#e6efe0", borderRadius: "10px",
+                        boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"
+                    }}>
+                        <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
+                            <CloseIcon />
+                        </IconButton>
+
+                        <div style={{ display: "flex" }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
+                                Cheque
+                            </button>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
+                                Online Payment
+                            </button>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
+                                Cash
+                            </button>
+                        </div>
+                        <div style={{ marginTop: "20px" }}>
+                            {paymentThrough === "cheque" && (
+                                <div>
+                                    <p>Your Cheque Image :</p>
+                                    {isReadOnlyPayment && typeof formData.cheque === 'string' && formData.cheque.startsWith("https") ? (
+                                        <>
+                                            <img
+                                                src={formData.cheque}
+                                                alt="cheque"
+                                                style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                                onClick={openChequeModal}
+                                            />
+                                            <div style={{ display: 'flex' }}>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setIsReadOnlyPayment(false);
+                                                    }}
+                                                    style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}
+                                                >
+                                                    Change
+                                                </button>
+                                            </div>
+
+                                            <Modal isOpen={isChequeModalOpen} onRequestClose={closeChequeModal} contentLabel="Open Cheque Modal">
+                                                <div className="modal-header">
+                                                    <IconButton href={formData.cheque} download color="primary">
+                                                        <DownloadIcon />
+                                                    </IconButton>
+                                                    <IconButton onClick={closeChequeModal} color="secondary">
+                                                        <CloseIcon />
+                                                    </IconButton>
                                                 </div>
+                                                <div className="modal-image-container">
+                                                    <img src={formData.cheque} alt="Cheque Image" className="modal-image" />
+                                                </div>
+                                            </Modal>
+                                        </>
+                                    ) : (
+                                        <input
+                                            type="file"
+                                            name="cheque"
+                                            onChange={handleChange}
+                                            accept=".pdf/*"
+                                            required
+                                            className="form-control"
+                                            style={{ marginTop: "30px" }}
+                                        />
+                                    )}
+                                </div>
+                            )}
 
-                                                <Modal isOpen={isChequeModalOpen} onRequestClose={closeChequeModal} contentLabel="Open Cheque Modal">
-                                                    <div className="modal-header">
-                                                        <IconButton href={formData.cheque} download color="primary">
-                                                            <DownloadIcon />
-                                                        </IconButton>
-                                                        <IconButton onClick={closeChequeModal} color="secondary">
-                                                            <CloseIcon />
-                                                        </IconButton>
-                                                    </div>
-                                                    <div className="modal-image-container">
-                                                        <img src={formData.cheque} alt="Cheque Image" className="modal-image" />
-                                                    </div>
-                                                </Modal>
-                                            </>
-                                        ) : (
+                            {paymentThrough === "onlinePayment" && (
+                                <div>
+                                    <p>Online Payment: (image Of Payment)</p>
+                                    {notRequestedLink && (
+                                        <div
+                                            className="form-control generate-button"
+                                            onClick={handlePayment}
+                                            style={{
+                                                fontSize: "12px",
+                                                padding: '10px 10px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                background: 'linear-gradient(to right, lightblue, white)',
+                                                color: 'blue'
+                                            }}
+                                        >
+                                            {isLoading ? (
+                                                <ClipLoader color="#ffffff" loading={isLoading} />
+                                            ) : (
+                                                'Payment Request'
+                                            )}
+                                        </div>
+                                    )}
+                                    {comingLink && (
+                                        <a
+                                            href={comingLink}
+                                            className="form-control download-link"
+                                            style={{
+                                                fontSize: "12px",
+                                                padding: '10px 10px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                background: 'linear-gradient(to right, lightyellow, white)',
+                                                color: 'Green'
+                                            }}
+                                        >
+                                            Pay Now
+                                        </a>
+                                    )}
+                                    {isReadOnlyPayment && typeof formData.onlinePaymentImg === 'string' && formData.onlinePaymentImg.startsWith("https") ? (
+                                        <>
+                                            <label className="form-field" style={{ marginTop: "30px" }}>
+                                                Transaction ID:
+                                                <input
+                                                    type='text'
+                                                    name="transactionId"
+                                                    placeholder='Transaction ID'
+                                                    value={formData.transactionId}
+                                                    onChange={handleChange}
+                                                    className="form-control"
+                                                    required
+                                                    readOnly
+                                                />
+                                            </label>
+                                            <img
+                                                src={formData.onlinePaymentImg}
+                                                alt="online payment"
+                                                style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                                onClick={openOnlinePaymentModal}
+                                            />
+                                            <div style={{ display: 'flex' }}>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setIsReadOnlyPayment(false);
+                                                    }}
+                                                    style={{
+                                                        marginTop: "10px",
+                                                        marginLeft: "10px",
+                                                        border: '1px solid red',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                        backgroundColor: 'white',
+                                                        color: 'black'
+                                                    }}
+                                                >
+                                                    Change
+                                                </button>
+                                            </div>
+                                            <Modal isOpen={isOnlinePaymentModalOpen} onRequestClose={closeOnlinePaymentModal} contentLabel="Open Online Payment Modal">
+                                                <div className="modal-header">
+                                                    <IconButton href={formData.onlinePaymentImg} download color="primary">
+                                                        <DownloadIcon />
+                                                    </IconButton>
+                                                    <IconButton onClick={closeOnlinePaymentModal} color="secondary">
+                                                        <CloseIcon />
+                                                    </IconButton>
+                                                </div>
+                                                <div className="modal-image-container">
+                                                    <img src={formData.onlinePaymentImg} alt="Online Payment Image" className="modal-image" />
+                                                </div>
+                                            </Modal>
+                                        </>
+                                    ) : (
+                                        <div>
+                                            <label className="form-field" style={{ marginTop: "30px" }}>
+                                                Transaction ID:
+                                                <input
+                                                    type='text'
+                                                    name="transactionId"
+                                                    placeholder='Transaction ID'
+                                                    value={formData.transactionId}
+                                                    onChange={handleChange}
+                                                    className="form-control"
+                                                    required
+                                                />
+                                            </label>
                                             <input
                                                 type="file"
-                                                name="cheque"
+                                                name="onlinePaymentImg"
                                                 onChange={handleChange}
-                                                accept=".pdf,image/*"
+                                                accept=".pdf/*"
                                                 required
                                                 className="form-control"
                                                 style={{ marginTop: "30px" }}
                                             />
-                                        )}
-                                    </div>
-                                )}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
-                                {paymentThrough === "onlinePayment" && (
-                                    <div>
-                                        <p>Online Payment: (image Of Payment)</p>
-                                        {isReadOnlyPayment && typeof formData.onlinePaymentImg === 'string' && formData.onlinePaymentImg.startsWith("https") ? (
-                                            <>
-                                                <label className="form-field" style={{ marginTop: "30px" }}>
-                                                    Transaction ID:
-                                                    <input
-                                                        type='text'
-                                                        name="transactionId"
-                                                        placeholder='Transaction ID'
-                                                        value={formData.transactionId}
-                                                        onChange={handleChange}
-                                                        className="form-control"
-                                                        required
-                                                        readOnly
-                                                    />
-                                                </label>
-                                                <img
-                                                    src={formData.onlinePaymentImg}
-                                                    alt="online payment"
-                                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
-                                                    onClick={openOnlinePaymentModal}
-                                                />
-                                                <div style={{ display: 'flex' }}>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            setIsReadOnlyPayment(false);
-                                                        }}
-                                                        style={{
-                                                            marginTop: "10px",
-                                                            marginLeft: "10px",
-                                                            border: '1px solid red',
-                                                            borderRadius: '4px',
-                                                            cursor: 'pointer',
-                                                            backgroundColor: 'white',
-                                                            color: 'black'
-                                                        }}
-                                                    >
-                                                        Change
-                                                    </button>
-                                                </div>
-                                                <Modal isOpen={isOnlinePaymentModalOpen} onRequestClose={closeOnlinePaymentModal} contentLabel="Open Online Payment Modal">
-                                                    <div className="modal-header">
-                                                        <IconButton href={formData.onlinePaymentImg} download color="primary">
-                                                            <DownloadIcon />
-                                                        </IconButton>
-                                                        <IconButton onClick={closeOnlinePaymentModal} color="secondary">
-                                                            <CloseIcon />
-                                                        </IconButton>
-                                                    </div>
-                                                    <div className="modal-image-container">
-                                                        <img src={formData.onlinePaymentImg} alt="Online Payment Image" className="modal-image" />
-                                                    </div>
-                                                </Modal>
-                                            </>
-                                        ) : (
-                                            <div>
-                                                <label className="form-field" style={{ marginTop: "30px" }}>
-                                                    Transaction ID:
-                                                    <input
-                                                        type='text'
-                                                        name="transactionId"
-                                                        placeholder='Transaction ID'
-                                                        value={formData.transactionId}
-                                                        onChange={handleChange}
-                                                        className="form-control"
-                                                        required
-                                                    />
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    name="onlinePaymentImg"
-                                                    onChange={handleChange}
-                                                    accept=".pdf,image/*"
-                                                    required
-                                                    className="form-control"
-                                                    style={{ marginTop: "30px" }}
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                {paymentThrough === "cash" && (
-                                    <div>
-                                        <p>Paid By Cash:</p>
-                                        {isReadOnlyPayment && formData.paidByCash == true ? (
-                                            <>
-                                                <label style={{ display: "flex", alignItems: "center" }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        name="paidByCash"
-                                                        checked={formData.paidByCash}
-                                                        onChange={handleChange}
-                                                        required
-                                                        style={{ marginRight: "10px" }}
-                                                    />
-                                                    Paid By Cash
-                                                </label>
-                                                <div style={{ display: 'flex' }}>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            setIsReadOnlyPayment(false);
-                                                        }}
-                                                        style={{
-                                                            marginTop: "10px",
-                                                            marginLeft: "10px",
-                                                            border: '1px solid red',
-                                                            borderRadius: '4px',
-                                                            cursor: 'pointer',
-                                                            backgroundColor: 'white',
-                                                            color: 'black'
-                                                        }}
-                                                    >
-                                                        Change
-                                                    </button>
-                                                </div>
-                                            </>
-                                        ) : (
+                            {paymentThrough === "cash" && (
+                                <div>
+                                    <p>Paid By Cash:</p>
+                                    {isReadOnlyPayment && formData.paidByCash == true ? (
+                                        <>
                                             <label style={{ display: "flex", alignItems: "center" }}>
                                                 <input
                                                     type="checkbox"
@@ -1443,19 +1703,51 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                                 />
                                                 Paid By Cash
                                             </label>
-                                        )}
-                                    </div>
-                                )}
+                                            <div style={{ display: 'flex' }}>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setIsReadOnlyPayment(false);
+                                                    }}
+                                                    style={{
+                                                        marginTop: "10px",
+                                                        marginLeft: "10px",
+                                                        border: '1px solid red',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                        backgroundColor: 'white',
+                                                        color: 'black'
+                                                    }}
+                                                >
+                                                    Change
+                                                </button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <label style={{ display: "flex", alignItems: "center" }}>
+                                            <input
+                                                type="checkbox"
+                                                name="paidByCash"
+                                                checked={formData.paidByCash}
+                                                onChange={handleChange}
+                                                required
+                                                style={{ marginRight: "10px" }}
+                                            />
+                                            Paid By Cash
+                                        </label>
+                                    )}
+                                </div>
+                            )}
 
-                            </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-                                <button onClick={closeCommisionModel} style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
-                                    Save it!!!
-                                </button>
-                            </div>
                         </div>
-                    )}
+
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                            <button onClick={closeCommisionModel} style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                Save it!!!
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {alertInfo.show && (
                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
@@ -1465,13 +1757,15 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
 
                 <div>
                     <button type="submit"
-                        style={{                     fontSize: "14px",
-                    padding: "5px 20px",
-                    border: "3px solid lightblue",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    color: "green",}}
+                        style={{
+                            fontSize: "14px",
+                            padding: "5px 20px",
+                            border: "3px solid lightblue",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            backgroundColor: "transparent",
+                            color: "green",
+                        }}
                         disabled={isLoading} // Disable button while loading
                         onClick={onSubmit}
                     >

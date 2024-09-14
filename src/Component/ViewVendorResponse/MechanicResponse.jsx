@@ -861,7 +861,7 @@ function MechanicResponse({ data, onUpdate }) {
                     >
                         Reject
                     </button>
-                    {fullInfomation && (
+                    {/* {fullInfomation && (
                         <div
                             className="form-control generate-button"
                             onClick={handlePayment}
@@ -901,7 +901,7 @@ function MechanicResponse({ data, onUpdate }) {
                         >
                             Pay Now
                         </a>
-                    )}
+                    )} */}
                 </div>
 
                 {modalData && (

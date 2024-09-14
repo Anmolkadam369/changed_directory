@@ -195,7 +195,13 @@ const tableCustomStyles = {
 
   const [currentItems, setCurrentItems] = useState(data);
   const columns = [
-    {name : "Sr.No", selector : (row)=>row.id , sortable: true},
+    {
+      name: "EmployeeID",
+      selector: row => row.id, // Raw data for sorting
+      cell: row => <span>{String(row.id).padStart(4, '0')}</span>, // Display formatted value
+      sortable: true,
+      sortFunction: (rowA, rowB) => rowA.id - rowB.id // Custom sort function
+    },
     {
       name: "Date",
       selector: (row) => row.DOJ,
@@ -293,19 +299,25 @@ const tableCustomStyles = {
       button: true,
     },
   ];
+  const [searchValue, setSearchValue] = useState('');
 
   const handleSearch = (e) => {
-    const searchValue = e.target.value.toLowerCase();
+    const value = e.target.value.toLowerCase();
+    setSearchValue(value);
   
     const newRows = data.filter((row) => {
-      const dateValue = (formatDate(row.DOJ) ?? '').toLowerCase().includes(searchValue);
-      const nameValue = (row.name ?? '').toLowerCase().includes(searchValue);
-      const emailValue = (row.employeeEmailId ?? '').toLowerCase().includes(searchValue);
-      const branchValue = (row.branch ?? '').toLowerCase().includes(searchValue);
-      const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchValue);
-      const genderValue = (row.gender ?? '').toLowerCase().includes(searchValue);
+      const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
+      const searchLower = value;
+
+      const idValue = formattedId.includes(searchLower);
+      const dateValue = (formatDate(row.DOJ) ?? '').toLowerCase().includes(searchLower);
+      const nameValue = (row.name ?? '').toLowerCase().includes(searchLower);
+      const emailValue = (row.employeeEmailId ?? '').toLowerCase().includes(searchLower);
+      const branchValue = (row.branch ?? '').toLowerCase().includes(searchLower);
+      const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchLower);
+      const genderValue = (row.gender ?? '').toLowerCase().includes(searchLower);
   
-      return dateValue || nameValue || emailValue || branchValue || editedByValue || genderValue;
+      return idValue || dateValue || nameValue || emailValue || branchValue || editedByValue || genderValue;
     });
   
     setCurrentItems(newRows);
@@ -325,14 +337,15 @@ const tableCustomStyles = {
       <div>
         <h3 className="bigtitle">Employee View / Edit</h3>
         <div className="form-search">
-          <label className='label-class'>
-            Search by Employee Name
-            <input
+        <label className='label-class'>
+              Search by
+              <input
                 type="text"
-                placeholder="Search by"
+                placeholder="Search by "
+                value={searchValue}
                 onChange={handleSearch}
-            />
-          </label>
+              />
+            </label>
 
           <label className="label-class" style={{ marginTop: "20px" }}>
             {!isGenerated && (

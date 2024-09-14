@@ -12,6 +12,8 @@ const VendorByMap = ({ onUpdate }) => {
     const [vendorLocationData, setVendorLocationData] = useState([]);
     const [foundVendors, setFoundVendors] = useState([]);
     const [vendorsName, setVendorName] = useState('');
+    const [vendorId, setVendorId] = useState('');
+
     const [selectedVendorType, setSelectedVendorType] = useState("");
     const [map, setMap] = useState(null);
 
@@ -42,7 +44,7 @@ const VendorByMap = ({ onUpdate }) => {
 
     useEffect(() => {
         findNearestVendors();
-    }, [vendorLocationData, vendorsName]);
+    }, [vendorLocationData, vendorsName, vendorId]);    
 
     const vendorsData = async (vendorType) => {
         try {
@@ -55,7 +57,7 @@ const VendorByMap = ({ onUpdate }) => {
     }
 
     const findNearestVendors = () => {
-        console.log("Filtering vendors for:", vendorsName, selectedVendorType);
+        console.log("Filtering vendors for:", vendorsName, selectedVendorType, vendorId);
         console.log("vendorLocationData12345", vendorLocationData)
 
         let found = vendorLocationData.filter((vendor) =>
@@ -65,6 +67,12 @@ const VendorByMap = ({ onUpdate }) => {
         if (vendorsName) {
             found = found.filter((vendor) =>
                 vendor.vendorName.toLowerCase().includes(vendorsName.toLowerCase())
+            );
+        }
+
+        if (vendorId) {
+            found = found.filter((vendor) =>
+                String(vendor.id).includes(vendorId)
             );
         }
 
@@ -80,8 +88,14 @@ const VendorByMap = ({ onUpdate }) => {
 
 
     const handleChanges = (e) => {
-        const tempName = e.target.value;
-        setVendorName(tempName);
+        if (e.target.name == "vendorName") {
+            const tempName = e.target.value;
+            setVendorName(tempName);
+        }
+        if (e.target.name == "vendorId") {
+            const tempId = e.target.value;
+            setVendorId(tempId);
+        }
     };
 
     const handleBack = () => {
@@ -92,28 +106,35 @@ const VendorByMap = ({ onUpdate }) => {
     return (
 
 
-        <div className="Customer-master-form" style={{ paddingBottom:"100px",marginBottom: "50px" , marginLeft:"0px"}}>
+        <div className="Customer-master-form" style={{
+            paddingBottom: "50px", marginBottom: "50px", marginLeft: "0px",
+            marginRight: "0px",
+            paddingLeft: "0px",
+            paddingRight: "0px",
+            background: "none",
+            boxShadow: "none",
+        }}>
             <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
-            <div style={{
-                textAlign: 'center',
-                marginBottom: '20px',
-                padding: '20px'
-                
-            }}>
-                <h1 style={{
-                    background: 'linear-gradient(to left, rgba(173, 216, 230, 1), rgba(255, 255, 255, 0))',
-                    color: '#333',
-                    padding: '10px 20px',
-                    borderRadius: '10px',
-                    display: 'inline-block',
-                    fontSize: '16px',
-                    fontWeight:'bold',
-                    fontStyle:"italic"
+                <div style={{
+                    textAlign: 'center',
+                    marginBottom: '20px',
+                    padding: '20px'
+
                 }}>
-                    Vendors by their Locations (Latitude & Longitude On Map)
-                </h1>
-            </div>
+                    <h1 style={{
+                        background: 'linear-gradient(to left, rgba(173, 216, 230, 1), rgba(255, 255, 255, 0))',
+                        color: '#333',
+                        padding: '10px 20px',
+                        borderRadius: '10px',
+                        display: 'inline-block',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        fontStyle: "italic"
+                    }}>
+                        Vendors by their Locations (Latitude & Longitude On Map)
+                    </h1>
+                </div>
             </div>
 
             <div >
@@ -121,7 +142,7 @@ const VendorByMap = ({ onUpdate }) => {
 
                 <div>
                     <div className='form-row'>
-                    <label className="form-field1" style={{ width: "100%" }}>
+                        <label className="form-field" style={{marginLeft:"5px", marginBottom:"0px"}}>
                             <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Name:</p>
                             <input
                                 type="text"
@@ -131,9 +152,18 @@ const VendorByMap = ({ onUpdate }) => {
                                 onChange={handleChanges}
                             />
                         </label>
-                        <div className="dropdown green-dropdown form-field" style={{marginTop: "10px", marginBottom: "0px",marginLeft:"10px" }}>
-
-                            <p style={{ fontSize: "13px", fontWeight: "bold" }}>Select Vendor Type:</p>
+                        <label className="form-field" style={{marginLeft:"5px", marginBottom:"0px"}}>
+                            <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Id:</p>
+                            <input
+                                type="text"
+                                name="vendorId"
+                                className='inputField1'
+                                value={vendorId}
+                                onChange={handleChanges}
+                            />
+                        </label>
+                        <div className="dropdown green-dropdown form-field" style={{ marginBottom: "0px" }}>
+                        <p style={{ fontSize: "13px", fontWeight: "bold" , marginBottom:"5px"}}>Select Vendor Type :</p>
 
                             <button
                                 className="form-field input-group mb-3"
@@ -142,7 +172,7 @@ const VendorByMap = ({ onUpdate }) => {
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 onClick={toggleDropdown}
-                                style={{ marginLeft: '10px', width: "100%", padding: "10px", borderRadius: "20px", marginTop:"10px" }}
+                                style={{ marginLeft: '10px', width: "100%", padding: "10px", borderRadius: "20px", marginTop: "0px", marginBottom:"0px" }}
                             >
                                 {selectedVendorType || "Select Vendor Type"}
                             </button>

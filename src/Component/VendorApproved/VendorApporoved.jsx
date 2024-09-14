@@ -311,7 +311,7 @@ const VendorApproved = () => {
       ),
     },
     {
-      name: "Modify",
+      name: "Modified By",
       selector: (row) => row.EditedBy || '',
       sortable: true,
       cell: (row) => {
@@ -387,23 +387,28 @@ const VendorApproved = () => {
 
   const [searchValue, setSearchValue] = useState('');
 
-    const handleSearch = (e) => {
-      const value = e.target.value.toLowerCase();
-      setSearchValue(value);
-
-      const newRows = data.filter((row) => {
-        const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchValue);
-        const vendorNameValue = (row.vendorName ?? '').toLowerCase().includes(searchValue);
-        const emailValue = (row.email ?? '').toLowerCase().includes(searchValue);
-        const vendorTypeValue = (row.vendorType ?? '').toLowerCase().includes(searchValue);
-        const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchValue);
-        const districtValue = (row.district ?? '').toLowerCase().includes(searchValue);
-
-        return dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
-      });
-
-      setCurrentItems(newRows);
-    };
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchValue(value);
+  
+    const newRows = data.filter((row) => {
+      const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
+      const searchLower = value; // Use the updated search value directly
+  
+      const idValue = formattedId.includes(searchLower);
+      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchLower);
+      const vendorNameValue = (row.vendorName ?? '').toLowerCase().includes(searchLower);
+      const emailValue = (row.email ?? '').toLowerCase().includes(searchLower);
+      const vendorTypeValue = (row.vendorType ?? '').toLowerCase().includes(searchLower);
+      const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchLower);
+      const districtValue = (row.district ?? '').toLowerCase().includes(searchLower);
+  
+      return idValue || dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
+    });
+  
+    setCurrentItems(newRows);
+  };
+  
 
   return (
     <div>

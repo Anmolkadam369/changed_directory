@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-const NotFoundPage = () => {
+const NotFoundPage= () => {
   const navigate = useNavigate();
 
   const goHome = () => {

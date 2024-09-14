@@ -199,7 +199,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     vehicleNo: "", chassisNo: "", engineNo: "", make: "", model: "",
     year: "", type: "", application: "", GVW: "", ULW: "",
     InsuranceName: "",
-    longitude: '', latitude: "", id:""
+    longitude: '', latitude: "", id: ""
   });
   console.log("FORDSTA", formData)
 
@@ -207,7 +207,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
   const fullAddress = `${formData.address}, ${formData.district}, ${formData.pincode}, ${formData.state}`;
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&timestamp=${new Date().getTime()}`;
-  
+
   useEffect(() => {
     if (!IsReadOnly) {
       const debounceTimer = setTimeout(() => {
@@ -216,7 +216,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
             console.log("FULL ADDRESS:", fullAddress);
             const response = await axios.get(url);
             console.log("Response data:", response.data);
-  
+
             const location = response.data[0];
             if (location) {
               setLatitude(location.lat);
@@ -239,7 +239,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         };
         getLonLat();
       }, 500); // Adjust the debounce time as necessary
-  
+
       return () => clearTimeout(debounceTimer);
     }
   }, [fullAddress, IsReadOnly]);
@@ -285,8 +285,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         GSTNo: comingData.GSTNo || "",
         GST: comingData.GST || "",
         longitude: comingData.longitude !== null ? comingData.longitude : "",
-        latitude: comingData.latitude !== null ? comingData.latitude : "", 
-        id:comingData.id
+        latitude: comingData.latitude !== null ? comingData.latitude : "",
+        id: comingData.id
       }));
     }
   }, [comingData]);
@@ -362,7 +362,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     }
 
     const aadhaarRegex = /^\d{12}$/;
-    if (formData.adharNo !== "N/A"  && !aadhaarRegex.test(formData.adharNo)) {
+    if (formData.adharNo !== "N/A" && !aadhaarRegex.test(formData.adharNo)) {
       return 'Please enter a valid Aadhaar Number.';
     }
 
@@ -372,7 +372,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     }
 
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    if (formData.panNo !== "N/A"  && !panRegex.test(formData.panNo)) {
+    if (formData.panNo !== "N/A" && !panRegex.test(formData.panNo)) {
       return 'Please enter a valid PAN Number.';
     }
 
@@ -592,10 +592,10 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           </div>
         </div>
         <div className="form-row">
-        <label className="form-field">
+          <label className="form-field">
             Customer Id:
             <input
-              type="text"c
+              type="text"
               className="form-control"
               name="id"
               value={String(formData.id).padStart(4, '0')}
@@ -804,32 +804,79 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
         <div className='form-row'>
           <label className="form-field">
-            Adhar Card:
+            Aadhaar Card:
             {IsReadOnly ? (
-              formData.adharCard != "Adhar Value" ? (
-                <>
-                  <img
-                    src={formData.adharCard}
-                    alt="Adhar Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
-                    onClick={openAdharModal}
-                  />
-                  <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Adhar Card Modal">
-                    <div className="modal-header">
-                      <IconButton href={formData.adharCard} download color="primary">
-                        <DownloadIcon />
-                      </IconButton>
-                      <IconButton onClick={closeAdharModal} color="secondary">
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                    <div className="modal-image-container">
-                      <img src={formData.adharCard} alt="Adhar Card" style={{ width: '100%' }} />
-                    </div>
-                  </Modal>
-                </>
+              formData.adharCard && formData.adharCard !== "Adhar Value" ? (
+                formData.adharCard.endsWith(".jpg") ||
+                  formData.adharCard.endsWith(".jpeg") ||
+                  formData.adharCard.endsWith(".webp") ||
+                  formData.adharCard.endsWith(".jfif") ||
+                  formData.adharCard.endsWith(".png") ||
+                  formData.adharCard.endsWith(".gif") ||
+                  formData.adharCard.endsWith(".bmp") ||
+                  formData.adharCard.endsWith(".tiff") ||
+                  formData.adharCard.endsWith(".svg") ? (
+                  <>
+                    <img
+                      src={formData.adharCard}
+                      alt="Aadhaar Card"
+                      style={{
+                        maxWidth: '100px',
+                        display: 'block',
+                        cursor: 'pointer',
+                        border: 'solid black 2px',
+                        padding: '3px',
+                        marginTop: '6px'
+                      }}
+                      onClick={openAdharModal}
+                    />
+                    <Modal isOpen={isAdharModalOpen} onRequestClose={closeAdharModal} contentLabel="Aadhaar Card Modal">
+                      <div className="modal-header">
+                        <IconButton href={formData.adharCard} download color="primary">
+                          <DownloadIcon />
+                        </IconButton>
+                        <IconButton onClick={closeAdharModal} color="secondary">
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <div className="modal-image-container">
+                        <img src={formData.adharCard} alt="Aadhaar Card" className="modal-image" />
+                      </div>
+                    </Modal>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <a
+                        href={formData.adharCard}
+                        className="docx-link"
+                        style={{
+                          cursor: 'pointer',
+                          color: 'green'
+                        }}
+                        download
+                      >
+                        <DownloadingOutlinedIcon /> Download
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handlePreviewClick(e, formData.adharCard)}
+                        style={{
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: 'white',
+                          color: '#560303',
+                          fontSize: '13px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <RemoveRedEyeOutlinedIcon /> Preview
+                      </button>
+                    </p>
+                  </>
+                )
               ) : (
-                <p className='notUploaded'>No Adhar Card uploaded</p>
+                <p className='notUploaded'>No Aadhaar Card uploaded</p>
               )
             ) : (
               <input
@@ -846,28 +893,75 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           <label className="form-field">
             PAN Card:
             {IsReadOnly ? (
-              formData.panCard != "Pan Value" ? (
-                <>
-                  <img
-                    src={formData.panCard}
-                    alt="PAN Card"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
-                    onClick={openPANModal}
-                  />
-                  <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
-                    <div className="modal-header">
-                      <IconButton href={formData.panCard} download color="primary">
-                        <DownloadIcon />
-                      </IconButton>
-                      <IconButton onClick={closePANModal} color="secondary">
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                    <div className="modal-image-container">
-                      <img src={formData.panCard} alt="PAN Card" style={{ width: '100%' }} />
-                    </div>
-                  </Modal>
-                </>
+              formData.panCard && formData.panCard !== "Pan Value" ? (
+                formData.panCard.endsWith(".jpg") ||
+                  formData.panCard.endsWith(".jpeg") ||
+                  formData.panCard.endsWith(".webp") ||
+                  formData.panCard.endsWith(".jfif") ||
+                  formData.panCard.endsWith(".png") ||
+                  formData.panCard.endsWith(".gif") ||
+                  formData.panCard.endsWith(".bmp") ||
+                  formData.panCard.endsWith(".tiff") ||
+                  formData.panCard.endsWith(".svg") ? (
+                  <>
+                    <img
+                      src={formData.panCard}
+                      alt="PAN Card"
+                      style={{
+                        maxWidth: '100px',
+                        display: 'block',
+                        cursor: 'pointer',
+                        border: 'solid black 2px',
+                        padding: '3px',
+                        marginTop: '6px'
+                      }}
+                      onClick={openPANModal}
+                    />
+                    <Modal isOpen={isPANModalOpen} onRequestClose={closePANModal} contentLabel="PAN Card Modal">
+                      <div className="modal-header">
+                        <IconButton href={formData.panCard} download color="primary">
+                          <DownloadIcon />
+                        </IconButton>
+                        <IconButton onClick={closePANModal} color="secondary">
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <div className="modal-image-container">
+                        <img src={formData.panCard} alt="PAN Card" style={{ width: '100%' }} />
+                      </div>
+                    </Modal>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <a
+                        href={formData.panCard}
+                        className="docx-link"
+                        style={{
+                          cursor: 'pointer',
+                          color: 'green'
+                        }}
+                        download
+                      >
+                        <DownloadingOutlinedIcon /> Download
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handlePreviewClick(e, formData.panCard)}
+                        style={{
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: 'white',
+                          color: '#560303',
+                          fontSize: '13px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <RemoveRedEyeOutlinedIcon /> Preview
+                      </button>
+                    </p>
+                  </>
+                )
               ) : (
                 <p className='notUploaded'>No PAN Card uploaded</p>
               )
@@ -886,28 +980,75 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
           <label className="form-field">
             GSTIN:
             {IsReadOnly ? (
-              formData.GST != "default-GST-value" ? (
-                <>
-                  <img
-                    src={formData.GST}
-                    alt="GSTIN"
-                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" }}
-                    onClick={openGSTModal}
-                  />
-                  <Modal isOpen={isGSTModalOpen} onRequestClose={closeGSTModal} contentLabel="GSTIN Modal">
-                    <div className="modal-header">
-                      <IconButton href={formData.GST} download color="primary">
-                        <DownloadIcon />
-                      </IconButton>
-                      <IconButton onClick={closeGSTModal} color="secondary">
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                    <div className="modal-image-container">
-                      <img src={formData.GST} alt="GSTIN" style={{ width: '100%' }} />
-                    </div>
-                  </Modal>
-                </>
+              formData.GST && formData.GST !== "default-GST-value" ? (
+                formData.GST.endsWith(".jpg") ||
+                  formData.GST.endsWith(".jpeg") ||
+                  formData.GST.endsWith(".webp") ||
+                  formData.GST.endsWith(".jfif") ||
+                  formData.GST.endsWith(".png") ||
+                  formData.GST.endsWith(".gif") ||
+                  formData.GST.endsWith(".bmp") ||
+                  formData.GST.endsWith(".tiff") ||
+                  formData.GST.endsWith(".svg") ? (
+                  <>
+                    <img
+                      src={formData.GST}
+                      alt="GSTIN"
+                      style={{
+                        maxWidth: '100px',
+                        display: 'block',
+                        cursor: 'pointer',
+                        border: 'solid black 2px',
+                        padding: '3px',
+                        marginTop: '6px'
+                      }}
+                      onClick={openGSTModal}
+                    />
+                    <Modal isOpen={isGSTModalOpen} onRequestClose={closeGSTModal} contentLabel="GSTIN Modal">
+                      <div className="modal-header">
+                        <IconButton href={formData.GST} download color="primary">
+                          <DownloadIcon />
+                        </IconButton>
+                        <IconButton onClick={closeGSTModal} color="secondary">
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <div className="modal-image-container">
+                        <img src={formData.GST} alt="GSTIN" className="modal-image" />
+                      </div>
+                    </Modal>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <a
+                        href={formData.GST}
+                        className="docx-link"
+                        style={{
+                          cursor: 'pointer',
+                          color: 'green'
+                        }}
+                        download
+                      >
+                        <DownloadingOutlinedIcon /> Download
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handlePreviewClick(e, formData.GST)}
+                        style={{
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: 'white',
+                          color: '#560303',
+                          fontSize: '13px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <RemoveRedEyeOutlinedIcon /> Preview
+                      </button>
+                    </p>
+                  </>
+                )
               ) : (
                 <p className='notUploaded'>No GST Card uploaded</p>
               )
@@ -1044,7 +1185,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
                 <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
                 Send Your Current Location (if it's same for filling address):
                 <div className='form-row'>
-                    <Button variant="contained" onClick={getLocation}>Send Location</Button>
+                  <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 </div>
 
                 Send Location Of Address (this is by your address):
