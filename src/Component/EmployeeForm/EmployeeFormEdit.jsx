@@ -192,6 +192,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
         if (comingData) {
             setFormData(prevFormData => ({
                 ...prevFormData,
+                id : comingData.id || "",
                 companyEmpId: comingData.companyEmpId || '',
                 name: comingData.name || "",
                 fatherFirstName: comingData.fatherFirstName || "",
@@ -225,6 +226,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 qualification: comingData.qualification || "",
                 employmentType: comingData.employmentType || "",
                 enchashmentName: comingData.enchashmentName || "",
+                department : comingData.department || "",
                 adharNo: comingData.adharNo || "",
                 panNo: comingData.panNo || "",
                 UANNo: comingData.UANNo || "",
@@ -308,6 +310,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     }, [comingData])
 
     const [formData, setFormData] = useState({
+        id:"",
         companyEmpId: '',
         name: "",
         fatherFirstName: "",
@@ -434,7 +437,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
 
     const getDataById = async (id) => {
         const response = await axios.get(`${backendUrl}/api/getEmployee/${id}`);
-        console.log("daa", response.data.data)
+        console.log("daaemployee", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
@@ -508,13 +511,23 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 [name]: validValue,
             });
         }
+        else if (name === "employeeEmailId" || name == "city") {
+            setFormData({
+              ...formData,
+              [name]: value,
+            });
+          }
+
         else {
-            const { value } = e.target;
-            console.log("values", value)
-            setFormData(prevState => ({
+            const capitalizedValue = value
+  .split(' ')
+  .map(word => word.toUpperCase())
+  .join(' ');
+
+              setFormData(prevState => ({
                 ...prevState,
-                [name]: value
-            }));
+                [name]: capitalizedValue
+              }));
         }
     }
 
@@ -643,11 +656,11 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
 
                 <div className="form-row">
                     <label className="form-field input-group mb-3">
-                        Company Employee Id:
+                        Employee Id:
                         <input
                             type="text"
                             name="companyEmpId"
-                            value={formData.companyEmpId}
+                            value={formData.id}
                             placeholder='Company Employee Id'
                             onChange={handleChange}
                             className="form-control"
@@ -983,7 +996,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                         </select>
                     </label>
                     <label className="form-field">
-                        City:
+                        City: {formData.city}
                         <select
                             className='form-control'
                             name="city"
@@ -1076,8 +1089,6 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                             <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Sales")}>Sales</a></li>
                             <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "Billing")}>Billing</a></li>
                             <li><a className="dropdown-item" href="#" onClick={(e) => handleDepartmentSelect(e, "IT")}>IT</a></li>
-
-
                         </ul>
                     </div>
                     <label className="form-field input-group mb-3">

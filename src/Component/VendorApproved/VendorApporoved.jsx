@@ -311,6 +311,19 @@ const VendorApproved = () => {
       ),
     },
     {
+      name: "Added By",
+      selector: (row) => row.addedBy || '',
+      sortable: true,
+      cell: (row) => {
+        const addedBy = row.addedBy ? String(row.addedBy) : "";
+        return (
+          <span style={{ color: "green" }}>
+            {addedBy.charAt(0).toUpperCase() + addedBy.slice(1).toLowerCase()}
+          </span>
+        );
+      },
+    },
+    {
       name: "Modified By",
       selector: (row) => row.EditedBy || '',
       sortable: true,
@@ -329,7 +342,7 @@ const VendorApproved = () => {
       name: "Actions",
       cell: (row) => (
         <button
-          onClick={() => view(row.id)}
+          onClick={() => view(row.vendorCode)}
           className='view-button'
         >
           View

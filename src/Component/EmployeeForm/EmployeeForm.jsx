@@ -276,29 +276,39 @@ const EmployeeForm = () => {
                 ...formData,
                 [name]: validValue,
             });
-        }
-
+        }else if (name === "employeeEmailId" || name == "city") {
+            setFormData({
+              ...formData,
+              [name]: value,
+            });
+          }
+      
         else {
-            const { value } = e.target;
-            setFormData(prevState => ({
+            const capitalizedValue = value
+  .split(' ')
+  .map(word => word.toUpperCase())
+  .join(' ');
+
+              setFormData(prevState => ({
                 ...prevState,
-                [name]: value
-            }));
+                [name]: capitalizedValue
+              }));
         }
     }
 
     const validateForm = () => {
 
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(formData.employeeEmailId)) {
+        if (formData.employeeEmailId === "" || formData.employeeEmailId == undefined || formData.employeeEmailId == null || !emailRegex.test(formData.employeeEmailId)) {
+            setAlertInfo({ show: true, message: "Employee Email is mandatory", severity: 'error' });
             return 'Please enter a valid email address.';
         }
 
         console.log("myfromdataBranch" )
-        if (formData.branch === "" || formData.branch == undefined || formData.branch == null) {
+        if (formData.department === "" || formData.department == undefined || formData.department == null) {
             console.log("STATESSSSSSSSSSSSSSSS")
-            setAlertInfo({ show: true, message: "Branch is mandatory", severity: 'error' });
-            return 'Branch is mandatory.';
+            setAlertInfo({ show: true, message: "department is mandatory", severity: 'error' });
+            return 'department is mandatory.';
         }
 
         return '';

@@ -5,7 +5,7 @@ import { Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { constSelector, useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import backendUrl from '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -382,33 +382,56 @@ const CustomerMaster = () => {
         [name]: validValue,
       });
     }
+    else if(name ==="district"){
+      setFormData({
+        ...formData,
+        [name]:value,
+      })
+    }
     else if (name === "CustomerPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
       const validValue = value.replace(/\D/g, '').slice(0, 10);
       setFormData({
         ...formData,
         [name]: validValue,
       });
+    }else if (name === "email") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+    else if (name === "CustomerType") {
+      console.log("valueinside", value)
+      if (value === "retail") {
+      console.log("valueinsideretail", value)
+        setIsRetail(true);
+        setIsFleetOwner(false);
+      } else if (value === "fleetOwner") {
+        setIsFleetOwner(true);
+        setIsRetail(false);
+      }
+      setFormData({
+        ...formData,
+        [name]:value,
+      })
     }
 
     else {
+      const capitalizedValue = value
+      .split(' ')
+      .map(word => word.toUpperCase())
+      .join(' ');
+    
       setFormData(prevState => ({
         ...prevState,
-        [name]: value
+        [name]: capitalizedValue
       }));
-      if (name === "CustomerType") {
-        if (value === "retail") {
-          setIsRetail(true);
-          setIsFleetOwner(false);
-        } else if (value === "fleetOwner") {
-          setIsFleetOwner(true);
-          setIsRetail(false);
-        }
-      }
+
     }
   };
 
 
-  console.log("FORm", formData)
+  console.log("customerFormdata", formData)
   console.log("LATIIII", latitude)
   console.log("LONGIIII", longitude)
 

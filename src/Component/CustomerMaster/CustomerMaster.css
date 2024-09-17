@@ -73,7 +73,7 @@ v .Customer-master-form textarea,
   margin-bottom: 15px;
   margin-top: 15px;
   font-size: 9px;
-  box-shadow: 20px 20px 60px #00000041, inset -20px -20px 60px #ffffff47;
+  /* box-shadow: 20px 20px 60px #00000041, inset -20px -20px 60px #ffffff47; */
 }
 
 .Customer-master-form button:hover {

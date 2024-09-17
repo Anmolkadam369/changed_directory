@@ -148,9 +148,14 @@ const Login = () => {
         setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
 
         console.log("RESPONSEONDSTS", response.data.data)
-        if (response.data.data?.userType === "admin" || response.data.data.department === "IT" || response.data.data.department === "Management") {
+        if (response.data.data?.userType === "admin" ||
+            response.data.data.department?.trim() === "Management" ) {
           navigate("../Admin");
-        } else if (response.data.data.vendorType === "advocate") {
+        }else if (response.data.data.department?.trim() === "IT" ){
+          console.log("trim department", response.data.data.department )
+          navigate("../Admin");
+        }
+         else if (response.data.data.vendorType === "advocate") {
           navigate("../advocateDashboard");
         } else if (response.data.data.vendorType === "mechanic") {
           navigate("../MechanicDashboard");

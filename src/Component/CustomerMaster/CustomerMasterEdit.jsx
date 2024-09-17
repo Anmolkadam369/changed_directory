@@ -465,10 +465,28 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         ...prevState,
         [name]: value
       }));
-    } else {
+    }else if (name === "email") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    } 
+    else if(name ==="district"){
+      setFormData({
+        ...formData,
+        [name]:value,
+      })
+    }
+
+    else {
+      const capitalizedValue = value
+  .split(' ')
+  .map(word => word.toUpperCase())
+  .join(' ');
+
       setFormData(prevState => ({
         ...prevState,
-        [name]: value
+        [name]: capitalizedValue
       }));
       if (name === "CustomerType") {
         if (value === "retail") {

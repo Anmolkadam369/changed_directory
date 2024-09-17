@@ -362,11 +362,28 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         [name]: validValue,
       });
     }
-    else {
-      const { value } = e.target;
+    else if (name === "email") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+    else if(name ==="district" || name === "vendorType"){
+      setFormData({
+        ...formData,
+        [name]:value,
+      })
+    }
+
+     else {
+      const capitalizedValue = value
+  .split(' ')
+  .map(word => word.toUpperCase())
+  .join(' ');
+
       setFormData(prevState => ({
         ...prevState,
-        [name]: value
+        [name]: capitalizedValue
       }));
     }
   };
@@ -589,14 +606,16 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           </label>
           <label className="form-field">
             Vendor Type:
-            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control" required disabled={IsReadOnly}>
+            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control" required disabled>
               <option value="">Select</option>
               <option value="advocate">Advocate</option>
               <option value="crane">Crane</option>
               <option value="mechanic">Mechanic</option>
               <option value="workshop">Workshop</option>
             </select>
+            
           </label>
+          
           <label className="form-field">
             Address  :
             <textarea
@@ -1066,8 +1085,19 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             formData.longitude == "" ? (
               <p className='notUploaded'>No Location Uploaded</p>
             ) : (
-              <div className='form-row'>
+              <div>
                 <Button variant="contained">Send Location</Button>
+                <div className='form-row'>
+                  <label className='form-field'>
+                    Latitude:
+                    <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
+                  </label>
+                  <label className='form-field'>
+                    Longitude:
+                    <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
+                  </label>
+                  <label className='form-field'></label>
+                </div>
               </div>
             )
           ) : (

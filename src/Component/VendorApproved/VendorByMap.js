@@ -7,12 +7,63 @@ import axios from 'axios';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+const config = {
+    cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
+    ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+};
+
+
 const VendorByMap = ({ onUpdate }) => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [vendorLocationData, setVendorLocationData] = useState([]);
     const [foundVendors, setFoundVendors] = useState([]);
     const [vendorsName, setVendorName] = useState('');
+    const [state, setState] = useState('');
+    const [city, setCity] = useState('');
+    console.log("STATES_Info", state)
+    console.log("CITYS_Info", city)
+
     const [vendorId, setVendorId] = useState('');
+    const [isLoadingStates, setIsLoadingStates] = useState(true);
+    const [isLoadingCities, setIsLoadingCities] = useState(true);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+
+    useEffect(() => {
+        loadStates();
+    }, []);
+
+    const loadStates = () => {
+        setIsLoadingStates(true);
+        fetch(`${config.cUrl}/states`, {
+            headers: { "X-CSCAPI-KEY": config.ckey }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setStates(data);
+                setIsLoadingStates(false);
+            })
+            .catch(error => {
+                console.error('Error loading states:', error);
+                setIsLoadingStates(false);
+            });
+    }
+
+    const loadCities = (stateCode) => {
+        setIsLoadingCities(true);
+        fetch(`${config.cUrl}/states/${stateCode}/cities`, {
+            headers: { "X-CSCAPI-KEY": config.ckey }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setCities(data);
+                setIsLoadingCities(false);
+            })
+            .catch(error => {
+                console.error('Error loading cities:', error);
+                setIsLoadingCities(false);
+            });
+    };
 
     const [selectedVendorType, setSelectedVendorType] = useState("");
     const [map, setMap] = useState(null);
@@ -44,7 +95,7 @@ const VendorByMap = ({ onUpdate }) => {
 
     useEffect(() => {
         findNearestVendors();
-    }, [vendorLocationData, vendorsName, vendorId]);    
+    }, [vendorLocationData, vendorsName, vendorId, state, city]);
 
     const vendorsData = async (vendorType) => {
         try {
@@ -82,6 +133,18 @@ const VendorByMap = ({ onUpdate }) => {
             );
         }
 
+        if (state) {
+            found = found.filter((vendor) =>
+                vendor.state.includes(state)
+            );
+        }
+
+        if (city) {
+            found = found.filter((vendor) =>
+                vendor.district.includes(city)
+            );
+        }
+
         console.log("Found vendors:", found);
         setFoundVendors(found);
     };
@@ -95,6 +158,15 @@ const VendorByMap = ({ onUpdate }) => {
         if (e.target.name == "vendorId") {
             const tempId = e.target.value;
             setVendorId(tempId);
+        }
+        if (e.target.name === "state") {
+            const tempState = e.target.value;
+            loadCities(tempState);
+            setState(tempState)
+        }
+        if (e.target.name === "city") {
+            const tempCity = e.target.value;
+            setCity(tempCity)
         }
     };
 
@@ -142,7 +214,7 @@ const VendorByMap = ({ onUpdate }) => {
 
                 <div>
                     <div className='form-row'>
-                        <label className="form-field" style={{marginLeft:"5px", marginBottom:"0px"}}>
+                        <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px" }}>
                             <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Name:</p>
                             <input
                                 type="text"
@@ -152,7 +224,7 @@ const VendorByMap = ({ onUpdate }) => {
                                 onChange={handleChanges}
                             />
                         </label>
-                        <label className="form-field" style={{marginLeft:"5px", marginBottom:"0px"}}>
+                        <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px" }}>
                             <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Id:</p>
                             <input
                                 type="text"
@@ -162,8 +234,43 @@ const VendorByMap = ({ onUpdate }) => {
                                 onChange={handleChanges}
                             />
                         </label>
+
+
+                        <label className="form-field input-group mb-3">
+                            Select State:
+                            <select
+                                name="state"
+                                onChange={handleChanges}
+                                disabled={isLoadingStates}
+                                value={state}>
+                                <option value="">Select State</option>
+                                {states.map(state => (
+                                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <label className="form-field input-group mb-3">
+                            Select City:
+                            <select
+                                name="city"
+                                value={city} // This should match city.iso2
+                                onChange={handleChanges}
+                                disabled={isLoadingCities || !state}
+                            >
+                                <option value="">Select City</option>
+                                {!cities.error && cities.map(city => {
+                                    return (
+                                        <option key={city.iso2} value={city.iso2}>
+                                            {city.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </label>
+
                         <div className="dropdown green-dropdown form-field" style={{ marginBottom: "0px" }}>
-                        <p style={{ fontSize: "13px", fontWeight: "bold" , marginBottom:"5px"}}>Select Vendor Type :</p>
+                            <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select Vendor Type :</p>
 
                             <button
                                 className="form-field input-group mb-3"
@@ -172,7 +279,7 @@ const VendorByMap = ({ onUpdate }) => {
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 onClick={toggleDropdown}
-                                style={{ marginLeft: '10px', width: "100%", padding: "10px", borderRadius: "20px", marginTop: "0px", marginBottom:"0px" }}
+                                style={{ marginLeft: '10px', width: "100%", padding: "10px", borderRadius: "20px", marginTop: "0px", marginBottom: "0px" }}
                             >
                                 {selectedVendorType || "Select Vendor Type"}
                             </button>

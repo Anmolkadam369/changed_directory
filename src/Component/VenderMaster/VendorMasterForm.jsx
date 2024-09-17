@@ -177,6 +177,7 @@ const VendorMasterForm = () => {
     GST: "info"
   });
 
+  console.log("FORMDATA908", formData)
   const fullAddress = `${formData.address}, ${formData.district},${formData.pincode}, ${formData.state}`;
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
 
@@ -212,7 +213,12 @@ const VendorMasterForm = () => {
 
   const handleBankDetailsChange = (e) => {
     const { name, value } = e.target;
-    setBankDetails({ ...bankDetails, [name]: value });
+    const capitalizedValue = value
+      .split(' ')
+      .map(word => word.toUpperCase())
+      .join(' ');
+
+    setBankDetails({ ...bankDetails, [name]: capitalizedValue });
   };
 
   const handleUpiDetailsChange = (e) => {
@@ -307,10 +313,29 @@ const VendorMasterForm = () => {
         ...formData,
         [name]: validValue,
       });
-    } else {
+    } else if (name === "email") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+    else if(name ==="district" || name === "vendorType"){
+      setFormData({
+        ...formData,
+        [name]:value,
+      })
+    }
+
+
+    else {
+      const capitalizedValue = value
+        .split(' ')
+        .map(word => word.toUpperCase())
+        .join(' ');
+
       setFormData(prevState => ({
         ...prevState,
-        [name]: value
+        [name]: capitalizedValue
       }));
     }
   };
@@ -755,14 +780,19 @@ const VendorMasterForm = () => {
                 Accident Place - City:
                 <select
                   name="district"
-                  value={formData.district}
+                  value={formData.district} // This should match city.iso2
                   onChange={handleChange}
                   disabled={isLoadingCities || !formData.state}
                 >
                   <option value="">Select City</option>
-                  {!cities.error && cities.map(city => (
-                    <option key={city.iso2} value={city.iso2}>{city.name}</option>
-                  ))}
+                  {!cities.error && cities.map(city => {
+                    console.log('Rendering city:', city.iso2, city.name); // Debug: Check city values
+                    return (
+                      <option key={city.iso2} value={city.iso2}>
+                        {city.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </label>
             </div>
@@ -1050,7 +1080,10 @@ const VendorMasterForm = () => {
                   type="text"
                   name="recipientName"
                   value={recipientName}
-                  onChange={(e) => setRecipientName(e.target.value)}
+                  onChange={(e) => {
+                    const capitalizedValue = e.target.value.split(' ').map(word => word.toUpperCase()).join(' ');
+                    setRecipientName(capitalizedValue);
+                  }}
                   className="form-control"
                 />
                 {errors.recipientName && <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>{errors.recipientName}</p>}

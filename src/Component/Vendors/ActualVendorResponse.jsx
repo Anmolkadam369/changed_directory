@@ -19,16 +19,16 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import DataTable from "react-data-table-component";
 
 const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`; 
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
 };
 
 const parseDate = (dateString) => {
-  const [day, month, year] = dateString.split('-').map(Number);
-  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+    const [day, month, year] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
 };
 
 
@@ -47,7 +47,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     const [viewWorkshopData, setViewWorkshopData] = useState(false);
     const [selectedId, setSelectedId] = useState({});
     const [comingVendorData, setComingVendorData] = useState([]);
-    const[dataFetched, setDataFetched]=useState(false)
+    const [dataFetched, setDataFetched] = useState(false)
     console.log("VEHICLEs", vehicle)
     console.log("DATAFETCHED", dataFetched)
     console.log("setComingVendorData", comingVendorData)
@@ -95,7 +95,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         if (!dataFetched) {
             fetchVendorData();
         }
-    }, [vehicle, dataFetched]); 
+    }, [vehicle, dataFetched]);
 
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
@@ -204,20 +204,20 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-    
-    useEffect(()=>{
 
-    },[comingVendorData])
+    useEffect(() => {
 
-    const uniqueVendors = comingVendorData.filter((vendor, index, self) => 
+    }, [comingVendorData])
+
+    const uniqueVendors = comingVendorData.filter((vendor, index, self) =>
         index === self.findIndex((v) => v.vendorCode === vendor.vendorCode)
-      );
+    );
 
 
     return (
         <div>
             {mainContent && (
-                <div className="Customer-master-form" style={{ paddingLeft: '10px', paddingRight: "10px", paddingTop: "40px", paddingBottom: "40px" , marginLeft:"5px"}}>
+                <div className="Customer-master-form" style={{ paddingLeft: '10px', paddingRight: "10px", paddingTop: "40px", paddingBottom: "40px", marginLeft: "5px" }}>
                     <Helmet>
                         <title>Actual Vendor Response - Claimpro</title>
                         <meta name="description" content="Actual Vendor Response" />
@@ -382,15 +382,15 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
                     <div style={{ marginTop: "50px" }}>
                         <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
-                        <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack}></Button>
-                        <h3 className="bigtitle">Vendor Response Overview (Assigned Only)</h3>
-                    </div>
+                            <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack}></Button>
+                            <h3 className="bigtitle">Vendor Response Overview (Assigned Only)</h3>
+                        </div>
 
                         <div className="responsive-table" style={{ width: '100%' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
                                 <thead>
                                     <tr>
-                                        {/* <th>Sr. No</th> */}
+                                        <th>Sr. No</th>
                                         <th>Vendor Name</th>
                                         <th>Type Of Vendor</th>
                                         <th>Vendor Email</th>
@@ -406,38 +406,40 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                     ) : (
                                         uniqueVendors.map((vendor, index) => (
                                             <tr key={vendor.vendorCode}>
-                                                {/* <td>{index + 1}</td> */}
-                                                <td>{vendor.vendorName || '---'}</td>
-                                                <td>{vendor.vendorType || '---'}</td>
-                                                <td>{vendor.email || '---'}</td>
+                                                <td>{index + 1}</td>
+                                                <td>{vendor.vendorName.charAt(0).toUpperCase() + vendor.vendorName.slice(1) || '---'}</td>
+                                                <td style={{ color: "green" }}>{vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1) || '---'}</td>
+                                                <td style={{ color: "blue" }}><a href={`mailto:${vendor.email}`} style={{ color: "blue", textDecoration: "none" }}>
+                                                    {vendor.email}
+                                                </a></td>
                                                 <td>
                                                     <div>
                                                         {vendor.vendorType === "crane" && (
                                                             vehicle.craneData.length === 0 ? (
-                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
                                                             ) : (
-                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.craneData[0].acceptedByAdmin == null? "pending" : vehicle.craneData[0].acceptedByAdmin}</p>
+                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.craneData[0].acceptedByAdmin == null ? "pending" : vehicle.craneData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.craneData[0].acceptedByAdmin.slice(1)}</p>
                                                             )
                                                         )}
                                                         {vendor.vendorType === "mechanic" && (
                                                             vehicle.mechanicData.length === 0 ? (
-                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
                                                             ) : (
-                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin}</p>
+                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.mechanicData[0].acceptedByAdmin.slice(1)}</p>
                                                             )
                                                         )}
                                                         {vendor.vendorType === "advocate" && (
                                                             vehicle.advocateData.length === 0 ? (
-                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
                                                             ) : (
-                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin}</p>
+                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.advocateData[0].acceptedByAdmin.slice(1)}</p>
                                                             )
                                                         )}
                                                         {vendor.vendorType === "workshop" && (
                                                             vehicle.workshopData.length === 0 ? (
-                                                                <p style={{color:"red", fontSize:"14px"}}>no response</p>
+                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
                                                             ) : (
-                                                                <p style={{color:"blue", fontSize:"14px"}}>{vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin}</p>
+                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.workshopData[0].acceptedByAdmin.slice(1)}</p>
                                                             )
                                                         )}
                                                     </div>
@@ -446,28 +448,28 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                     <div>
                                                         {vendor.vendorType === "crane" && (
                                                             vehicle.craneData.length === 0 ? (
-                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                                <button className='view-button' style={{ color: "red" }}>__</button>
                                                             ) : (
                                                                 <button onClick={() => viewCrane(vehicle.craneData)} className='view-button'>View</button>
                                                             )
                                                         )}
                                                         {vendor.vendorType === "mechanic" && (
                                                             vehicle.mechanicData.length === 0 ? (
-                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                                <button className='view-button' style={{ color: "red" }}>__</button>
                                                             ) : (
                                                                 <button onClick={() => viewMechanic(vehicle.mechanicData)} className='view-button'>View</button>
                                                             )
                                                         )}
                                                         {vendor.vendorType === "advocate" && (
                                                             vehicle.advocateData.length === 0 ? (
-                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                                <button className='view-button' style={{ color: "red" }}>__</button>
                                                             ) : (
                                                                 <button onClick={() => viewAdvocate(vehicle.advocateData)} className='view-button'>View</button>
                                                             )
                                                         )}
                                                         {vendor.vendorType === "workshop" && (
                                                             vehicle.workshopData.length === 0 ? (
-                                                                <button className='view-button' style={{color:"red"}}>__</button>
+                                                                <button className='view-button' style={{ color: "red" }}>__</button>
                                                             ) : (
                                                                 <button onClick={() => viewWorkshop(vehicle.workshopData)} className='view-button'>View</button>
                                                             )
@@ -481,7 +483,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                             </table>
                         </div>
                         <div className="pagination">
-                            <ButtonGroup style={{boxShadow:'none'}} variant="contained" color="primary" aria-label="pagination buttons">
+                            <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
                                 <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
                                     <ArrowBack />
                                 </Button>

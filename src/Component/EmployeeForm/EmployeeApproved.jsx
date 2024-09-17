@@ -25,10 +25,10 @@ import DataTable from "react-data-table-component";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear();
-  return `${day}-${month}-${year}`; 
+  return `${day}-${month}-${year}`;
 };
 
 const parseDate = (dateString) => {
@@ -204,11 +204,11 @@ const tableCustomStyles = {
     },
     {
       name: "Date",
-      selector: (row) => row.DOJ,
+      selector: (row) => row.systemDate? formatDate(row.systemDate) : "____",
       sortable: true,
       sortFunction: (rowA, rowB) => {
-        const dateA = parseDate(rowA.DOJ);
-        const dateB = parseDate(rowB.DOJ);
+        const dateA = new Date(rowA.systemDate);
+        const dateB = new Date(rowB.systemDate);
         return dateA - dateB; // Ascending order
       },
     },
@@ -223,10 +223,10 @@ const tableCustomStyles = {
         {row.employeeEmailId}
       </a>
     ),},
-    { name: "Branch Of Employee", selector: (row) => row.branch, sortable: true,width:"120px",
+    { name: "Department", selector: (row) => row.department, sortable: true,width:"150px",
       cell: (row) => (
         <span style={{color: '#fff', backgroundColor: '#ffc107', padding: '5px', borderRadius: '4px'}}>
-            {row.branch ? row.branch.charAt(0).toUpperCase() + row.branch.slice(1).toLowerCase() : ""}
+            {row.department ? row.department : ""}
         </span>
       ),
     },
@@ -310,7 +310,7 @@ const tableCustomStyles = {
       const searchLower = value;
 
       const idValue = formattedId.includes(searchLower);
-      const dateValue = (formatDate(row.DOJ) ?? '').toLowerCase().includes(searchLower);
+      const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchLower);
       const nameValue = (row.name ?? '').toLowerCase().includes(searchLower);
       const emailValue = (row.employeeEmailId ?? '').toLowerCase().includes(searchLower);
       const branchValue = (row.branch ?? '').toLowerCase().includes(searchLower);
