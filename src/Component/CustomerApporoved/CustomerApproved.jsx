@@ -298,7 +298,20 @@ const CustomerApproved = () => {
       ),
     },
     {
-      name: "Modify",
+      name: "Added By",
+      selector: (row) => row.addedBy || '',
+      sortable: true,
+      cell: (row) => {
+        const addedBy = row.addedBy ? String(row.addedBy) : "";
+        return (
+          <span style={{ color: "green" }}>
+            {addedBy.charAt(0).toUpperCase() + addedBy.slice(1).toLowerCase()}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Modified By",
       selector: (row) => row.EditedBy || '',
       sortable: true,
       cell: (row) => {
@@ -327,14 +340,14 @@ const CustomerApproved = () => {
       button: true,
     },
     {
-      name: "Performance",
+      name: "Activity",
       cell: (row) => (
         <button
           onClick={() => viewPerformance(row.CustomerCode)}
           className='view-button'
           style={{ background: '#e6e679' }}
         >
-          Performance
+          Activity
         </button>
       ),
       ignoreRowClick: true,

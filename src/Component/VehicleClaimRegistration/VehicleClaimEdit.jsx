@@ -921,7 +921,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
-                        Accident Place - State:
+                        State
                         <select
                             className="inputField"
                             name="state"
@@ -936,7 +936,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         </select>
                     </label>
                     <label className="form-field">
-                        Accident Place - City: {accidentData.district}
+                        City :  {accidentData.district}
                         <select
                             className='inputField form-control'
                             name="district"

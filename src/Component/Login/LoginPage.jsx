@@ -22,12 +22,14 @@ import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux'
 import { login } from './authSlice';
 
+
 const Login = () => {
   const navigate = useNavigate();
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [token, setToken] = useRecoilState(tokenState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showPassword, setShowPassword] = useState(false);
@@ -149,13 +151,13 @@ const Login = () => {
 
         console.log("RESPONSEONDSTS", response.data.data)
         if (response.data.data?.userType === "admin" ||
-            response.data.data.department?.trim() === "Management" ) {
+          response.data.data.department?.trim() === "Management") {
           navigate("../Admin");
-        }else if (response.data.data.department?.trim() === "IT" ){
-          console.log("trim department", response.data.data.department )
+        } else if (response.data.data.department?.trim() === "IT") {
+          console.log("trim department", response.data.data.department)
           navigate("../Admin");
         }
-         else if (response.data.data.vendorType === "advocate") {
+        else if (response.data.data.vendorType === "advocate") {
           navigate("../advocateDashboard");
         } else if (response.data.data.vendorType === "mechanic") {
           navigate("../MechanicDashboard");
@@ -194,6 +196,10 @@ const Login = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const signupFunc = ()=>{
+    navigate('/Registration')
+  }
+
   const backgroundStyle = {
     height: '100vh',
     backgroundImage: `url(${trucks1})`,
@@ -207,8 +213,8 @@ const Login = () => {
 
   const loginContainerStyle = {
     // backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    paddingTop: '50px',
-    paddingBottom: '50px',
+    paddingTop: '30px',
+    paddingBottom: '30px',
     paddingLeft: "20px",
     paddingRight: "20px",
     borderRadius: '10px',
@@ -283,6 +289,16 @@ const Login = () => {
     marginLeft: "8px", // Adjust the spacing between checkbox and label
   };
 
+  const linkStyle = {
+    marginRight: "20px",
+    textAlign: "right",
+    color: isHovered ? 'darkblue' : 'blue', // Change color on hover
+    textDecoration: "underline",
+    boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
+    transition: 'color 0.3s', // Smooth transition
+    cursor:'pointer'
+  };
+
   return (
     <div style={backgroundStyle}>
       <Helmet>
@@ -350,17 +366,26 @@ const Login = () => {
               }
             />
             {passwordError && <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>}
+          </div>
 
+          <div style={{ display: "flex", alignItems:"center", justifyContent: 'space-between', gap: "10px" }}>
+            <div style={remembermecontainer}>
+              <Checkbox
+                checked={rememberMe}
+                onChange={handleRememberMeChange}
+                name="rememberMe"
+                color="primary"
+              />
+              <span style={labelStyle2}>Remember Me</span>
+            </div>
+            {/* <div style={linkStyle}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}>
+              <span onClick={signupFunc}>sign up</span>
+            </div> */}
           </div>
-          <div style={remembermecontainer}>
-            <Checkbox
-              checked={rememberMe}
-              onChange={handleRememberMeChange}
-              name="rememberMe"
-              color="primary"
-            />
-            <span style={labelStyle2}>Remember Me</span>
-          </div>
+
+
           {alertInfo.show && (
             <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
               {alertInfo.message}
@@ -376,6 +401,24 @@ const Login = () => {
             >
               Login
             </Button>
+            
+          </div>
+          <div className='linkStyle'
+          onClick={signupFunc}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)} style={{
+              display:'flex', 
+              justifyContent:"flex-end", 
+              fontSize:"15px",
+               padding:"10px",
+                marginRight: "20px",
+              textAlign: "right",
+              color: isHovered ? 'darkblue' : 'blue', // Change color on hover
+              textDecoration: "underline",
+              boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
+              transition: 'color 0.3s', // Smooth transition
+              cursor:'pointer'}}>
+          Account not created ? sign up 
           </div>
         </form>
       </div>

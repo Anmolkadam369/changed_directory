@@ -172,15 +172,39 @@ const AccidentVehicleUser = () => {
       name: "Accident File No",
       selector: (row) => row.accidentFileNo,
       sortable: true,
+      width:"200px",
+      style:{fontWeight:"bold"}
+    },
+    {
+      name: "Vehicle Number",
+      selector: (row) => row.vehicleNo,
+      sortable: true,
+      width:"150px",
+      style:{color:"green"}
+    },
+    {
+      name: "Chassis Number",
+      selector: (row) => row.chassisNo,
+      sortable: true,
+      width:"150px",
+      style:{color:"blue"}
     },
     {
       name: "Model",
       selector: (row) => row.model,
       sortable: true,
+      width:"100px",
+      style:{color:"navyblue"}
     },
     {
-      name: "Chassis Number",
-      selector: (row) => row.chassisNo,
+      name: "Make",
+      selector: (row) => row.make,
+      sortable: true,
+      style:{color:"orange"}
+    },
+    {
+      name: "Application",
+      selector: (row) => row.application,
       sortable: true,
     },
     {
@@ -198,7 +222,7 @@ const AccidentVehicleUser = () => {
       button: true,
     },
     {
-      name: "See Updated Pics",
+      name: "See Updated Pics", width:"200px",
       cell: (row) => (
         <button
           onClick={() => view(row.accidentFileNo)}
@@ -221,13 +245,15 @@ const AccidentVehicleUser = () => {
     },
     headCells: {
       style: {
-        fontSize: '14px',
+        fontSize: '13px',
         fontWeight: 'bold',
+        color:"white",
+         backgroundColor: 'rgb(169 187 169)'
       },
     },
     cells: {
       style: {
-        fontSize: '13px',
+        fontSize: '12px',
       },
     },
   };
@@ -403,8 +429,8 @@ const AccidentVehicleUser = () => {
           fixedHeader
           pagination
           selectableRows
-          conditionalRowStyles={conditionalRowStyles}
           onSelectedRowsChange={handleRowsSelected}
+          conditionalRowStyles={conditionalRowStyles}
           customStyles={tableCustomStyles}
         />
       </div>

@@ -1238,7 +1238,7 @@ const VehicleClaimEdit = () => {
                         />
                     </label>
                     <label className="form-field">
-                        Accident Place - State:
+                        State
                         <select
                             className='inputField'
                             name="state"
@@ -1255,7 +1255,7 @@ const VehicleClaimEdit = () => {
 
                 <div className="form-row">
                     <label className="form-field">
-                        Accident Place - City:
+                        City : 
                         <select
                             className='inputField'
                             name="district"

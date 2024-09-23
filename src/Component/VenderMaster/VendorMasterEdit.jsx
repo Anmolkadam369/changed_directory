@@ -21,6 +21,8 @@ import { Helmet } from 'react-helmet-async';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+
 
 
 const config = {
@@ -47,6 +49,8 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
   const [selectedState, setSelectedState] = useState('');
   const [isLoadingStates, setIsLoadingStates] = useState(true);
   const [isLoadingCities, setIsLoadingCities] = useState(true);
+  const [isGeneratedAgreement, setIsGeneratedAgreement] = useState(false);
+
 
   const [isPANModalOpen, setIsPANModalOpen] = useState(false);
   const [isAdharModalOpen, setIsAdharModalOpen] = useState(false);
@@ -179,10 +183,15 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         GSTNo: comingData.GSTNo || "",
         longitude: comingData.longitude || "",
         latitude: comingData.latitude || "",
-        id: comingData.id
+        id: comingData.id || "",
+        remark: comingData.remark || ""
       }));
     }
   }, [comingData]);
+
+  useEffect(() => {
+    if (comingData.agreement !== "agreement Value") setIsGeneratedAgreement(true);
+  }, [comingData])
 
   const loadStates = () => {
     setIsLoadingStates(true);
@@ -240,7 +249,8 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
     GST: null,
     latitude: "",
     longitude: "",
-    id: ""
+    id: "",
+    remark: ""
   });
 
   console.log("setformda ta", formData)
@@ -302,6 +312,11 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
   const adharCardRef = useRef(null);
   const agreementRef = useRef(null);
 
+  const generateAgreement = (e) => {
+    setIsGeneratedAgreement(true)
+    console.log("setIsGeneratedAgreement", isGeneratedAgreement)
+  }
+
   const handleChange = (e) => {
     const { name, type, files, value } = e.target;
     if (type === 'file') {
@@ -331,8 +346,15 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
       }));
     }
     else if (name === 'state') {
+
       loadCities(value);
-      setFormData(prevState => ({ ...prevState, [name]: value }));
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value,
+        district: "",
+        address: "",
+        pincode: ""
+      }));
     }
     else if (name === "vendorPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
       const validValue = value.replace(/\D/g, '').slice(0, 10);
@@ -368,18 +390,18 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         [name]: value,
       });
     }
-    else if(name ==="district" || name === "vendorType"){
+    else if (name === "district" || name === "vendorType") {
       setFormData({
         ...formData,
-        [name]:value,
+        [name]: value,
       })
     }
 
-     else {
+    else {
       const capitalizedValue = value
-  .split(' ')
-  .map(word => word.toUpperCase())
-  .join(' ');
+        .split(' ')
+        .map(word => word.toUpperCase())
+        .join(' ');
 
       setFormData(prevState => ({
         ...prevState,
@@ -459,14 +481,14 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         }
       }
     }
-
+    let response ;
     // Debugging FormData contents
     for (let pair of formDataObj.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
 
     try {
-      const response = await axios({
+       response = await axios({
         method: 'PUT',
         url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
         data: formDataObj,
@@ -475,7 +497,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         }
       });
       console.log("response", response.data);
-      setSnackbarMessage("Form submitted successfully!");
+      setSnackbarMessage(response.data.message);
       setOpenSnackbar(true);
       setIsLoading(false);
       setTimeout(() => {
@@ -491,7 +513,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           window.location.href = '/';
         }, 2000);
       } else {
-        setSnackbarMessage("Failed to submit the form.", error)
+        setSnackbarMessage(errorMessage, error)
       }
       setOpenSnackbar(true);
     }
@@ -559,7 +581,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           </label>
 
           <label className="form-field input-group mb-3">
-            Accident Place - State:
+            State
             <select
               name="state"
               onChange={handleChange}
@@ -606,16 +628,16 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           </label>
           <label className="form-field">
             Vendor Type:
-            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control" required disabled>
+            <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="form-control" required disabled={IsReadOnly}>
               <option value="">Select</option>
               <option value="advocate">Advocate</option>
               <option value="crane">Crane</option>
               <option value="mechanic">Mechanic</option>
               <option value="workshop">Workshop</option>
             </select>
-            
+
           </label>
-          
+
           <label className="form-field">
             Address  :
             <textarea
@@ -935,18 +957,18 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             )}
           </label>
           <label className="form-field">
+            Agreement :
             {IsReadOnly ? (
               <div>
-                {formData.agreement ? (
+                {formData.agreement !== "agreement Value" ? (
                   <>
-                    Download Agreement
-                    <p >
+                    <p>
                       <a
                         href={formData.agreement}
                         className="docx-link"
                         style={{
                           cursor: 'pointer',
-                          color: 'green'
+                          color: 'green',
                         }}
                         download
                       >
@@ -959,10 +981,10 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                         style={{
                           cursor: 'pointer',
                           border: 'none',
-                          background: "white",
-                          color: "#560303",
-                          fontSize: "13px",
-                          boxShadow: "none"
+                          background: 'white',
+                          color: '#560303',
+                          fontSize: '13px',
+                          boxShadow: 'none',
                         }}
                       >
                         <RemoveRedEyeOutlinedIcon /> Preview
@@ -970,11 +992,39 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                     </p>
                   </>
                 ) : (
-                  <p>No Agreement uploaded</p>
+                  <p className="notUploaded">No Agreement uploaded</p>
                 )}
               </div>
-            ) : null}
+            ) : !isGeneratedAgreement ? (
+              <label
+                className="form-control generate-button"
+                onClick={generateAgreement}
+                style={{
+                  fontSize: '12px',
+                  padding: '10px 10px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  color: 'blue',
+                }}
+              >
+                Generate Agreement
+              </label>
+            ) : (
+              <label
+                className="form-control generate-button"
+                style={{
+                  fontSize: '12px',
+                  padding: '10px 10px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  color: 'blue',
+                }}
+              >
+                <CheckCircleOutlineOutlinedIcon /> EDIT
+              </label>
+            )}
           </label>
+
           <label className="form-field">
             GST Number:
             <input
@@ -1079,6 +1129,52 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           </label>
         </div>
 
+        <div className='form-row'>
+          <label className="form-field">
+            Remark:
+            <textarea
+              name="remark"
+              value={formData.remark}
+              onChange={handleChange}
+              className="form-control"
+              placeholder='Remark'
+              readOnly={IsReadOnly}
+            />
+          </label>
+
+          {
+            formData.vendorType == "crane" &&
+            (
+              <label className="form-field">
+                Rate/KM :
+                <input
+                  type='text'
+                  name="rate"
+                  placeholder='Rate Per KM'
+                  value={formData.rate}
+                  onChange={handleChange}
+                  className="form-control"
+                  readOnly={IsReadOnly}
+                  title="Aadhaar number must be exactly 12 digits."
+                  required />
+              </label>
+            )
+          }
+          {
+            formData.vendorType != "crane" && (
+              <label className="form-field"></label>
+            )
+          }
+
+          <label className="form-field"></label>
+          <label className="form-field"></label>
+          <label className="form-field"></label>
+        </div>
+
+
+
+
+
 
         <label className='form-field'>
           {IsReadOnly ? (
@@ -1086,30 +1182,39 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
               <p className='notUploaded'>No Location Uploaded</p>
             ) : (
               <div>
-                <Button variant="contained">Send Location</Button>
-                <div className='form-row'>
-                  <label className='form-field'>
-                    Latitude:
-                    <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
-                  </label>
-                  <label className='form-field'>
-                    Longitude:
-                    <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
-                  </label>
-                  <label className='form-field'></label>
-                </div>
+                {/* <Button variant="contained">Send Location</Button> */}
+                <>
+                  <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+                    <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
+
+                    Send Location Of Address (this is by your address):
+                    <div className='form-row'>
+                      <label className='form-field'>
+                        Latitude:
+                        <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
+                      </label>
+                      <label className='form-field'>
+                        Longitude:
+                        <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
+                      </label>
+                      <label className='form-field'></label>
+                    </div>
+                  </form>
+                </>
               </div>
+
+
             )
           ) : (
             <>
               <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
                 <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-                Send Your Current Location (if it's same for filling address):
+               <p> Send Your Current Location (if it's same for filling address):</p>
                 <div className='form-row'>
                   <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 </div>
 
-                Send Location Of Address (this is by your address):
+                <p>  Send Location Of Address (this is by your address):</p> 
                 <div className='form-row'>
                   <label className='form-field'>
                     Latitude:
@@ -1130,31 +1235,6 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             </>
           )}
         </label>
-
-        {formData.vendorType == "crane" &&
-          (
-            <div className='form-row'>
-              <label className="form-field">
-                Rate/KM :
-                <input
-                  type='text'
-                  name="rate"
-                  placeholder='Rate Per KM'
-                  value={formData.rate}
-                  onChange={handleChange}
-                  className="form-control"
-                  readOnly={IsReadOnly}
-                  title="Aadhaar number must be exactly 12 digits."
-                  required />
-              </label>
-              <label className="form-field"></label>
-              <label className="form-field"></label>
-              <label className="form-field"></label>
-            </div>
-          )}
-        {formData.vendorType != "crane" && (
-          <label className="form-field"></label>
-        )}
 
 
 
@@ -1203,8 +1283,8 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             </button>
           )}
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
 

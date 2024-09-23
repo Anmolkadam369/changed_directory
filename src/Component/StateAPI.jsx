@@ -56,7 +56,7 @@ const LocationSelector = () => {
     return (
         <div>
             <label>
-                Accident Place - State:
+                State
                 <select 
                     className='state' 
                     name="state" 
@@ -71,7 +71,7 @@ const LocationSelector = () => {
                 </select>
             </label>
             <label>
-                Accident Place - City:
+                City : 
                 <select 
                     className='city'    
                     name="city" 

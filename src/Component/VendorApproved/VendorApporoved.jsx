@@ -134,6 +134,7 @@ const VendorApproved = () => {
       setIsLoading(true);
       const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`);
       setGeneratedExcel(response.data.data);
+      console.log("resoponse", response.data.data)
       setIsLoading(false);
       setIsGenerated(true);
     } catch (error) {
@@ -275,7 +276,7 @@ const VendorApproved = () => {
       cell: row => <span>{String(row.id).padStart(4, '0')}</span>, // Display formatted value
       sortable: true,
       sortFunction: (rowA, rowB) => rowA.id - rowB.id, // Custom sort function
-      style:{width:"200px"},
+      style:{width:"200px"}
     },
     
     {

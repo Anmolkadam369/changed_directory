@@ -45,12 +45,13 @@
   /* Adjust as needed to fit 4 items in a row */
   /* display: flex; */
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  font-size: 13px;
   /* Space between rows */
 }
 
 .Customer-master-form input,
-v .Customer-master-form textarea,
+.Customer-master-form textarea,
 .Customer-master-form select {
   width: 100%;
   /* The input will take up the full width of its container */
@@ -60,6 +61,8 @@ v .Customer-master-form textarea,
   border: 1px solid #ccc;
   background-color: #100f0f08;
   border-radius: 4px;
+  font-size: 13px;
+
 }
 
 .Customer-master-form button {
@@ -90,19 +93,30 @@ v .Customer-master-form textarea,
 @media (max-width: 768px) {
   .Customer-master-form button {
     padding: 10px 10px;
-
   }
+
   .Customer-master-form .form-row {
     flex-direction: column;
   }
 
   .Customer-master-form .form-field {
     flex: 1 1 100%;
-    /* Full width on small screens */
+    font-size: 11px;
+  }
+
+  .Customer-master-form p {
+    font-size: 13px;
   }
 
   .Customer-master-form .required {
     color: red;
+  }
+
+  .Customer-master-form input,
+  .Customer-master-form textarea,
+  .Customer-master-form select {
+    font-size: 11px;
+
   }
 }
 
@@ -185,16 +199,20 @@ body.overlay-active {
 }
 
 @keyframes popUpFade {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0;
     color: red;
   }
+
   25% {
     transform: scale(1.5);
     opacity: 1;
     color: red;
   }
+
   75% {
     transform: scale(1.5);
     opacity: 1;
@@ -329,4 +347,31 @@ body.overlay-active {
     height: 500px;
     /* Adjust as needed */
   }
+}
+
+.downloadButtonIcon {
+  cursor: pointer;
+  margin-top: 20px;
+  color: green
+}
+
+.tableCustomStyles .headRow {
+  color: #ffff;
+  background-color: rgb(169 187 169);
+  font-weight: "bold";
+  font-weight: 13px
+};
+
+.tableCustomStyles .pagination button {
+  background: none;
+  box-shadow: none;
+};
+
+.tableCustomStyles .striped {
+  color: red
+};
+
+.tableCustomStyles .rows {
+  background-color: #f2f2f2;
+
 }

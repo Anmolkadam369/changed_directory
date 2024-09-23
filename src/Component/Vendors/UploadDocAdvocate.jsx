@@ -991,14 +991,15 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                         {
                             existingData?.firCopy ? (
                                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                    <div>
+                                    <p>
                                         <a
                                             href={formData.firCopy}
                                             style={{
 
                                                 cursor: 'pointer',
-                                                marginTop: '20px',
-                                                color: 'green'
+                                                paddingRight: '10px',
+                                                color: 'green',
+                                                width: "10px"
                                             }}
                                             download
                                         >
@@ -1010,7 +1011,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                             style={{
 
                                                 cursor: 'pointer',
-                                                marginTop: '20px',
+                                                paddingRight: '10px',
                                                 border: 'none',
                                                 background: "white",
                                                 color: "#560303",
@@ -1020,7 +1021,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         >
                                             <RemoveRedEyeOutlinedIcon /> Preview
                                         </button>
-                                    </div>
+                                    </p>
                                 </div>
                             ) : (
                                 <label className="form-field">
@@ -1041,13 +1042,13 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                         POA (Power Of Attorney):
                         {existingData?.POA ? (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <div >
+                                <p >
                                     <a
                                         href={formData.POA}
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1060,7 +1061,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1070,7 +1071,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                     >
                                         <RemoveRedEyeOutlinedIcon /> Preview
                                     </button>
-                                </div>
+                                </p>
                             </div>
                         ) : (
                             <label className="form-field">
@@ -1096,7 +1097,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1109,7 +1110,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1146,7 +1147,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1159,7 +1160,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1198,7 +1199,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1211,7 +1212,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1247,7 +1248,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1260,7 +1261,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1296,7 +1297,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1309,7 +1310,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1345,7 +1346,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             color: 'green'
                                         }}
                                         download
@@ -1358,7 +1359,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         style={{
 
                                             cursor: 'pointer',
-                                            marginTop: '20px',
+                                            paddingRight: '10px',
                                             border: 'none',
                                             background: "white",
                                             color: "#560303",
@@ -1460,14 +1461,11 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
 
                 </div>
                 {isfeedbackRatingModalOpen && (
-                    <form className='Customer-master-form' style={{
-                        margin: "0px", padding: "10px", background: "#cbcbe5", borderRadius: "10px",
-                        boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"
-                    }}>
-                        <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>
+                    <form >
+                        <IconButton onClick={closefeedbackRatingModal} style={{ background: "lightblue", float: 'right', borderRadius: "40px" }}>
                             <CloseIcon />
                         </IconButton>
-                        <p style={{ fontWeight: "bold" }}>How satisfied are you?</p>
+                        <p style={{ fontWeight: "bold", marginTop: "20px" }}>How satisfied are you?</p>
                         <input
                             type="range"
                             min="0"
@@ -1479,7 +1477,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                             disabled={alreadyRating}
                             style={{ display: 'block', marginTop: '10px' }}
                         />
-                        <div style={{ marginBottom: "30px" }}>Satisfied By Customer Response: {formData.feedbackRating}</div>
+                        <p style={{ marginBottom: "30px", fontSize: "13px" }}>Satisfaction Level: {formData.feedbackRating}</p>
 
                         <label className="form-field">
                             Feedback:
@@ -1495,25 +1493,22 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                 )}
 
                 {isCommissionModelOpen && (
-                    <div className='Customer-master-form' style={{
-                        margin: "0px", padding: "10px", background: "#e6efe0", borderRadius: "10px",
-                        boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"
-                    }}>
-                        <IconButton onClick={closeCommisionModel} style={{ background: "white", float: 'right' }}>
-                            <CloseIcon />
-                        </IconButton>
+                    <div>
 
                         <div style={{ display: "flex" }}>
-                            <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("cheque"); }} style={{ marginTop: "10px", marginLeft: "10px", border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, teal, white)', color: 'black' }}>
                                 Cheque
                             </button>
-                            <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("onlinePayment"); }} style={{ marginTop: "10px", marginLeft: "10px", border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, teal, white)', color: 'black' }}>
                                 Online Payment
                             </button>
-                            <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", marginLeft: "10px", padding: '17px 100px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, lightblue, white)', color: 'blue' }}>
+                            <button onClick={(e) => { e.preventDefault(); paymentBy("cash"); }} style={{ marginTop: "10px", marginLeft: "10px", border: 'none', borderRadius: '4px', cursor: 'pointer', background: 'linear-gradient(to right, teal, white)', color: 'black' }}>
                                 Cash
                             </button>
                         </div>
+                        <IconButton onClick={closeCommisionModel} style={{ background: "lightblue", color: "red", float: 'right', borderRadius: "40px" }}>
+                            <CloseIcon />
+                        </IconButton>
                         <div style={{ marginTop: "20px" }}>
                             {paymentThrough === "cheque" && (
                                 <div>
@@ -1532,7 +1527,13 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                                         e.preventDefault();
                                                         setIsReadOnlyPayment(false);
                                                     }}
-                                                    style={{ marginTop: "10px", marginLeft: "10px", border: '1px solid red', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}
+                                                    style={{
+                                                        border: '2px solid green',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                        backgroundColor: 'yellow',
+                                                        color: 'black'
+                                                    }}
                                                 >
                                                     Change
                                                 </button>
@@ -1579,7 +1580,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                                 borderRadius: '4px',
                                                 cursor: 'pointer',
                                                 background: 'linear-gradient(to right, lightblue, white)',
-                                                color: 'blue'
+                                                color: 'blue',
+                                                marginTop: "30px"
                                             }}
                                         >
                                             {isLoading ? (
@@ -1599,7 +1601,8 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                                 borderRadius: '4px',
                                                 cursor: 'pointer',
                                                 background: 'linear-gradient(to right, lightyellow, white)',
-                                                color: 'Green'
+                                                color: 'Green',
+                                                marginTop: "30px"
                                             }}
                                         >
                                             Pay Now
@@ -1633,12 +1636,10 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                                         setIsReadOnlyPayment(false);
                                                     }}
                                                     style={{
-                                                        marginTop: "10px",
-                                                        marginLeft: "10px",
-                                                        border: '1px solid red',
+                                                        border: '2px solid green',
                                                         borderRadius: '4px',
                                                         cursor: 'pointer',
-                                                        backgroundColor: 'white',
+                                                        backgroundColor: 'yellow',
                                                         color: 'black'
                                                     }}
                                                 >
@@ -1690,32 +1691,32 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                             {paymentThrough === "cash" && (
                                 <div>
                                     <p>Paid By Cash:</p>
-                                    {isReadOnlyPayment && formData.paidByCash == true ? (
+                                    {isReadOnlyPayment && formData.paidByCash === true ? (
                                         <>
-                                            <label style={{ display: "flex", alignItems: "center" }}>
-                                                <input
-                                                    type="checkbox"
-                                                    name="paidByCash"
-                                                    checked={formData.paidByCash}
-                                                    onChange={handleChange}
-                                                    required
-                                                    style={{ marginRight: "10px" }}
-                                                />
-                                                Paid By Cash
-                                            </label>
-                                            <div style={{ display: 'flex' }}>
+                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                                <label style={{ display: "flex", alignItems: "center" }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="paidByCash"
+                                                        checked={formData.paidByCash}
+                                                        onChange={handleChange}
+                                                        required
+                                                        style={{ marginRight: "10px" }}
+                                                    />
+                                                    Paid By Cash
+                                                </label>
+                                            </div>
+                                            <div style={{ marginTop: "10px" }}>
                                                 <button
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         setIsReadOnlyPayment(false);
                                                     }}
                                                     style={{
-                                                        marginTop: "10px",
-                                                        marginLeft: "10px",
-                                                        border: '1px solid red',
+                                                        border: '2px solid green',
                                                         borderRadius: '4px',
                                                         cursor: 'pointer',
-                                                        backgroundColor: 'white',
+                                                        backgroundColor: 'yellow',
                                                         color: 'black'
                                                     }}
                                                 >
@@ -1737,6 +1738,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                                         </label>
                                     )}
                                 </div>
+
                             )}
 
                         </div>

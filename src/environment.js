@@ -4,4 +4,4 @@ let backendUrl = `http://localhost:3001`;
 // let backendUrl = `https://claimpro.in/api`
 
 
-export default backendUrl;
+export default backendUrl;  

@@ -709,7 +709,7 @@ const CustomerMaster = () => {
                 />
               </label>
               <label className="form-field input-group mb-3">
-                Accident Place - State:
+                State
                 <select
                   name="state"
                   onChange={handleChange}
@@ -723,7 +723,7 @@ const CustomerMaster = () => {
               </label>
 
               <label className="form-field input-group mb-3">
-                Accident Place - City:
+                City : 
                 <select
                   name="district"
                   value={formData.district}
@@ -971,12 +971,12 @@ const CustomerMaster = () => {
 
           <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-            Send Your Current Location (if it's same for filling address):
+           <p> Send Your Current Location (if it's same for filling address):</p>
             <div className='form-row'>
               <Button variant="contained" onClick={getLocation}>Send Location</Button>
             </div>
 
-            Send Location Of Address (this is by your address):
+           <p> Send Location Of Address (this is by your address):</p>
             <div className='form-row'>
               <label className='form-field'>
                 Latitude:

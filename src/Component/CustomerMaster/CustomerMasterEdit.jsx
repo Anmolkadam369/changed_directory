@@ -441,7 +441,13 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       }));
     } else if (name === 'state') {
       loadCities(value);
-      setFormData(prevState => ({ ...prevState, [name]: value }));
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value,
+        district: "",
+        address: "",
+        pincode: ""
+      }));
     } else if (name === "pincode") {
       const validValue = value.replace(/\D/g, '').slice(0, 6);
       setFormData({
@@ -631,7 +637,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
             />
           </label>
           <label className="form-field input-group mb-3">
-            Accident Place - State:
+            State
             <select
               name="state"
               onChange={handleChange}
@@ -1182,31 +1188,38 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
             formData.longitude == "" ? (
               <p className='notUploaded'>No Location Uploaded</p>
             ) : (
+              <div>
+              {/* <Button variant="contained">Send Location</Button> */}
               <>
-                <Button variant="contained">Send Location</Button>
-                <div className='form-row'>
-                  <label className='form-field'>
-                    Latitude:
-                    <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
-                  </label>
-                  <label className='form-field'>
-                    Longitude:
-                    <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
-                  </label>
-                  <label className='form-field'></label>
-                </div>
+                <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+                  <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
+
+                  Send Location Of Address (this is by your address):
+                  <div className='form-row'>
+                    <label className='form-field'>
+                      Latitude:
+                      <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
+                    </label>
+                    <label className='form-field'>
+                      Longitude:
+                      <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
+                    </label>
+                    <label className='form-field'></label>
+                  </div>
+                </form>
               </>
+            </div>
             )
           ) : (
             <>
               <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
                 <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-                Send Your Current Location (if it's same for filling address):
+                <p>Send Your Current Location (if it's same for filling address):</p>
                 <div className='form-row'>
                   <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 </div>
 
-                Send Location Of Address (this is by your address):
+                <p>Send Location Of Address (this is by your address):</p>
                 <div className='form-row'>
                   <label className='form-field'>
                     Latitude:

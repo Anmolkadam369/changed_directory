@@ -130,8 +130,11 @@
   animation: slideInFromTop 1.0s ease-out; /* Add this line */
 }
 
-
-
+/* .gradient-background {
+   background: linear-gradient(to right , #292727, #938d84);
+  padding: 10px; 
+    border-radius: 10px; 
+} */
 
 .stat-item:hover {
   transform: scale(1.05);

@@ -361,10 +361,18 @@ function Location1({ vehicleData }) {
 
                 <p style={{ marginTop: '30px' }}>Send Location Of Address (If You Are Not On The Spot):</p>
                 <div className='form-row'>
-                    <label className="form-field input-group mb-3">
-                        Accident Place - State:
+                    <label className="dropdown green-dropdown form-field col-md-6" style={{marginBottom:'0px'}}>
+                        State
                         <select className="form-field input-group mb-3"
                             name="state"
+                            style={{
+                                padding: "15px",
+                                borderRadius: "5px",
+                                background: 'white',
+                                marginTop: "0px",
+                                border: '1px solid black',
+                                width: '100%' // Full-width to match the button style
+                            }}
                             onChange={(e) => {
                                 const value = e.target.value;
                                 setSelectedState(value);
@@ -379,10 +387,18 @@ function Location1({ vehicleData }) {
                             ))}
                         </select>
                     </label>
-                    <label className="form-field input-group mb-3">
-                        Accident Place - City:
+                    <label className="dropdown green-dropdown form-field col-md-6" style={{marginBottom:'0px'}}>
+                        City : 
                         <select className="form-field input-group mb-3"
                             name="district"
+                            style={{
+                                padding: "15px",
+                                borderRadius: "5px",
+                                background: 'white',
+                                marginTop: "0px",
+                                border: '1px solid black',
+                                width: '100%' // Full-width to match the button style
+                            }}
                             value={district}
                             onChange={(e) => setDistrict(e.target.value)}
                             disabled={isLoadingCities || !selectedState}
@@ -430,8 +446,6 @@ function Location1({ vehicleData }) {
                             required
                         />
                     </label>
-                    <label className='form-field'></label>
-                    <label className='form-field'></label>
                 </div>
                 {location && (location.startsWith("Error:") ? <Alert severity="error">{location}</Alert> : <Alert severity="success">{location}</Alert>)}
 

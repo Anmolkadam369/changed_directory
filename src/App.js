@@ -1,6 +1,8 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 
 import Home from './Component/Home/Home';
@@ -95,6 +97,9 @@ import store from './Component/Login/store';
 import ProtectedRoute from './Component/Login/ProtectedRoute';
 import KanduTable from './Component/VendorApproved/KanduTable';
 import SidebarWithSubmenus from './Component/AAAAAAAAAAAAAAAAAA/SidebarWithSubmenus';
+import Registrations from './Component/Registrations/Registrations';
+import ImageViewer from './Component/Scrap/ImageViewer';
+import ImageDetails from './Component/Scrap/ImageDetails';
 
 function App() {
   return (
@@ -189,6 +194,11 @@ function App() {
           <Route path='/CreatePassword/:userType' element={<CreatePassword />} />
           <Route path='/Administration' element={<ProtectedRoute element={<Administration />} />} />
           <Route path='/Salesteam' element={<ProtectedRoute element={<Salesteam />} />} />
+          <Route path='/Registration' element={<Registrations/>}/>
+          <Route path='/ImageViewer' element={<ImageViewer/>}/>
+          <Route path='/ImageDetails' element={<ImageDetails/>}/>
+
+
           {/* <Route path='/MapComponent' element={<ProtectedRoute element={<MapComponent />} />} /> */}
 
           {/* <Route path='/DummyDashboard' element={<ProtectedRoute element={<DummyDashboard />} />} /> */}

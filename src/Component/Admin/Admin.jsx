@@ -587,7 +587,7 @@ const Admin = () => {
                                         <HailIcon className="icon" />
                                         Other Form
                                         {showVisitorForm && (
-                                            <div className='submenu'>
+                                            <div className='submenu' style={{width:'200px'}}>
                                                 <li onClick={(e) => {
                                                     e.stopPropagation();
                                                     resetStates();

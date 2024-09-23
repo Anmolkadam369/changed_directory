@@ -1035,7 +1035,7 @@ function AddedDataByCrane({ id, item, onUpdate }) {
                 </div>
                 {isfeedbackRatingModalOpen && (
                     <form className='Customer-master-form' style={{
-                        margin: "0px", padding: "10px", background: "#cbcbe5", borderRadius: "10px",
+                        margin: "0px", padding: "10px", background: "rgb(229 229 231)", borderRadius: "10px",
                         boxShadow: "inset -20px -20px 20px 20px rgba(38, 21, 21, 0.1)"
                     }}>
                         <IconButton onClick={closefeedbackRatingModal} style={{ background: "white", float: 'right' }}>

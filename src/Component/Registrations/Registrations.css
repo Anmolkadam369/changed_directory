@@ -1,0 +1,183 @@
+@media (min-width: 1025px) {
+    .h-custom {
+      height: 100vh !important;
+    }
+  }
+  
+  .card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+  }
+  
+  .card-registration .select-arrow {
+    top: 13px;
+  }
+  
+  .gradient-custom-2 {
+    /* fallback for old browsers */
+    background: #a1c4fd;
+  
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1));
+  
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1)) !important;
+  }
+  
+  .bg-indigo {
+    background-color: #4835d4 !important;
+  }
+  
+  @media (min-width: 992px) {
+    .card-registration-2 .bg-indigo {
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+  }
+  
+  @media (max-width: 991px) {
+    .card-registration-2 .bg-indigo {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+  }
+  
+
+
+  .form-outline {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-outline input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .form-label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    background-color: #fff;
+    padding: 5px 7px 40px 10px;
+    color: #aaa;
+    transition: 0.2s ease all;
+    pointer-events: none;
+    border-radius:5px;
+  }
+
+
+  
+  input:focus + .form-label,
+  input:not(:placeholder-shown) + .form-label {
+    top: 0;
+    left: 10px;
+    font-size: 0.75rem;
+    color: #4835d4;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #4835d4;
+  }
+  
+  .custom-select {
+    width: 100%;
+    padding: 15px;
+    margin-top: 5px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  .custom-select:focus {
+    border-color: #4835d4;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(72, 53, 212, 0.25);
+  }
+  
+  .custom-select option {
+    padding: 10px;
+  }
+  
+
+  .form-outline {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #fff;
+  }
+  
+  .form-label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    background-color: #fff;
+    padding: 0 7px;
+    color: #aaa;
+    transition: 0.2s ease all;
+    pointer-events: none;
+    border-radius: 5px;
+  }
+  
+  .form-control:focus + .form-label, 
+  .form-control:not(:placeholder-shown) + .form-label {
+    top: -10px;
+    left: 10px;
+    font-size: 0.75rem;
+    color: #4835d4;
+    padding: 0 7px;
+    background-color: #fff;
+  }
+  
+  .form-control:focus {
+    border-color: #4835d4;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(72, 53, 212, 0.25);
+  }
+  .custom-label {
+    padding-bottom: 0px !important;
+    border-radius: 5px;
+    padding: 0px;
+    background: white;
+    margin-top: 0px;
+    border: 1px solid #cccccc;
+    width: 200px;
+}
+.sign-up-title {
+    font-size: 1.5rem; /* Adjust size as needed */
+    font-weight: bold;
+    color: #070808; /* A vibrant color like tomato */
+    text-align: center;
+    margin-bottom: 1.5rem; /* Space below the title */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Optional: add shadow for better visibility */
+    /* background: linear-gradient(to right, #f5f2f1, #f1d8c5);  */
+    padding: 20px;
+    border-radius: 10px; /* Rounded corners */
+    display: inline-block;
+}
+.custom-background {
+  background-color: #0f70e6 !important;
+  border-radius: 15px 0px 0px 15px; /* You can move border-radius here too if you like */
+}
+
+  

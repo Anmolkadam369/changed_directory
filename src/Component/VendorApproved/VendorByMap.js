@@ -214,6 +214,17 @@ const VendorByMap = ({ onUpdate }) => {
 
                 <div>
                     <div className='form-row'>
+
+                        <label className="form-field" style={{marginLeft: "5px", marginBottom: "0px" }}>
+                            <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Id:</p>
+                            <input
+                                type="text"
+                                name="vendorId"
+                                className='inputField1'
+                                value={vendorId}
+                                onChange={handleChanges}
+                            />
+                        </label>
                         <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px" }}>
                             <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Name:</p>
                             <input
@@ -224,24 +235,36 @@ const VendorByMap = ({ onUpdate }) => {
                                 onChange={handleChanges}
                             />
                         </label>
-                        <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px" }}>
-                            <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Id:</p>
-                            <input
-                                type="text"
-                                name="vendorId"
-                                className='inputField1'
-                                value={vendorId}
-                                onChange={handleChanges}
-                            />
-                        </label>
+                        <div className="dropdown green-dropdown form-field" style={{ marginBottom: "0px" }}>
+                            <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select Vendor Type :</p>
 
+                            <button
+                                className="form-field input-group mb-3"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                onClick={toggleDropdown}
+                                style={{ marginLeft: '10px', width: "100%", padding: "5px", borderRadius: "10px", marginTop: "0px", marginBottom: "0px" , background:'lightgrey', border:"1px solid black"}}
+                            >
+                                {selectedVendorType || "Select Vendor Type"}
+                            </button>
+                            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
+                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
+                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+                            </ul>
+                        </div>
 
-                        <label className="form-field input-group mb-3">
-                            Select State:
+                        <div style={{display:"flex", gap:'2px'}}>
+                        <label className="form-field input-group mb-1" style={{borderRadius:"30px"}}>
+                            <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select State:</p> 
                             <select
                                 name="state"
                                 onChange={handleChanges}
                                 disabled={isLoadingStates}
+                                style={{marginBottom:"1px"}}
                                 value={state}>
                                 <option value="">Select State</option>
                                 {states.map(state => (
@@ -249,9 +272,8 @@ const VendorByMap = ({ onUpdate }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label className="form-field input-group mb-3">
-                            Select City:
+                        <label className="form-field input-group mb-3" style={{borderRadius:"30px"}}>
+                           <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select City:</p> 
                             <select
                                 name="city"
                                 value={city} // This should match city.iso2
@@ -268,30 +290,10 @@ const VendorByMap = ({ onUpdate }) => {
                                 })}
                             </select>
                         </label>
-
-                        <div className="dropdown green-dropdown form-field" style={{ marginBottom: "0px" }}>
-                            <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select Vendor Type :</p>
-
-                            <button
-                                className="form-field input-group mb-3"
-                                type="button"
-                                id="dropdownMenuButton"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                onClick={toggleDropdown}
-                                style={{ marginLeft: '10px', width: "100%", padding: "10px", borderRadius: "20px", marginTop: "0px", marginBottom: "0px" }}
-                            >
-                                {selectedVendorType || "Select Vendor Type"}
-                            </button>
-                            <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
-                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
-                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-                            </ul>
                         </div>
 
-                    </div>
+                        </div>
+
                     <div className="map-container" style={{ border: '4px solid lightgreen', height: '400px', width: '100%', borderRadius: '10px', margin: '10px' }}>
                         <MapContainer center={[28.7041, 77.1025]} zoom={4} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
                             <TileLayer

@@ -201,7 +201,8 @@ const CreatePassword = () => {
     color: isHovered ? 'darkblue' : 'blue', // Change color on hover
     textDecoration: "underline",
     boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
-    transition: 'color 0.3s' // Smooth transition
+    transition: 'color 0.3s', // Smooth transition
+    cursor:'pointer'
   };
 
   return (

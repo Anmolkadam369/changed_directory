@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../AccidentVehicle/AccidentVehicle.css'
+import '../CustomerMaster/CustomerMaster.css'
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -22,13 +23,17 @@ import TaskIcon from '@mui/icons-material/Task';
 const formatDate = (isoDateString) => {
   if (!isoDateString) return "___"; // Handle null or undefined input
   const date = new Date(isoDateString);
-  if (isNaN(date.getTime()))
-    return "";
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) return ""; // Return empty string for invalid date
+
   const day = String(date.getUTCDate()).padStart(2, '0');
   const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
   const year = date.getUTCFullYear();
+
   return `${day}-${month}-${year}`;
 };
+
 const parseDate = (dateString) => {
   const [day, month, year] = dateString.split('-').map(Number);
   return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
@@ -178,7 +183,7 @@ const VendorResponse = () => {
       cell: (row) => row.systemDate ? formatDate(row.systemDate) : "___",
     },
     {
-      name: "Selected Services", selector: (row) => row.selectedOptions, sortable: true, width: "300px",
+      name: "Selected Services", selector: (row) => row.selectedOptions, sortable: true,width:"200px",
       cell: (row) => (
         <span style={{ color: 'blue', padding: '5px 20px 5px 20px' }}>
           {row.selectedOptions

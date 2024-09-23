@@ -232,7 +232,20 @@ const tableCustomStyles = {
     },
     { name: "Gender", selector: (row) => row.gender, sortable: true },
     {
-      name: "Modify",
+      name: "Added By",
+      selector: (row) => row.addedBy || '',
+      sortable: true,
+      cell: (row) => {
+        const addedBy = row.addedBy ? String(row.addedBy) : "";
+        return (
+          <span style={{ color: "green" }}>
+            {row.addedBy ? addedBy.charAt(0).toUpperCase() + addedBy.slice(1).toLowerCase(): ""}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Modified By",
       selector: (row) => row.EditedBy || '',
       sortable: true,
       cell: (row) => {

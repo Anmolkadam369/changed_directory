@@ -174,7 +174,8 @@ const VendorMasterForm = () => {
     adharCard: "",
     rate: "" || "0",
     GSTNo: "",
-    GST: "info"
+    GST: "info",
+    remark : ""
   });
 
   console.log("FORMDATA908", formData)
@@ -347,7 +348,7 @@ const VendorMasterForm = () => {
           return `Field '${key}' is required.`;
         }
       }
-      if ((key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
+      if ((key !== "remark" && key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
         return `Field '${key}' is required.`;
       }
     }
@@ -763,7 +764,7 @@ const VendorMasterForm = () => {
                 />
               </label>
               <label className="form-field input-group mb-3">
-                Accident Place - State:
+                Vendor Place -State:
                 <select
                   name="state"
                   onChange={handleChange}
@@ -777,7 +778,7 @@ const VendorMasterForm = () => {
               </label>
 
               <label className="form-field input-group mb-3">
-                Accident Place - City:
+                Vendor Place - City:
                 <select
                   name="district"
                   value={formData.district} // This should match city.iso2
@@ -815,7 +816,7 @@ const VendorMasterForm = () => {
               <div className="dropdown green-dropdown form-field">
                 Select Vendor Type:
                 <button
-                  className="form-field input-group mb-3"
+                  className="form-field input-group mb-3 mt-2"
                   type="button"
                   id="dropdownMenuButton"
                   data-bs-toggle="dropdown"
@@ -1023,8 +1024,22 @@ const VendorMasterForm = () => {
                 />
               </label>
 
-              {formData.vendorType == "crane" &&
-                (<label className="form-field">
+              <label className="form-field">
+                Remark : 
+                <textarea
+                  name="remark"
+                  value={formData.remark}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder='Remark' />
+              </label>
+            </div>
+
+            <div>
+            {formData.vendorType == "crane" &&
+                (
+                  <div className='form-row'>
+                <label className="form-field">
                   Rate/KM :
                   <input
                     type='text'
@@ -1036,6 +1051,10 @@ const VendorMasterForm = () => {
                     title="Aadhaar number must be exactly 12 digits."
                     required />
                 </label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
+                <label className="form-field"></label>
+              </div>
                 )}
               {formData.vendorType != "crane" && (
                 <label className="form-field"></label>
@@ -1048,13 +1067,13 @@ const VendorMasterForm = () => {
 
           <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-            Send Your Current Location (if it's same for filling address):
+            <p>   Send Your Current Location (if it's same for filling address):</p> 
             <div className='form-row'>
               <Button variant="contained" onClick={getLocation}>Send Location</Button>
             </div>
 
 
-            Send Location Of Address (this is by your address):
+            <p>   Send Location Of Address (this is by your address):</p> 
             <div className='form-row'>
               <label className='form-field'>
                 Latitude:
