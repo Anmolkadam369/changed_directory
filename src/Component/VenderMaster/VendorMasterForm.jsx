@@ -26,6 +26,7 @@ import customerInfo from '../../Assets/customerInfo.xlsx';
 import vendorsInfo from '../../Assets/vendorsInfo.xlsx';
 import fleetInfo from '../../Assets/fleetInfo.xlsx';
 import { IconButton } from '@mui/material';
+import Sidebar from '../Home/Sidebar';
 
 
 const config = {
@@ -88,6 +89,7 @@ const VendorMasterForm = () => {
   const [location, setLocation] = useState(null);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [toInputBox, setToInputBox] = useState(false)
 
   console.log('latitude longitude', latitude, longitude)
   console.log("locatin", location)
@@ -95,6 +97,12 @@ const VendorMasterForm = () => {
   const handleSwitchChange = (event) => {
     setSingleVendor(event.target.checked);
   };
+
+
+  const handleSwitchInputBox = (event) => {
+    setToInputBox(!toInputBox)
+  };
+
 
   const [bankDetails, setBankDetails] = useState({
     bankName: '',
@@ -175,7 +183,7 @@ const VendorMasterForm = () => {
     rate: "" || "0",
     GSTNo: "",
     GST: "info",
-    remark : ""
+    remark: ""
   });
 
   console.log("FORMDATA908", formData)
@@ -320,10 +328,10 @@ const VendorMasterForm = () => {
         [name]: value,
       });
     }
-    else if(name ==="district" || name === "vendorType"){
+    else if (name === "district" || name === "vendorType") {
       setFormData({
         ...formData,
-        [name]:value,
+        [name]: value,
       })
     }
 
@@ -615,6 +623,7 @@ const VendorMasterForm = () => {
 
   return (
     <div>
+      {/* <Sidebar/> */}
       <Helmet>
         <title>Vendor Details - Claimpro</title>
         <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />
@@ -777,8 +786,20 @@ const VendorMasterForm = () => {
                 </select>
               </label>
 
-              <label className="form-field input-group mb-3">
-                Vendor Place - City:
+              {!toInputBox && (<label className="form-field input-group mb-3">
+                <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                  <span style={{ marginRight: '10px' }}>Vendor Place - City:</span>
+                  <div className="switch-container">
+                    <FormControlLabel
+                      control={<Android12Switch defaultChecked />}
+                      checked={singleVendor}
+                      onChange={handleSwitchInputBox}
+                      label="" // You can add a label here if needed
+                    />
+                  </div>
+                </div>
+
+
                 <select
                   name="district"
                   value={formData.district} // This should match city.iso2
@@ -795,7 +816,36 @@ const VendorMasterForm = () => {
                     );
                   })}
                 </select>
-              </label>
+              </label>)}
+
+              {toInputBox && (
+                 <label className="form-field input-group mb-3">
+                  
+                 {/* Vendor Place - City: */}
+                 <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                  <span style={{ marginRight: '10px' }}>Vendor Place - City:</span>
+                  <div className="switch-container">
+                    <FormControlLabel
+                      control={<Android12Switch defaultChecked />}
+                      checked={singleVendor}
+                      onChange={handleSwitchInputBox}
+                      label="" // You can add a label here if needed
+                    />
+                  </div>
+                </div>
+                 <input
+                   type="text"
+                   name="district"
+                   placeholder='District'
+                   value={formData.district}
+                   onChange={handleChange}
+                   className="form-control"
+                   readOnly={formData.state  === ""}
+                   required
+                 />
+               </label>
+              )}
+
             </div>
 
             <div className='form-row'>
@@ -1025,7 +1075,7 @@ const VendorMasterForm = () => {
               </label>
 
               <label className="form-field">
-                Remark : 
+                Remark :
                 <textarea
                   name="remark"
                   value={formData.remark}
@@ -1036,25 +1086,25 @@ const VendorMasterForm = () => {
             </div>
 
             <div>
-            {formData.vendorType == "crane" &&
+              {formData.vendorType == "crane" &&
                 (
                   <div className='form-row'>
-                <label className="form-field">
-                  Rate/KM :
-                  <input
-                    type='text'
-                    name="rate"
-                    placeholder='Rate Per KM'
-                    value={formData.rate}
-                    onChange={handleChange}
-                    className="form-control"
-                    title="Aadhaar number must be exactly 12 digits."
-                    required />
-                </label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
-                <label className="form-field"></label>
-              </div>
+                    <label className="form-field">
+                      Rate/KM :
+                      <input
+                        type='text'
+                        name="rate"
+                        placeholder='Rate Per KM'
+                        value={formData.rate}
+                        onChange={handleChange}
+                        className="form-control"
+                        title="Aadhaar number must be exactly 12 digits."
+                        required />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+                  </div>
                 )}
               {formData.vendorType != "crane" && (
                 <label className="form-field"></label>
@@ -1067,13 +1117,13 @@ const VendorMasterForm = () => {
 
           <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-            <p>   Send Your Current Location (if it's same for filling address):</p> 
+            <p>   Send Your Current Location (if it's same for filling address):</p>
             <div className='form-row'>
               <Button variant="contained" onClick={getLocation}>Send Location</Button>
             </div>
 
 
-            <p>   Send Location Of Address (this is by your address):</p> 
+            <p>   Send Location Of Address (this is by your address):</p>
             <div className='form-row'>
               <label className='form-field'>
                 Latitude:

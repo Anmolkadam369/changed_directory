@@ -12,6 +12,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
+import Header from '../Home/Header';
+import Footer from '../Home/Footer';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -23,7 +25,7 @@ const Login = () => {
     const [userId, setUserId] = useRecoilState(userIdState);
     const [showPassword, setShowPassword] = useState(false);
     const [fontSize, setFontSize] = useState("35px");
-    
+
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -169,80 +171,84 @@ const Login = () => {
         navigate("../")
     }
     return (
-        <div style={backgroundStyle}>
-            <Helmet>
-                <title>Contact Form - Claimpro</title>
-                <meta name="description" content="Contact form for the query" />
-                <meta name="keywords" content="Vehicle Accidents, accident trucks,customer form,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-                <link rel='canonical' href={`https://claimpro.in/ContactUs`}/>
-            </Helmet>
-            <div style={loginContainerStyle}>
-                <div style={headerContainerStyle}>
-                    <Button startIcon={<ArrowBackIcon />} onClick={handleBack} style={backButtonStyle} />
-                    <h1 style={headerStyle}>Contact Us</h1>
-                </div>
-                <form onSubmit={handleSubmit}>
-                    <div style={formGroupStyle}>
-                        <label htmlFor="fullName" style={labelStyle}>Full Name</label>
-                        <input
-                            style={inputStyle}
-                            type="text"
-                            name="fullName"
-                            required
-                            onChange={handleChange}
-                            value={formData.fullName}
-                        />
+        <div>
+            <Header />
+            <div style={backgroundStyle}>
+                <Helmet>
+                    <title>Contact Form - Claimpro</title>
+                    <meta name="description" content="Contact form for the query" />
+                    <meta name="keywords" content="Vehicle Accidents, accident trucks,customer form,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                    <link rel='canonical' href={`https://claimpro.in/ContactUs`} />
+                </Helmet>
+                <div style={loginContainerStyle}>
+                    <div style={headerContainerStyle}>
+                        <Button startIcon={<ArrowBackIcon />} onClick={handleBack} style={backButtonStyle} />
+                        <h1 style={headerStyle}>Contact Us</h1>
                     </div>
+                    <form onSubmit={handleSubmit}>
+                        <div style={formGroupStyle}>
+                            <label htmlFor="fullName" style={labelStyle}>Full Name</label>
+                            <input
+                                style={inputStyle}
+                                type="text"
+                                name="fullName"
+                                required
+                                onChange={handleChange}
+                                value={formData.fullName}
+                            />
+                        </div>
 
-                    <div style={formGroupStyle}>
-                        <label htmlFor="email" style={labelStyle}>Email</label>
-                        <input
-                            style={inputStyle}
-                            type="email"
-                            name="email"
-                            required
-                            onChange={handleChange}
-                            value={formData.email}
-                        />
-                    </div>
-                    <div style={formGroupStyle}>
-                        <label htmlFor="phoneNo" style={labelStyle}>Phone No</label>
-                        <input
-                            style={inputStyle}
-                            type="text"
-                            name="phoneNo"
-                            required
-                            onChange={handleChange}
-                            value={formData.phoneNo}
-                        />
-                    </div>
-                    <div style={formGroupStyle}>
-                        <label htmlFor="message" style={labelStyle}>Message</label>
-                        <textarea
-                            style={inputStyle}
-                            name="message"
-                            required
-                            onChange={handleChange}
-                            value={formData.message}
-                        />
-                    </div>
-                    {alertInfo.show && (
-                        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                            {alertInfo.message}
-                        </Alert>
-                    )}
-                    <div style={buttonContainerStyle}>
-                        <Button
-                            style={buttonStyle}
-                            onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}
-                            onMouseOut={e => e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor}
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </Button>
-                    </div>
-                </form>
+                        <div style={formGroupStyle}>
+                            <label htmlFor="email" style={labelStyle}>Email</label>
+                            <input
+                                style={inputStyle}
+                                type="email"
+                                name="email"
+                                required
+                                onChange={handleChange}
+                                value={formData.email}
+                            />
+                        </div>
+                        <div style={formGroupStyle}>
+                            <label htmlFor="phoneNo" style={labelStyle}>Phone No</label>
+                            <input
+                                style={inputStyle}
+                                type="text"
+                                name="phoneNo"
+                                required
+                                onChange={handleChange}
+                                value={formData.phoneNo}
+                            />
+                        </div>
+                        <div style={formGroupStyle}>
+                            <label htmlFor="message" style={labelStyle}>Message</label>
+                            <textarea
+                                style={inputStyle}
+                                name="message"
+                                required
+                                onChange={handleChange}
+                                value={formData.message}
+                            />
+                        </div>
+                        {alertInfo.show && (
+                            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                {alertInfo.message}
+                            </Alert>
+                        )}
+                        <div style={buttonContainerStyle}>
+                            <Button
+                                style={buttonStyle}
+                                onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}
+                                onMouseOut={e => e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor}
+                                onClick={handleSubmit}
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
+            <Footer />
         </div>
     );
 };

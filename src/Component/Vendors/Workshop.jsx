@@ -31,6 +31,12 @@ import userImg from "../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import WorkshopDashboard from './WorkshopDashboard';
 import Login from '../Login/LoginPage';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined';
+import ProductRegister from '../Scrap/ProductRegsiter';
+import ViewProduct from '../Scrap/ViewProduct';
+import ScrapDashboard from '../Scrap/ScrapDashboard';
+
 
 
 const Workshop = () => {
@@ -50,11 +56,44 @@ const Workshop = () => {
     const dropdownRef = useRef(null);
     const [userImage, setUserImage] = useState(true);
     const [showCustomerOptions, setShowCustomerOptions] = useState(false);
-    const [showReportsOptions, setShowReportsOptions] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [startingPage, setStartingPage] = useState(true);
-    const [myAccidentVehicle, setMyAccidentVehicle] = useState(true);
+    const [myAccidentVehicle, setMyAccidentVehicle] = useState(false);
+    const [viewProduct, setViewProduct] = useState(false);
+    const [viewProudct, setViewProudct] = useState(false);
+    const [seeOrders, setSeeOrders] = useState(false);
+
+
+
+    const [scrapDealAdd, setscrapDealAdd] = useState(true);
+    const [scrapDealView, setscrapDealView] = useState(true);
+    const [ScrapDealOrder, setScrapDealOrder] = useState(true);
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    const [showReportsOptions, setShowReportsOptions] = useState(false);
+    const [showScrapDealsOptions, setShowScrapDealsOptions] = useState(false);
+
+    const resetState = () => {
+        setStartingPage(false);
+        setMyAccidentVehicle(false);
+        setViewProduct(false);
+        setViewProudct(false);
+        setSeeOrders(false)
+        setShowReportsOptions(false);
+        setShowScrapDealsOptions(false);
+    };
+
+    const toggleSubMenu = (menu) => {
+        if (menu === 'reports') {
+            setShowReportsOptions(!showReportsOptions);
+            setShowScrapDealsOptions(false); // Close the other menu
+        } else if (menu === 'scrapDeals') {
+            setShowScrapDealsOptions(!showScrapDealsOptions);
+            setShowReportsOptions(false); // Close the other menu
+        }
+    };
+
 
     const vendorData = [10, 4];
     const vendorLabels = ['resolved', 'pending'];
@@ -195,37 +234,63 @@ const Workshop = () => {
                             <ul>
                                 <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
 
-                                <li onClick={() => {
-                                    setShowCustomerOptions(!showCustomerOptions)
-                                    setMyAccidentVehicle(false);
-                                    setStartingPage(true);
-                                }}>
+                                <li
+                                    onClick={() => {
+                                        resetState();
+                                        setStartingPage(true);
+                                    }}
+                                >
                                     <SpaceDashboardIcon className="icon" />
-                                    Dashboard</li>
-                                <ul>
-                                    <li onClick={(e) => {
-                                        setShowReportsOptions(!showReportsOptions)
-                                        setStartingPage(false);
-                                        setMyAccidentVehicle(true);
-                                        e.stopPropagation();
-                                    }}>
-                                        <SummarizeOutlinedIcon className="icon" />
-                                        Reports
-                                        {showReportsOptions && (
-                                            <ul className='submenu' >
+                                    Dashboard
+                                </li>
 
-                                                <li onClick={() => {
-                                                    setStartingPage(false);
-                                                    setMyAccidentVehicle(true)
-                                                }}>
-                                                    Cases Assigned
-                                                </li>
-                                            </ul>
-                                        )}
-                                    </li>
-                                </ul>
+                                <li
+                                    onClick={(e) => {
+                                        toggleSubMenu('reports');
+                                        e.stopPropagation(); // Prevent event bubbling
+                                    }}
+                                >
+                                    <SummarizeOutlinedIcon className="icon" />
+                                    Reports
+                                    {showReportsOptions && (
+                                        <ul className="submenu">
+                                            <li
+                                                onClick={() => {
+                                                    resetState();
+                                                    setMyAccidentVehicle(true);
+                                                }}
+                                            >
+                                                Cases Assigned
+                                            </li>
+                                        </ul>
+                                    )}
+                                </li>
 
+                                <li
+                                    onClick={(e) => {
+                                        toggleSubMenu('scrapDeals');
+                                        e.stopPropagation(); // Prevent event bubbling
+                                    }}
+                                >
+                                    <Inventory2OutlinedIcon className="icon" />
+                                    Scrap Deals
+                                    {showScrapDealsOptions && (
+                                        <ul className="submenu">
+                                            <li
+                                                onClick={() => {
+                                                    resetState()
+                                                    setViewProduct(true);
+                                                }}
+                                            >
+                                                <Inventory2OutlinedIcon className="icon" />
+                                                View Products
+                                            </li>
+   
+                                        </ul>
+                                    )}
+                                </li>
                             </ul>
+
                         </aside>) : (
                         <div>
                             {window.innerWidth < 768 && (
@@ -305,6 +370,10 @@ const Workshop = () => {
                                 <AssignedVehicleWorkshop />
                             }
 
+                            {
+                                viewProduct &&
+                                <ScrapDashboard/>
+                            }
 
                         </main>
                     </div>

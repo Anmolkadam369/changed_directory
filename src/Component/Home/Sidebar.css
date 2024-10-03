@@ -1,0 +1,12 @@
+.sidebar {
+    transition: width 0.3s ease;
+  }
+  
+  .collapsed {
+    width: 40px; /* Adjust as needed */
+  }
+  
+  .expanded {
+    width: 220px; /* Adjust as needed */
+  }
+  

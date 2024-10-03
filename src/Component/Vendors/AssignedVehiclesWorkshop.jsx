@@ -10,6 +10,7 @@ import backendUrl from '../../environment';
 import { Helmet } from 'react-helmet-async';
 import AddedDataByWorkshop from './AddedDataByWorkshop';
 import DataTable from "react-data-table-component";
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 const AssignedVehicleWorkshop = () => {
 
@@ -225,17 +226,17 @@ const AssignedVehicleWorkshop = () => {
       center: true,
     },
     {
-      name : "Assigned On",
-      selector: (row)=>row.workshopAssignedOn,
-      sortable:true,
-      width:"180px"
+      name: "Assigned On",
+      selector: (row) => row.workshopAssignedOn,
+      sortable: true,
+      width: "180px"
     },
     {
-      name : "First Response",
-      selector:(row) => row.details.length > 0 && row.details[0].firstResponseOn
-      ? row.details[0].firstResponseOn:"",
-      sortable:true,
-      width:"180px"
+      name: "First Response",
+      selector: (row) => row.details.length > 0 && row.details[0].firstResponseOn
+        ? row.details[0].firstResponseOn : "",
+      sortable: true,
+      width: "180px"
     },
     {
       name: "Accident File No",
@@ -252,7 +253,7 @@ const AssignedVehicleWorkshop = () => {
     {
       name: "Accept By Admin",
       selector: (row) => row.details.length > 0 && row.details[0].acceptedByAdmin
-        ? row.details[0].acceptedByAdmin? row.details[0].acceptedByAdmin.charAt(0).toUpperCase() + row.details[0].acceptedByAdmin.slice(1).toLowerCase():""
+        ? row.details[0].acceptedByAdmin ? row.details[0].acceptedByAdmin.charAt(0).toUpperCase() + row.details[0].acceptedByAdmin.slice(1).toLowerCase() : ""
         : "Pending",
       cell: (row) => (
         <span style={{
@@ -261,12 +262,12 @@ const AssignedVehicleWorkshop = () => {
             : 'darkorange'
         }}>
           {row.details.length > 0 && row.details[0].acceptedByAdmin
-            ? row.details[0].acceptedByAdmin? row.details[0].acceptedByAdmin.charAt(0).toUpperCase() + row.details[0].acceptedByAdmin.slice(1).toLowerCase():""
+            ? row.details[0].acceptedByAdmin ? row.details[0].acceptedByAdmin.charAt(0).toUpperCase() + row.details[0].acceptedByAdmin.slice(1).toLowerCase() : ""
             : "Pending"}
         </span>
       ),
       width: "150px",
-      sortable:true
+      sortable: true
     },
     {
       name: "View Doc",
@@ -313,6 +314,7 @@ const AssignedVehicleWorkshop = () => {
       center: true,
     }
   ];
+  const [addFilter, setAddFilter] = useState(false)
 
 
 
@@ -357,119 +359,159 @@ const AssignedVehicleWorkshop = () => {
             )}
           </div>
 
-          <form class='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
-            <div class="header-container">
-              <h3 class="bigtitle">Assigned Vehicles To Workshop</h3>
-            </div>
-            <div className="form-row">
-              <label className="form-field input-group mb-3">
-                Vehicle No:
-                <input
-                  type="text"
-                  name="VehicleNo"
-                  placeholder='Vehicle No'
-                  // class="form-label"
-                  value={formData.VehicleNo}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
-              </label>
+          <div style={{ display: 'flex', justifyContent: "flex-end" }}>
 
-              <label className="form-field input-group mb-3">
-                Accident File No:
-                <input
-                  type="text"
-                  name="accidentFileNo"
-                  placeholder='Accident File No'
-                  // class="form-label"
-                  value={formData.accidentFileNo}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
-              </label>
+            <button type="button" className="btn btn-dark" onClick={() => setAddFilter(true)}>  <FilterAltOffIcon /> filter</button>
+          </div>
 
-              <label className="form-field input-group mb-3">
-                Loss Type:
-                <input
-                  type="text"
-                  name="lossType"
-                  placeholder='Loss Type'
-                  // class="form-label"
-                  value={formData.lossType}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
-              </label>
+          {addFilter && (
+            <div className="modal fade show" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style={{ display: "block", boxShadow: "none",background: "transparent"
+          }}>
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-body">
+                    <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+                      <div className="header-container" style={{display:'flex', justifyContent:'flex-end'}}>
+                        <h3 className="bigtitle">Assigned Vehicles To Workshop</h3>
+                    <button
+                      type="button"
+                      className="close"
+                      onClick={() => setAddFilter(false)} // Close modal
+                      aria-label="Close"
+                      style={{ background: "transperant", border: 'none' }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                      </div>
+                      <div className="form-row">
+                        <label className="form-field input-group mb-3">
+                          Vehicle No:
+                          <input
+                            type="text"
+                            name="VehicleNo"
+                            placeholder='Vehicle No'
+                            // className="form-label"
+                            value={formData.VehicleNo}
+                            onChange={handleChange}
+                            className="form-control"
+                            required
+                          />
+                        </label>
 
-              <label className="form-field input-group mb-3">
-                Service Type:
-                <input
-                  type="text"
-                  name="serviceType"
-                  placeholder='Service Type'
-                  // class="form-label"
-                  value={formData.serviceType}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
-              </label>
+                        <label className="form-field input-group mb-3">
+                          Accident File No:
+                          <input
+                            type="text"
+                            name="accidentFileNo"
+                            placeholder='Accident File No'
+                            // className="form-label"
+                            value={formData.accidentFileNo}
+                            onChange={handleChange}
+                            className="form-control"
+                            required
+                          />
+                        </label>
+                      </div>
 
-            </div>
+                      <div className="form-row">
+                        <label className="form-field input-group mb-3">
+                          Loss Type:
+                          <input
+                            type="text"
+                            name="lossType"
+                            placeholder='Loss Type'
+                            // className="form-label"
+                            value={formData.lossType}
+                            onChange={handleChange}
+                            className="form-control"
+                            required
+                          />
+                        </label>
 
-            <div className="form-row">
-              <div className="dropdown green-dropdown form-field">
-                Select Option :
-                <button
-                  className="form-field input-group mb-3"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  onClick={toggleDropdown}
-                  style={{ color: 'black', marginTop: '5px' }}
-                >
-                  {formData.vendorType || "Select Vendor Type"}
-                </button>
-                <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
-                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
-                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
-                  <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
-                </ul>
+                        <label className="form-field input-group mb-3">
+                          Service Type:
+                          <input
+                            type="text"
+                            name="serviceType"
+                            placeholder='Service Type'
+                            // className="form-label"
+                            value={formData.serviceType}
+                            onChange={handleChange}
+                            className="form-control"
+                            required
+                          />
+                        </label>
+                      </div>
+
+                      <div className="form-row">
+                        <label className="form-field input-group mb-3">
+                          From Date:
+                          <input
+                            type="date"
+                            name="fromDate"
+                            value={formData.fromDate}
+                            onChange={handleChange}
+                            readOnly
+                            className="form-control"
+                          />
+                        </label>
+
+                        <label className="form-field input-group mb-3">
+                          To Date:
+                          <input
+                            type="date"
+                            name="toDate"
+                            value={formData.toDate}
+                            onChange={handleChange}
+                            readOnly
+                            className="form-control"
+                          />
+                        </label>
+                      </div>
+
+                      <div className="form-row">
+                        <div className="dropdown green-dropdown form-field">
+                          Select Option :
+                          <button
+                            className="form-field input-group mb-3"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            onClick={toggleDropdown}
+                            style={{ color: 'black', marginTop: '5px' }}
+                          >
+                            {formData.vendorType || "Select Vendor Type"}
+                          </button>
+                          <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "advocate")}>Advocate</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "crane")}>Crane</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "mechanic")}>Mechanic</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "workshop")}>Workshop</a></li>
+                          </ul>
+                        </div>
+                      </div>
+
+
+                    </form>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setAddFilter(false)} // Close modal
+                    >
+                      Close
+                    </button>
+                    <button type="button" className="btn btn-primary">Save changes</button>
+                  </div>
+                </div>
               </div>
-
-              <label className="form-field input-group mb-3">
-                From Date:
-                <input
-                  type="date"
-                  name="fromDate"
-                  value={formData.fromDate}
-                  onChange={handleChange}
-                  readOnly
-                  className="form-control"
-                />
-              </label>
-
-              <label className="form-field input-group mb-3">
-                To Date:
-                <input
-                  type="date"
-                  name="toDate"
-                  value={formData.toDate}
-                  onChange={handleChange}
-                  readOnly
-                  className="form-control"
-                />
-              </label>
-
-              <label className="form-field input-group mb-3"></label>
             </div>
+          )}
 
-          </form>
+          {/* Modal backdrop for styling */}
+          {addFilter && <div className="modal-backdrop fade show"></div>}
 
 
           <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>

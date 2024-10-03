@@ -45,7 +45,8 @@ const CustomerApproved = () => {
   const [modalOpenHere, setModalOpenHere] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalSeverity, setModalSeverity] = useState('');
-
+  const getDepartment = localStorage.getItem("department");
+  console.log("getDepartment", getDepartment)
 
 
   const [data, setData] = useState([]);
@@ -369,7 +370,11 @@ const CustomerApproved = () => {
       allowOverflow: true,
       button: true,
     },
-    {
+   
+  ];
+
+  if(getDepartment !== "Administration"){
+   columns.push ({
       name: "Delete Customer",
       cell: (row) => (
         <span
@@ -382,8 +387,8 @@ const CustomerApproved = () => {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    },
-  ];
+    });
+  }
 
   const [searchValue, setSearchValue] = useState('');
 

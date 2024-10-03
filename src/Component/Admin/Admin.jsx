@@ -75,6 +75,7 @@ const Admin = () => {
     const [showViewVendor, setShowViewVendor] = useState(false);
     const [showAddCustomer, setShowAddCustomer] = useState(false);
     const [showViewCustomer, setShowViewCustomer] = useState(false);
+    console.log("showViewCustomer", showViewCustomer)
     const [showVehicleClaim, setShowVehicleClaim] = useState(false);
     const [showAddEmployee, setShowAddEmployee] = useState(false);
     const [showVehicleClaimView, setShowVehicleClaimView] = useState(false);
@@ -115,6 +116,7 @@ const Admin = () => {
     // const userId = useRecoilValue(userIdState);
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const loginId = localStorage.getItem("loginId")
     const [refreshToken, setRefreshToken] = useState(localStorage.getItem("token"));
     const [refreshUserId, setRefreshUserId] = useState(localStorage.getItem("userId"));
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -127,19 +129,25 @@ const Admin = () => {
 
     useEffect(() => {
         const handleBeforeUnload = (event) => {
-            handleSignOutClick();
-            event.preventDefault();
-            // event.returnValue = ''; // Necessary for some browsers to show the dialog
+            event.preventDefault(); // Prevent the default behavior
+            event.returnValue = ''; // Display confirmation dialog
         };
 
-        const handlePopState = () => {
-            handleSignOutClick();
+        const handlePopState = (event) => {
+            // Call sign-out logic for back navigation
+            const confirmSignOut = window.confirm('Do you want to sign out?');
+            if (confirmSignOut) {
+                handleSignOutClick(); // Call your sign-out logic
+            } else {
+                // Optionally, push the state back to prevent navigating away
+                window.history.pushState(null, null, window.location.pathname);
+            }
         };
 
         // Push a new state to ensure popstate event is triggered on back navigation
         window.history.pushState(null, null, window.location.pathname);
 
-        // window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('beforeunload', handleBeforeUnload);
         window.addEventListener('popstate', handlePopState);
 
         return () => {
@@ -148,12 +156,22 @@ const Admin = () => {
         };
     }, []);
 
-    const handleConfirmSignOut = () => {
+    const handleConfirmSignOut =async () => {
+        const response = await axios.put(`${backendUrl}/api/logout`, {
+            loginId 
+          });
+          if (response.status === 200) {
         localStorage.setItem("token", "");
         localStorage.setItem("userId", "");
+        localStorage.setItem("loginId", "");
+        localStorage.setItem("department", "");
         setRefreshToken("");
         setRefreshUserId("");
         setModalOpen(false);
+          }
+          else{
+            setModalOpen(true);
+          }
     };
 
     const handleCancelSignOut = () => { setModalOpen(false) };
@@ -392,11 +410,11 @@ const Admin = () => {
         startingPage(true);
     }
 
-
+console.log("getData.randomId",getData.randomId)
 
     return (
         <div>
-            {getData.randomId || (getData.department === "IT" || getData.department === "Management") ? (
+            {getData.randomId || (getData.department === "IT" || getData.department === "Management" || getData.department === "Administration") ? (
                 <div className="admin-page">
                     <Helmet>
                         <title>Admin Page - Claimpro</title>

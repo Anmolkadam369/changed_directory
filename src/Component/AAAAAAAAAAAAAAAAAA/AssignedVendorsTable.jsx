@@ -249,7 +249,7 @@ const AssignedVendorsTable = () => {
       } else if (window.innerWidth <= 670) {
         setHeight('300px');
       } else {
-        setHeight('400px');
+        setHeight('300px');
       }
     };
 

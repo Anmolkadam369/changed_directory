@@ -156,9 +156,7 @@ const VendorIndPerf = () => {
                     <th>Vendors Name</th>
                     <th>Vendor Type</th>
                     <th>Vendor Email</th>
-                    <th>Contact</th>
                     <th>Vendor State</th>
-                    <th>Vendor District</th>
                 </tr>
             </thead>
             <tbody>
@@ -178,9 +176,7 @@ const VendorIndPerf = () => {
                         {item.email}
                     </a>
                   </td>
-                  <td style={{ fontSize: '10px', padding: '5px' }}>{item.vendorPhone}</td>
                   <td style={{ fontSize: '10px', padding: '5px' }}>{item.state}</td>
-                  <td style={{ fontSize: '10px', padding: '5px' }}>{item.district}</td>
                 </tr>
               ))
             )}

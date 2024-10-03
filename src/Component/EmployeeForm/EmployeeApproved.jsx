@@ -52,6 +52,9 @@ const EmployeeApproved = () => {
   const [width, setWidth] = useState('100%');
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamp: null });
 
+  const getDepartment = localStorage.getItem("department");
+  console.log("getDepartment", getDepartment)
+
   const [showEmployeeMasterEdit, setShowEmployeeMasterEdit] = useState(false)
   const [selectedId, setSelectedId] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
@@ -298,7 +301,11 @@ const tableCustomStyles = {
       allowOverflow: true,
       button: true,
     },
-    { name: "Delete Customer",
+   
+  ];
+
+  if(getDepartment !== "Administration"){
+    columns.push({ name: "Delete Employee",
       cell: (row) => (
         <span
           onClick={() => openDeleteModal(row)}
@@ -310,8 +317,8 @@ const tableCustomStyles = {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    },
-  ];
+    });
+  }
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearch = (e) => {

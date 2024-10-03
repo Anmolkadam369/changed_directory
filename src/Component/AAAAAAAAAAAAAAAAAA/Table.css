@@ -11,12 +11,13 @@
   font-size: 18px;
   text-align: left;
   margin-bottom: "130px";
+  border:"none"
 }
 
 .some-table th,
 .some-table td {
   padding: 12px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
 }
 
 .some-table th {

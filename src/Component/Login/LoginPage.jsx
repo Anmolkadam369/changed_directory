@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+import { tokenState, userIdState, typeState } from '../Auth/Atoms';
 import './LoginPage.css';
 import { Alert, Checkbox, FormControlLabel } from '@mui/material';
 import backendUrl from '../../environment';
@@ -21,6 +21,8 @@ import logintime_truck from '../../Assets/logintime_truck.webp'
 import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux'
 import { login } from './authSlice';
+import Header from '../Home/Header';
+import Footer from '../Home/Footer';
 
 
 const Login = () => {
@@ -32,6 +34,7 @@ const Login = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [token, setToken] = useRecoilState(tokenState);
   const [userId, setUserId] = useRecoilState(userIdState);
+  const [typeOf, setTypeOf] = useRecoilState(typeState);
   const [showPassword, setShowPassword] = useState(false);
   const [fontSize, setFontSize] = useState("35px");
   const [emailError, setEmailError] = useState('');
@@ -131,8 +134,14 @@ const Login = () => {
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("loginId", response.data.loginId);
+
+        if (response.data?.data.department) {
+          localStorage.setItem("department", response.data.data.department);
+        }
         setToken(response.data.token);
         setUserId(response.data.userId);
+        setTypeOf(response.data.data.department ? response.data.data.department : "");
         dispatch(login({ userId, token }));
         console.log("I AM TOKEN MASTER222222")
 
@@ -166,7 +175,7 @@ const Login = () => {
         } else if (response.data.data.vendorType === "workshop") {
           navigate("../WorkshopDashboard");
         } else if (response.data.data.department === "Administration") {
-          navigate("../Administration");
+          navigate("../Admin");
         } else if (response.data.data.department === "Sales") {
           navigate("../Salesteam");
         }
@@ -196,12 +205,12 @@ const Login = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const signupFunc = ()=>{
+  const signupFunc = () => {
     navigate('/Registration')
   }
 
   const backgroundStyle = {
-    height: '100vh',
+    height: '110vh',
     backgroundImage: `url(${trucks1})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -209,6 +218,7 @@ const Login = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+
   };
 
   const loginContainerStyle = {
@@ -296,132 +306,137 @@ const Login = () => {
     textDecoration: "underline",
     boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
     transition: 'color 0.3s', // Smooth transition
-    cursor:'pointer'
+    cursor: 'pointer'
   };
 
   return (
-    <div style={backgroundStyle}>
-      <Helmet>
-        <title>BVC claimPro assist Login - Claimpro</title>
-        <meta name="description" content="login for BVC ClaimPro Assist." />
-        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-        <link rel='canonical' href={`https://claimpro.in/LoginPage`} />
-      </Helmet>
-      <div className="slide-in" style={loginContainerStyle}>
-        <div style={headerContainerStyle}>
-          <img src={claimproassist} style={imgStyle} alt="company logo" />
-          <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
-        </div>
-
-        <div className="selecting-container">
-          <div
-            className={`selecting-box vendorselected ${selected === 1 ? 'selected' : ''}`}
-            onClick={() => handleClick(1)}
-          >
-            Vendor
-          </div>
-          <div
-            className={`selecting-box customerselected ${selected === 2 ? 'selected' : ''}`}
-            onClick={() => handleClick(2)}
-          >
-            Customer
-          </div>
-        </div>
-        <form onSubmit={handleSubmit} style={{
-          marginTop: "20px",
-          padding: "5px",
-          borderRadius: "10px",
-          ...getStyles()
-        }}>
-          <div style={formGroupStyle}>
-            <label htmlFor="email" style={labelStyle}>Email : </label>
-            <input
-              style={inputStyle}
-              type="text"
-              id="email"
-              name="email"
-              required
-              onChange={handleEmailChange}
-              value={email}
-            />
-            {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
-          </div>
-          <div style={formGroupStyle}>
-            <label htmlFor="password" style={labelStyle}>Password :</label>
-            <Input
-              style={inputStyle}
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={handlePasswordChange}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {passwordError && <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>}
+    <div>
+      {/* <Header /> */}
+      <div  style={backgroundStyle}>
+        <Helmet>
+          <title>BVC claimPro assist Login - Claimpro</title>
+          <meta name="description" content="login for BVC ClaimPro Assist." />
+          <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+          <link rel='canonical' href={`https://claimpro.in/LoginPage`} />
+        </Helmet>
+        <div className="slide-in" style={loginContainerStyle}>
+          <div style={headerContainerStyle}>
+            <img src={claimproassist} style={imgStyle} alt="company logo" />
+            <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
           </div>
 
-          <div style={{ display: "flex", alignItems:"center", justifyContent: 'space-between', gap: "10px" }}>
-            <div style={remembermecontainer}>
-              <Checkbox
-                checked={rememberMe}
-                onChange={handleRememberMeChange}
-                name="rememberMe"
-                color="primary"
-              />
-              <span style={labelStyle2}>Remember Me</span>
+          <div className="selecting-container">
+            <div
+              className={`selecting-box vendorselected ${selected === 1 ? 'selected' : ''}`}
+              onClick={() => handleClick(1)}
+            >
+              Vendor
             </div>
-            {/* <div style={linkStyle}
+            <div
+              className={`selecting-box customerselected ${selected === 2 ? 'selected' : ''}`}
+              onClick={() => handleClick(2)}
+            >
+              Customer
+            </div>
+          </div>
+          <form onSubmit={handleSubmit} style={{
+            marginTop: "20px",
+            padding: "5px",
+            borderRadius: "10px",
+            ...getStyles()
+          }}>
+            <div style={formGroupStyle}>
+              <label htmlFor="email" style={labelStyle}>Email : </label>
+              <input
+                style={inputStyle}
+                type="text"
+                id="email"
+                name="email"
+                required
+                onChange={handleEmailChange}
+                value={email}
+              />
+              {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
+            </div>
+            <div style={formGroupStyle}>
+              <label htmlFor="password" style={labelStyle}>Password :</label>
+              <Input
+                style={inputStyle}
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={handlePasswordChange}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={togglePasswordVisibility}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {passwordError && <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>}
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', gap: "10px" }}>
+              <div style={remembermecontainer}>
+                <Checkbox
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                  name="rememberMe"
+                  color="primary"
+                />
+                <span style={labelStyle2}>Remember Me</span>
+              </div>
+              {/* <div style={linkStyle}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
               <span onClick={signupFunc}>sign up</span>
             </div> */}
-          </div>
+            </div>
 
 
-          {alertInfo.show && (
-            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-              {alertInfo.message}
-            </Alert>
-          )}
-          <div style={buttonContainerStyle}>
-            <Button
-              // style={buttonStyle}
-              className='buy_btn'
-              onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}
-              onMouseOut={e => e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor}
-              onClick={handleSubmit}
-            >
-              Login
-            </Button>
-            
-          </div>
-          <div className='linkStyle'
-          onClick={signupFunc}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)} style={{
-              display:'flex', 
-              justifyContent:"flex-end", 
-              fontSize:"15px",
-               padding:"10px",
+            {alertInfo.show && (
+              <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                {alertInfo.message}
+              </Alert>
+            )}
+            <div style={buttonContainerStyle}>
+              <Button
+                // style={buttonStyle}
+                className='buy_btn'
+                onMouseOver={e => e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor}
+                onMouseOut={e => e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor}
+                onClick={handleSubmit}
+              >
+                Login
+              </Button>
+
+            </div>
+            <div className='linkStyle'
+              onClick={signupFunc}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)} style={{
+                display: 'flex',
+                justifyContent: "flex-end",
+                fontSize: "15px",
+                padding: "10px",
                 marginRight: "20px",
-              textAlign: "right",
-              color: isHovered ? 'darkblue' : 'blue', // Change color on hover
-              textDecoration: "underline",
-              boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
-              transition: 'color 0.3s', // Smooth transition
-              cursor:'pointer'}}>
-          Account not created ? sign up 
-          </div>
-        </form>
+                textAlign: "right",
+                color: isHovered ? 'darkblue' : 'blue', // Change color on hover
+                textDecoration: "underline",
+                boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
+                transition: 'color 0.3s', // Smooth transition
+                cursor: 'pointer'
+              }}>
+              Account not created ? sign up
+            </div>
+          </form>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };

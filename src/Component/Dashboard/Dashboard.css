@@ -25,7 +25,7 @@
   text-underline-offset: 2px;
   /* Adjust this value as needed for more space */
   font-size: 12px;
-  color: #d6d1ff;
+  color: #025427;
   cursor: pointer;
 }
 
@@ -117,7 +117,7 @@
 
 
 .stat-item {
-  background-color: #6a8d7a;
+  background-color: #ecede347;
   padding: 1rem;
   border-radius: 10px;
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
@@ -179,14 +179,14 @@
 .stat-item h3 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: #d6d1ff;
+  color: #025427;
 }
 
 .stat-item p {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
-  color: #d6d1ff;
+  color: #025427;
 }
 
 .charts {
@@ -394,13 +394,13 @@
   .stat-item h3 {
     font-size: 0.6rem;
     margin-bottom: 0.5rem;
-    color: #d6d1ff;
+    color: #025427;
   }
 
   .stat-item p {
     font-size: 1rem;
     margin-bottom: 0.5rem;
-    color: #d6d1ff;
+    color: #025427;
   }
 
   .stat-item2 {

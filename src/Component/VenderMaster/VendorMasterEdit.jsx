@@ -20,10 +20,45 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Helmet } from 'react-helmet-async';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { styled } from '@mui/material/styles';
 
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 
 
+const Android12Switch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  '& .MuiSwitch-track': {
+    borderRadius: 22 / 2,
+    '&::before, &::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 16,
+      height: 16,
+    },
+    '&::before': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    '&::after': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxShadow: 'none',
+    width: 15,
+    height: 15,
+    margin: 1.7,
+  },
+}));
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -60,6 +95,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
   console.log("addressLocation123", addressLocation)
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [toInputBox, setToInputBox] = useState(false)
 
   const generateOfficePreviewLink = (fileUrl) => {
     return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
@@ -87,6 +123,10 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
   console.log("latitude-", latitude, "longitude-", longitude)
 
 
+
+  const handleSwitchInputBox = (event) => {
+    setToInputBox(!toInputBox)
+  };
 
   useEffect(() => {
     loadStates();
@@ -594,21 +634,65 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             </select>
           </label>
 
-          <label className="form-field input-group mb-3">
-            Accident - City : {formData.district}
-            <select
-              name="district"
-              readOnly={IsReadOnly}
-              value={formData.district}
-              onChange={handleChange}
-              disabled={isLoadingCities || !formData.state}
-            >
-              <option value="">Select City</option>
-              {!cities.error && cities.map(city => (
-                <option key={city.iso2} value={city.iso2}>{city.name}</option>
-              ))}
-            </select>
-          </label>
+          {!toInputBox && (<label className="form-field input-group mb-3">
+                <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                  <span style={{ marginRight: '10px' }}>Vendor Place - City:  {formData.district}</span>
+                  <div className="switch-container">
+                    <FormControlLabel
+                      control={<Android12Switch defaultChecked />}
+                      // checked={singleVendor}
+                      onChange={handleSwitchInputBox}
+                      label="" // You can add a label here if needed
+                    />
+                  </div>
+                </div>
+
+
+                <select
+                  name="district"
+                  value={formData.district} // This should match city.iso2
+                  onChange={handleChange}
+                  disabled={isLoadingCities || !formData.state}
+                >
+                  <option value="">Select City</option>
+                  {!cities.error && cities.map(city => {
+                    console.log('Rendering city:', city.iso2, city.name); // Debug: Check city values
+                    return (
+                      <option key={city.iso2} value={city.iso2}>
+                        {city.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>)}
+
+              {toInputBox && (
+                 <label className="form-field input-group mb-3">
+                  
+                 {/* Vendor Place - City: */}
+                 <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                  <span style={{ marginRight: '10px' }}>Vendor Place - City: {formData.district}</span>
+                  <div className="switch-container">
+                    <FormControlLabel
+                      control={<Android12Switch defaultChecked />}
+                      // checked={singleVendor}
+                      onChange={handleSwitchInputBox}
+                      label="" // You can add a label here if needed
+                    />
+                  </div>
+                </div>
+                 <input
+                   type="text"
+                   name="district"
+                   placeholder='District'
+                   value={formData.district}
+                   onChange={handleChange}
+                   className="form-control"
+                   readOnly={IsReadOnly}
+                   required
+                 />
+               </label>
+              )}
 
         </div>
 

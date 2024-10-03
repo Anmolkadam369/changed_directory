@@ -47,6 +47,13 @@ import VendorRating from '../AAAAAAAAAAAAAAAAAA/VendorRating';
 import CustomerRatings from '../AAAAAAAAAAAAAAAAAA/CustomerRatings';
 import MostNumberOfVehicle from '../AAAAAAAAAAAAAAAAAA/MostNumberOfVehicle';
 import EmployeeApproved from '../EmployeeForm/EmployeeApproved';
+import { Grid } from '@mui/material';
+import Sales from '../Sales/Sales.tsx';
+import VisitorInsights from '../AAAAAAAAAAAAAAAAAA/VisitorsCard/VisitorInsights.tsx';
+import TotalRevenue from '../AAAAAAAAAAAAAAAAAA/TotalRevenue/TotalRevenue.tsx';
+import CustomerSatisfaction from '../AAAAAAAAAAAAAAAAAA/CustomerSatisfaction/CustomerSatisfaction.tsx';
+import TopProducts from '../AAAAAAAAAAAAAAAAAA/TopProducts/TopProducts.tsx';
+import TargetVsReality from '../AAAAAAAAAAAAAAAAAA/TargetVsReality/TargetVsReality.tsx';
 
 
 
@@ -717,6 +724,57 @@ const DummyDashboard = () => {
                                     )}
 
 
+    <Grid container spacing={4}>
+      <Grid item xs={11} xl={7}>
+        <div >
+            <Sales/>
+        </div>
+      </Grid>
+      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+        <div>
+            <VisitorInsights/>
+        </div>
+      </Grid>
+
+      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+        <div>
+            <TotalRevenue/>
+        </div>
+      </Grid>
+      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+      <div>
+            <CustomerSatisfaction/>
+        </div>
+      </Grid>
+      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+      <div>
+           <TargetVsReality/>
+        </div>
+      </Grid>
+
+      <Grid item  xs={11} xl={7}>
+      <div >
+      {/* <TopProducts/> */}
+        </div>
+      </Grid>
+      {/* <Grid item xs={12} md={6} xl={4}>
+      <div style={{border:'1px solid red'}}>
+            hey7
+        </div>
+      </Grid>
+      <Grid item xs={12} md={6} xl={3}>
+      <div style={{border:'1px solid red'}}>
+            hey8
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+      <div style={{border:'1px solid red'}}>
+            hey9
+        </div>
+      </Grid> */}
+    </Grid>
+
+
 
                                     <div style={{ display: 'flex', flexDirection, gap: '10px', marginTop: '30px' }}>
                                         <div style={{ flex: chartSize }}>
@@ -762,7 +820,8 @@ const DummyDashboard = () => {
                                     </div>
 
                                 </div>
-                            </div>)}
+                            </div>
+                        )}
                         {vendorDashboard && (
                             <div className='other-content'>
                                 <div style={{ display: "relative" }}>

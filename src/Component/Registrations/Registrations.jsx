@@ -13,6 +13,8 @@ import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import claimproassist from "../../Assets/claimproassistwithoutNameblue.jpg";
+import Header from '../Home/Header';
+import Footer from '../Home/Footer';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -128,7 +130,7 @@ const Registrations = () => {
             }));
         }
     }, [latitude]);
-    
+
     // Update formData when longitude changes
     useEffect(() => {
         if (longitude !== "") {
@@ -277,6 +279,12 @@ const Registrations = () => {
 
 
     const goToNext = () => {
+        const validationMessage = validateForm();
+        if (validationMessage) {
+            setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
+            setIsLoading(false);
+            return;
+        }
         setIsClickedNext(!isClickedNext)
         setIsClicked(!isClicked);
     }
@@ -295,8 +303,23 @@ const Registrations = () => {
             return 'Please enter a valid Phone Number.';
         }
         for (const [key, value] of Object.entries(otherFields)) {
-            if (value === "") {
+            if (key !== "password" && key !== "confirmPassword" && value === "") {
                 return `Please Fill All Details. The field '${key}' is required.`;
+            }
+        }
+
+        if (!validateEmail(formData.email)) {
+            console.log("yereewrwr")
+            return `Please Enter Valid Email !!!`;
+        }
+    }
+
+    const validateForm2 = () => {
+        const { customerType, vendorType, ...otherFields } = formData;
+
+        for (const [key, value] of Object.entries(otherFields)) {
+            if (value === "") {
+                return `The field '${key}' is required.`;
             }
         }
     }
@@ -332,7 +355,7 @@ const Registrations = () => {
 
         setIsLoading(true);
 
-        const validationMessage = validateForm();
+        const validationMessage = validateForm2();
         if (validationMessage) {
             setAlertInfo({ show: true, message: validationMessage, severity: 'error' });
             setIsLoading(false);
@@ -387,54 +410,58 @@ const Registrations = () => {
     const loginFunc = () => {
         navigate('/LoginPage')
     }
-    const [width, setWidth]= useState("50%")
+    const [width, setWidth] = useState("50%")
     useEffect(() => {
         const handleResize = () => {
-          if (window.innerWidth <= 990) {
-            setWidth("100%");
-          } else {
-            setWidth("50%");
-          }
+            if (window.innerWidth <= 990) {
+                setWidth("100%");
+            } else {
+                setWidth("50%");
+            }
         };
         window.addEventListener('resize', handleResize);
         handleResize();
-    
+
         return () => window.removeEventListener('resize', handleResize);
-      }, []);
+    }, []);
 
 
 
     return (
-        <section className="" style={{ height: "auto", background: "linear-gradient(to right, rgb(27 71 144), rgb(240 240 240))" }}>
-            <div className="container py-5 h-100" >
-                <div className="row d-flex justify-content-center align-items-center h-100" >
-                    <div className="col-12" style={{ marginBottom: "20px" }}>
-                        <div className="card card-registration card-registration-2"
-                            style={{
-                                borderRadius: "15px",
-                                marginBottom: "20px",
-                                width:"90%",
-                                marginLeft:"30px"
-                            }}>
+        <div>
+            <Header />
+            <section className="" style={{ height: "auto", background: "linear-gradient(to right, rgb(27 71 144), rgb(240 240 240))" }}>
+                <div className="container py-5 h-100" >
+                    <div className="row d-flex justify-content-center align-items-center h-100" >
+                        <div className="col-12" style={{ marginBottom: "20px" }}>
+                            <div className="card card-registration card-registration-2"
+                                style={{
+                                    borderRadius: "15px",
+                                    marginBottom: "20px",
+                                    width: "90%",
+                                    marginLeft: "30px"
+                                }}>
 
 
-                            <div className="card-body p-0">
-                                <div className="row g-0">
-                                    {/* <div className="col-lg-6 bg-lightblue text-white" style={{ background: "lightblue" }}>
+                                <div className="card-body p-0">
+                                    <div className="row g-0">
+                                        {/* <div className="col-lg-6 bg-lightblue text-white" style={{ background: "lightblue" }}>
                                         <div className="p-5"> */}
-                                    <div className="col-12 col-md-6 text-bg-primary custom-background" style={{width}}>
-                                        <div className="d-flex justify-content-center h-100" style={{ marginTop: '20px' }}>
-                                            <div className="col-10 col-xl-8 py-3">
-                                                <img src={claimproassist} style={{ width: "90px", height: 'auto' }} alt="company logo" />
-                                                <p style={{ alignItems: "center", justifyContent: "center" }}>BVC CLAIM PRO</p>
-                                                <hr className="border-primary-subtle mb-4" />
-                                                <h4 className="h3 mb-4 gradient-background" style={{ color: "white", textAlign: "center" }}>BVC ClaimPro Assist is providing services for you in toughest time.</h4>
-                                                <p className="lead m-0" style={{ color: "yellow", textAlign: "center" }}>Ensuring smooth business continuity post accidents . Come and join your business with us and be relaxed.</p>
-                                                <img src={signup1} style={{ marginTop: "20px", height: 'auto', borderRadius: "20px", boxShadow: "rgb(0 0 0) 20px 20px 60px, rgba(255, 255, 255, 0.28) -13px 20px 60px 20px inset" }} alt="company logo" />
+                                        <div className="col-12 col-md-6 text-bg-primary custom-background" style={{ width }}>
+                                            <div className="d-flex justify-content-center h-100" style={{ marginTop: '20px' }}>
+                                                <div className="col-10 col-xl-8 py-3" >
+                                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                                        <img src={claimproassist} style={{ width: "90px", height: 'auto' }} alt="company logo" />
+                                                        <p style={{ alignItems: "center", justifyContent: "center" }}>BVC CLAIM PRO</p>
+                                                    </div>
+                                                    <hr className="border-primary-subtle mb-4" />
+                                                    <h4 className="h3 mb-4 gradient-background" style={{ color: "white", textAlign: "center" }}>BVC ClaimPro Assist is providing services for you in toughest time.</h4>
+                                                    <p className="lead m-0" style={{ color: "yellow", textAlign: "center" }}>Ensuring smooth business continuity post accidents . Come and join your business with us and be relaxed.</p>
+                                                    <img src={signup1} style={{ marginTop: "20px", height: 'auto', borderRadius: "20px", boxShadow: "rgb(0 0 0) 20px 20px 60px, rgba(255, 255, 255, 0.28) -13px 20px 60px 20px inset" }} alt="company logo" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    {/* <div className="row">
+                                        {/* <div className="row">
                                                 <div className="col-md-5 mb-4">
                                                     <div className="form-outline form-white">
                                                         <input type="text" id="form3Examplea7" className="form-control form-control-lg" />
@@ -451,44 +478,44 @@ const Registrations = () => {
 
 
 
-                                    {/* <div className="form-check d-flex justify-content-start mb-4 pb-3">
+                                        {/* <div className="form-check d-flex justify-content-start mb-4 pb-3">
                                                 <input className="form-check-input me-3" type="checkbox" value="" id="form2Example3c" />
                                                 <label className="form-check-label text-white" htmlFor="form2Example3">
                                                     I do accept the <a href="#!" className="text-white"><u>Terms and Conditions</u></a> of your site.
                                                 </label>
                                             </div> */}
 
-                                    {/* </div>
+                                        {/* </div>
                                     </div> */}
-                                    {!isClickedNext && (<div className="col-lg-6" style={{ background: "#ccccc" }}>
-                                        <div className="p-5">
-                                            <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+                                        {!isClickedNext && (<div className="col-lg-6" style={{ background: "#ccccc" }}>
+                                            <div className="p-5">
+                                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 
-                                            <div className='row'>
-                                                <div className=" col-md-6 mb-4">
-                                                    <div className="form-outline">
-                                                        <input
-                                                            type="text"
-                                                            // id="form3Examplev2"
-                                                            className="form-control form-control-lg"
-                                                            name="FullName"
-                                                            onChange={handleChange}
-                                                            value={formData.FullName}
-                                                            style={{ border: "1px solid black" }}
+                                                <div className='row'>
+                                                    <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline">
+                                                            <input
+                                                                type="text"
+                                                                // id="form3Examplev2"
+                                                                className="form-control form-control-lg"
+                                                                name="FullName"
+                                                                onChange={handleChange}
+                                                                value={formData.FullName}
+                                                                style={{ border: "1px solid black" }}
 
-                                                        />
-                                                        <label className="form-label" htmlFor="form3Examplev2">Full Name</label>
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplev2">Full Name</label>
+                                                        </div>
+                                                    </div>
+                                                    <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input type="text" id="form3Examplea6" className="form-control form-control-lg" name='country' value={"India"} readOnly style={{ border: "1px solid black" }} />
+                                                            <label className="form-label" htmlFor="form3Examplea6">Country</label>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className=" col-md-6 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input type="text" id="form3Examplea6" className="form-control form-control-lg" name='country' value={"India"} readOnly style={{ border: "1px solid black" }} />
-                                                        <label className="form-label" htmlFor="form3Examplea6">Country</label>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            {/* <div className="row">
+                                                {/* <div className="row">
 
                                                 <div className="col-md-6 mb-4">
                                                     <div className="form-outline">
@@ -497,239 +524,246 @@ const Registrations = () => {
                                                     </div>
                                                 </div>
                                             </div> */}
-                                            <div className="row">
-                                                <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
-                                                    <div className="form-outline form-white">
-                                                        <div className="dropdown green-dropdown form-field">
-                                                            <button
-                                                                className="form-field input-group mb-3"
-                                                                type="button"
-                                                                id="dropdownMenuButton"
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                                onClick={toggleDropdown}
-                                                                style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
-                                                            >
-                                                                <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
-                                                                    <p style={{ alignItems: "left" }}>{formData.joinInType || "Select Type"}</p>
+                                                <div className="row">
+                                                    <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
+                                                        <div className="form-outline form-white">
+                                                            <div className="dropdown green-dropdown form-field">
+                                                                <button
+                                                                    className="form-field input-group mb-3"
+                                                                    type="button"
+                                                                    id="dropdownMenuButton"
+                                                                    data-bs-toggle="dropdown"
+                                                                    aria-expanded="false"
+                                                                    onClick={toggleDropdown}
+                                                                    style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                                >
+                                                                    <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                                                                        <p style={{ alignItems: "left" }}>{formData.joinInType || "Select Type"}</p>
+                                                                    </div>
+                                                                </button>
+                                                                <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
+                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Vendor")}>Vendor</a></li>
+                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Customer")}>Customer</a></li>
+                                                                </ul>
+                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select Type</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {formData.joinInType === "Vendor" && (
+                                                        <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
+                                                            <div className="form-outline form-white">
+                                                                <div className="dropdown green-dropdown form-field">
+                                                                    <button
+                                                                        className="form-field input-group mb-3 form-control-lg"
+                                                                        type="button"
+                                                                        id="dropdownMenuButton1"
+                                                                        data-bs-toggle="dropdown"
+                                                                        aria-expanded="false"
+                                                                        onClick={toggleDropdown1}
+                                                                        style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                                    >
+                                                                        <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                                                                            <p style={{ alignItems: "left" }}>{formData.vendorType || "Select Vendor Type"}</p>
+                                                                        </div>
+                                                                    </button>
+                                                                    <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownVendor ? " show" : ""}`} aria-labelledby="dropdownMenuButton1">
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "advocate")}>Advocate</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "crane")}>Crane</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "mechanic")}>Mechanic</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "workshop")}>Workshop</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "partsDistributor")}>Parts Distributor</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "insuranceCompany")}>Insurance Company</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "surveyor")}>Surveyor</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "scrapBuyer")}>Scrap Buyer</a></li>
+                                                                    </ul>
+                                                                    <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Vendor Type</label>
                                                                 </div>
-                                                            </button>
-                                                            <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                                                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Vendor")}>Vendor</a></li>
-                                                                <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Customer")}>Customer</a></li>
-                                                            </ul>
-                                                            <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select Type</label>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {formData.joinInType === "Customer" && (
+                                                        <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
+                                                            <div className="form-outline form-white">
+                                                                <div className="dropdown green-dropdown form-field">
+                                                                    <button
+                                                                        className="form-field input-group mb-3 form-control-lg"
+                                                                        type="button"
+                                                                        id="dropdownMenuButton2"
+                                                                        data-bs-toggle="dropdown"
+                                                                        aria-expanded="false"
+                                                                        onClick={toggleDropdown2}
+                                                                        style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                                    >
+
+                                                                        <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                                                                            <p style={{ alignItems: "left" }}>{formData.customerType || "Select Customer Type"}</p>
+                                                                        </div>
+                                                                    </button>
+                                                                    <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownCustomer ? " show" : ""}`} aria-labelledby="dropdownMenuButton2">
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "retail")}>Retailer</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "fleetOwner")}>Fleet Owner</a></li>
+                                                                    </ul>
+                                                                    <label className="form-label" htmlFor="dropdownMenuButton2" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Customer Type</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+
+                                                <div className='row'>
+                                                    <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input type="text" name="phone" id="form3Examplea8" className="form-control form-control-lg" onChange={handleChange} value={formData.phone} style={{ border: "1px solid black" }} />
+                                                            <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black" }} />
+                                                            <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
+                                                            {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                {formData.joinInType === "Vendor" && (
+                                                <div className="row">
                                                     <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
                                                         <div className="form-outline form-white">
-                                                            <div className="dropdown green-dropdown form-field">
-                                                                <button
-                                                                    className="form-field input-group mb-3 form-control-lg"
-                                                                    type="button"
-                                                                    id="dropdownMenuButton1"
-                                                                    data-bs-toggle="dropdown"
-                                                                    aria-expanded="false"
-                                                                    onClick={toggleDropdown1}
-                                                                    style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
-                                                                >
-                                                                    <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
-                                                                        <p style={{ alignItems: "left" }}>{formData.vendorType || "Select Vendor Type"}</p>
-                                                                    </div>
-                                                                </button>
-                                                                <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownVendor ? " show" : ""}`} aria-labelledby="dropdownMenuButton1">
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "advocate")}>Advocate</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "crane")}>Crane</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "mechanic")}>Mechanic</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "workshop")}>Workshop</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "partsDistributor")}>Parts Distributor</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "insuranceCompany")}>Insurance Company</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "surveyor")}>Surveyor</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "scrapBuyer")}>Scrap Buyer</a></li>
-                                                                </ul>
-                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Vendor Type</label>
+                                                            <div className="dropdown green-dropdown form-field col-md-6 mb-4">
+                                                                <select
+                                                                    name="state"
+                                                                    style={{
+                                                                        borderRadius: "5px",
+                                                                        padding: "15px",
+                                                                        background: 'white',
+                                                                        marginTop: "0px",
+                                                                        border: '1px solid black',
+                                                                        width: '100%' // Makes sure it takes up the full width like the button
+                                                                    }}
+                                                                    onChange={handleChange}
+                                                                    disabled={isLoadingStates}
+                                                                    value={formData.state}>
+                                                                    <option value="">Select State</option>
+                                                                    {states.map(state => (
+                                                                        <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                                                                    ))}
+                                                                </select>
+                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select State</label>
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                )}
 
-                                                {formData.joinInType === "Customer" && (
                                                     <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
                                                         <div className="form-outline form-white">
-                                                            <div className="dropdown green-dropdown form-field">
-                                                                <button
-                                                                    className="form-field input-group mb-3 form-control-lg"
-                                                                    type="button"
-                                                                    id="dropdownMenuButton2"
-                                                                    data-bs-toggle="dropdown"
-                                                                    aria-expanded="false"
-                                                                    onClick={toggleDropdown2}
-                                                                    style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                            <div className="dropdown green-dropdown form-field col-md-6 mb-4">
+                                                                <select
+                                                                    name="district"
+                                                                    style={{
+                                                                        padding: "15px",
+                                                                        borderRadius: "5px",
+                                                                        background: 'white',
+                                                                        marginTop: "0px",
+                                                                        border: '1px solid black',
+                                                                        width: '100%' // Full-width to match the button style
+                                                                    }}
+                                                                    value={formData.district}
+                                                                    onChange={handleChange}
+                                                                    disabled={isLoadingCities || !formData.state}
                                                                 >
+                                                                    <option value="">Select City</option>
+                                                                    {!cities.error && cities.map(city => (
+                                                                        <option key={city.iso2} value={city.iso2}>
+                                                                            {city.name}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px", fontSize: "12px" }}>Select City</label>
 
-                                                                    <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
-                                                                        <p style={{ alignItems: "left" }}>{formData.customerType || "Select Customer Type"}</p>
-                                                                    </div>
-                                                                </button>
-                                                                <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownCustomer ? " show" : ""}`} aria-labelledby="dropdownMenuButton2">
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "retail")}>Retailer</a></li>
-                                                                    <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "fleetOwner")}>Fleet Owner</a></li>
-                                                                </ul>
-                                                                <label className="form-label" htmlFor="dropdownMenuButton2" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Customer Type</label>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+
+
+                                                <div className="row">
+                                                    <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <textarea
+                                                                name="address"
+                                                                value={formData.address}
+                                                                onChange={handleChange}
+                                                                required
+                                                                className="form-control"
+                                                                style={{ border: "1px solid black" }}
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplea2">Address</label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input
+                                                                type='tel'
+                                                                name="pincode"
+                                                                value={formData.pincode}
+                                                                onChange={handleChange}
+                                                                required
+                                                                pattern="\d{6}"
+                                                                title="Pincode must be 6 digits"
+                                                                className="form-control"
+                                                                style={{ border: "1px solid black" }}
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplea4">Pin Code</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {alertInfo.show && (
+                                                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                                        {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
+                                                    </Alert>
                                                 )}
-                                            </div>
 
-
-                                            <div className='row'>
-                                                <div className=" col-md-6 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input type="text" name="phone" id="form3Examplea8" className="form-control form-control-lg" onChange={handleChange} value={formData.phone} style={{ border: "1px solid black" }} />
-                                                        <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
-                                                    </div>
+                                                <div className="d-flex justify-content-center mt-2" >
+                                                    <button type="button" className={`btn btn-dark btn-lg ${isClicked ? 'clicked' : ''}`} data-mdb-ripple-color="dark" onClick={goToNext} style={{ borderRadius: "30px", background: "none", color: "green", fontSize: "15px", paddingRight: "0px", paddingLeft: "10px" }} >
+                                                        <div style={{ alignItems: 'center', display: "flex", flexDirection: "column" }}>
+                                                            <Button startIcon={<ArrowForwardIcon />} style={{ background: "none", color: "#077ede" }} onClick={goToNext} />
+                                                        </div>
+                                                    </button>
                                                 </div>
 
-                                                <div className=" col-md-6 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black" }} />
-                                                        <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
-                                                    </div>
-                                                </div>
                                             </div>
+                                        </div>)}
 
-                                            <div className="row">
-                                                <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
-                                                    <div className="form-outline form-white">
-                                                        <div className="dropdown green-dropdown form-field col-md-6 mb-4">
-                                                            <select
-                                                                name="state"
-                                                                style={{
-                                                                    borderRadius: "5px",
-                                                                    padding: "15px",
-                                                                    background: 'white',
-                                                                    marginTop: "0px",
-                                                                    border: '1px solid black',
-                                                                    width: '100%' // Makes sure it takes up the full width like the button
-                                                                }}
+                                        {isClickedNext && (
+                                            <div className="col-lg-6" style={{ background: "#ccccc" }}>
+                                                <div className="p-5">
+                                                    <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                                                        <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={goToNext} />
+                                                        <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Create Password</p>
+                                                    </div>
+                                                    <div className=" mb-4">
+                                                        <div className="form-outline">
+                                                            <input
+                                                                type="text"
+                                                                // id="form3Examplev2"
+                                                                className="form-control form-control-lg"
+                                                                name="FullName"
                                                                 onChange={handleChange}
-                                                                disabled={isLoadingStates}
-                                                                value={formData.state}>
-                                                                <option value="">Select State</option>
-                                                                {states.map(state => (
-                                                                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                                                                ))}
-                                                            </select>
-                                                            <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select State</label>
+                                                                value={formData.FullName}
+                                                                style={{ border: "1px solid black" }}
 
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplev2">Full Name</label>
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
-                                                    <div className="form-outline form-white">
-                                                        <div className="dropdown green-dropdown form-field col-md-6 mb-4">
-                                                            <select
-                                                                name="district"
-                                                                style={{
-                                                                    padding: "15px",
-                                                                    borderRadius: "5px",
-                                                                    background: 'white',
-                                                                    marginTop: "0px",
-                                                                    border: '1px solid black',
-                                                                    width: '100%' // Full-width to match the button style
-                                                                }}
-                                                                value={formData.district}
-                                                                onChange={handleChange}
-                                                                disabled={isLoadingCities || !formData.state}
-                                                            >
-                                                                <option value="">Select City</option>
-                                                                {!cities.error && cities.map(city => (
-                                                                    <option key={city.iso2} value={city.iso2}>
-                                                                        {city.name}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                            <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px", fontSize: "12px" }}>Select City</label>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
 
-                                            <div className="row">
-                                                <div className=" col-md-6 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <textarea
-                                                            name="address"
-                                                            value={formData.address}
-                                                            onChange={handleChange}
-                                                            required
-                                                            className="form-control"
-                                                            style={{ border: "1px solid black" }}
-                                                        />
-                                                        <label className="form-label" htmlFor="form3Examplea2">Address</label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input
-                                                            type='tel'
-                                                            name="pincode"
-                                                            value={formData.pincode}
-                                                            onChange={handleChange}
-                                                            required
-                                                            pattern="\d{6}"
-                                                            title="Pincode must be 6 digits"
-                                                            className="form-control"
-                                                            style={{ border: "1px solid black" }}
-                                                        />
-                                                        <label className="form-label" htmlFor="form3Examplea4">Pin Code</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="d-flex justify-content-center">
-                                                <button type="button" className={`btn btn-dark btn-lg ${isClicked ? 'clicked' : ''}`} data-mdb-ripple-color="dark" onClick={goToNext} style={{ borderRadius: "30px", background: "none", color: "green", fontSize: "15px", paddingRight: "0px", paddingLeft: "10px" }} >
-                                                    <div style={{ alignItems: 'center', display: "flex", flexDirection: "column" }}>
-                                                        <Button startIcon={<ArrowForwardIcon />} style={{ background: "none", color: "#077ede" }} onClick={goToNext} />
-                                                    </div>
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </div>)}
-
-                                    {isClickedNext && (
-                                        <div className="col-lg-6" style={{ background: "#ccccc" }}>
-                                            <div className="p-5">
-                                                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
-                                                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={goToNext} />
-                                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Create Password</p>
-                                                </div>
-                                                <div className=" mb-4">
-                                                    <div className="form-outline">
-                                                        <input
-                                                            type="text"
-                                                            // id="form3Examplev2"
-                                                            className="form-control form-control-lg"
-                                                            name="FullName"
-                                                            onChange={handleChange}
-                                                            value={formData.FullName}
-                                                            style={{ border: "1px solid black" }}
-
-                                                        />
-                                                        <label className="form-label" htmlFor="form3Examplev2">Full Name</label>
-                                                    </div>
-                                                </div>
-
-
-                                                {/* <div className="row">
+                                                    {/* <div className="row">
  
                                                  <div className="col-md-6 mb-4">
                                                      <div className="form-outline">
@@ -738,7 +772,7 @@ const Registrations = () => {
                                                      </div>
                                                  </div>
                                              </div> */}
-                                                {/* <div className="row">
+                                                    {/* <div className="row">
                                                  <div className="col-md-6 mb-4" style={{paddingLeft:"7px"}}>
                                                      <div className="form-outline form-white">
                                                          <div className="dropdown green-dropdown form-field">
@@ -829,114 +863,116 @@ const Registrations = () => {
 
 
 
-                                                <div className="mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black" }} />
-                                                        <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
-                                                        {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
-                                                    </div>
-                                                </div>
-
-                                                <div className="mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            id="form3Examplea9"
-                                                            className="form-control form-control-lg"
-                                                            name="password"
-                                                            onChange={handleChange}
-                                                            value={formData.password}
-                                                            style={{ border: "1px solid black" }}
-                                                        />
-                                                        <label className="form-label" htmlFor="form3Examplea9">Password</label>
-
-                                                        <div style={{ position: "absolute", top: "5px", right: "10px" }}>
-                                                            <IconButton
-                                                                aria-label="toggle password visibility"
-                                                                onClick={togglePasswordVisibility}
-                                                            >
-                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
+                                                    <div className="mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black" }} />
+                                                            <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
+                                                            {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
                                                         </div>
-
-                                                        {passwordError && (
-                                                            <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>
-                                                        )}
                                                     </div>
-                                                </div>
 
-                                                <div className="mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input
-                                                            type={showConfirmPassword ? 'text' : 'password'}
-                                                            id="form3Examplea9"
-                                                            className="form-control form-control-lg"
-                                                            name="confirmPassword"
-                                                            onChange={handleChange}
-                                                            value={formData.confirmPassword}
-                                                            style={{ border: "1px solid black" }}
-                                                        />
-                                                        <label className="form-label" htmlFor="form3Examplea9">Confirm Password</label>
+                                                    <div className="mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input
+                                                                type={showPassword ? 'text' : 'password'}
+                                                                id="form3Examplea9"
+                                                                className="form-control form-control-lg"
+                                                                name="password"
+                                                                onChange={handleChange}
+                                                                value={formData.password}
+                                                                style={{ border: "1px solid black" }}
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplea9">Password</label>
 
-                                                        <div style={{ position: "absolute", top: "5px", right: "10px" }}>
-                                                            <IconButton
-                                                                aria-label="toggle password visibility"
-                                                                onClick={togglePasswordVisibility1}
-                                                            >
-                                                                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
+                                                            <div style={{ position: "absolute", top: "5px", right: "10px" }}>
+                                                                <IconButton
+                                                                    aria-label="toggle password visibility"
+                                                                    onClick={togglePasswordVisibility}
+                                                                >
+                                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                                </IconButton>
+                                                            </div>
+
+                                                            {passwordError && (
+                                                                <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>
+                                                            )}
                                                         </div>
-
-                                                        {confirmPasswordError && (
-                                                            <div style={{ color: 'red', marginTop: '5px' }}>{confirmPasswordError}</div>
-                                                        )}
                                                     </div>
+
+                                                    <div className="mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input
+                                                                type={showConfirmPassword ? 'text' : 'password'}
+                                                                id="form3Examplea9"
+                                                                className="form-control form-control-lg"
+                                                                name="confirmPassword"
+                                                                onChange={handleChange}
+                                                                value={formData.confirmPassword}
+                                                                style={{ border: "1px solid black" }}
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplea9">Confirm Password</label>
+
+                                                            <div style={{ position: "absolute", top: "5px", right: "10px" }}>
+                                                                <IconButton
+                                                                    aria-label="toggle password visibility"
+                                                                    onClick={togglePasswordVisibility1}
+                                                                >
+                                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                                </IconButton>
+                                                            </div>
+
+                                                            {confirmPasswordError && (
+                                                                <div style={{ color: 'red', marginTop: '5px' }}>{confirmPasswordError}</div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                                    {alertInfo.show && (
+                                                        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                                            {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
+                                                        </Alert>
+                                                    )}
+                                                    <div className="d-flex justify-content-center" style={{ marginTop: "20px" }}>
+                                                        <button type="button" style={{ marginRight: '10px' }} className="btn btn-dark btn-lg" data-mdb-ripple-color="dark" onClick={handleSubmit} >
+                                                            Register
+                                                        </button>
+
+                                                    </div>
+                                                    <div className='linkStyle'
+                                                        onClick={loginFunc}
+                                                        onMouseEnter={() => setIsHovered(true)}
+                                                        onMouseLeave={() => setIsHovered(false)} style={{
+                                                            display: 'flex',
+                                                            justifyContent: "flex-end",
+                                                            fontSize: "15px",
+                                                            padding: "10px",
+                                                            marginRight: "20px",
+                                                            textAlign: "right",
+                                                            color: isHovered ? 'darkblue' : 'blue', // Change color on hover
+                                                            textDecoration: "underline",
+                                                            // boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
+                                                            transition: 'color 0.3s', // Smooth transition
+                                                            cursor: 'pointer'
+                                                        }}>
+                                                        Account Already Created ? Sign In
+                                                    </div>
+
                                                 </div>
-
-
-
-
-                                                {alertInfo.show && (
-                                                    <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                                                        {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
-                                                    </Alert>
-                                                )}
-                                                <div className="d-flex justify-content-center" style={{ marginTop: "20px" }}>
-                                                    <button type="button" style={{ marginRight: '10px' }} className="btn btn-dark btn-lg" data-mdb-ripple-color="dark" onClick={handleSubmit} >
-                                                        Register
-                                                    </button>
-
-                                                </div>
-                                                <div className='linkStyle'
-                                                    onClick={loginFunc}
-                                                    onMouseEnter={() => setIsHovered(true)}
-                                                    onMouseLeave={() => setIsHovered(false)} style={{
-                                                        display: 'flex',
-                                                        justifyContent: "flex-end",
-                                                        fontSize: "15px",
-                                                        padding: "10px",
-                                                        marginRight: "20px",
-                                                        textAlign: "right",
-                                                        color: isHovered ? 'darkblue' : 'blue', // Change color on hover
-                                                        textDecoration: "underline",
-                                                        // boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
-                                                        transition: 'color 0.3s', // Smooth transition
-                                                        cursor: 'pointer'
-                                                    }}>
-                                                    Account Already Created ? Sign In
-                                                </div>
-
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+            <Footer />
+        </div>
 
     )
 }

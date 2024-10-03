@@ -80,7 +80,6 @@ body {
     top: 0;
     line-height: 1
 }
-
 body {
     font-size: 0;
     font-family: "Nunito Sans"
@@ -333,7 +332,7 @@ span {
     display: flex;
     margin-right: auto;
     max-width: 1980px;
-    position: relative
+    position: relative;
 }
 
 .home-elem-1 {
@@ -451,11 +450,11 @@ span {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color:teal;
+    background-color:rgb(2 54 20);
     z-index: 1200;
     width: 100%;
     height: -moz-fit-content;
-    height: fit-content;
+    height: 70px;
     margin-left: auto;
     min-height: 20px;
     min-width: 20px;
@@ -714,7 +713,7 @@ span {
 /* Existing styles */
 .home-elem-17 {
     margin-top: 20px;
-    padding: 12px 26px;
+    padding: 6px 17px;
     background-color: #EEE;
     border-radius: 100px;
     border: 0;

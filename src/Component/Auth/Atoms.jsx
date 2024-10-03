@@ -9,3 +9,7 @@ export const userIdState = atom({
     key: 'userIdState', 
     default: '',
   });
+  export const typeState = atom({
+    key: 'typeState', 
+    default: '',
+  });

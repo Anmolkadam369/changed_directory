@@ -11,6 +11,11 @@ import scrap2 from '../../Assets/scrap2.jpeg';
 import scrap3 from '../../Assets/scrap3.jpeg';
 import scrap4 from '../../Assets/scrap4.webp';
 import scrap5 from '../../Assets/scrap5.jpeg';
+import Header from '../Home/Header';
+import Footer from '../Home/Footer';
+import cart from '../../Assets/cart.png'
+import shoppingbag from '../../Assets/shopping-bag.png'
+import heart from '../../Assets/heart.png'
 
 
 
@@ -25,7 +30,9 @@ const ImageDetails = () => {
     };
     return (
         <div>
-            {/* <div className="p-3 text-center bg-white border-bottom">
+            <Header />
+            <div>
+                {/* <div className="p-3 text-center bg-white border-bottom">
                     <div className="container">
                         <div className="row gy-3">
                             <div className="col-lg-2 col-sm-4 col-4">
@@ -71,39 +78,39 @@ const ImageDetails = () => {
                     </div>
                 </div> */}
 
-            <section className="py-5">
-                <div className="container">
-                    <div className="row gx-5">
-                        <aside className="col-lg-6">
-                            <div className="position-relative">
-                                <div className="border rounded-4 mb-3 d-flex justify-content-center" style={{ width: "100%", height: "70vh", overflow: "hidden" }}>
-                                    <a data-fslightbox="mygalley" className="rounded-4" target="_blank" data-type="image" href={images[currentIndex]}>
-                                        <img style={{ width: "100%", objectFit: "contain", height: "100%", margin: "auto" }} className="rounded-4" src={images[currentIndex]} alt={`Image ${currentIndex + 1}`} />
-                                    </a>
+                <section className="py-5">
+                    <div className="container">
+                        <div className="row gx-5" style={{background:"transparent"}}>
+                            <aside className="col-lg-6">
+                                <div className="position-relative">
+                                    <div className="border rounded-4 mb-3 d-flex justify-content-center" style={{ width: "100%", height: "70vh", overflow: "hidden" }}>
+                                        <a data-fslightbox="mygalley" className="rounded-4" target="_blank" data-type="image" href={images[currentIndex]}>
+                                            <img style={{ width: "100%", height: "100%", margin: "auto", borderRadius: '10px' }} src={images[currentIndex]} alt={`Image ${currentIndex + 1}`} />
+                                        </a>
+                                    </div>
+
+
+                                    <button
+                                        className="btn btn-secondary position-absolute"
+                                        style={{ left: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                                        onClick={handlePrevious}
+                                        disabled={currentIndex === 0}
+                                    >
+                                        <ArrowBack />
+                                        {/* <FontAwesomeIcon icon={faChevronLeft} /> */}
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary position-absolute"
+                                        style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                                        onClick={handleNext}
+                                        disabled={currentIndex === images.length - 1}
+                                    >
+                                        <ArrowForward />
+                                        {/* <FontAwesomeIcon icon={faChevronRight} /> */}
+                                    </button>
                                 </div>
 
-                              
-                                <button
-                                    className="btn btn-secondary position-absolute"
-                                    style={{ left: '10px', top: '50%', transform: 'translateY(-50%)' }}
-                                    onClick={handlePrevious}
-                                    disabled={currentIndex === 0}
-                                >
-                                    <ArrowBack />
-                                    {/* <FontAwesomeIcon icon={faChevronLeft} /> */}
-                                </button>
-                                <button
-                                    className="btn btn-secondary position-absolute"
-                                    style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
-                                    onClick={handleNext}
-                                    disabled={currentIndex === images.length - 1}
-                                >
-                                    <ArrowForward />
-                                    {/* <FontAwesomeIcon icon={faChevronRight} /> */}
-                                </button>
-                            </div>
-
-                            {/* <div className="d-flex justify-content-center mb-3">
+                                {/* <div className="d-flex justify-content-center mb-3">
                                 <a
                                     data-fslightbox="mygalley"
                                     className="border mx-1 rounded-2 item-thumb"
@@ -176,55 +183,55 @@ const ImageDetails = () => {
                                 </a>
                             </div> */}
 
-                        </aside>
-                        <main className="col-lg-6">
-                            <div className="ps-lg-3">
-                                <h4 className="title text-dark fw-bold">
-                                    MAHENDRA SUPER WORKING WORKSHOP  <br />
+                            </aside>
+                            <main className="col-lg-6">
+                                <div className="ps-lg-3">
+                                    <h4 style={{ fontSize: "16px" }} className="title text-dark fw-bold">
+                                        MAHENDRA SUPER WORKING WORKSHOP  <br />
 
-                                </h4>
-                                <div className="d-flex flex-row my-3">
-                                    <div className="text-warning mb-1 me-2">
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fas fa-star-half-alt"></i>
-                                        <span className="ms-1">
-                                            Rating
-                                            4.5
-                                        </span>
+                                    </h4>
+                                    <div className="d-flex flex-row my-3">
+                                        <div className="text-warning mb-1 me-2">
+                                            <i className="fa fa-star"></i>
+                                            <i className="fa fa-star"></i>
+                                            <i className="fa fa-star"></i>
+                                            <i className="fa fa-star"></i>
+                                            <i className="fas fa-star-half-alt"></i>
+                                            <span className="ms-1">
+                                                Rating
+                                                4.5
+                                            </span>
+                                        </div>
+                                        {/* <span className="text-muted"><i className="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span> */}
+                                        <span className="text-success ms-2">Available</span>
                                     </div>
-                                    {/* <span className="text-muted"><i className="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span> */}
-                                    <span className="text-success ms-2">Available</span>
-                                </div>
 
-                                <div className="mb-3">
-                                    <span className="h4 text-muted fw-bold">₹ 30000.00 /per quintal</span>
-                                </div>
+                                    <div className="mb-3">
+                                        <span className="h4 text-muted fw-bold">₹ 30000.00 /per quintal</span>
+                                    </div>
 
-                                <p>
-                                    Affordable and reliable truck components ready for reuse and
-                                    Durable used parts sourced from trusted suppliers also
-                                    Expertly inspected and certified for optimal performance.
-                                </p>
+                                    <p>
+                                        Affordable and reliable truck components ready for reuse and
+                                        Durable used parts sourced from trusted suppliers also
+                                        Expertly inspected and certified for optimal performance.
+                                    </p>
 
-                                <div className="row" style={{ margin: "20px" }}>
-                                    <dt className="col-4 fw-bold">Workshop:</dt>
-                                    <dd className="col-8">Mahendra super working workshop</dd>
+                                    <div className="row" style={{ margin: "20px" }}>
+                                        <dt className="col-4 fw-bold">Workshop:</dt>
+                                        <dd className="col-8">Mahendra super working workshop</dd>
 
-                                    <dt className="col-4 fw-bold">Weight:</dt>
-                                    <dd className="col-8">10 quintal</dd>
+                                        <dt className="col-4 fw-bold">Weight:</dt>
+                                        <dd className="col-8">10 quintal</dd>
 
-                                    <dt className="col-4 fw-bold">Material:</dt>
-                                    <dd className="col-8">Parts of truks, cars and other repaired vehicles</dd>
+                                        <dt className="col-4 fw-bold">Material:</dt>
+                                        <dd className="col-8">Parts of truks, cars and other repaired vehicles</dd>
 
-                                </div>
+                                    </div>
 
-                                <hr />
+                                    <hr />
 
-                                <div className="row mb-4">
-                                    {/* <div className="col-md-4 col-6">
+                                    <div className="row mb-4">
+                                        {/* <div className="col-md-4 col-6">
                                         <label className="mb-2">Size</label>
                                         <select className="form-select border border-secondary" style={{ height: "35px" }}>
                                             <option>Small</option>
@@ -233,58 +240,58 @@ const ImageDetails = () => {
                                         </select>
                                     </div> */}
 
-                                    <div className="col-md-4 col-6 mb-3">
-                                        <label className="mb-2 d-block">Quantity in Kg</label>
-                                        <div className="input-group">
-                                        {/* <button className="btn btn-white border border-secondary px-3" type="button" id="button-addon1">
+                                        <div className="col-md-4 col-6 mb-3">
+                                            <label className="mb-2 d-block">Quantity in Kg</label>
+                                            <div className="input-group">
+                                                {/* <button className="btn btn-white border border-secondary px-3" type="button" id="button-addon1">
                                             +
                                         </button> */}
-                                        <input type="text" className="form-control text-center border border-secondary" placeholder="100" aria-label="Example text with button addon" aria-describedby="button-addon1" /> 
-                                        {/* <button className="btn btn-white border border-secondary px-3" type="button" id="button-addon2">
+                                                <input type="text" className="form-control text-center border border-secondary" placeholder="100" aria-label="Example text with button addon" aria-describedby="button-addon1" />
+                                                {/* <button className="btn btn-white border border-secondary px-3" type="button" id="button-addon2">
                                             -
                                         </button> */}
+                                            </div>
                                         </div>
                                     </div>
+                                    <div>
+                                        <a href="#" className="btn btn-warning shadow-0" style={{ marginRight: "10px" }}> <img style={{width:'20px'}} src= {shoppingbag}/> Buy now </a>
+                                        <a href="#" className="btn btn-primary shadow-0" style={{ marginRight: "10px" }}> <img style={{width:'20px'}} src= {cart}/> Add to cart </a>
+                                        <a href="#" className="btn btn-primary shadow-0 py-2 icon-hover px-3" style={{ marginRight: "10px", color: "lightblue" }}> <img style={{width:'20px'}} src= {heart}/> Save </a>
+                                    </div>
                                 </div>
-                                <div>
-                                    <a href="#" className="btn btn-warning shadow-0" style={{ marginRight: "10px" }}> Buy now </a>
-                                    {/* <a href="#" className="btn btn-primary shadow-0" style={{ marginRight: "10px" }}> <i className="me-1 fa fa-shopping-basket"></i> Add to cart </a> */}
-                                    <a href="#" className="btn btn-primary shadow-0 py-2 icon-hover px-3" style={{ marginRight: "10px", color:"lightblue" }}> <i className="me-1 fa fa-heart fa-lg"></i> Save </a>
-                                </div>
-                            </div>
-                        </main>
+                            </main>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section className="bg-light border-top py-4">
-                <div className="container">
-                    <div className="row gx-4">
-                        <div className="col-lg-8 mb-4">
-                            <div className="border rounded-2 px-3 py-2 bg-white">
-                                <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-                                    <li className="nav-item d-flex" role="presentation">
-                                        <a className="nav-link d-flex align-items-center justify-content-center w-100 active" id="ex1-tab-1" data-mdb-toggle="pill" href="#ex1-pills-1" role="tab" aria-controls="ex1-pills-1" aria-selected="true">Specification</a>
-                                    </li>
-                                    {/* <li className="nav-item d-flex" role="presentation">
+                <section className="bg-light border-top py-4">
+                    <div className="container">
+                        <div className="row gx-4">
+                            <div className="col-lg-8 mb-4">
+                                <div className="border rounded-2 px-3 py-2 bg-white">
+                                    <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                                        <li className="nav-item d-flex" role="presentation">
+                                            <a className="nav-link d-flex align-items-center justify-content-center w-100 active" id="ex1-tab-1" data-mdb-toggle="pill" href="#ex1-pills-1" role="tab" aria-controls="ex1-pills-1" aria-selected="true">Specification</a>
+                                        </li>
+                                        {/* <li className="nav-item d-flex" role="presentation">
                                         <a className="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-2" data-mdb-toggle="pill" href="#ex1-pills-2" role="tab" aria-controls="ex1-pills-2" aria-selected="false">Warranty info</a>
                                     </li>
                                     <li className="nav-item d-flex" role="presentation">
                                         <a className="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-3" data-mdb-toggle="pill" href="#ex1-pills-3" role="tab" aria-controls="ex1-pills-3" aria-selected="false">Shipping info</a>
                                     </li> */}
-                                    <li className="nav-item d-flex" role="presentation">
-                                        <a className="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-4" data-mdb-toggle="pill" href="#ex1-pills-4" role="tab" aria-controls="ex1-pills-4" aria-selected="true">Seller profile</a>
-                                    </li>
-                                </ul>
+                                        <li className="nav-item d-flex" role="presentation">
+                                            <a className="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-4" data-mdb-toggle="pill" href="#ex1-pills-4" role="tab" aria-controls="ex1-pills-4" aria-selected="true">Seller profile</a>
+                                        </li>
+                                    </ul>
 
-                                <div className="tab-content" id="ex1-content">
-                                    <div className="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
-                                        <p>
-                                            Welcome to Mahendra Super Working Workshop, your go-to destination for high-quality scrap parts! Located at 123 Main Street, Anytown, we specialize in selling scrap from trucks, cars, and other vehicles. Our extensive inventory includes a wide range of used parts, ensuring you find exactly what you need for your repairs or projects.
+                                    <div className="tab-content" id="ex1-content">
+                                        <div className="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                                            <p>
+                                                Welcome to Mahendra Super Working Workshop, your go-to destination for high-quality scrap parts! Located at 123 Main Street, Anytown, we specialize in selling scrap from trucks, cars, and other vehicles. Our extensive inventory includes a wide range of used parts, ensuring you find exactly what you need for your repairs or projects.
 
 
-                                        </p>
-                                        {/* <div className="row mb-2" style={{marginTop:"20px"}}>
+                                            </p>
+                                            {/* <div className="row mb-2" style={{marginTop:"20px"}}>
                                             <div className="col-12 col-md-6" >
                                                 <ul className="list-unstyled mb-0">
                                                     <li><i className="fas fa-check text-success me-2"></i>Some great feature name here</li>
@@ -301,99 +308,100 @@ const ImageDetails = () => {
                                                 </ul>
                                             </div>
                                         </div> */}
-                                        <table className="table border mt-3 mb-2">
-                                            <tr>
-                                                <th className="py-2">Name:</th>
-                                                <td className="py-2">Mahendra super working workshop</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="py-2">Weight:</th>
-                                                <td className="py-2">10 quintal</td>
-                                            </tr>
-                                            <tr>
-                                                <th className="py-2">Material : </th>
-                                                <td className="py-2">Parts of truks, cars and other repaired vehicles</td>
-                                            </tr>
+                                            <table className="table border mt-3 mb-2">
+                                                <tr>
+                                                    <th className="py-2">Name:</th>
+                                                    <td className="py-2">Mahendra super working workshop</td>
+                                                </tr>
+                                                <tr>
+                                                    <th className="py-2">Weight:</th>
+                                                    <td className="py-2">10 quintal</td>
+                                                </tr>
+                                                <tr>
+                                                    <th className="py-2">Material : </th>
+                                                    <td className="py-2">Parts of truks, cars and other repaired vehicles</td>
+                                                </tr>
 
-                                        </table>
-                                    </div>
-                                    <div className="tab-pane fade mb-2" id="ex1-pills-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                                        Tab content or sample information now <br />
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                                        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                                        officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                    </div>
-                                    <div className="tab-pane fade mb-2" id="ex1-pills-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                                        Another tab content or sample information now <br />
-                                        Dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                                        mollit anim id est laborum.
-                                    </div>
-                                    <div className="tab-pane fade mb-2" id="ex1-pills-4" role="tabpanel" aria-labelledby="ex1-tab-4">
-                                        Some other tab content or sample information now <br />
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                                        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                                        officia deserunt mollit anim id est laborum.
+                                            </table>
+                                        </div>
+                                        <div className="tab-pane fade mb-2" id="ex1-pills-2" role="tabpanel" aria-labelledby="ex1-tab-2">
+                                            Tab content or sample information now <br />
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+                                            officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                                            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                        </div>
+                                        <div className="tab-pane fade mb-2" id="ex1-pills-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+                                            Another tab content or sample information now <br />
+                                            Dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                            commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                            mollit anim id est laborum.
+                                        </div>
+                                        <div className="tab-pane fade mb-2" id="ex1-pills-4" role="tabpanel" aria-labelledby="ex1-tab-4">
+                                            Some other tab content or sample information now <br />
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+                                            officia deserunt mollit anim id est laborum.
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-lg-4">
-                            <div className="px-0 border rounded-2 shadow-0">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title">Similar Material</h5>
-                                        <div className="d-flex mb-3">
-                                            <a href="#" className="me-3">
-                                                <img src={scrap2} style={{ minWidth: "96px", height: "96px" }} className="img-md img-thumbnail" />
-                                            </a>
-                                            <div className="info">
-                                                <a href="#" className="nav-link mb-1">
-                                                    RAMCHANDRA WORKSHOP
+                            <div className="col-lg-4">
+                                <div className="px-0 border rounded-2 shadow-0">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">Similar Material</h5>
+                                            <div className="d-flex mb-3">
+                                                <a href="#" className="me-3">
+                                                    <img src={scrap2} style={{ minWidth: "96px", height: "96px" }} className="img-md img-thumbnail" />
                                                 </a>
-                                                <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 12 quintal</strong> <br />
-                                                <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 30000.00 /per quintal</strong>
+                                                <div className="info">
+                                                    <a href="#" className="nav-link mb-1">
+                                                        RAMCHANDRA WORKSHOP
+                                                    </a>
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 12 quintal</strong> <br />
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 30000.00 /per quintal</strong>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="d-flex mb-3">
-                                            <a href="#" className="me-3">
-                                                <img src={scrap3} style={{ minWidth: "96px", height: "96px" }} className="img-md img-thumbnail" />
-                                            </a>
-                                            <div className="info">
-                                                <a href="#" className="nav-link mb-1">
-                                                    KRISHNA WORKSHOP
+                                            <div className="d-flex mb-3">
+                                                <a href="#" className="me-3">
+                                                    <img src={scrap3} style={{ minWidth: "96px", height: "96px" }} className="img-md img-thumbnail" />
                                                 </a>
-                                                <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 22 quintal</strong> <br />
-                                                <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 25000.00 /per quintal</strong>
+                                                <div className="info">
+                                                    <a href="#" className="nav-link mb-1">
+                                                        KRISHNA WORKSHOP
+                                                    </a>
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 22 quintal</strong> <br />
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 25000.00 /per quintal</strong>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="d-flex mb-3">
-                                            <a href="#" className="me-3">
-                                                <img
-                                                    src={scrap4}
-                                                    style={{ minWidth: '96px', height: '96px' }}
-                                                    classNameName="img-md img-thumbnail"
-                                                />
+                                            <div className="d-flex mb-3">
+                                                <a href="#" className="me-3">
+                                                    <img
+                                                        src={scrap4}
+                                                        style={{ minWidth: '96px', height: '96px' }}
+                                                        classNameName="img-md img-thumbnail"
+                                                    />
 
-                                            </a>
-                                            <div className="info">
-                                                <a href="#" className="nav-link mb-1"> HARE RAM WORKSHOP </a>
-                                                <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 15 quintal</strong> <br />
-                                                <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 25000.00 /per quintal</strong>
+                                                </a>
+                                                <div className="info">
+                                                    <a href="#" className="nav-link mb-1"> HARE RAM WORKSHOP </a>
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 15 quintal</strong> <br />
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 25000.00 /per quintal</strong>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="d-flex">
-                                            <a href="#" className="me-3">
-                                                <img src={scrap5} style={{ minWidth: '96px', height: '96px' }} className="img-md img-thumbnail" />
-                                            </a>
-                                            <div className="info">
-                                                <a href="#" className="nav-link mb-1"> LOVELY WORKSHOP </a>
-                                                <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 30 quintal</strong> <br />
-                                                <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 32000.00 /per quintal</strong>
+                                            <div className="d-flex">
+                                                <a href="#" className="me-3">
+                                                    <img src={scrap5} style={{ minWidth: '96px', height: '96px' }} className="img-md img-thumbnail" />
+                                                </a>
+                                                <div className="info">
+                                                    <a href="#" className="nav-link mb-1"> LOVELY WORKSHOP </a>
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark">Weight : 30 quintal</strong> <br />
+                                                    <strong style={{ fontSize: "10px" }} className="text-dark"> Price : 32000.00 /per quintal</strong>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -401,9 +409,8 @@ const ImageDetails = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            {/* <footer className="text-center text-lg-start text-muted bg-primary mt-3">
+                </section>
+                {/* <footer className="text-center text-lg-start text-muted bg-primary mt-3">
                 <section className="">
                     <div className="container text-center text-md-start pt-4 pb-4">
                         <div className="row mt-3">
@@ -514,6 +521,8 @@ const ImageDetails = () => {
                     </div>
                 </div>
             </footer> */}
+            </div>
+            <Footer />
         </div>
     );
 };

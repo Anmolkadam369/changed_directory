@@ -100,6 +100,10 @@ import SidebarWithSubmenus from './Component/AAAAAAAAAAAAAAAAAA/SidebarWithSubme
 import Registrations from './Component/Registrations/Registrations';
 import ImageViewer from './Component/Scrap/ImageViewer';
 import ImageDetails from './Component/Scrap/ImageDetails';
+import Blogs from './Component/AAAAAAAAAAAAAAAAAA/Blogs';
+import Sidebar from './Component/Home/Sidebar';
+import ProductRegister from './Component/Scrap/ProductRegsiter';
+import ProductDetailsSeller from './Component/Scrap/ProductDetailsSeller';
 
 function App() {
   return (
@@ -109,7 +113,14 @@ function App() {
           <Route exact path='/' element={<Home />} />
           {/* <Route path='/Dashboard' element={<Dashboard/>}/> */}
           <Route path='/ContactUs' element={<ContactUs />} />
+          <Route path='/Blogs' element={<Blogs/>}/>
+          <Route path='/ProductDetailsSeller' element={<ProductDetailsSeller/>}/>
+
+
           <Route path='/SidebarWithSubmenus' element={<SidebarWithSubmenus/>}/>
+          <Route path='/ProductRegister' element={<ProductRegister/>}/>
+
+          <Route path='/Sidebar' element={<Sidebar/>}/>
 
           <Route exact path='/LoginPage' element={<LoginPage />} />
           {/* <Route path='/Register' element={<Registration />} /> */}
@@ -196,6 +207,7 @@ function App() {
           <Route path='/Salesteam' element={<ProtectedRoute element={<Salesteam />} />} />
           <Route path='/Registration' element={<Registrations/>}/>
           <Route path='/ImageViewer' element={<ImageViewer/>}/>
+         
           <Route path='/ImageDetails' element={<ImageDetails/>}/>
 
 

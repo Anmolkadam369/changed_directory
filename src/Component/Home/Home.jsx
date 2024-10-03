@@ -34,6 +34,9 @@ import ListIcon from '@mui/icons-material/List';
 import { FaFacebook, FaLinkedin, FaInstagramSquare, FaWhatsapp } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
 import { height } from '@mui/system';
+import RotatingBoard from '../AAAAAAAAAAAAAAAAAA/RotatingBoard';
+import Header from './Header';
+import Footer from './Footer';
 
 function Home() {
     const navigate = useNavigate();
@@ -289,273 +292,200 @@ function Home() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+    const goBlog = () => {
+        console.log('Navigating to Blogs');
+        navigate('/Blogs')
+    }
 
     return (
-        <div className="home-elem-19">
-            <Helmet>
-                <title>Accident Trucks Customer Service - Claimpro</title>
-                <meta name="description" content="Home Page for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
-                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-                <link rel='canonical' href={`https://claimpro.in/`} />
+        <div>
+            <Header />
+            <div>
+                <div>
+                    <RotatingBoard />
+                </div>
+                <div className="home-elem-19">
+                    <Helmet>
+                        <title>Accident Trucks Customer Service - Claimpro</title>
+                        <meta name="description" content="Home Page for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />
+                        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                        <link rel='canonical' href={`https://claimpro.in/`} />
 
-            </Helmet>
-            <div className="home-elem-14">
-                <div className="home-elem-13">
-                    <div className="home-elem-15">
-                        <span className="home-elem-18">
-                            <img src={claimproassist} className='logo-image' alt="company logo" />
-                            <p className='title'>BVC ClaimPro Assist </p>
-                        </span>
-                    </div>
+                    </Helmet>
 
-                    {isMobile ? (
-                        <div className="menu-container">
-                            <button className={`menu-button ${isClicked ? 'clicked' : ''}`} onClick={toggleMenu}>
-                                <ListIcon />
-                            </button>
-                            {isOpen && (
-                                <div className="menu-card" ref={menuRef}>
-                                    <ul>
-                                        <li>
-                                            <a href="#home" onClick={scrollToTop}>Home</a>
-                                        </li>
-                                        <li onClick={scrollToSection}><a href="#faq">FAQ</a></li>
-                                        <li onClick={navigateToContactUs}><a href="#contact">Contact Us</a></li>
-                                        <li onClick={scrollToSection}><a href="#blog">Blog</a></li>
-                                    </ul>
-                                </div>
-                            )}
+                    <div className="home-elem-20" style={{ paddingTop: "20px" }}>
+                        <div className="home-elem-21">
+                            <span className="home-elem-25">
+                                <h1>Professional Assistance for <span style={{ color: currentColor }}>{displayText}</span></h1>
+                            </span>
+                            <span className="home-elem-26">
+                                <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>
+                            </span>
+                            <span className="home-elem-26">
+                                <p>BVC ClaimPro Assist is providing services for you. Come and join your business with us and be relaxed.</p>
+                            </span>
+                            <div className="home-elem-27">
+                                <button className="home-elem-29" onClick={navigateToContactUs}>
+                                    <p>Connect With Us</p>
+                                </button>
+                            </div>
                         </div>
-                    ) : (
-                        <div className="home-elem-16">
-                            <div className="home-elem-12">
-                                <span className="home-elem-8">
-                                    <p style={{ cursor: 'pointer' }}>Home </p>
-                                </span>
-                                <span className="home-elem-9">
-                                    <p style={{ cursor: 'pointer' }} onClick={scrollToSection} >FAQ </p>
-                                </span>
-                                <span className="home-elem-10">
-                                    <span onClick={navigateToContactUs} style={{ cursor: 'pointer' }} >
-                                        <p>Contact Us </p>
+                        <div className="home-elem-30">
+                            <div className="home-elem-31">
+                                <div className="home-elem-32">
+                                    <span className="home-elem-33">
+                                        <p>24 H</p>
                                     </span>
+                                    <span className="home-elem-34">
+                                        <p>Service</p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="home-elem-35">
+                                <span ref={elemRef} className="home-elem-36">
+                                    <img src={trucks2} />
                                 </span>
-                                <span className="home-elem-11">
-                                    <p style={{ cursor: 'pointer' }} onClick={scrollToSection}>Blog </p>
+                                <span ref={elemRef} className="home-elem-37">
+                                    <img src={trucks1} />
                                 </span>
                             </div>
+                            <div className="home-elem-38">
+                                <span className="home-elem-39">
+                                    <p style={{ fontSize: "15px", fontWeight: "bold" }}>1000+ Happy Clients</p>
+                                </span>
+                                <div className="home-elem-40">
+                                    <i className="fas fa-quote-left home-elem-41"></i>
+                                    <span className="home-elem-42">
+                                        <p>Outstanding service at difficult times.</p>
+                                    </span>
+                                    <div className="home-elem-44">
+                                        <i className="fas fa-quote-right home-elem-43"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    )}
-
-
-                    <button onClick={navigateToVehiclePage} className='home-elem-17'>
-                        <p>Log in</p>
-                    </button>
-                </div>
-            </div>
-
-            <div className="home-elem-194">
-                <div className="home-elem-193">
-                    <span className="home-elem-189">
-                        <a href="home.html" className="link" target="_self">
-                            <p>Home</p>
-                        </a>
-                    </span>
-                    <span className="home-elem-190">
-                        <a href="#home-elem-45" className="link" target="_self">
-                            <p>FAQ</p>
-                        </a>
-                    </span>
-                    <span className="home-elem-191">
-                        <a href="#home-elem-59" className="link" target="_self">
-                            <p>Contact Us</p>
-                        </a>
-                    </span>
-                    <span className="home-elem-192">
-                        <a href="#home-elem-80" className="link" target="_self">
-                            <p>Blog</p>
-                        </a>
-                    </span>
-                    <button className="home-elem-196">
-                        <a href="#home-elem-167" className="link" target="_self">
-                            <p>Get Assistance</p>
-                        </a>
-                    </button>
-                </div>
-            </div>
-            <div className="home-elem-20" style={{ paddingTop: "20px" }}>
-                <div className="home-elem-21">
-                    <span className="home-elem-25">
-                        <h1>Professional Assistance for <span style={{ color: currentColor }}>{displayText}</span></h1>
-                    </span>
-                    <span className="home-elem-26">
-                        <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>
-                    </span>
-                    <span className="home-elem-26">
-                        <p>BVC ClaimPro Assist is providing services for you. Come and join your business with us and be relaxed.</p>
-                    </span>
-                    <div className="home-elem-27">
-                        <button className="home-elem-29" onClick={navigateToContactUs}>
-                            <p>Connect With Us</p>
-                        </button>
                     </div>
-                </div>
-                <div className="home-elem-30">
-                    <div className="home-elem-31">
-                        <div className="home-elem-32">
-                            <span className="home-elem-33">
-                                <p>24 H</p>
+                    <div className="home-elem-45">
+                        <div className="home-elem-46">
+                            <span className="home-elem-47">
+                                <p>Ensuring smooth business continuity post accidents </p>
                             </span>
-                            <span className="home-elem-34">
-                                <p>Service</p>
+                            <div className="home-elem-48">
+                                <span className="home-elem-49">
+                                    <p>We strive to minimize downtime and losses by providing quick and proficient assistance for commercial vehicles during accidents. </p>
+                                </span>
+                                <div className="home-elem-50">
+                                    <div className="home-elem-51">
+                                        <span className="home-elem-52">
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "yellow", textAlign: "center" }}> 500+ </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold" }}> Claims Settled </p>
+                                        </span>
+                                    </div>
+                                    <div className="home-elem-58">
+                                        <span className="home-elem-57">
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "orange", textAlign: "center" }}> 200+ </p>
+                                            <p>On-spot Repairs </p>
+                                        </span>
+                                        <span className="home-elem-56">
+                                            <p><br /></p>
+                                        </span>
+                                    </div>
+                                    <div className="home-elem-55">
+                                        <span className="home-elem-54">
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "blue", textAlign: "center" }}> 700+ </p>
+                                            <p>Works Organized </p>
+                                        </span>
+                                        <span className="home-elem-53">
+                                            <p><br /></p>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ref={leftRef} className="home-elem-59">
+                        <div className='home-elem-60' style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
+                            <span className="home-elem-66">
+                                <img src={advocatefirstpage} alt="Accident" />
                             </span>
                         </div>
-                    </div>
-                    <div className="home-elem-35">
-                        <span ref={elemRef} className="home-elem-36">
-                            <img src={trucks2} />
-                        </span>
-                        <span ref={elemRef} className="home-elem-37">
-                            <img src={trucks1} />
-                        </span>
-                    </div>
-                    <div className="home-elem-38">
-                        <span className="home-elem-39">
-                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>1000+ Happy Clients</p>
-                        </span>
-                        <div className="home-elem-40">
-                            <i className="fas fa-quote-left home-elem-41"></i>
-                            <span className="home-elem-42">
-                                <p>Outstanding service at difficult times.</p>
+                        <div className="home-elem-62">
+                            <span className="home-elem-63">
+                                <p>Professional Advocate Assistance for getting your accident vehicle out from the Police Custody </p>
                             </span>
-                            <div className="home-elem-44">
-                                <i className="fas fa-quote-right home-elem-43"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="home-elem-45">
-                <div className="home-elem-46">
-                    <span className="home-elem-47">
-                        <p>Ensuring smooth business continuity post accidents </p>
-                    </span>
-                    <div className="home-elem-48">
-                        <span className="home-elem-49">
-                            <p>We strive to minimize downtime and losses by providing quick and proficient assistance for commercial vehicles during accidents. </p>
-                        </span>
-                        <div className="home-elem-50">
-                            <div className="home-elem-51">
-                                <span className="home-elem-52">
-                                    <p style={{ fontSize: "15px", fontWeight: "bold", color: "yellow", textAlign: "center" }}> 500+ </p>
-                                    <p style={{ fontSize: "15px", fontWeight: "bold" }}> Claims Settled </p>
-                                </span>
-                            </div>
-                            <div className="home-elem-58">
-                                <span className="home-elem-57">
-                                    <p style={{ fontSize: "15px", fontWeight: "bold", color: "orange", textAlign: "center" }}> 200+ </p>
-                                    <p>On-spot Repairs </p>
-                                </span>
-                                <span className="home-elem-56">
-                                    <p><br /></p>
-                                </span>
-                            </div>
-                            <div className="home-elem-55">
-                                <span className="home-elem-54">
-                                    <p style={{ fontSize: "15px", fontWeight: "bold", color: "blue", textAlign: "center" }}> 700+ </p>
-                                    <p>Works Organized </p>
-                                </span>
-                                <span className="home-elem-53">
-                                    <p><br /></p>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div ref={leftRef} className="home-elem-59">
-                <div className='home-elem-60' style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
-                    <span className="home-elem-66">
-                        <img src={advocatefirstpage} alt="Accident" />
-                    </span>
-                </div>
-                <div className="home-elem-62">
-                    <span className="home-elem-63">
-                        <p>Professional Advocate Assistance for getting your accident vehicle out from the Police Custody </p>
-                    </span>
-                    <span className="home-elem-64">
-                        <p>At BVC ClaimPro Assist, we offer professional advocate assistance to help you navigate the complexities of getting your accident vehicle released from police custody. Our experienced legal team is ensuring all legal protocols are followed efficiently. We understand the urgency and stress involved in such situations, which is why we act swiftly to expedite the release process.</p>
-                    </span>
-                    {/* <button className="home-elem-65">
+                            <span className="home-elem-64">
+                                <p>At BVC ClaimPro Assist, we offer professional advocate assistance to help you navigate the complexities of getting your accident vehicle released from police custody. Our experienced legal team is ensuring all legal protocols are followed efficiently. We understand the urgency and stress involved in such situations, which is why we act swiftly to expedite the release process.</p>
+                            </span>
+                            {/* <button className="home-elem-65">
                         <a href="#home-elem-80" className="link" target="_self">
                             <p>Know More </p>
                         </a>
                     </button> */}
-                </div>
-            </div>
-            <div ref={secondRightRef} className="home-elem-79">
-                <div className="home-elem-78">
-                    <span className="home-elem-75">
-                        <p>Swift and Reliable On-spot Vehicle Repairs</p>
-                    </span>
-                    <span className="home-elem-76">
-                        <p>BVC ClaimPro Assist offers swift and reliable on-spot vehicle repairs to minimize downtime and get you back on the road quickly. Our team of mobile technicians is equipped with the tools and expertise to handle a variety of minor repairs right at the accident scene or your location. From tire changes and battery replacements to minor mechanical adjustments, we provide efficient solutions to keep you moving.</p>
-                    </span>
-                    {/* <button className="home-elem-77">
+                        </div>
+                    </div>
+                    <div ref={secondRightRef} className="home-elem-79">
+                        <div className="home-elem-78">
+                            <span className="home-elem-75">
+                                <p>Swift and Reliable On-spot Vehicle Repairs</p>
+                            </span>
+                            <span className="home-elem-76">
+                                <p>BVC ClaimPro Assist offers swift and reliable on-spot vehicle repairs to minimize downtime and get you back on the road quickly. Our team of mobile technicians is equipped with the tools and expertise to handle a variety of minor repairs right at the accident scene or your location. From tire changes and battery replacements to minor mechanical adjustments, we provide efficient solutions to keep you moving.</p>
+                            </span>
+                            {/* <button className="home-elem-77">
                     <a href="#home-elem-80" className="link" target="_self">
                         <p>Find Out More</p>
                     </a>
                 </button> */}
-                </div>
-                <div className="home-elem-60" style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
-                    <span className="home-elem-66">
-                        <img src={onsiterepair} alt="Vehicle Repair" />
-                    </span>
-                </div>
-            </div>
-            <div ref={leftSecondRef} className="home-elem-59">
-                <div className='home-elem-60' style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none', paddingTop: "10px" }}>
-                    <span className="home-elem-66">
-                        <img src={cranefrontpage} alt="Cranes" />
-                    </span>
-                </div>
-                <div className="home-elem-62">
-                    <span className="home-elem-63">
-                        <p>Cranes for Safe Vehicle Extraction </p>
-                    </span>
-                    <span className="home-elem-64">
-                        <p>With experienced operators and robust cranes, we ensure your damaged vehicle is safely transported to workshops. Our team is available 24/7, ready to respond promptly to any accident scene. We prioritize safety and efficiency, using the latest equipment to handle vehicles of all sizes and types. Our cranes are regularly maintained to ensure optimal performance and reliability. </p>
-                    </span>
-                    {/* <button className="home-elem-70">
+                        </div>
+                        <div className="home-elem-60" style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
+                            <span className="home-elem-66">
+                                <img src={onsiterepair} alt="Vehicle Repair" />
+                            </span>
+                        </div>
+                    </div>
+                    <div ref={leftSecondRef} className="home-elem-59">
+                        <div className='home-elem-60' style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none', paddingTop: "10px" }}>
+                            <span className="home-elem-66">
+                                <img src={cranefrontpage} alt="Cranes" />
+                            </span>
+                        </div>
+                        <div className="home-elem-62">
+                            <span className="home-elem-63">
+                                <p>Cranes for Safe Vehicle Extraction </p>
+                            </span>
+                            <span className="home-elem-64">
+                                <p>With experienced operators and robust cranes, we ensure your damaged vehicle is safely transported to workshops. Our team is available 24/7, ready to respond promptly to any accident scene. We prioritize safety and efficiency, using the latest equipment to handle vehicles of all sizes and types. Our cranes are regularly maintained to ensure optimal performance and reliability. </p>
+                            </span>
+                            {/* <button className="home-elem-70">
                         <a href="#home-elem-80" className="link" target="_self">
                             <p>Learn More </p>
                         </a>
                     </button> */}
-                </div>
-            </div>
-            <div ref={thirdRightRef} className="home-elem-79">
-                <div className="home-elem-78">
-                    <span className="home-elem-75">
-                        <p>Expert Heavy Vehicle Repairs and Maintenance</p>
-                    </span>
-                    <span className="home-elem-76">
-                        <p>At BVC ClaimPro Assist, we specialize in expert heavy vehicle repairs and maintenance. Our team of certified mechanics is equipped to handle a wide range of issues, ensuring your vehicle is restored to peak condition. We use advanced diagnostic tools and high-quality parts to deliver reliable repairs that stand the test of time. Whether it's engine overhauls, transmission repairs, or routine maintenance, our skilled technicians provide thorough and efficient service.</p>
-                    </span>
+                        </div>
+                    </div>
+                    <div ref={thirdRightRef} className="home-elem-79">
+                        <div className="home-elem-78">
+                            <span className="home-elem-75">
+                                <p>Expert Heavy Vehicle Repairs and Maintenance</p>
+                            </span>
+                            <span className="home-elem-76">
+                                <p>At BVC ClaimPro Assist, we specialize in expert heavy vehicle repairs and maintenance. Our team of certified mechanics is equipped to handle a wide range of issues, ensuring your vehicle is restored to peak condition. We use advanced diagnostic tools and high-quality parts to deliver reliable repairs that stand the test of time. Whether it's engine overhauls, transmission repairs, or routine maintenance, our skilled technicians provide thorough and efficient service.</p>
+                            </span>
 
-                    {/* <button className="home-elem-77">
+                            {/* <button className="home-elem-77">
                         <a href="#home-elem-80" className="link" target="_self">
                             <p>Find Out More </p>
                         </a>
                     </button> */}
-                </div>
-                <div className="home-elem-60" style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
-                    <span className="home-elem-66">
-                        <img src={workshopfirstpage} alt="Vehicle Repair" />
-                    </span>
-                </div>
-            </div>
+                        </div>
+                        <div className="home-elem-60" style={{ height: "300px", width: "300px", marginTop: "30px", background: 'none' }}>
+                            <span className="home-elem-66">
+                                <img src={workshopfirstpage} alt="Vehicle Repair" />
+                            </span>
+                        </div>
+                    </div>
 
-            {/* <div className="home-elem-112">
+                    {/* <div className="home-elem-112">
                 <div className="home-elem-113">
                     <span className="home-elem-111 home-elem-111">
                         <p>Real experiences from real people.</p>
@@ -638,302 +568,199 @@ function Home() {
                     </div>
                 </div>
             </div> */}
-            <div className="home-elem-156" style={{ marginBottom: "0px" }}>
-                <div id="target-section" className="home-elem-157">
-                    <span className="home-elem-154">
-                        <p>Dive into Our Blog Section</p>
-                    </span>
+                    <div className="home-elem-156" style={{ marginBottom: "0px" }}>
+                        <div id="target-section" className="home-elem-157">
+                            <span className="home-elem-154">
+                                <p>Dive into Our Blog Section</p>
+                            </span>
 
-                </div>
-                <div className="home-elem-153">
-                    <div className="home-elem-152">
-                        <span className="home-elem-158">
-                            <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836233/efswn0i8czrgyqovcrtf.jpg" alt="Blog Image 1" />
-                        </span>
-                        <span className="home-elem-150">
-                            <p>How we manage the entire accident scene professionally?</p>
-                        </span>
-                        <span className="home-elem-151">
-                            <p>Get a detailed insight on how BVC ClaimPro Assist arranges the accident scene professionally from advocates to cranes.</p>
-                        </span>
+                        </div>
+                        <div className="home-elem-153">
+                            <div className="home-elem-152">
+                                <span className="home-elem-158">
+                                    <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836233/efswn0i8czrgyqovcrtf.jpg" alt="Blog Image 1" />
+                                </span>
+                                <span className="home-elem-150">
+                                    <p>How we manage the entire accident scene professionally?</p>
+                                </span>
+                                <span className="home-elem-151">
+                                    <p>Get a detailed insight on how BVC ClaimPro Assist arranges the accident scene professionally from advocates to cranes.</p>
+                                </span>
+                            </div>
+                            <div className="home-elem-166">
+                                <span className="home-elem-165">
+                                    <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/gnfu37qw7tttlblzeuiz.jpg" alt="Blog Image 2" />
+                                </span>
+                                <span className="home-elem-163">
+                                    <p>De-coding the legalities around claim settlement</p>
+                                </span>
+                                <span className="home-elem-164">
+                                    <p>Learn about the intricacies involved in claim settlement as our professional advocates decode the legalities around it.</p>
+                                </span>
+                            </div>
+                            <div className="home-elem-162">
+                                <span className="home-elem-161">
+                                    <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/qkkwko9ppnatmhmwtb0c.jpg" alt="Blog Image 3" />
+                                </span>
+                                <span className="home-elem-159">
+                                    <p>Effective Steps to On-spot Vehicle Repair</p>
+                                </span>
+                                <span className="home-elem-160">
+                                    <p>Understand the quick and effective steps followed by our experienced technicians for on-the-spot repairs.</p>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="home-elem-166">
-                        <span className="home-elem-165">
-                            <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/gnfu37qw7tttlblzeuiz.jpg" alt="Blog Image 2" />
-                        </span>
-                        <span className="home-elem-163">
-                            <p>De-coding the legalities around claim settlement</p>
-                        </span>
-                        <span className="home-elem-164">
-                            <p>Learn about the intricacies involved in claim settlement as our professional advocates decode the legalities around it.</p>
-                        </span>
-                    </div>
-                    <div className="home-elem-162">
-                        <span className="home-elem-161">
-                            <img src="https://res.cloudinary.com/dbyioi2qq/image/upload/v1705836234/qkkwko9ppnatmhmwtb0c.jpg" alt="Blog Image 3" />
-                        </span>
-                        <span className="home-elem-159">
-                            <p>Effective Steps to On-spot Vehicle Repair</p>
-                        </span>
-                        <span className="home-elem-160">
-                            <p>Understand the quick and effective steps followed by our experienced technicians for on-the-spot repairs.</p>
-                        </span>
-                    </div>
-                </div>
-            </div>
 
-            <div className="home-elem-80">
-                <span className="home-elem-82">
-                    <p>Customized Services Tailored for Your Needs </p>
-                </span>
-                <span className="home-elem-83">
-                    <p>From legal assistance to vehicle repairs, we offer bespoke services to fit your specific requirements. Stay updated with the latest news and helpful tips related to commercial vehicle accidents and their management.</p>
-                </span>
-                <div ref={fromTop1} className="home-elem-81">
-                    <div className="home-elem-84">
-                        <i className="fas fa-bahai home-elem-85"></i>
-                        <span className="home-elem-86" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                            <GavelIcon />
-                            <p style={{ alignItems: "center" }}>Legal </p>
+                    <div className="home-elem-80">
+                        <span className="home-elem-82">
+                            <p>Customized Services Tailored for Your Needs </p>
                         </span>
-                        <span className="home-elem-87">
-                            <p>Advocate support is provided for claim settlements. </p>
+                        <span className="home-elem-83">
+                            <p>From legal assistance to vehicle repairs, we offer bespoke services to fit your specific requirements. Stay updated with the latest news and helpful tips related to commercial vehicle accidents and their management.</p>
                         </span>
+                        <div ref={fromTop1} className="home-elem-81">
+                            <div className="home-elem-84">
+                                <i className="fas fa-bahai home-elem-85"></i>
+                                <span className="home-elem-86" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <GavelIcon />
+                                    <p style={{ alignItems: "center" }}>Legal </p>
+                                </span>
+                                <span className="home-elem-87">
+                                    <p>Advocate support is provided for claim settlements. </p>
+                                </span>
+                            </div>
+                            <div className="home-elem-95">
+                                <i className="far fa-heart home-elem-92"></i>
+                                <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <PrecisionManufacturingIcon />
+                                    <p>Cranes </p>
+                                </span>
+                                <span className="home-elem-94">
+                                    <p>Efficient vehicle extraction at the accident spot. </p>
+                                </span>
+                            </div>
+                            <div className="home-elem-91">
+                                <i className="fas fa-thumbs-up home-elem-88"></i>
+                                <span className="home-elem-89" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <ConstructionIcon />
+                                    <p>Onspot Repair </p>
+                                </span>
+                                <span className="home-elem-90">
+                                    <p>Immediate minor fixes for your vehicle. </p>
+                                </span>
+                            </div>
+                            <div className="home-elem-95">
+                                <i className="fas fa-award home-elem-92"></i>
+                                <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <LocalShippingIcon />
+                                    <p>Transport </p>
+                                </span>
+                                <span className="home-elem-94">
+                                    <p>Safe and secure vehicle transportation is provided. </p>
+                                </span>
+                            </div>
+                            <div className="home-elem-103">
+                                <i className="fas fa-bolt home-elem-100"></i>
+                                <span className="home-elem-101" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <img src={registerComplaints} className="small-image" alt="Vendor Types" />
+                                    <p>Claims </p>
+                                </span>
+                                <span className="home-elem-102">
+                                    <p>Guidance for smooth claim settlement process. </p>
+                                </span>
+                            </div>
+                            <div className="home-elem-95">
+                                <i className="fas fa-check home-elem-92"></i>
+                                <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <CarRepairIcon />
+                                    <p>Workshops </p>
+                                </span>
+                                <span className="home-elem-94">
+                                    <p>Major repairs are conducted at workshops. </p>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="home-elem-95">
-                        <i className="far fa-heart home-elem-92"></i>
-                        <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                            <PrecisionManufacturingIcon />
-                            <p>Cranes </p>
-                        </span>
-                        <span className="home-elem-94">
-                            <p>Efficient vehicle extraction at the accident spot. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-91">
-                        <i className="fas fa-thumbs-up home-elem-88"></i>
-                        <span className="home-elem-89" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                            <ConstructionIcon />
-                            <p>Onspot Repair </p>
-                        </span>
-                        <span className="home-elem-90">
-                            <p>Immediate minor fixes for your vehicle. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-95">
-                        <i className="fas fa-award home-elem-92"></i>
-                        <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                            <LocalShippingIcon />
-                            <p>Transport </p>
-                        </span>
-                        <span className="home-elem-94">
-                            <p>Safe and secure vehicle transportation is provided. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-103">
-                        <i className="fas fa-bolt home-elem-100"></i>
-                        <span className="home-elem-101" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                            <img src={registerComplaints} className="small-image" alt="Vendor Types" />
-                            <p>Claims </p>
-                        </span>
-                        <span className="home-elem-102">
-                            <p>Guidance for smooth claim settlement process. </p>
-                        </span>
-                    </div>
-                    <div className="home-elem-95">
-                        <i className="fas fa-check home-elem-92"></i>
-                        <span className="home-elem-93" style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                            <CarRepairIcon />
-                            <p>Workshops </p>
-                        </span>
-                        <span className="home-elem-94">
-                            <p>Major repairs are conducted at workshops. </p>
-                        </span>
-                    </div>
-                </div>
-            </div>
 
-            <div className="home-elem-156" style={{ paddingTop: '0px' }}>
-                {/* <span>
+                    <div className="home-elem-156" style={{ paddingTop: '0px' }}>
+                        {/* <span>
                     <p style={{ marginTop: "60px", fontWeight: "bold", fontSize: "24px", textAlign: "left", padding: 0 }}>Services Provided By BVC ClaimPro Assist</p>
                 </span> */}
-                <div className="home-elem-153">
-                    <div className="home-elem-152">
-                        <span className="home-elem-158">
-                            <video
-                                controls
-                                ref={(el) => (videoRefs.current[0] = el)}
-                                onPlay={() => handlePlay(0)}
-                            >
-                                <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/images/firstvideotiranga.mp4" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        </span>
-                        <span className="home-elem-150">
-                            <p>Efficient Accident Management</p>
-                        </span>
-                        <span className="home-elem-151">
-                            <p> Our team ensures the safe and professional handling of vehicles involved in accidents, From small cars to heavy-duty trucks, our cranes are equipped to manage all types of vehicles, ensuring they are securely transported to the designated location.</p>
-                        </span>
-                    </div>
-                    <div className="home-elem-166">
-                        <span className="home-elem-165">
-                            <video
-                                controls
-                                ref={(el) => (videoRefs.current[1] = el)}
-                                onPlay={() => handlePlay(1)}
-                            >
-                                <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/images/newvid.mp4" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        </span>
-                        <span className="home-elem-163">
-                            <p>Expert Advocate Services</p>
-                        </span>
-                        <span className="home-elem-164">
-                            <p>Our advocate services at BVC ClaimPro Assist offer legal support right from the accident scene. We provide immediate legal counsel to ensure that all necessary legal procedures are followed, protecting your rights and facilitating a smooth claims process.</p>
-                        </span>
-                    </div>
-                    <div className="home-elem-162">
-                        <span className="home-elem-161">
-                            <video
-                                controls
-                                ref={(el) => (videoRefs.current[2] = el)}
-                                onPlay={() => handlePlay(2)}
-                            >
-                                <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/WhatsApp+Video+2024-07-11+at+20.17.05_b864227a.mp4" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        </span>
-                        <span className="home-elem-159">
-                            <p>Peace of Mind</p>
-                        </span>
-                        <span className="home-elem-160">
-                            <p>Every aspect of accident management is handled with professionalism and care, we are committed to providing seamless and efficient solutions. Our goal is to ensure your safety, convenience, and peace of mind throughout the entire process.</p>
-                        </span>
-                    </div>
-                </div>
-
-            </div>
-
-            <div className="home-elem-167" >
-                <span className="home-elem-168">
-                    <p>Why not choose the BVC ClaimPro Assist?</p>
-                </span>
-                <span className="home-elem-169">
-                    <p>Join our extended family and experience hassle-free, professional assistance during unwelcomed vehicle accidents.</p>
-                </span>
-                <button className="home-elem-171" onClick={navigateToContactUs}>
-                    <p>Join Now</p>
-                </button>
-            </div>
-
-            <div className="home-elem-188">
-                <div className="home-elem-185">
-                    <div className="home-elem-176">
-                        <span className="home-elem-173">
-                            <p>BVC ClaimPro Assist</p>
-                        </span>
-                        <span className="home-elem-174">
-                            <p>We are a dedicated team committed to provide prompt assistance during commercial vehicle accidents.</p>
-                        </span>
-                        <div className="home-elem-183">
-                            <i className="fab fa-instagram-square home-elem-180"></i>
-                            <i className="fab fa-twitter-square home-elem-182"></i>
-                            <i className="fab fa-facebook home-elem-181"></i>
-                        </div>
-                        <div>
-                        </div>
-
-                    </div>
-
-                    <div className="home-elem-184">
-
-                        <p style={{ fontSize: "16px", fontWeight: 700, marginBottom: "15px" }}>Social Media Accounts </p>
-                        <div style={{ display: 'flex', marginBottom: "20px" }}>
-                            <div
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#3b5998',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    margin: '0 10px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => openInNewTab('https://www.facebook.com/people/BVC-ClaimPro-Assist/61559865797607/?mibextid=LQQJ4d')}
-                            >
-                                <FaFacebook style={{ color: 'white', fontSize: '24px' }} />
+                        <div className="home-elem-153">
+                            <div className="home-elem-152">
+                                <span className="home-elem-158">
+                                    <video
+                                        controls
+                                        ref={(el) => (videoRefs.current[0] = el)}
+                                        onPlay={() => handlePlay(0)}
+                                    >
+                                        <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/images/firstvideotiranga.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </span>
+                                <span className="home-elem-150">
+                                    <p>Efficient Accident Management</p>
+                                </span>
+                                <span className="home-elem-151">
+                                    <p> Our team ensures the safe and professional handling of vehicles involved in accidents, From small cars to heavy-duty trucks, our cranes are equipped to manage all types of vehicles, ensuring they are securely transported to the designated location.</p>
+                                </span>
                             </div>
-                            <div
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#0077b5',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    margin: '0 10px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => openInNewTab('https://www.linkedin.com/company/bvc-claim-pro-assist/')}
-                            >
-                                <FaLinkedin style={{ color: 'white', fontSize: '24px' }} />
+                            <div className="home-elem-166">
+                                <span className="home-elem-165">
+                                    <video
+                                        controls
+                                        ref={(el) => (videoRefs.current[1] = el)}
+                                        onPlay={() => handlePlay(1)}
+                                    >
+                                        <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/images/newvid.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </span>
+                                <span className="home-elem-163">
+                                    <p>Expert Advocate Services</p>
+                                </span>
+                                <span className="home-elem-164">
+                                    <p>Our advocate services at BVC ClaimPro Assist offer legal support right from the accident scene. We provide immediate legal counsel to ensure that all necessary legal procedures are followed, protecting your rights and facilitating a smooth claims process.</p>
+                                </span>
                             </div>
-                            <div
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#3b5998',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    margin: '0 10px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => openInNewTab(' https://www.instagram.com/claimproassist?utm_source=ig_web_button_share_sheet&igsh=ODdmZWVhMTFiMw==')}
-                            >
-                                <FaInstagramSquare style={{ color: 'white', fontSize: '24px' }} />
-                            </div>
-                            <div
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#3b5998',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    margin: '0 10px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => openInNewTab('https://whatsapp.com/channel/0029Vaf9dkzEgGfM3tCiUJ3Z')}
-                            >
-                                <FaWhatsapp style={{ color: 'white', fontSize: '24px' }} />
+                            <div className="home-elem-162">
+                                <span className="home-elem-161">
+                                    <video
+                                        controls
+                                        ref={(el) => (videoRefs.current[2] = el)}
+                                        onPlay={() => handlePlay(2)}
+                                    >
+                                        <source src="https://claimproassist-2.s3.ap-south-1.amazonaws.com/WhatsApp+Video+2024-07-11+at+20.17.05_b864227a.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </span>
+                                <span className="home-elem-159">
+                                    <p>Peace of Mind</p>
+                                </span>
+                                <span className="home-elem-160">
+                                    <p>Every aspect of accident management is handled with professionalism and care, we are committed to providing seamless and efficient solutions. Our goal is to ensure your safety, convenience, and peace of mind throughout the entire process.</p>
+                                </span>
                             </div>
                         </div>
-                        <span className="home-elem-177">
-                            <p>Contact us</p>
-                            <span className="home-elem-179">
-                                <p>+91 7800 78 4700</p>
-                            </span>
-                            <button className="home-elem-175" onClick={navigateToContactUs}>
-                                <p>Contact Us</p>
-                            </button>
-                        </span>
 
                     </div>
-                </div>
-                <div className="home-elem-187">
-                    <span className="home-elem-186">
-                        <p>© 2023 BVC ClaimPro Assist, we love our users!</p>
-                    </span>
+
+                    <div className="home-elem-167" >
+                        <span className="home-elem-168">
+                            <p>Why not choose the BVC ClaimPro Assist?</p>
+                        </span>
+                        <span className="home-elem-169">
+                            <p>Join our extended family and experience hassle-free, professional assistance during unwelcomed vehicle accidents.</p>
+                        </span>
+                        <button className="home-elem-171" onClick={navigateToContactUs}>
+                            <p>Join Now</p>
+                        </button>
+                    </div>
+
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

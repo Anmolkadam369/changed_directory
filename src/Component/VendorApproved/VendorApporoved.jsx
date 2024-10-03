@@ -41,6 +41,8 @@ const VendorApproved = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
+  const getDepartment = localStorage.getItem("department");
+  console.log("getDepartment", getDepartment)
 
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,8 +91,8 @@ const VendorApproved = () => {
       style: {
         color: '#ffff',
         backgroundColor: 'rgb(169 187 169)',
-        fontWeight : "bold",
-        fontSize : '13px'
+        fontWeight: "bold",
+        fontSize: '13px'
       },
     },
     pagination: {
@@ -102,12 +104,12 @@ const VendorApproved = () => {
       },
     },
     striped: {
-      style:{
+      style: {
         default: 'red'
       }
     },
-    rows : {
-      style:{
+    rows: {
+      style: {
         backgroundColor: '#f2f2f2',
       }
     }
@@ -215,7 +217,7 @@ const VendorApproved = () => {
     setShowMap(false);
 
   }
-  const handleMap =()=>{
+  const handleMap = () => {
     setShowVendorMasterEdit(false)
     setShowPerformance(false)
     setShowVendorTable(false);
@@ -276,9 +278,9 @@ const VendorApproved = () => {
       cell: row => <span>{String(row.id).padStart(4, '0')}</span>, // Display formatted value
       sortable: true,
       sortFunction: (rowA, rowB) => rowA.id - rowB.id, // Custom sort function
-      style:{width:"200px"}
+      style: { width: "200px" }
     },
-    
+
     {
       name: "Date",
       selector: (row) => row.systemDate,
@@ -290,13 +292,13 @@ const VendorApproved = () => {
       },
     },
     {
-      name: "Name", selector: (row) => row.vendorName, sortable: true,width:"150px",
+      name: "Name", selector: (row) => row.vendorName, sortable: true, width: "150px",
       cell: (row) => (
         <span style={{ color: 'brown' }}>{row.vendorName.charAt(0).toUpperCase() + row.vendorName.slice(1)}</span>
       )
     },
     {
-      name: "Email", selector: (row) => row.email, sortable: true,width:"200px",
+      name: "Email", selector: (row) => row.email, sortable: true, width: "200px",
       cell: (row) => (
         <a href={`mailto:${row.email}`} style={{ color: "blue", textDecoration: "none" }}>
           {row.email}
@@ -306,8 +308,16 @@ const VendorApproved = () => {
     {
       name: "Type", selector: (row) => row.vendorType, sortable: true,
       cell: (row) => (
-        <span style={{ color: 'black', padding: '5px', borderRadius: '4px', border:"2px solid grey"}}>
+        <span style={{ color: 'black', padding: '5px', borderRadius: '4px', border: "2px solid grey" }}>
           {row.vendorType ? row.vendorType.charAt(0).toUpperCase() + row.vendorType.slice(1).toLowerCase() : ""}
+        </span>
+      ),
+    },
+    {
+      name: "Phone No", selector: (row) => row.vendorPhone, sortable: true,
+      cell: (row) => (
+        <span style={{ color: 'blue', padding: '5px', borderRadius: '4px'}}>
+          {row.vendorPhone ? row.vendorPhone.charAt(0).toUpperCase() + row.vendorPhone.slice(1).toLowerCase() : ""}
         </span>
       ),
     },
@@ -369,7 +379,7 @@ const VendorApproved = () => {
       button: true,
     },
     {
-      name: "Activate / Deactivate",
+    name: "Activate / Deactivate",
       cell: (row) => (
         <button
           onClick={() => openModal(row)}
@@ -382,8 +392,11 @@ const VendorApproved = () => {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    },
-    {
+    }
+  ];
+  
+  if (getDepartment !== "Administration") {
+    columns.push({
       name: "Delete Vendor",
       cell: (row) => (
         <span
@@ -396,33 +409,35 @@ const VendorApproved = () => {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    },
-  ];
+    });
+  }
+
 
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchValue(value);
-  
+
     const newRows = data.filter((row) => {
       const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
       const searchLower = value; // Use the updated search value directly
-  
+
       const idValue = formattedId.includes(searchLower);
       const dateValue = (formatDate(row.systemDate) ?? '').toLowerCase().includes(searchLower);
       const vendorNameValue = (row.vendorName ?? '').toLowerCase().includes(searchLower);
       const emailValue = (row.email ?? '').toLowerCase().includes(searchLower);
+      const vendorPhoneValue = (row.vendorPhone ?? '').toLowerCase().includes(searchLower);
       const vendorTypeValue = (row.vendorType ?? '').toLowerCase().includes(searchLower);
       const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchLower);
       const districtValue = (row.district ?? '').toLowerCase().includes(searchLower);
-  
-      return idValue || dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
+
+      return idValue || vendorPhoneValue || dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
     });
-  
+
     setCurrentItems(newRows);
   };
-  
+
 
   return (
     <div>
@@ -470,7 +485,7 @@ const VendorApproved = () => {
                     Download Excel File
                   </a>
                 )}
-              <div className='form-control generate-button' style={{ padding:"4px", border:"3px solid lightgreen", marginLeft:"10px"}} onClick={handleMap}>Vendor By Map</div> 
+                <div className='form-control generate-button' style={{ padding: "4px", border: "3px solid lightgreen", marginLeft: "10px" }} onClick={handleMap}>Vendor By Map</div>
               </label>
 
 
@@ -536,7 +551,7 @@ const VendorApproved = () => {
         <VendorPerformance id={selectedVendorCode} type={selectedVendorType} onUpdate={handleUpdate} />
       )}
       {showMap && (
-        <VendorByMap onUpdate={handleUpdate}/>
+        <VendorByMap onUpdate={handleUpdate} />
       )}
     </div>
   );
