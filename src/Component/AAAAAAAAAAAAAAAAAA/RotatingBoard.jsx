@@ -2,20 +2,22 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './RotatingBoard.css'
 import trucksImage from '../../Assets/trucksImage (1).webp';
-import trucksImage2 from '../../Assets/trucksImage3.jpg';
+import trucksImage2 from '../../Assets/trucksImage3.avif';
 import trucksImage4 from '../../Assets/trucksImage6.png';
+import trucksImageblue from '../../Assets/truckimagesblue.avif';
+
 import { useNavigate } from 'react-router-dom';
 
 
 
 const RotatingBoard = () => {
- const navigate=useNavigate();
- const navigateToSignup =()=>{
-  navigate('/Registration')
- }
- const goLogin = () => {
-  navigate('/LoginPage');
-};
+  const navigate = useNavigate();
+  const navigateToSignup = () => {
+    navigate('/Registration')
+  }
+  const goLogin = () => {
+    navigate('/LoginPage');
+  };
   return (
     <div>
       {/* <header>
@@ -52,68 +54,142 @@ const RotatingBoard = () => {
             <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
             <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="3" aria-label="Slide 3"></button>
+
           </div>
-          <div className="carousel-inner" >
-            <div className="carousel-item active">
+          <div className="carousel-inner" style={{ height: '40rem' }} >
+            <div className="carousel-item active" style={{ height: '40rem' }}>
               <img
-                src={trucksImage2} // Corrected line
-                className="bd-placeholder-img"
-                width="100%"
-                height="100%"
-                xmlns="http://www.w3.org/2000/svg"
+                src={trucksImage2}
+                className="bd-placeholder-img w-100"
                 aria-hidden="true"
-                preserveAspectRatio="xMidYMid slice"
-                focusable="false"
+                style={{
+                  maxWidth: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
               />
-                <rect width="100%" height="90%" fill="#777" />
+              <rect width="100%" height="90%" fill="#777" />
 
               <div className="container">
-                <div  className="carousel-caption text-start">
-                  <p style ={{borderRadius:"10px",color:"white", fontWeight:'bold', fontSize:"23px", background:"linear-gradient(to left, transparent, dimgrey)", marginBottom:"10px"}}>Final Solution For All Your Problems !!!</p>
-                  <p><a className="btn btn-lg btn-primary" style={{background:"green"}} onClick={navigateToSignup}>Sign Up</a></p>
+                <div className="carousel-caption text-start">
+                  <p
+                    style={{
+                      borderRadius: "10px",
+                      color: "white",
+                      fontWeight: 'bold',
+                      fontSize: "16px",
+                      background: "linear-gradient(to left, transparent, dimgrey)",
+                      marginBottom: "10px",
+                      padding:"10px",
+                    }}
+                    className="d-inline-block text-truncate"
+                  >
+                    Final Solution For All Your Problems !!!
+                  </p>
+                  <p>
+                    <a
+                      className="btn btn-sm btn-primary"
+                      style={{ background: "green" }}
+                      onClick={navigateToSignup}
+                    >
+                      Sign Up
+                    </a>
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="carousel-item">
-            <img
-                src={trucksImage} // Corrected line
-                className="bd-placeholder-img"
-                width="100%"
-                height="100%"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-                preserveAspectRatio="xMidYMid slice"
-                focusable="false"
-              />
-                <rect width="100%" height="100%" fill="#777" />
-              <div className="container">
-                <div className="carousel-caption">
-                  {/* <h1>Best Services Offer.</h1> */}
-                  <p style ={{borderRadius:"10px",color:"black", fontWeight:'bold', fontSize:"23px", background:"linear-gradient(to left, transparent, white)", marginBottom:"10px"}}>All Services will get fulfilled </p>
-                  <p><a className="btn btn-lg btn-primary" onClick={goLogin} >Come Join Us !!!</a></p>
-                </div>
-              </div>
-            </div>
-            <div className="carousel-item">
+
+            <div className="carousel-item" style={{ height: '40rem' }}>
               <img
-                src={trucksImage4} // Corrected line
-                className="bd-placeholder-img"
-                width="60%"
-                height="100%"
-                xmlns="http://www.w3.org/2000/svg"
+                src={trucksImage}
+                className="bd-placeholder-img w-100"
                 aria-hidden="true"
-                preserveAspectRatio="xMidYMid slice"
-                focusable="false"
+                style={{
+                  maxWidth: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
               />
-                <rect width="100%" height="100%" fill="#777" />
+              <rect width="100%" height="100%" fill="#777" />
+              <div className="container">
+                <div className="carousel-caption text-start">
+                <p
+                    style={{
+                      borderRadius: "10px",
+                      color: "white",
+                      fontWeight: 'bold',
+                      fontSize: "16px",
+                      background: "linear-gradient(to left, transparent, dimgrey)",
+                      marginBottom: "10px",
+                      padding:"10px",
+                    }}
+                    className="d-inline-block text-truncate"
+                  >All Services will get fulfilled </p>
+                  <p><a
+                      className="btn btn-sm btn-primary"
+                      style={{ background: "green" }}
+                      onClick={navigateToSignup}
+                    >Come Join Us !!!</a></p>
+                </div>
+              </div>
+            </div>
+            <div className="carousel-item" style={{ height: '40rem' }}>
+              <img
+                src={trucksImageblue}
+                className="bd-placeholder-img"
+                aria-hidden="true"
+                style={{
+                  maxWidth: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+              <rect width="100%" height="100%" fill="#777" />
+              <div className="container">
+                <div className="carousel-caption text-start">
+                <p
+                    style={{
+                      borderRadius: "10px",
+                      color: "lightblue",
+                      fontWeight: 'bold',
+                      fontSize: "16px",
+                      background: "linear-gradient(to left, transparent, dimgrey)",
+                      marginBottom: "10px",
+                      padding:"10px",
+                    }}
+                    className="d-inline-block text-truncate"
+                  >Start With Us !!! </p>
+                  <p><a
+                      className="btn btn-sm btn-primary"
+                      style={{ background: "green" }}
+                      onClick={navigateToSignup}
+                    >Start</a></p>
+                </div>
+            </div>
+          </div>
+
+            <div className="carousel-item" style={{ height: '40rem' }}>
+              <img
+                src={trucksImage4}
+                className="bd-placeholder-img"
+                aria-hidden="true"
+                style={{
+                  maxWidth: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+
+              <rect width="100%" height="100%" fill="#777" />
               <div className="container">
                 <div className="carousel-caption text-end">
-                  {/* <h1>One more for good measure.</h1> */}
-                  <p style ={{borderRadius:"10px",color:"black", fontWeight:'bold', fontSize:"23px", background:"linear-gradient(to left, transparent, white)", marginBottom:"10px"}}>Having Happy Customers Come Join In !!!</p>
+                  <p style={{padding:"10px", borderRadius: "10px", color: "white", fontWeight: 'bold', fontSize: "16px", background: "linear-gradient(to left, transparent, white)", marginBottom: "10px" }}>Having Happy Customers Come Join In !!!</p>
                   <p><a className="btn btn-lg btn-primary" href="#"></a></p>
                 </div>
               </div>
             </div>
+
           </div>
           <button className="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev" >
             <span className="carousel-control-prev-icon" aria-hidden="true"></span>

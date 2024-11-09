@@ -261,9 +261,9 @@ const AssignedVehicleMechanic = () => {
             ? (row.details[0].acceptedByAdmin === "reject" ? 'red' : 'darkblue')
             : 'darkorange'
         }}>
-          {row.details.length > 0 && row.details[0].acceptedByAdmin
-            ? row.details[0].acceptedByAdmin? row.details[0].acceptedByAdmin.charAt(0).toUpperCase() + row.details[0].acceptedByAdmin.slice(1).toLowerCase():""
-            : "Pending"}
+         {row.details.length > 0 && row.details[0].firstResponseOn != null
+            ? row.details[0].acceptedByAdmin? row.details[0].acceptedByAdmin.charAt(0).toUpperCase() + row.details[0].acceptedByAdmin.slice(1).toLowerCase():"pending"
+            : "Not requested yet"}
         </span>
       ),
       width: "150px"

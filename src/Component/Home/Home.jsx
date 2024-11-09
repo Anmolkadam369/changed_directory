@@ -354,12 +354,12 @@ function Home() {
                                     <p style={{ fontSize: "15px", fontWeight: "bold" }}>1000+ Happy Clients</p>
                                 </span>
                                 <div className="home-elem-40">
-                                    <i className="fas fa-quote-left home-elem-41"></i>
+                                    {/* <i className="fas fa-quote-left home-elem-41"></i> */}
                                     <span className="home-elem-42">
                                         <p>Outstanding service at difficult times.</p>
                                     </span>
                                     <div className="home-elem-44">
-                                        <i className="fas fa-quote-right home-elem-43"></i>
+                                        {/* <i className="fas fa-quote-right home-elem-43"></i> */}
                                     </div>
                                 </div>
                             </div>
@@ -377,14 +377,14 @@ function Home() {
                                 <div className="home-elem-50">
                                     <div className="home-elem-51">
                                         <span className="home-elem-52">
-                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "yellow", textAlign: "center" }}> 500+ </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "yellow", textAlign: "center" }}> 1000+ </p>
                                             <p style={{ fontSize: "15px", fontWeight: "bold" }}> Claims Settled </p>
                                         </span>
                                     </div>
                                     <div className="home-elem-58">
                                         <span className="home-elem-57">
-                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "orange", textAlign: "center" }}> 200+ </p>
-                                            <p>On-spot Repairs </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "orange", textAlign: "center" }}> 1000+ </p>
+                                            <p  style={{ fontSize: "15px", fontWeight: "bold" }}>On-spot Repairs </p>
                                         </span>
                                         <span className="home-elem-56">
                                             <p><br /></p>
@@ -392,8 +392,17 @@ function Home() {
                                     </div>
                                     <div className="home-elem-55">
                                         <span className="home-elem-54">
-                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "blue", textAlign: "center" }}> 700+ </p>
-                                            <p>Works Organized </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "lightblue", textAlign: "center" }}> 500+ </p>
+                                            <p  style={{ fontSize: "15px", fontWeight: "bold" }}>Workshop</p>
+                                        </span>
+                                        <span className="home-elem-53">
+                                            <p><br /></p>
+                                        </span>
+                                    </div>
+                                    <div className="home-elem-55">
+                                        <span className="home-elem-54">
+                                            <p style={{ fontSize: "15px", fontWeight: "bold", color: "lightgreen", textAlign: "center" }}> 1500+ </p>
+                                            <p  style={{ fontSize: "15px", fontWeight: "bold" }}>Crane / Hydra </p>
                                         </span>
                                         <span className="home-elem-53">
                                             <p><br /></p>

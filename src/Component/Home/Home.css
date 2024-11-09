@@ -851,7 +851,7 @@ span {
 }
 
 .home-elem-20 {
-    padding: 100px 16px 100px 16px;
+    padding: 100px 16px 100px 56px;
     flex-direction: row;
     -moz-column-gap: 50px;
     column-gap: 50px;
@@ -859,7 +859,7 @@ span {
     width: 100%;
     display: flex;
     margin-right: NaNpx;
-    max-width: 1232px;
+    /* max-width: 1232px; */
     position: relative;
     /* background: linear-gradient(to right, rgb(192, 198, 240), transparent); */
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)),

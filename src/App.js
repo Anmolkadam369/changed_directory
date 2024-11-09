@@ -104,6 +104,15 @@ import Blogs from './Component/AAAAAAAAAAAAAAAAAA/Blogs';
 import Sidebar from './Component/Home/Sidebar';
 import ProductRegister from './Component/Scrap/ProductRegsiter';
 import ProductDetailsSeller from './Component/Scrap/ProductDetailsSeller';
+import CaseFirstCard from './Component/CaseFirstCard/CaseFirstCard';
+import SuccessIcon from './Component/CaseFirstCard/SuccessIcon';
+import ErrorIcon from './Component/CaseFirstCard/ErrorIcon';
+import CompletePayment from './Component/Charts/CompletePayment';
+
+import FirstPage from './Component/User/FirstPage';
+import UserSideBar from './Component/User/UserSideBar'
+import SelectLocationOnMap from './Component/User/SelectLocationOnMap';
+
 
 function App() {
   return (
@@ -114,6 +123,16 @@ function App() {
           {/* <Route path='/Dashboard' element={<Dashboard/>}/> */}
           <Route path='/ContactUs' element={<ContactUs />} />
           <Route path='/Blogs' element={<Blogs/>}/>
+          <Route path='/CaseFirstCard' element={<CaseFirstCard/>}/>
+          <Route path='/SuccessIcon' element={<SuccessIcon/>}/>
+          <Route path='/ErrorIcon' element={<ErrorIcon/>}/>
+          <Route path='/CompletePayment' element={<CompletePayment/>}/>
+          <Route path='/FirstPage' element={<FirstPage/>}/>
+          <Route path='/UserSideBar' element={<UserSideBar/>}/>
+          <Route path='/SelectLocationOnMap' element={<SelectLocationOnMap/>}/>
+
+
+          
           <Route path='/ProductDetailsSeller' element={<ProductDetailsSeller/>}/>
 
 
@@ -161,7 +180,7 @@ function App() {
 
           <Route path='/CraneDashboard' element={<ProtectedRoute element={<CraneHydra />} />} />
           {/* <Route path='/AssignedVehicleCrane' element={<ProtectedRoute element={<AssignedVehicleCrane />} />} /> */}
-          {/* <Route path='/AddedDataByCrane' element={<ProtectedRoute element={<AddedDataByCrane />} />} /> */}
+          <Route path='/AddedDataByCrane' element={<ProtectedRoute element={<AddedDataByCrane />} />} />
 
           {/* <Route path='/AccidentVehicleRegUpdate' element={<ProtectedRoute element={<AccidentVehicleRegUpdate />} />} /> */}
 
@@ -206,6 +225,8 @@ function App() {
           <Route path='/Administration' element={<ProtectedRoute element={<Administration />} />} />
           <Route path='/Salesteam' element={<ProtectedRoute element={<Salesteam />} />} />
           <Route path='/Registration' element={<Registrations/>}/>
+          <Route path='/VehicleDetails' element={<Registration/>}/>
+
           <Route path='/ImageViewer' element={<ImageViewer/>}/>
          
           <Route path='/ImageDetails' element={<ImageDetails/>}/>

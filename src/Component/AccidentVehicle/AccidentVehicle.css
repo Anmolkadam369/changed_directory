@@ -59,7 +59,7 @@ margin-bottom: 20px;
 @media (max-width: 530px) {
 
   .responsive-table {
-    width: 90%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -73,7 +73,7 @@ margin-bottom: 20px;
 @media (max-width: 500px) {
 
   .responsive-table {
-    width: 85%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -87,7 +87,7 @@ margin-bottom: 20px;
 @media (max-width: 450px) {
 
   .responsive-table {
-    width: 80%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -101,7 +101,7 @@ margin-bottom: 20px;
 @media (max-width: 425px) {
 
   .responsive-table {
-    width: 77%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -115,7 +115,7 @@ margin-bottom: 20px;
 @media (max-width: 400px) {
 
   .responsive-table {
-    width: 73%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -128,7 +128,7 @@ margin-bottom: 20px;
 @media (max-width: 385px) {
 
   .responsive-table {
-    width: 70%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -142,7 +142,7 @@ margin-bottom: 20px;
 @media (max-width: 375px) {
 
   .responsive-table {
-    width: 68%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -155,7 +155,7 @@ margin-bottom: 20px;
 @media (max-width: 360px) {
 
   .responsive-table {
-    width: 62%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
   }
   .vendor-response-responsive-table table {
     width: auto; /* Ensures the table can expand beyond the screen width */
@@ -169,7 +169,7 @@ margin-bottom: 20px;
 @media (max-width: 338px) {
 
   .responsive-table {
-    width: 58%; /* Ensures that the container fits the width of its parent */
+    width: 100%; /* Ensures that the container fits the width of its parent */
     font-size: 9px;
   }
   .vendor-response-responsive-table table {
@@ -457,7 +457,9 @@ input[type='date'] {
 
 
 .form-field input[type='text'],
-.form-field input[type='date'] {
+.form-field input[type='date'],
+.form-field input[type='number'],
+.form-field textarea {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
@@ -465,7 +467,8 @@ input[type='date'] {
 }
 
 .form-field input[type='text']:focus,
-.form-field input[type='date']:focus {
+.form-field input[type='date']:focus 
+.form-field input[type='number']:focus{
   border-color: #0056b3;
   outline: none;
 }
@@ -692,8 +695,8 @@ input[type="number"] {
 
   input[type="text"],
   input[type="number"] {
-    font-size: 0.875rem;
-    padding: 8px;
+    font-size: 0.8rem;
+    padding: 3px;
   }
 }
 

@@ -47,7 +47,7 @@ const ImageViewer = () => {
             <section style={{ background: '#d3d1d17a', position: 'relative' }}>
                 <div className="container py-5">
                     <div className="row justify-content-flexstart mb-3">
-                        <div className="col-md-12 col-xl-10">
+                        <div className="col-md-8 col-xl-10">
                             <div className="card shadow-0 border rounded-3">
                                 <div className="card-body">
                                     <div className="row">
@@ -121,7 +121,7 @@ const ImageViewer = () => {
                         </div>
                     </div>
                     <div className="row justify-content-flexstart mb-3">
-                        <div className="col-md-12 col-xl-10">
+                        <div className="col-md-8 col-xl-10">
                             <div className="card shadow-0 border rounded-3">
                                 <div className="card-body">
                                     <div className="row">
@@ -199,7 +199,7 @@ const ImageViewer = () => {
                         </div>
                     </div>
                     <div className="row justify-content-flexstart mb-3">
-                        <div className="col-md-12 col-xl-10">
+                        <div className="col-md-8 col-xl-10">
                             <div className="card shadow-0 border rounded-3">
                                 <div className="card-body">
                                     <div className="row">
@@ -280,7 +280,7 @@ const ImageViewer = () => {
             <div  className="promo-banner">
                 <div style={{
                     position: 'absolute',
-                    top: '20px',
+                    top: '30px',
                     right: '20px',
                     width: '200px',
                     padding: '15px',

@@ -80,7 +80,7 @@ const ImageDetails = () => {
 
                 <section className="py-5">
                     <div className="container">
-                        <div className="row gx-5" style={{background:"transparent"}}>
+                        <div className="row gx-5" style={{ background: "transparent" }}>
                             <aside className="col-lg-6">
                                 <div className="position-relative">
                                     <div className="border rounded-4 mb-3 d-flex justify-content-center" style={{ width: "100%", height: "70vh", overflow: "hidden" }}>
@@ -254,9 +254,20 @@ const ImageDetails = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <a href="#" className="btn btn-warning shadow-0" style={{ marginRight: "10px" }}> <img style={{width:'20px'}} src= {shoppingbag}/> Buy now </a>
-                                        <a href="#" className="btn btn-primary shadow-0" style={{ marginRight: "10px" }}> <img style={{width:'20px'}} src= {cart}/> Add to cart </a>
-                                        <a href="#" className="btn btn-primary shadow-0 py-2 icon-hover px-3" style={{ marginRight: "10px", color: "lightblue" }}> <img style={{width:'20px'}} src= {heart}/> Save </a>
+                                        <a href="#" className="btn btn-warning shadow-0" style={{ display: 'inline-flex', alignItems: 'center', marginRight: "10px" }}>
+                                            <img style={{ width: '20px', marginRight: '8px' }} src={shoppingbag} alt="Shopping Bag" />
+                                            Buy now
+                                        </a>
+
+                                        <a href="#" className="btn btn-primary shadow-0" style={{ display: 'inline-flex', alignItems: 'center', marginRight: "10px" }}>
+                                            <img style={{ width: '20px', marginRight: '8px' }} src={cart} alt="Shopping Bag" />
+                                            Add to Cart
+                                        </a>
+
+                                        <a href="#" className="btn btn-primary shadow-0 py-2 icon-hover px-3" style={{ display: 'inline-flex', alignItems: 'center', marginRight: "10px" }}>
+                                            <img style={{ width: '20px', marginRight: '8px' }} src={heart} alt="Shopping Bag" />
+                                            Save
+                                        </a>
                                     </div>
                                 </div>
                             </main>

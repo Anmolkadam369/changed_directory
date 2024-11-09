@@ -25,6 +25,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -65,7 +66,7 @@ const config = {
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VendorMasterEdit = ({ id, onUpdate }) => {
+const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
   const location = useLocation();
   // const { id } = location.state || {};
   console.log("Received ID:", id);
@@ -74,11 +75,12 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
   const [comingData, setComingData] = useState([]);
+  console.log("COmInddasdfasdfasfdasdf", comingData.first_approval)
   const [IsReadOnly, setIsReadOnly] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selectedAction, setSelectedAction] = useState(null);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState('');
@@ -95,6 +97,8 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
   console.log("addressLocation123", addressLocation)
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [selectedActionHere, setSelectedActionHere] = useState(null);
+
   const [toInputBox, setToInputBox] = useState(false)
 
   const generateOfficePreviewLink = (fileUrl) => {
@@ -224,7 +228,11 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         longitude: comingData.longitude || "",
         latitude: comingData.latitude || "",
         id: comingData.id || "",
-        remark: comingData.remark || ""
+        remark: comingData.remark || "",
+        perHR: comingData.perHR || "",
+        first_approval: comingData.first_approval || "",
+        second_approval: comingData.second_approval || ""
+
       }));
     }
   }, [comingData]);
@@ -290,10 +298,15 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
     latitude: "",
     longitude: "",
     id: "",
-    remark: ""
+    remark: "",
+    perHR: "",
+    first_approval: "",
+    second_approval: ""
   });
 
   console.log("setformda ta", formData)
+  console.log("COMBING", comingData)
+
   console.log("locatin")
 
   const [coordinates, setCoordinates] = useState("Fetching location...");
@@ -341,11 +354,108 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
 
 
   const getDataById = async (id) => {
-    const response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
+    let response;
+    if (pageFrom == "VendorSignUp") {
+      response = await axios.get(`${backendUrl}/api/getPotentialVendorById/${id}`);
+    }
+    else {
+      response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
+    }
     console.log("daa", response.data.data)
     console.log("response", response.data.data[0]);
     setComingData(response.data.data[0])
   }
+
+
+  const approvalFunc1 = async (action) => {
+    let response;
+    console.log("userId:", userId);
+    console.log(`${backendUrl}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`);
+
+    try {
+      response = await axios({
+        method: 'PUT',
+        url: `${backendUrl}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`,
+        headers: {
+          'Authorization': token
+        }
+      });
+
+
+      console.log("response.status", response.status)
+      if (response.status === 200) {
+        setSelectedActionHere(action)
+        console.log("response", response.data);
+        setSnackbarMessage(response.data.message);
+        setOpenSnackbar(true);
+        setIsLoading(false);
+        setSnackbarMessage(response.data.message);
+        setOpenSnackbar(true);
+        setIsLoading(false);
+        setTimeout(() => {
+          onUpdate();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      setIsLoading(false);
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+        setSnackbarMessage("Your session has expired. Redirecting to login...", error);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        setSnackbarMessage(errorMessage, error);
+      }
+      setOpenSnackbar(true);
+    }
+  };
+  const approvalFunc = async (action) => {
+    let response;
+    console.log("userId:", userId);
+    console.log(`${backendUrl}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`);
+
+    try {
+      response = await axios({
+        method: 'PUT',
+        url: `${backendUrl}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`,
+        headers: {
+          'Authorization': token
+        }
+      });
+
+
+      console.log("response.status", response.status)
+      if (response.status === 200) {
+        setSelectedActionHere(action)
+        console.log("response", response.data);
+        setSnackbarMessage(response.data.message);
+        setOpenSnackbar(true);
+        setIsLoading(false);
+        setSnackbarMessage(response.data.message);
+        setOpenSnackbar(true);
+        setIsLoading(false);
+        setTimeout(() => {
+          onUpdate();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      setIsLoading(false);
+      const errorMessage = error.response?.data?.message || 'An error occurred';
+      if (errorMessage === "jwt expired") {
+        setSnackbarMessage("Your session has expired. Redirecting to login...", error);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        setSnackbarMessage(errorMessage, error);
+      }
+      setOpenSnackbar(true);
+    }
+  };
+
 
   const GSTRef = useRef(null);
   const panRef = useRef(null);
@@ -397,13 +507,18 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
       }));
     }
     else if (name === "vendorPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
-      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      let validValue = value.replace(/\D/g, ''); // Remove non-digit characters
+      if (validValue && validValue[0].match(/[6-9]/)) {
+        validValue = validValue.slice(0, 10); // Only keep up to 10 digits if it starts with 6-9
+      } else {
+        validValue = ''; // Return an empty string if the first digit isn't between 6-9
+      }
       setFormData({
         ...formData,
         [name]: validValue,
       });
     }
-    else if (name === "pincode" || name === "rate") {
+    else if (name === "pincode" || name === "rate" || name == 'perHR') {
       const validValue = value.replace(/\D/g, '').slice(0, 6);
       setFormData({
         ...formData,
@@ -457,6 +572,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           return `Field '${key}' is required.`;
       }
       if (key === "rate") continue;
+      if (key === "perHR") continue;
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -513,7 +629,7 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         if (formData[key] instanceof File) {
           formDataObj.append(key, formData[key], formData[key].name);
         } else {
-          if (key === 'rate' && formData[key] === "") {
+          if (key === 'rate' && key == "perHR" && formData[key] === "") {
             formDataObj.append(key, "0");
           } else {
             formDataObj.append(key, formData[key]);
@@ -521,14 +637,14 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
         }
       }
     }
-    let response ;
+    let response;
     // Debugging FormData contents
     for (let pair of formDataObj.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
 
     try {
-       response = await axios({
+      response = await axios({
         method: 'PUT',
         url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
         data: formDataObj,
@@ -635,64 +751,64 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           </label>
 
           {!toInputBox && (<label className="form-field input-group mb-3">
-                <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
-                  <span style={{ marginRight: '10px' }}>Vendor Place - City:  {formData.district}</span>
-                  <div className="switch-container">
-                    <FormControlLabel
-                      control={<Android12Switch defaultChecked />}
-                      // checked={singleVendor}
-                      onChange={handleSwitchInputBox}
-                      label="" // You can add a label here if needed
-                    />
-                  </div>
+            <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+              <span style={{ marginRight: '10px' }}>Vendor Place - City:  {formData.district}</span>
+              <div className="switch-container">
+                <FormControlLabel
+                  control={<Android12Switch defaultChecked />}
+                  // checked={singleVendor}
+                  onChange={handleSwitchInputBox}
+                  label="" // You can add a label here if needed
+                />
+              </div>
+            </div>
+
+
+            <select
+              name="district"
+              value={formData.district} // This should match city.iso2
+              onChange={handleChange}
+              disabled={isLoadingCities || !formData.state}
+            >
+              <option value="">Select City</option>
+              {!cities.error && cities.map(city => {
+                console.log('Rendering city:', city.iso2, city.name); // Debug: Check city values
+                return (
+                  <option key={city.iso2} value={city.iso2}>
+                    {city.name}
+                  </option>
+                );
+              })}
+            </select>
+          </label>)}
+
+          {toInputBox && (
+            <label className="form-field input-group mb-3">
+
+              {/* Vendor Place - City: */}
+              <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                <span style={{ marginRight: '10px' }}>Vendor Place - City: {formData.district}</span>
+                <div className="switch-container">
+                  <FormControlLabel
+                    control={<Android12Switch defaultChecked />}
+                    // checked={singleVendor}
+                    onChange={handleSwitchInputBox}
+                    label="" // You can add a label here if needed
+                  />
                 </div>
-
-
-                <select
-                  name="district"
-                  value={formData.district} // This should match city.iso2
-                  onChange={handleChange}
-                  disabled={isLoadingCities || !formData.state}
-                >
-                  <option value="">Select City</option>
-                  {!cities.error && cities.map(city => {
-                    console.log('Rendering city:', city.iso2, city.name); // Debug: Check city values
-                    return (
-                      <option key={city.iso2} value={city.iso2}>
-                        {city.name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </label>)}
-
-              {toInputBox && (
-                 <label className="form-field input-group mb-3">
-                  
-                 {/* Vendor Place - City: */}
-                 <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
-                  <span style={{ marginRight: '10px' }}>Vendor Place - City: {formData.district}</span>
-                  <div className="switch-container">
-                    <FormControlLabel
-                      control={<Android12Switch defaultChecked />}
-                      // checked={singleVendor}
-                      onChange={handleSwitchInputBox}
-                      label="" // You can add a label here if needed
-                    />
-                  </div>
-                </div>
-                 <input
-                   type="text"
-                   name="district"
-                   placeholder='District'
-                   value={formData.district}
-                   onChange={handleChange}
-                   className="form-control"
-                   readOnly={IsReadOnly}
-                   required
-                 />
-               </label>
-              )}
+              </div>
+              <input
+                type="text"
+                name="district"
+                placeholder='District'
+                value={formData.district}
+                onChange={handleChange}
+                className="form-control"
+                readOnly={IsReadOnly}
+                required
+              />
+            </label>
+          )}
 
         </div>
 
@@ -1229,19 +1345,34 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
           {
             formData.vendorType == "crane" &&
             (
-              <label className="form-field">
-                Rate/KM :
-                <input
-                  type='text'
-                  name="rate"
-                  placeholder='Rate Per KM'
-                  value={formData.rate}
-                  onChange={handleChange}
-                  className="form-control"
-                  readOnly={IsReadOnly}
-                  title="Aadhaar number must be exactly 12 digits."
-                  required />
-              </label>
+              <div>
+                <label className="form-field">
+                  Rate/KM :
+                  <input
+                    type='text'
+                    name="rate"
+                    placeholder='Rate Per KM'
+                    value={formData.rate}
+                    onChange={handleChange}
+                    className="form-control"
+                    readOnly={IsReadOnly}
+                    title="Aadhaar number must be exactly 12 digits."
+                    required />
+                </label>
+                <label className="form-field">
+                  per HR:
+                  <input
+                    type='text'
+                    name="perHR"
+                    placeholder='Rate Per HR'
+                    value={formData.perHR}
+                    onChange={handleChange}
+                    className="form-control"
+                    readOnly={IsReadOnly}
+                    title="Aadhaar number must be exactly 12 digits."
+                    required />
+                </label>
+              </div>
             )
           }
           {
@@ -1249,11 +1380,179 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
               <label className="form-field"></label>
             )
           }
+          {pageFrom == "VendorSignUp" &&
+          (
+            <div>
+            {userId === "abhi98324" && (
+            <div>
+              <div style={{ fontSize: "12px" }}> Pre Approval:</div>
+              {formData.first_approval === "" && (
+                <>
+                  <label
+                    className="form-control generate-button"
+                    onClick={() => {
+                      approvalFunc("approved");
+                      setSelectedAction("approved"); // Set the selected action
+                    }}
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'blue',
+                      backgroundColor: selectedAction === "approved" ? '#e0f7fa' : 'transparent', // Change background color if selected
+                    }}
+                  >
+                    Approve
+                  </label>
+                  <label
+                    className="form-control generate-button"
+                    onClick={() => {
+                      approvalFunc("not_approved");
+                      setSelectedAction("not_approved"); // Set the selected action
+                    }}
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'red',
+                      backgroundColor: selectedAction === "not_approved" ? '#e0f7fa' : 'transparent', // Change background color if selected
+                    }}
+                  >
+                    Don't Approve
+                  </label>
+                </>
+              )}
+            </div>
+          )}
+
+          {comingData && (
+            (comingData.first_approval === "approved" || comingData.first_approval === 'not_approved') && (
+              <div>
+                <div style={{ fontSize: "12px" }}>Approved / Not Approved</div>
+                {comingData.first_approval === "approved" ? (
+                  <label
+                    className="form-control generate-button"
+                    onClick={generateAgreement} // Make sure you have this function defined
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'blue',
+                    }}
+                  >
+                    <CheckCircleOutlineOutlinedIcon /> Pre Approved
+                  </label>
+                ) : (
+                  <label
+                    className="form-control generate-button"
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'red',
+                    }}
+                  >
+                    <CancelIcon /> Not Approved
+                  </label>
+                )}
+              </div>
+            )
+          )}
+
+          {userId === "yat167034" && (
+            <div>
+              <div style={{ fontSize: "12px" }}> Admin Approval:</div>
+              {formData.second_approval === "" && (
+                <>
+                  <label
+                    className="form-control generate-button"
+                    onClick={() => {
+                      approvalFunc1("approved");
+                      setSelectedAction("approved"); // Set the selected action
+                    }}
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'blue',
+                      backgroundColor: selectedAction === "approved" ? '#e0f7fa' : 'transparent', // Change background color if selected
+                    }}
+                  >
+                    Approve
+                  </label>
+                  <label
+                    className="form-control generate-button"
+                    onClick={() => {
+                      approvalFunc1("not_approved");
+                      setSelectedAction("not_approved"); // Set the selected action
+                    }}
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'red',
+                      backgroundColor: selectedAction === "not_approved" ? '#e0f7fa' : 'transparent', // Change background color if selected
+                    }}
+                  >
+                    Don't Approve
+                  </label>
+                </>
+              )}
+            </div>
+          )}
+
+          {comingData && (
+            (comingData.second_approval === "approved" || comingData.second_approval === 'not_approved') && (
+              <div>
+                <div style={{ fontSize: "12px" }}>Admin Approved / Not Approved</div>
+                {comingData.second_approval === "approved" ? (
+                  <label
+                    className="form-control generate-button"
+                    onClick={generateAgreement} // Make sure you have this function defined
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'purple',
+                    }}
+                  >
+                    <CheckCircleOutlineOutlinedIcon /> Fully Approved
+                  </label>
+                ) : (
+                  <label
+                    className="form-control generate-button"
+                    style={{
+                      fontSize: '12px',
+                      padding: '10px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      color: 'red',
+                    }}
+                  >
+                    <CancelIcon /> Not Approved
+                  </label>
+                )}
+              </div>
+            )
+          )}
+          </div>
+          )}
+
+
 
           <label className="form-field"></label>
           <label className="form-field"></label>
           <label className="form-field"></label>
         </div>
+
+
 
 
 
@@ -1293,12 +1592,12 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
             <>
               <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
                 <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-               <p> Send Your Current Location (if it's same for filling address):</p>
+                <p> Send Your Current Location (if it's same for filling address):</p>
                 <div className='form-row'>
                   <Button variant="contained" onClick={getLocation}>Send Location</Button>
                 </div>
 
-                <p>  Send Location Of Address (this is by your address):</p> 
+                <p>  Send Location Of Address (this is by your address):</p>
                 <div className='form-row'>
                   <label className='form-field'>
                     Latitude:
@@ -1322,10 +1621,37 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
 
 
 
-        <div style={{ textAlign: 'center' }}>
-          {!IsReadOnly && (
-            <div>
-              <button type="submit"
+        {pageFrom == "viewVendor" && (
+          <div style={{ textAlign: 'center' }}>
+            {!IsReadOnly && (
+              <div>
+                <button type="submit"
+                  style={{
+                    fontSize: "14px",
+                    padding: "5px 20px",
+                    border: "3px solid lightblue",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    color: "green",
+                  }}
+                  disabled={isLoading} // Disable button while loading
+                  onClick={handleSubmit}
+                >
+                  {isLoading ? 'Submitting...' : 'Submit'}
+                </button>
+                {isLoading && (
+                  <div style={{ marginTop: '10px' }}>
+                    <ClipLoader color="#4CAF50" loading={isLoading} />
+                    <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {IsReadOnly && (
+              <button
+                type="submit"
                 style={{
                   fontSize: "14px",
                   padding: "5px 20px",
@@ -1335,38 +1661,13 @@ const VendorMasterEdit = ({ id, onUpdate }) => {
                   backgroundColor: "transparent",
                   color: "green",
                 }}
-                disabled={isLoading} // Disable button while loading
-                onClick={handleSubmit}
+                onClick={editable}
               >
-                {isLoading ? 'Submitting...' : 'Submit'}
+                EDIT
               </button>
-              {isLoading && (
-                <div style={{ marginTop: '10px' }}>
-                  <ClipLoader color="#4CAF50" loading={isLoading} />
-                  <div style={{ marginTop: '10px', color: '#4CAF50' }}>Submitting your form, please wait...</div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {IsReadOnly && (
-            <button
-              type="submit"
-              style={{
-                fontSize: "14px",
-                padding: "5px 20px",
-                border: "3px solid lightblue",
-                borderRadius: "4px",
-                cursor: "pointer",
-                backgroundColor: "transparent",
-                color: "green",
-              }}
-              onClick={editable}
-            >
-              EDIT
-            </button>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </form >
     </div >
   );

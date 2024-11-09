@@ -181,6 +181,7 @@ const VendorMasterForm = () => {
     adharNo: '',
     adharCard: "",
     rate: "" || "0",
+    perHR : "" || '0',
     GSTNo: "",
     GST: "info",
     remark: ""
@@ -188,8 +189,8 @@ const VendorMasterForm = () => {
 
   console.log("FORMDATA908", formData)
   const fullAddress = `${formData.address}, ${formData.district},${formData.pincode}, ${formData.state}`;
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
-
+  const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(fullAddress)}`;
+  console.log("URL", url)
   useEffect(() => {
     const getLonLat = async () => {
       try {
@@ -305,12 +306,18 @@ const VendorMasterForm = () => {
       loadCities(value);
       setFormData(prevState => ({ ...prevState, [name]: value }));
     } else if (["vendorPhone", "contactPersonNum", "contactPersonNum2"].includes(name)) {
-      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      let validValue = value.replace(/\D/g, ''); // Remove non-digit characters
+      if (validValue && validValue[0].match(/[6-9]/)) {
+        validValue = validValue.slice(0, 10); // Only keep up to 10 digits if it starts with 6-9
+      } else {
+        validValue = ''; // Return an empty string if the first digit isn't between 6-9
+      }
+      
       setFormData({
         ...formData,
         [name]: validValue,
       });
-    } else if (["pincode", "rate"].includes(name)) {
+    } else if (["pincode", "rate", "perHR"].includes(name)) {
       const validValue = value.replace(/\D/g, '').slice(0, 6);
       setFormData({
         ...formData,
@@ -618,7 +625,8 @@ const VendorMasterForm = () => {
         [name]: files[0]
       }));
     }
-  };
+  };    
+  console.log("Rendering Form 1");
 
 
   return (
@@ -1101,7 +1109,19 @@ const VendorMasterForm = () => {
                         title="Aadhaar number must be exactly 12 digits."
                         required />
                     </label>
-                    <label className="form-field"></label>
+                    
+                    <label className="form-field">
+                      per HR:
+                      <input
+                        type='text'
+                        name="perHR"
+                        placeholder='Rate Per HR'
+                        value={formData.perHR}
+                        onChange={handleChange}
+                        className="form-control"
+                        title="Aadhaar number must be exactly 12 digits."
+                        required />
+                    </label>
                     <label className="form-field"></label>
                     <label className="form-field"></label>
                   </div>

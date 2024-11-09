@@ -40,6 +40,8 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
     const [cities, setCities] = useState([]);
     const [selectedState, setSelectedState] = useState('');
     const [comingData, setComingData] = useState([]);
+    const [surveyorData, setSurveyorData] = useState([]);
+
     console.log("comingData", comingData)
     const [isLoadingStates, setIsLoadingStates] = useState(true);
     const [isLoadingCities, setIsLoadingCities] = useState(true);
@@ -120,6 +122,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
         // }
         console.log("id", id)
         getDataById(id);
+        getDataSurveyor()
         setAccidentData({ accidentFileNo: id });
     }, [token, userId, navigate, id]);
 
@@ -129,6 +132,13 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
+
+    const getDataSurveyor = async () => {
+        const response = await axios.get(`${backendUrl}/api/getSurveyor`);
+        const fetchedData = response.data.data;
+        setSurveyorData(fetchedData);
+      };
+
 
     const [accidentData, setAccidentData] = useState({
         accidentFileNo: id,
@@ -349,7 +359,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
         claimFormassignedTo: "",
         claimFormremark: "",
     });
-
+console.log("accidentdata123456789", accidentData)
     const loadStates = () => {
         setIsLoadingStates(true);
         fetch(`${config.cUrl}/states`, {
@@ -416,6 +426,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
 
     const handleChange = (e) => {
         const { name, type, value, files } = e.target;
+        console.log("nameGame"[name], value)
 
         if (type === 'file') {
             console.log("myfile")
@@ -481,7 +492,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
             setAccidentData(prev => ({ ...prev, [name]: value }));
         }
         else {
-            console.log("name"[name], value)
+           
             setAccidentData(prev => ({ ...prev, [name]: value }));
         }
     }
@@ -1331,13 +1342,16 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Spot Surveyor Name:
-                        <input
+                        <select
                             className='inputField'
                             name="surveyorName"
-                            value={accidentData.surveyorName}
                             onChange={handleChange}
-
-                        />
+                            value={accidentData.surveyorName}>
+                            <option value="">Select Surveyor</option>
+                            {surveyorData.map(surveyor => (
+                                <option key={surveyor.id} value={surveyor.fullName}>{surveyor.fullName}</option>
+                            ))}
+                        </select>
                     </label>
                     <label className="form-field">
                         Contact No:
@@ -1379,13 +1393,16 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Material Surveyor Name:
-                        <input
+                         <select
                             className='inputField'
                             name="materialSurveyorName"
-                            value={accidentData.materialSurveyorName}
                             onChange={handleChange}
-
-                        />
+                            value={accidentData.materialSurveyorName}>
+                            <option value="">Select Material Surveyor</option>
+                            {surveyorData.map(surveyor => (
+                                <option key={surveyor.id} value={surveyor.fullName}>{surveyor.fullName}</option>
+                            ))}
+                        </select>
                     </label>
 
                     <label className="form-field">
@@ -1432,13 +1449,16 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Final Surveyor Name:
-                        <input
+                        <select
                             className='inputField'
                             name="finalSurveyorName"
-                            value={accidentData.finalSurveyorName}
                             onChange={handleChange}
-
-                        />
+                            value={accidentData.finalSurveyorName}>
+                            <option value="">Select Final Surveyor</option>
+                            {surveyorData.map(surveyor => (
+                                <option key={surveyor.id} value={surveyor.fullName}>{surveyor.fullName}</option>
+                            ))}
+                        </select>
                     </label>
 
                     <label className="form-field">

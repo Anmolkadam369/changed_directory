@@ -1,0 +1,99 @@
+/* Container holding the background image and text */
+.parent-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100vh;
+  width: 100%;
+  
+  position: relative;
+  animation: slideUp 0.5s ease-out;
+
+}
+
+.parent-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  filter: blur(5px);
+  z-index: -1;
+  
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.image-container {
+  position: relative;
+  z-index: 1;
+  width: 30%;
+  height: 400px;
+  overflow: hidden;
+  margin: 0 auto;
+  min-width: 300px;
+  max-width: 300px;
+  border-radius: 20px 20px 0px 0px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+
+/* Background image styling */
+.background-image {
+  background-image: url('../../Assets/firstcasebackground.avif');
+  /* Add your image URL */
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Text overlay on top of the image */
+.text-overlay {
+  position: absolute;
+  bottom: 0;
+  /* Position text at the bottom of the image */
+  left: 0;
+  width: 100%;
+  /* Full width of the container */
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Green background with some transparency */
+  color: rgb(0, 0, 0);
+  padding: 10px 20px 20px 20px;
+  /* Padding for text */
+  z-index: 1;
+  /* Ensure it is on top of the background image */
+  box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.3);
+  /* Optional: adds shadow above text */
+  border-radius: 20px 20px 0px 0px;
+  height: 80%;
+}
+
+.text-overlay2 {
+  height: 60%;
+  width: 100%;
+  background-color: #ffffff;
+  margin: "0px 10px 0px 10px";
+}
+
+/* Additional styling for text */
+.text-overlay h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  /* Adjust text size */
+}
+
+.text-overlay p {
+  font-size: 1rem;
+  /* Adjust paragraph size */
+}

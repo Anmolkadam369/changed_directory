@@ -208,9 +208,9 @@ const UserDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="statistics">
-                            <div className="charts">
-                                <Featured />
+                        <div className="statistics" style={{display:"flex",width:'300px'}}>
+                            <div className="charts" >
+                                {/* <Featured /> */}
 
                                 <div className="chart-item">
                                     <h3 className="chart-title"> Distribution</h3>

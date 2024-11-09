@@ -200,7 +200,17 @@ const Registrations = () => {
 
         // Process specific fields differently
         if (name === "phone") {
-            updatedValue = value.replace(/\D/g, '').slice(0, 10); // Only allow digits and limit to 10
+            console.log("phonenois",value)
+            updatedValue = value.replace(/\D/g, ''); // Remove non-digit characters
+            if (updatedValue && updatedValue[0].match(/[6-9]/)) {
+              updatedValue = updatedValue.slice(0, 10); // Only keep up to 10 digits if it starts with 6-9
+            } else {
+              updatedValue = ''; // Return an empty string if the first digit isn't between 6-9
+            }
+            setFormData({
+                ...formData,
+                [name]: updatedValue,
+              });
         }
 
         else if (name === "password") {
@@ -616,7 +626,15 @@ const Registrations = () => {
                                                 <div className='row'>
                                                     <div className=" col-md-6 mb-4">
                                                         <div className="form-outline form-white">
-                                                            <input type="text" name="phone" id="form3Examplea8" className="form-control form-control-lg" onChange={handleChange} value={formData.phone} style={{ border: "1px solid black" }} />
+                                                            <input 
+                                                             type="tel" 
+                                                             name="phone" 
+                                                             id="form3Examplea8" 
+                                                             className="form-control form-control-lg" 
+                                                             onChange={handleChange} 
+                                                             value={formData.phone} 
+                                                             style={{ border: "1px solid black" }} 
+                                                             maxLength="10"/>
                                                             <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
                                                         </div>
                                                     </div>

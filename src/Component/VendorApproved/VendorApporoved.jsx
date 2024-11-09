@@ -273,11 +273,19 @@ const VendorApproved = () => {
 
   const columns = [
     {
-      name: "VendorID",
+      name: "ID",
       selector: row => row.id, // Raw data for sorting
       cell: row => <span>{String(row.id).padStart(4, '0')}</span>, // Display formatted value
       sortable: true,
       sortFunction: (rowA, rowB) => rowA.id - rowB.id, // Custom sort function
+      style: { width: "200px" }
+    },
+
+    {
+      name: "VendorId",
+      selector: row => row.vendorIdentity, // Raw data for sorting
+      cell: row => <span>{row.vendorIdentity ?`${row.vendorIdentity.substring(0, 2)}${String(row.vendorIdentity.substring(2)).padStart(4, '0')}`:''}</span>      , // Display formatted value
+      sortable: true,
       style: { width: "200px" }
     },
 
@@ -431,8 +439,11 @@ const VendorApproved = () => {
       const vendorTypeValue = (row.vendorType ?? '').toLowerCase().includes(searchLower);
       const editedByValue = (row.EditedBy ?? '').toLowerCase().includes(searchLower);
       const districtValue = (row.district ?? '').toLowerCase().includes(searchLower);
+      // const vendorIdValue = (row.vendorIdentity ?? '').toLowerCase().includes(searchLower);
+      const vendorIdValue = (row.vendorIdentity ?`${row.vendorIdentity.substring(0, 2)}${String(row.vendorIdentity.substring(2)).padStart(4, '0')}`:"" ?? '').toLowerCase().includes(searchLower);
 
-      return idValue || vendorPhoneValue || dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
+
+      return vendorIdValue || idValue || vendorPhoneValue || dateValue || vendorNameValue || emailValue || vendorTypeValue || editedByValue || districtValue;
     });
 
     setCurrentItems(newRows);
@@ -545,7 +556,7 @@ const VendorApproved = () => {
 
         </div>)}
       {showVendorMasterEdit && (
-        <VendorMasterEdit id={selectedId} onUpdate={handleUpdate} />
+        <VendorMasterEdit id={selectedId} onUpdate={handleUpdate} pageFrom = 'viewVendor'/>
       )}
       {showPerformance && (
         <VendorPerformance id={selectedVendorCode} type={selectedVendorType} onUpdate={handleUpdate} />

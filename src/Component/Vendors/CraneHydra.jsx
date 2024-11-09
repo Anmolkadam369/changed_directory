@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useInsertionEffect } from 'react';
 import "../Admin/Admin.css"
 import './Advocate.css';
 import axios from 'axios';
@@ -33,6 +33,8 @@ import userImg from "../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import CraneDashboard from './CraneDashboard';
 import Login from '../Login/LoginPage';
+import Profiles from '../Profiles/Profiles';
+import LocationAccessModal from '../Location1/LocationAccessModal';
 
 
 const CraneHydra = () => {
@@ -58,12 +60,6 @@ const CraneHydra = () => {
     const [startingPage, setStartingPage] = useState(true);
     const [myAccidentVehicle, setMyAccidentVehicle] = useState(false);
 
-
-
-
-
-
-
     const vendorData = [10, 4];
     const vendorLabels = ['resolved', 'pending'];
 
@@ -77,6 +73,9 @@ const CraneHydra = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const dropdownRef = useRef(null);
     const [userImage, setUserImage] = useState(true);
+    const [triggeredIt, setTriggeredIt] = useState(true);
+    const [comingValue, setComingValue] = useState(null);
+
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
@@ -113,6 +112,32 @@ const CraneHydra = () => {
     }, [showUserId]);
 
     const handleCancelSignOut = () => { setModalOpen(false) };
+
+    useEffect(() => {
+        isLocationAvailable()
+    }, [])
+
+    const isLocationAvailable = async () => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/isvendor-added/${userId}`)
+            if (response.data.status == true) {
+                setTriggeredIt(false);
+                setComingValue(true)
+            }
+            else if  (response.data.status == false) {
+                setTriggeredIt(true);
+            }
+        } catch (error) {
+            console.error('Error response:', error);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+            }
+        }
+    }
 
     useEffect(() => {
         console.log("token", token, userId);
@@ -152,6 +177,7 @@ const CraneHydra = () => {
         return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
     };
 
+
     useEffect(() => {
         if (effectRan.current === false) {
             const sendLoginNotification = async () => {
@@ -183,6 +209,26 @@ const CraneHydra = () => {
     function toggleSidebar() {
         setIsSidebarOpen(!isSidebarOpen);
     }
+    const [showProfile, setShowProfile] = useState(false)
+    const [usersIdHere, setUsersIdHere] = useState(false)
+
+    const showingProfile = (userId) => {
+        setUsersIdHere(userId)
+        setShowProfile(!showProfile)
+        setStartingPage(false);
+        setMyAccidentVehicle(false)
+    }
+
+    const handleUpdate = () => {
+        setShowProfile(false); // Hide VendorMasterEdit
+        setStartingPage(true);
+        setMyAccidentVehicle(false)
+        findUserById(userId)
+    };
+
+    const handleComingValue = (value) => {
+        setComingValue(value)
+    }
 
     return (
         <div>
@@ -191,136 +237,136 @@ const CraneHydra = () => {
                     <Login />
                 </div>
             ) : (
-                <div className="admin-page">
-                    <Helmet>
-                        <title>Crane Hydra Dashboard - Claimpro</title>
-                        <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Crane Hydra Dashboard." />
-                        <meta name="keywords" content="Crane Hydra Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
-                        <link rel='canonical' href={`https://claimpro.in/CraneDashboard`} />
-                    </Helmet>
+                <div>
+                    {triggeredIt && (<LocationAccessModal triggerModel='true'
+                    onSuccess={() => {
+                        setTriggeredIt(false); // Hide modal after success
+                        handleComingValue(true);
+                    }} />)}
+                    {comingValue && (
 
-                    {isSidebarOpen ? (
-                        <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
-                            {window.innerWidth < 768 && (
-                                <div className="close-btn" onClick={toggleSidebar}>×</div>
-                            )}
-                            <ul>
-                                <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
+                        <div className={`admin-page ${!comingValue ? 'blur' : ''}`}>
+                            <Helmet>
+                                <title>Crane Hydra Dashboard - Claimpro</title>
+                                <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Crane Hydra Dashboard." />
+                                <meta name="keywords" content="Crane Hydra Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
+                                <link rel='canonical' href={`https://claimpro.in/CraneDashboard`} />
+                            </Helmet>
 
-                                <li onClick={() => {
-                                    setShowCustomerOptions(!showCustomerOptions)
-                                    setStartingPage(true); // Hide Starting Page
-                                    setMyAccidentVehicle(false)
-                                }}>
-                                    <SpaceDashboardIcon className="icon" />
-                                    Dashboard</li>
-                                <ul>
-                                    <li onClick={(e) => {
-                                        setShowReportsOptions(!showReportsOptions)
-                                        setStartingPage(false);
-                                        setMyAccidentVehicle(true);
-                                        e.stopPropagation();
-                                    }}>
-                                        <SummarizeOutlinedIcon className="icon" />
-                                        Reports
-                                        {showReportsOptions && (
-                                            <ul className='submenu' >
-
-                                                <li onClick={() => {
-                                                    setStartingPage(false);
-                                                    setMyAccidentVehicle(true)
-                                                }}>
-                                                    Cases Assigned
-                                                </li>
-                                            </ul>
-                                        )}
-                                    </li>
-                                </ul>
-
-                            </ul>
-                        </aside>) : (
-                        <div>
-                            {window.innerWidth < 768 && (
-                                <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
-                            )}
-                        </div>
-                    )}
-                    <div className="admin-page">
-                        <main className="content" style={{ marginLeft: '0px' }}>
-                            <div className='first-container'>
-                                <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
-                                    {getData.vendorName}
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
-                                    <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
-                                        {userImage ? (
-                                            <img
-                                                src={userImg}
-                                                alt="User"
-                                                style={{ width: '30px', height: '30px', borderRadius: '50%' }}
-                                            />
-                                        ) : (
-                                            <FaUserCircle size={30} />
-                                        )}
-                                    </div>
-                                    {showUserId && (
-                                        <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
-                                            <div style={{
-                                                marginBottom: '10px',
-                                                fontSize: '16px',
-                                                fontWeight: 'bold',
-                                                color: '#333',
-                                                marginTop: "15px"
+                            {isSidebarOpen ? (
+                                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                                    {window.innerWidth < 768 && (
+                                        <div className="close-btn" onClick={toggleSidebar}>×</div>
+                                    )}
+                                    <ul>
+                                        <img src={claimproassist} alt="Dashboard Icon" className="company-img" />
+                                        <li onClick={() => {
+                                            setShowCustomerOptions(!showCustomerOptions);
+                                            setStartingPage(true); // Hide Starting Page
+                                            setMyAccidentVehicle(false);
+                                        }}>
+                                            <SpaceDashboardIcon className="icon" />
+                                            Dashboard
+                                        </li>
+                                        <ul>
+                                            <li onClick={(e) => {
+                                                setShowReportsOptions(!showReportsOptions);
+                                                setStartingPage(false);
+                                                setMyAccidentVehicle(true);
+                                                e.stopPropagation();
                                             }}>
-                                                User Information
-                                            </div>
-                                            <span style={{
-                                                fontSize: '14px',
-                                                color: '#555',
-                                                marginBottom: '10px'
-                                            }}>
-                                                User Name: {getData.vendorName} <br />
-                                                User Id: {getData.id}
-                                            </span>
-                                            <button
-                                                onClick={handleSignOutClick}
-                                                style={{
-                                                    padding: '10px 20px',
-                                                    fontSize: '14px',
-                                                    color: '#fff',
-                                                    backgroundColor: '#007bff',
-                                                    border: 'none',
-                                                    borderRadius: '5px',
-                                                    cursor: 'pointer',
-                                                    outline: 'none',
-                                                    width: '100%',
-                                                    textAlign: 'center',
-                                                    marginTop: "15px",
-                                                }}>
-                                                Sign Out
-                                            </button>
-                                        </div>
+                                                <SummarizeOutlinedIcon className="icon" />
+                                                Reports
+                                                {showReportsOptions && (
+                                                    <ul className='submenu'>
+                                                        <li onClick={() => {
+                                                            setStartingPage(false);
+                                                            setMyAccidentVehicle(true);
+                                                        }}>
+                                                            Cases Assigned
+                                                        </li>
+                                                    </ul>
+                                                )}
+                                            </li>
+                                        </ul>
+                                    </ul>
+                                </aside>
+                            ) : (
+                                <div>
+                                    {window.innerWidth < 768 && (
+                                        <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
                                     )}
                                 </div>
+                            )}
+                            <div className="admin-page">
+                                <main className="content" style={{ marginLeft: '0px', paddingBottom:"0px" }}>
+                                    <div className='first-container'>
+                                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                                            {getData.vendorName}
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
+                                            <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+                                                {userImage ? (
+                                                    <img
+                                                        src={userImg}
+                                                        alt="User"
+                                                        style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                                                    />
+                                                ) : (
+                                                    <FaUserCircle size={30} />
+                                                )}
+                                            </div>
+                                            {showUserId && (
+                                                <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
+                                                    <div className="profile-nav " style={{ marginTop: "0px" }}>
+                                                        <div className="panel" style={{ width: "200px" }}>
+                                                            <div className="user-heading round">
+                                                                <a href="#">
+                                                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="" />
+                                                                </a>
+                                                                <p style={{ margin: "10px 0px 10px 0px", textAlign: "left" }}>{getData.vendorName}</p>
+                                                                <h3 style={{ margin: "10px 0px 5px 0px", color: 'lightyellow', textDecoration: "underline", textAlign: "left" }}>{getData.vendorType}</h3>
+                                                                <p style={{ textAlign: "left" }}>{getData.email}</p>
+                                                            </div>
+                                                            <ul className='profile-view-edit'>
+                                                                <li className="active">
+                                                                    <a href="#" onClick={() => showingProfile(userId)}><i style={{ marginLeft: "5px" }} className="fa fa-user"></i> Manage Profile</a>
+                                                                </li>
+                                                                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+                                                                    <button
+                                                                        onClick={handleSignOutClick}
+                                                                        style={{
+                                                                            padding: '10px 5px',
+                                                                            fontSize: '14px',
+                                                                            color: '#fff',
+                                                                            backgroundColor: '#007bff',
+                                                                            border: 'none',
+                                                                            borderRadius: '5px',
+                                                                            cursor: 'pointer',
+                                                                            outline: 'none',
+                                                                            width: '100%',
+                                                                            textAlign: 'center',
+                                                                            margin: "10px"
+                                                                        }}>
+                                                                        Sign Out
+                                                                    </button>
+                                                                </div>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    {startingPage && <CraneDashboard />}
+                                    {/* {myAccidentVehicle && <AssignedVehicleCrane />} */}
+                                    {showProfile && <Profiles id={usersIdHere} onUpdate={handleUpdate} />}
+                                </main>
                             </div>
-                            <hr />
-
-                            {
-                                startingPage &&
-                                <CraneDashboard />
-                            }
-
-                            {
-                                myAccidentVehicle &&
-                                <AssignedVehicleCrane />
-                            }
-
-
-
-                        </main>
-                    </div>
-
+                        </div>
+                    )}
                 </div>
             )}
         </div>

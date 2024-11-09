@@ -120,6 +120,7 @@ const VendorByMap = ({ onUpdate }) => {
                 vendor.vendorName.toLowerCase().includes(vendorsName.toLowerCase())
             );
         }
+        console.log("foundHere", found)
 
         if (vendorId) {
             found = found.filter((vendor) =>
@@ -213,9 +214,9 @@ const VendorByMap = ({ onUpdate }) => {
 
 
                 <div>
-                    <div className='form-row'>
+                    <div style={{ border: "1px solid", borderRadius: "20px", marginLeft: "10px", padding: "15px" }} className='form-row'>
 
-                        <label className="form-field" style={{marginLeft: "5px", marginBottom: "0px" }}>
+                        <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px" }}>
                             <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Id:</p>
                             <input
                                 type="text"
@@ -245,7 +246,7 @@ const VendorByMap = ({ onUpdate }) => {
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 onClick={toggleDropdown}
-                                style={{ marginLeft: '10px', width: "100%", padding: "5px", borderRadius: "10px", marginTop: "0px", marginBottom: "0px" , background:'lightgrey', border:"1px solid black"}}
+                                style={{ marginLeft: '10px', width: "100%", padding: "5px", borderRadius: "10px", marginTop: "0px", marginBottom: "0px", background: 'lightgrey', border: "1px solid black" }}
                             >
                                 {selectedVendorType || "Select Vendor Type"}
                             </button>
@@ -257,57 +258,120 @@ const VendorByMap = ({ onUpdate }) => {
                             </ul>
                         </div>
 
-                        <div style={{display:"flex", gap:'2px'}}>
-                        <label className="form-field input-group mb-1" style={{borderRadius:"30px"}}>
-                            <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select State:</p> 
-                            <select
-                                name="state"
-                                onChange={handleChanges}
-                                disabled={isLoadingStates}
-                                style={{marginBottom:"1px"}}
-                                value={state}>
-                                <option value="">Select State</option>
-                                {states.map(state => (
-                                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                                ))}
-                            </select>
-                        </label>
-                        <label className="form-field input-group mb-3" style={{borderRadius:"30px"}}>
-                           <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select City:</p> 
-                            <select
-                                name="city"
-                                value={city} // This should match city.iso2
-                                onChange={handleChanges}
-                                disabled={isLoadingCities || !state}
-                            >
-                                <option value="">Select City</option>
-                                {!cities.error && cities.map(city => {
-                                    return (
-                                        <option key={city.iso2} value={city.iso2}>
-                                            {city.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
+                        <div style={{ display: "flex", gap: '2px' }}>
+                            <label className="form-field input-group mb-1" style={{ borderRadius: "30px" }}>
+                                <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select State:</p>
+                                <select
+                                    name="state"
+                                    onChange={handleChanges}
+                                    disabled={isLoadingStates}
+                                    style={{ marginBottom: "1px" }}
+                                    value={state}>
+                                    <option value="">Select State</option>
+                                    {states.map(state => (
+                                        <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className="form-field input-group mb-3" style={{ borderRadius: "30px" }}>
+                                <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select City:</p>
+                                <select
+                                    name="city"
+                                    value={city} // This should match city.iso2
+                                    onChange={handleChanges}
+                                    disabled={isLoadingCities || !state}
+                                >
+                                    <option value="">Select City</option>
+                                    {!cities.error && cities.map(city => {
+                                        return (
+                                            <option key={city.iso2} value={city.iso2}>
+                                                {city.name}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </label>
                         </div>
 
-                        </div>
+                    </div>
+                  
+                    <div style={{ display: "flex", alignItems: 'center', margin: "30px 0px 10ox 30px" }}>
+                        <h6 style={{ fontSize: "16px", fontWeight: "bold", textDecoration: "underline" }}>Filtered Vendors  </h6>
+                        <span style={{ marginBottom: "10px", fontSize: "10px", background: "green", color: "white", borderRadius: "50px", width: "40px", height: "15px", display: 'inline-block', lineHeight: "15px", textAlign: "center", marginLeft: "10px", fontWeight: "bold" }}>{foundVendors.length}</span>
+                        {/* <span style={{
+                            fontSize: "12px",
+                            color: "white",
+                            backgroundColor: "green",
+                            borderRadius: "50%",
+                            width: "20px",
+                            height: "20px",
+                            display: "inline-block",
+                            lineHeight: "20px",
+                            textAlign: "center",
+                            marginLeft: "10px",
+                            fontWeight: "bold"
+                        }}>
+                            {foundVendors.length}
+                        </span> */}
+                    </div>
+                    <div style={{ overflowX: 'hidden', height: "150px", marginBottom: "100px", display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                        {foundVendors.map((vendor, index) => (
+                            <div key={index} style={{ border: "1px solid purple", margin: "10px", borderRadius: "20px", padding: "15px", flex: '1 1 calc(50% - 20px)', boxSizing: 'border-box', minWidth: "300px", maxWidth: "300px", }}>
+                                <strong style={{ color: "rgb(0 155 137)", fontSize: "12px", marginRight: "10px" }}>Vendor Name: {vendor.vendorName}</strong><br />
+                                <strong style={{ color: "rgb(38 4 247)", fontSize: "12px", marginRight: "10px" }}>Type: {vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1).toLowerCase()}</strong><br />
+                                <strong style={{ color: "#1976d2", fontStyle: "italic", fontSize: "12px", marginRight: "10px" }}>Address: {vendor.address}</strong><br />
+                            </div>
+                        ))}
+                    </div>
+
 
                     <div className="map-container" style={{ border: '4px solid lightgreen', height: '400px', width: '100%', borderRadius: '10px', margin: '10px' }}>
                         <MapContainer center={[28.7041, 77.1025]} zoom={4} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
                             <TileLayer
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'
                             />
 
-                            {foundVendors.map((vendor, index) => (
-                                <Marker key={index} position={[vendor.latitude, vendor.longitude]} icon={markerIcon}>
-                                    <Popup>
-                                        {vendor.vendorName}<br />{vendor.vendorType}<br />{vendor.address}<br />
-                                    </Popup>
-                                </Marker>
-                            ))}
+                            {foundVendors.map((vendor, index) => {
+                                console.log("Vendor coordinates:", vendor.latitude, vendor.longitude);
+                                // Slightly larger offset to avoid marker overlap for vendors at the same location
+                                const offsetLat = (Math.random() * 0.0014) - 0.0002; // adjust the offset range
+                                const offsetLng = (Math.random() * 0.0014) - 0.0002; // adjust the offset range
+                                const position = [
+                                    parseFloat(vendor.latitude) + offsetLat,
+                                    parseFloat(vendor.longitude) + offsetLng
+                                ];
+                                console.log("postition", position)
+
+                                return (
+                                    <Marker key={index} position={position} icon={markerIcon}>
+                                        <Popup
+                                            style={{
+                                                backgroundColor: "#f0f8ff", // Light cyan background
+                                                color: "#333", // Dark text color
+                                                border: "2px solid #008080", // Teal border
+                                                borderRadius: "12px", // Rounded corners
+                                                padding: "15px", // More padding for spacing
+                                                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.25)", // Stronger shadow for depth
+                                                fontFamily: "'Arial', sans-serif", // Font style
+                                                fontSize: "16px", // Increase text size
+                                                lineHeight: "1.6", // Adjust line height for better readability
+                                                transition: "transform 0.3s ease", // Smooth transition effect
+                                                marginBottom: "15px"
+                                            }}
+                                            onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")} // Zoom effect on hover
+                                            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")} // Reset on hover out
+                                        >
+                                            Vendor Name : <strong style={{ color: "rgb(0 155 137)", fontSize: "10px" }}>{vendor.vendorName}</strong><br />
+                                            Type : <strong style={{ color: "rgb(38 4 247)", fontStyle: "italic", fontSize: "10px" }}>{vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1).toLowerCase()}</strong><br />
+                                            Address : <strong style={{ color: "#1976d2", fontStyle: "italic", fontSize: "10px" }}>{vendor.address}</strong><br />
+                                        </Popup>
+
+
+                                    </Marker>
+                                );
+                            })}
+
                         </MapContainer>
                     </div>
 
@@ -316,7 +380,7 @@ const VendorByMap = ({ onUpdate }) => {
 
                 </div>
             </div>
-        </div>
+        </div >
     )
 
 

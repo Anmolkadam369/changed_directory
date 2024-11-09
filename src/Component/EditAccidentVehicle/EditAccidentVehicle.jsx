@@ -484,7 +484,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                 </div>
 
                 <div className="form-row">
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         Chassis Number:
                         {comingData.ChassisNoView ? (
                             <>
@@ -512,7 +512,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         Cluster Number:
                         {comingData.ClusterView ? (
                             <>
@@ -540,7 +540,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No Chassis Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         FrontLH Number:
                         {comingData.frontLH ? (
                             <>
@@ -568,7 +568,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No FrontLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         frontRH:
                         {comingData.frontRH ? (
                             <>
@@ -596,7 +596,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No frontRH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         front View:
                         {comingData.frontView ? (
                             <>
@@ -624,7 +624,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No front View Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         rear LH:
                         {comingData.rearLH ? (
                             <>
@@ -652,7 +652,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         rear RH:
                         {comingData.rearRH ? (
                             <>
@@ -680,7 +680,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         Major Damage Photo:
                         {comingData.MajorDamages1 ? (
                             <>
@@ -708,7 +708,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         Major Damage Photo 2:
                         {comingData.MajorDamages2 ? (
                             <>
@@ -736,14 +736,14 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field" style={{marginTop: "30px"}}>
                         Major Damage Photo 3:
                         {comingData.MajorDamages3 ? (
                             <>
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "10px",border:"3px solid grey",borderRadius:"10px", cursor:"pointer" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -764,7 +764,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field"  style={{marginTop: "30px"}}>
                         Major Damage Photo 4:
                         {comingData.MajorDamages4 ? (
                             <>
@@ -792,7 +792,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             <p className='notUploaded' style={{ marginTop: "20px" }}>No rearLH Photo uploaded</p>
                         )}
                     </label>
-                    <label className="form-field">
+                    <label className="form-field"  style={{marginTop: "30px"}}>
                         Major Damage Photo 5:
                         {comingData.MajorDamages5 ? (
                             <>
@@ -833,7 +833,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                     <div className='map-container1'>
                         <MapComponent accidentLocation1={accidentVehicleData} additionalInfo={sendingData} />
                     </div>
-                    <div className='form-fields-container'>
+                    <div className='form-fields-container' style={{maxWidth:"300px"}}>
                         {formData.choosenPlan === "advanced" && vendorData.length !== 0 && (
                             <div>
                                 <label className="form-field1">

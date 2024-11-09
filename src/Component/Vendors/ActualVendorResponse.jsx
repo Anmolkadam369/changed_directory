@@ -48,7 +48,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     const [selectedId, setSelectedId] = useState({});
     const [comingVendorData, setComingVendorData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false)
-    console.log("VEHICLEs", vehicle)
+    console.log("VEHICLEsCoimg", vehicle)
     console.log("DATAFETCHED", dataFetched)
     console.log("setComingVendorData", comingVendorData)
 
@@ -70,6 +70,64 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     const [formData, setFormData] = useState({
         vehicleNo: ""
     });
+
+    const [cransData, setCransData] = useState([]);
+    const [mechanicsData, setMechanicsData] = useState([]);
+    const [workshopsData, setWorkshopsData] = useState([]);
+    const [advocatesData, setAdvocatesData] = useState([]);
+
+    const [DataRejected, setDataRejected] = useState([]);
+    console.log("DATAREJECTED", DataRejected)
+    console.log("DATAREJECTEDhere", DataRejected[0])
+
+
+    useEffect(() => {
+
+        if (vehicle.craneData.length !== 0) {
+            console.log("vanva", vehicle.craneData)
+            const result = someFunct(vehicle.craneData);
+            const result2 = someFunct2(vehicle.craneData);
+            setCransData(result);
+            setDataRejected(prevState => [
+                ...prevState,
+                result2[0]
+            ]);
+        }
+        if (vehicle.mechanicData.length !== 0) {
+            const result = someFunct(vehicle.mechanicData);
+            const result2 = someFunct2(vehicle.mechanicData);
+            setMechanicsData(result);
+            setDataRejected(prevState => [
+                ...prevState,
+                result2[0]
+            ]);
+        }
+        if (vehicle.advocateData.length !== 0) {
+            const result = someFunct(vehicle.advocateData);
+            const result2 = someFunct2(vehicle.advocateData);
+            setWorkshopsData(result);
+            setDataRejected(prevState => [
+                ...prevState,
+                result2[0]
+            ]);
+        }
+        if (vehicle.workshopData.length !== 0) {
+            const result = someFunct(vehicle.workshopData);
+            const result2 = someFunct2(vehicle.workshopData);
+            setAdvocatesData(result);
+            setDataRejected(prevState => [
+                ...prevState,
+                result2[0]
+            ]);
+        }
+    }, [vehicle]);
+
+    const someFunct = (data) => {
+        return data.filter(item => item.acceptedByAdmin !== 'reject');
+    };
+    const someFunct2 = (data) => {
+        return data.filter(item => item.acceptedByAdmin == 'reject');
+    };
 
     useEffect(() => {
         const fetchVendorData = async () => {
@@ -136,7 +194,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         pageNumbers.push(i);
     }
 
-
+    let finalData;
     const viewMechanic = (data) => {
         console.log("viewMechanic", data)
         setSelectedId(data[0])
@@ -148,7 +206,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     }
 
     const viewCrane = (data) => {
-        console.log("DATA", data);
+        console.log("DATACRANESHERE", data);
         setSelectedId(data)
         setMainContent(false);
         setViewMechanicData(false);
@@ -210,10 +268,68 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     }, [comingVendorData])
 
     const uniqueVendors = comingVendorData.filter((vendor, index, self) =>
-        index === self.findIndex((v) => v.vendorCode === vendor.vendorCode)
-    );
+        index === self.findIndex((v) => v.vendorCode === vendor.vendorCode));
+
+    const [DataRejectedVendors, setDataRejectedVendors] = useState([]);
+    const [craneDataRejected, setCraneDataRejected] = useState([]);
+    console.log("cranedatarejected", craneDataRejected)
+    const [advocateDataRejected, setAdvocateDataRejected] = useState([]);
+    const [mechanicDataRejected, setMechanicDataRejected] = useState([]);
+    const [workshopDataRejected, setWorkshopDataRejected] = useState([]);
 
 
+    console.log("DATAREJECTEDVEDOERESS", DataRejectedVendors)
+    useEffect(() => {
+        const uniquehere = (uniqueVendors) => {
+            if (Array.isArray(DataRejected) && Array.isArray(uniqueVendors)) {
+                const matchedVendors = DataRejected
+                    .filter(item => item?.VendorCode) // Ensure VendorCode exists
+                    .map(item => {
+                        const matchedVendor = uniqueVendors.find(vendor => vendor.vendorCode === item.VendorCode);
+
+                        if (matchedVendor) {
+                            return { ...matchedVendor, ...item }; // Merge uniqueVendor and DataRejected item
+                        }
+                        return null;
+                    })
+                    .filter(item => item !== null); // Filter out null values
+
+                // Remove duplicates based on VendorCode
+                const uniqueMatchedVendors = matchedVendors.reduce((acc, current) => {
+                    const x = acc.find(item => item.vendorCode === current.vendorCode);
+                    if (!x) {
+                        return acc.concat([current]);
+                    }
+                    return acc;
+                }, []);
+
+                console.log("ACCOUNDT", uniqueMatchedVendors)
+                for (let i = 0; i < uniqueMatchedVendors.length; i++) {
+                    console.log("uniqueMatchedVendirs", uniqueMatchedVendors[i].vendorType)
+                    if (uniqueMatchedVendors[i].vendorType == 'crane') setCraneDataRejected(uniqueMatchedVendors[i])
+                    if (uniqueMatchedVendors[i].vendorType == 'advocate') setAdvocateDataRejected(uniqueMatchedVendors[i])
+                    if (uniqueMatchedVendors[i].vendorType == 'mechanic') setMechanicDataRejected(uniqueMatchedVendors[i])
+                    if (uniqueMatchedVendors[i].vendorType == 'workshop') setWorkshopDataRejected(uniqueMatchedVendors[i])
+
+                }
+
+                // Check if uniqueMatchedVendors has changed before updating state
+                if (JSON.stringify(uniqueMatchedVendors) !== JSON.stringify(DataRejectedVendors)) {
+                    setDataRejectedVendors(uniqueMatchedVendors);
+                }
+            }
+        };
+        console.log("SODSMDSD")
+
+        // Only call uniquehere if both arrays have data
+        if (uniqueVendors.length !== 0 && DataRejected.length !== 0) {
+            uniquehere(uniqueVendors);
+        }
+    }, [DataRejected, uniqueVendors]);
+
+    const [selected, setSelected] = useState("accepted")
+
+    console.log("cut kela phone", cransData.length, vehicle.craneData.length)
     return (
         <div>
             {mainContent && (
@@ -385,103 +501,217 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                             <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack}></Button>
                             <h3 className="bigtitle">Vendor Response Overview (Assigned Only)</h3>
                         </div>
-
-                        <div className="responsive-table" style={{ width: '100%' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
-                                <thead>
-                                    <tr>
-                                        <th>Sr. No</th>
-                                        <th>Vendor Name</th>
-                                        <th>Type Of Vendor</th>
-                                        <th>Vendor Email</th>
-                                        <th>Accepted</th>
-                                        <th>View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {uniqueVendors.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="5" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from this vendor...</td>
-                                        </tr>
-                                    ) : (
-                                        uniqueVendors.map((vendor, index) => (
-                                            <tr key={vendor.vendorCode}>
-                                                <td>{index + 1}</td>
-                                                <td>{vendor.vendorName.charAt(0).toUpperCase() + vendor.vendorName.slice(1) || '---'}</td>
-                                                <td style={{ color: "green" }}>{vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1) || '---'}</td>
-                                                <td style={{ color: "blue" }}><a href={`mailto:${vendor.email}`} style={{ color: "blue", textDecoration: "none" }}>
-                                                    {vendor.email}
-                                                </a></td>
-                                                <td>
-                                                    <div>
-                                                        {vendor.vendorType === "crane" && (
-                                                            vehicle.craneData.length === 0 ? (
-                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
-                                                            ) : (
-                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.craneData[0].acceptedByAdmin == null ? "pending" : vehicle.craneData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.craneData[0].acceptedByAdmin.slice(1)}</p>
-                                                            )
-                                                        )}
-                                                        {vendor.vendorType === "mechanic" && (
-                                                            vehicle.mechanicData.length === 0 ? (
-                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
-                                                            ) : (
-                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.mechanicData[0].acceptedByAdmin.slice(1)}</p>
-                                                            )
-                                                        )}
-                                                        {vendor.vendorType === "advocate" && (
-                                                            vehicle.advocateData.length === 0 ? (
-                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
-                                                            ) : (
-                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.advocateData[0].acceptedByAdmin.slice(1)}</p>
-                                                            )
-                                                        )}
-                                                        {vendor.vendorType === "workshop" && (
-                                                            vehicle.workshopData.length === 0 ? (
-                                                                <p style={{ color: "red", fontSize: "14px" }}>no response</p>
-                                                            ) : (
-                                                                <p style={{ color: "brown", fontSize: "14px" }}>{vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin.charAt(0).toUpperCase() + vehicle.workshopData[0].acceptedByAdmin.slice(1)}</p>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        {vendor.vendorType === "crane" && (
-                                                            vehicle.craneData.length === 0 ? (
-                                                                <button className='view-button' style={{ color: "red" }}>__</button>
-                                                            ) : (
-                                                                <button onClick={() => viewCrane(vehicle.craneData)} className='view-button'>View</button>
-                                                            )
-                                                        )}
-                                                        {vendor.vendorType === "mechanic" && (
-                                                            vehicle.mechanicData.length === 0 ? (
-                                                                <button className='view-button' style={{ color: "red" }}>__</button>
-                                                            ) : (
-                                                                <button onClick={() => viewMechanic(vehicle.mechanicData)} className='view-button'>View</button>
-                                                            )
-                                                        )}
-                                                        {vendor.vendorType === "advocate" && (
-                                                            vehicle.advocateData.length === 0 ? (
-                                                                <button className='view-button' style={{ color: "red" }}>__</button>
-                                                            ) : (
-                                                                <button onClick={() => viewAdvocate(vehicle.advocateData)} className='view-button'>View</button>
-                                                            )
-                                                        )}
-                                                        {vendor.vendorType === "workshop" && (
-                                                            vehicle.workshopData.length === 0 ? (
-                                                                <button className='view-button' style={{ color: "red" }}>__</button>
-                                                            ) : (
-                                                                <button onClick={() => viewWorkshop(vehicle.workshopData)} className='view-button'>View</button>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                </td>
+                        {selected == "accepted" && (
+                            <div>
+                                <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
+                                <button style={{backgroundColor:"teal", color:'white'}} onClick={(() => { setSelected("rejected") })}>
+                                    See Rejected Vendors
+                                </button>
+                                </div>
+                                <div className="responsive-table" style={{ width: '100%' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                                        <thead>
+                                            <tr>
+                                                <th>Sr. No</th>
+                                                <th>Vendor Name</th>
+                                                <th>Type Of Vendor</th>
+                                                <th>Vendor Email</th>
+                                                <th>Accepted</th>
+                                                <th>View</th>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                                        </thead>
+                                        <tbody>
+                                            {uniqueVendors.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="5" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from the assigned vendors...</td>
+                                                </tr>
+                                            ) : (
+                                                uniqueVendors.map((vendor, index) => (
+                                                    <tr key={vendor.vendorCode}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{vendor.vendorName.charAt(0).toUpperCase() + vendor.vendorName.slice(1) || '---'}</td>
+                                                        <td style={{ color: "green" }}>{vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1) || '---'}</td>
+                                                        <td style={{ color: "blue" }}><a href={`mailto:${vendor.email}`} style={{ color: "blue", textDecoration: "none" }}>
+                                                            {vendor.email}
+                                                        </a></td>
+                                                        <td>
+                                                            <div>
+                                                                {vendor.vendorType === "crane" && (
+                                                                    vehicle.craneData.length !== 0 && cransData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{cransData[0].acceptedByAdmin == null ? "pending" : cransData[0].acceptedByAdmin.charAt(0).toUpperCase() + cransData[0].acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "mechanic" && (
+                                                                    vehicle.mechanicData.length !== 0 && mechanicsData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{mechanicsData[0].acceptedByAdmin == null ? "pending" : mechanicsData[0].acceptedByAdmin.charAt(0).toUpperCase() + mechanicsData[0].acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "advocate" && (
+                                                                    vehicle.advocateData.length !== 0 && advocatesData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{advocatesData[0].acceptedByAdmin == null ? "pending" : advocatesData[0].acceptedByAdmin.charAt(0).toUpperCase() + advocatesData[0].acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "workshop" && (
+                                                                    vehicle.workshopData.length !== 0 && workshopsData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{workshopsData[0].acceptedByAdmin == null ? "pending" : workshopsData[0].acceptedByAdmin.charAt(0).toUpperCase() + workshopsData[0].acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                {vendor.vendorType === "crane" && (
+                                                                    cransData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewCrane(cransData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "mechanic" && (
+                                                                    mechanicsData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewMechanic(mechanicsData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "advocate" && (
+                                                                    advocatesData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewAdvocate(advocatesData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "workshop" && (
+                                                                    workshopsData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewWorkshop(workshopsData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {selected == "rejected" && (
+                            <div>
+                                <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
+                                <button style={{backgroundColor:"teal", color:"white"}} onClick={(() => { setSelected("accepted") })}>
+                                   See Processed Vendors
+                                </button>
+                                </div>
+                                <div className="responsive-table" style={{ width: '100%' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: "90px" }}>
+                                        <thead>
+                                            <tr>
+                                                <th>Sr. No</th>
+                                                <th>Vendor Name</th>
+                                                <th>Type Of Vendor</th>
+                                                <th>Vendor Email</th>
+                                                <th>Accepted</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {DataRejectedVendors.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="5" style={{ textAlign: "center", fontWeight: "bold" }}>No Rejected Vendors Yet</td>
+                                                </tr>
+                                            ) : (
+                                                DataRejectedVendors.map((vendor, index) => (
+                                                    <tr key={vendor.vendorCode}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{vendor.vendorName.charAt(0).toUpperCase() + vendor.vendorName.slice(1) || '---'}</td>
+                                                        <td style={{ color: "green" }}>{vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1) || '---'}</td>
+                                                        <td style={{ color: "blue" }}><a href={`mailto:${vendor.email}`} style={{ color: "blue", textDecoration: "none" }}>
+                                                            {vendor.email}
+                                                        </a></td>
+                                                        <td>
+                                                            <div>
+                                                                {vendor.vendorType === "crane" && (
+                                                                    craneDataRejected.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{craneDataRejected.acceptedByAdmin == null ? "pending" : craneDataRejected.acceptedByAdmin.charAt(0).toUpperCase() + craneDataRejected.acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "mechanic" && (
+                                                                    mechanicDataRejected.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{mechanicDataRejected.acceptedByAdmin == null ? "pending" : mechanicDataRejected.acceptedByAdmin.charAt(0).toUpperCase() + mechanicsData.acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "advocate" && (
+                                                                    advocateDataRejected.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{advocateDataRejected.acceptedByAdmin == null ? "pending" : advocateDataRejected.acceptedByAdmin.charAt(0).toUpperCase() + advocateDataRejected.acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "workshop" && (
+                                                                    workshopDataRejected.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{workshopDataRejected.acceptedByAdmin == null ? "pending" : workshopDataRejected.acceptedByAdmin.charAt(0).toUpperCase() + workshopDataRejected.acceptedByAdmin.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                {vendor.vendorType === "crane" && (
+                                                                    craneDataRejected.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewCrane([craneDataRejected])} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "mechanic" && (
+                                                                    mechanicsData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewMechanic(mechanicsData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "advocate" && (
+                                                                    advocatesData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewAdvocate(advocatesData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "workshop" && (
+                                                                    workshopsData.length === 0 ? (
+                                                                        <button className='view-button' style={{ color: "red" }}>__</button>
+                                                                    ) : (
+                                                                        <button onClick={() => viewWorkshop(workshopsData)} className='view-button'>View</button>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
                         <div className="pagination">
                             <ButtonGroup style={{ boxShadow: 'none' }} variant="contained" color="primary" aria-label="pagination buttons">
                                 <Button onClick={handlePreviousPage} disabled={currentPage === 1}>

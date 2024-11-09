@@ -21,6 +21,10 @@ import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
+import AssignedVehicleCrane from './AssignedVehiclesCrane';
+import CaseFirstCard from '../CaseFirstCard/CaseFirstCard';
+import TargetVsReality from '../AAAAAAAAAAAAAAAAAA/TargetVsReality/TargetVsReality.tsx';
+import VendorViewRating from '../VendorViewRating/VendorViewRating.jsx';
 
 const CraneDashboard = ({ getData }) => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
@@ -98,8 +102,8 @@ const CraneDashboard = ({ getData }) => {
     useEffect(() => {
 
         const totalCases = totalAssignedCases.length;
-        const fullyClosedCasesVendor = fullyClosedCases+adminRejected;
-        const workingCasesVendor = workingCases-adminRejected;
+        const fullyClosedCasesVendor = fullyClosedCases + adminRejected;
+        const workingCasesVendor = workingCases - adminRejected;
         const NonworkingCasesVehicle = totalAssignedCases.length - gotResponse.length; // Update this with the actual resolved vehicles count
 
         setDoughnutData((prevData) => ({
@@ -155,6 +159,7 @@ const CraneDashboard = ({ getData }) => {
         }
     };
 
+
     const fetchAssignedCases = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
@@ -165,32 +170,104 @@ const CraneDashboard = ({ getData }) => {
         }
     };
 
+    const getFilteredData = (filter) => {
+        console.log("data is here");
+
+        const now = new Date();  // Current date and time
+        const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
+        const yesterday = new Date(now.getTime() - oneDay); // Yesterday's date and time
+        const weekBefore = new Date(now.getTime() - (oneDay * 7));
+        const monthBefore = new Date(now.getTime() - (oneDay * 30));
+
+
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const todayDate = formatDate(now);
+        const yesterdayDate = formatDate(yesterday);
+        const weekBeforeDate = formatDate(weekBefore)
+        const monthBeforeDate = formatDate(monthBefore)
+
+        console.log("todayDate", todayDate)
+        console.log("yesterdayDate", yesterdayDate)
+
+
+        for (let i = 0; i < totalAssignedCases.length; i++) {
+            let getTime = totalAssignedCases[i].craneAssignedOn.split('|');
+            let assignedDate = getTime[0];
+            let assignedTime = getTime[1];
+            let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
+
+            if (filter === 'daily') {
+                if (assignedDate === todayDate || assignedDate === yesterdayDate) {
+                    const timeDifference = now - assignedDateTime;
+                    if (timeDifference <= oneDay) {
+                        console.log("Match found within last 24 hours:", totalAssignedCases[i]);
+                    }
+                }
+            }
+            else if (filter === 'weekly') {
+                if (assignedDateTime >= weekBefore && assignedDateTime <= now) {
+                    console.log("Match found within last 7 days:", totalAssignedCases[i]);
+                }
+            }
+            else if (filter === 'monthly') {
+                if (assignedDateTime >= monthBefore && assignedDateTime <= now) {
+                    console.log("Match found within last 30 days:", totalAssignedCases[i]);
+                }
+            }
+        }
+    };
+
     console.log("totalAssignedCases:", totalAssignedCases);
 
     useEffect(() => {
-        if (gotResponse.length != 0) {
+        if (gotResponse.length !== 0) {
             let fullyClosedCount = 0;
             let workingCount = 0;
 
             for (let i = 0; i < gotResponse.length; i++) {
                 let caseIsFullyClosed = true;
                 const caseFields = gotResponse[i];
+
                 for (let key in caseFields) {
-                    if (key == "cheque" || key == "onlinePaymentImg" || key == "paidByCash") continue;
-                        if (caseFields[key] === null || caseFields[key] === "") {
-                            caseIsFullyClosed = false;
-                            break;  
+                    console.log("caseField", caseFields);
+
+                    // Exclude specific fields from affecting the fully closed status
+                    if (key === "cheque" || key === "onlinePaymentImg" || key === "paidByCash" ||
+                        key === "reasonforRejection" || key === "rejectionReason" || key === "transactionId") {
+                        continue;
+                    }
+
+                    // Set case as not fully closed if any relevant field is null or empty
+                    if (caseFields[key] === null || caseFields[key] === "") {
+                        caseIsFullyClosed = false;
+                        break;
                     }
                 }
-                if (caseIsFullyClosed && (gotResponse[i].cheque != null || gotResponse[i].onlinePaymentImg != null || gotResponse[i].paidByCash != null)) {
+
+                console.log("gotResponse[i].cheque", gotResponse[i].cheque);
+
+                // Check if case is fully closed based on payment fields
+                if (caseIsFullyClosed &&
+                    (gotResponse[i].cheque !== null ||
+                        gotResponse[i].onlinePaymentImg !== null ||
+                        gotResponse[i].paidByCash !== null)) {
                     fullyClosedCount++;
                 } else {
                     workingCount++;
                 }
             }
+
             setFullyClosedCases(fullyClosedCount);
             setWorkingCases(workingCount);
         }
+
     }, [gotResponse])
 
     useEffect(() => {
@@ -248,6 +325,58 @@ const CraneDashboard = ({ getData }) => {
     //     }
     // };
 
+    // Check if Geolocation is supported
+
+
+
+    const [selected, setSelected] = useState(null);
+    const handleClick = (func, index) => {
+        setSelected(index);
+        func();
+    };
+
+    const [filterForVehicleCrane, setFilterForVehicleCrane] = useState("all")
+    const [isSelected, setIsSelected] = useState("")
+    const casesFilterForVehicleCrane = (filter) => {
+        setFilterForVehicleCrane(filter)
+        setIsSelected(filter);
+    }
+    let flickerClass;
+    if ((totalAssignedCases.length - gotResponse.length) > 0) {
+        flickerClass = isSelected !== "Non Started Cases" ? 'shine' : ""
+    }
+
+    const [isNewCase, setNewCase] = useState(false)
+    console.log("ISNEW CAESE ERESRE", isNewCase)
+    console.log("GotRepsonce", gotResponse)
+
+    const [newCasesItems, setNewCasesItems] = useState([])
+    console.log("setNewCasesItems bonenza", setNewCasesItems)
+    console.log("(totalAssignedCases.length - gotResponse.length)", (totalAssignedCases.length - gotResponse.length))
+
+    useEffect(() => {
+        console.log("totalAssignedCases:", totalAssignedCases);
+        console.log("gotResponse:", gotResponse);
+        console.log("Difference:", totalAssignedCases.length - gotResponse.length);
+    
+        if ((totalAssignedCases.length - gotResponse.length) > 0) {
+            const filteredItems = totalAssignedCases.filter((caseItem) => caseItem?.details[0]?.firstResponseOn == null);
+            setNewCasesItems(filteredItems);
+            setNewCase(true);
+        } else {
+            setNewCasesItems([]);
+            setNewCase(false);
+        }
+    }, [totalAssignedCases, gotResponse]);
+    
+    const handleBack = () => {
+        setNewCase(false)
+        getGotResponseVehicle()
+        fetchAssignedCases()
+        getAllAccidentVehicleData()
+    }
+
+
     return (
         <div className="dashboard">
             <Helmet>
@@ -258,110 +387,180 @@ const CraneDashboard = ({ getData }) => {
             </Helmet>
 
             <main className="main-content">
-                <div className='other-content'>
-                    <div style={{ display: "relative" }}>
+                {!isNewCase && (
+                    <div>
+                        <div className='other-content'>
+                            <div style={{ display: "relative" }}>
+                                <div style={{ display: 'flex' }}>
+                                    <p
+                                        className={`topdivs ${selected === 1 ? 'selected' : ''}`}
+                                        onClick={() => { getFilteredData('daily') }}
+                                    >
+                                        Daily
+                                    </p>
+                                    <p
+                                        className={`topdivs ${selected === 2 ? 'selected' : ''}`}
+                                        onClick={() => { getFilteredData('weekly') }}
+                                    >
+                                        Weekly
+                                    </p>
+                                    <p
+                                        className={`topdivs ${selected === 3 ? 'selected' : ''}`}
+                                        onClick={() => { getFilteredData('monthly') }}
+                                    >
+                                        Monthly
+                                    </p>
+                                </div>
+                                <div className="stat-container">
+                                    <div className={`stat-item ${flickerClass}`} onClick={() => casesFilterForVehicleCrane('Non Started Cases')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Non Started Cases" ? '#00000074' : 'transperant'
+                                        }}>
+                                        <PendingOutlinedIcon className="small-image" />
+                                        <h3 style={{ fontSize: "0.6rem" }}>New Case</h3>
+                                        <p>{totalAssignedCases.length - gotResponse.length}</p>
+                                    </div>
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('getAll')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "getAll" ? '#00000074' : 'transparent', // Change background color on selection
+                                        }}>
+                                        <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
+                                        <h3 style={{ fontSize: "0.6rem" }}>Total Cases Assigned</h3>
+                                        <p>{totalAssignedCases.length}</p>
+                                    </div>
 
-                        <div className="stat-container">
-                            <div className="stat-item">
-                                <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
-                                <h3>Total Cases Assigned</h3>
-                                <p>{totalAssignedCases.length}</p>
-                            </div>
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Accepted Vehicles')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Accepted Vehicles" ? '#00000074' : 'transparent', // Change background color on selection
+                                        }}>
+                                        <ThumbUpAltOutlinedIcon className="small-image" />
+                                        {/* <img src={SwipeRightAltOutlinedIcon}  className="small-image" alt="accpeted By Admin" /> */}
+                                        <h3 style={{ fontSize: "0.6rem" }}>Accepted By Admin</h3>
+                                        <p>{adminAccepted}</p>
+                                    </div>
 
-                            <div className="stat-item">
-                                <ThumbUpAltOutlinedIcon className="small-image" />
-                                {/* <img src={SwipeRightAltOutlinedIcon} className="small-image" alt="accpeted By Admin" /> */}
-                                <h3>Accepted By Admin</h3>
-                                <p>{adminAccepted}</p>
-                            </div>
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Rejected Vehicles')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Rejected Vehicles" ? '#00000074' : 'transparent', // Change background color on selection
+                                        }}>
+                                        <ThumbDownOutlinedIcon className="small-image" />
+                                        <h3 style={{ fontSize: "0.6rem" }}>Rejected By Admin</h3>
+                                        <p>{adminRejected}</p>
+                                    </div>
 
-                            <div className="stat-item">
-                                <ThumbDownOutlinedIcon className="small-image" />
-                                <h3>Rejected By Admin</h3>
-                                <p>{adminRejected}</p>
-                            </div>
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Pending Vehicles')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Pending Vehicles" ? '#00000074' : 'transparent', // Change background color on selection
+                                        }}>
+                                        <PendingActionsOutlinedIcon className="small-image" />
+                                        <h3 style={{ fontSize: "0.6rem" }}>Pending (Admin and Not Requested)</h3>
+                                        <p>{adminPending}</p>
+                                    </div>
 
-                            <div className="stat-item">
-                                <PendingActionsOutlinedIcon className="small-image" />
-                                <h3>Pending (Admin and Not Requested)</h3>
-                                <p>{adminPending}</p>
+                                </div>
+
+                                <div className="stat-container">
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Response given')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Response given" ? '#00000074' : 'transparent', // Change background color on selection
+                                        }}>
+                                        <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
+                                        <h3 style={{ fontSize: "0.6rem" }}>Response Given</h3>
+                                        <p>{gotResponse.length}</p>
+                                    </div>
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Completed Cases')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Completed Cases" ? '#00000074' : 'transparent', // Change background color on selection
+                                        }}>
+                                        <AssignmentTurnedInOutlinedIcon className="small-image" />
+                                        <h3 style={{ fontSize: "0.6rem" }}>Fully Closed Cases</h3>
+                                        <p>{fullyClosedCases + adminRejected}</p>
+                                    </div>
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Working Vehicles" ? '#00000074' : 'white', // Change background color on selection
+                                        }}>
+                                        <PendingActionsOutlinedIcon className="small-image" />
+                                        <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
+                                        <p>{workingCases - adminRejected}</p>
+                                    </div>
+                                    <div className="stat-item" style={{ background: "#f0f0f000", border: 'none', boxShadow: "none" }}>
+                                    </div>
+                                    <div className="stat-item" style={{ background: "#f0f0f000", border: 'none', boxShadow: "none" }}>
+                                    </div>
+
+                                </div>
+
+                                <div style={{ marginBottom: "30px" }}>
+                                    <AssignedVehicleCrane getFilterInfo={filterForVehicleCrane} />
+                                </div>
+
+                                <div className="statistics">
+                                    <div className="charts">
+
+                                        <div className="chart-item" style={{ background: "radial-gradient(rgb(171 221 193), rgba(245, 245, 245, 0))" }}>
+                                            <h3 className="chart-title"> Vehicle Working Status</h3>
+                                            <Doughnut data={doughnutData} />
+                                        </div>
+
+                                        <div className="chart-item" style={{ background: "radial-gradient(rgb(81 ,191, 213), rgba(245, 245, 245, 0))" }}>
+                                            <h3 className="chart-title"> Admin Cases Status</h3>
+                                            <Doughnut data={doughnutData2} />
+                                        </div>
+                                        <Featured />
+
+                                        {/* <TargetVsReality /> */}
+                                        <VendorViewRating/>
+
+
+                                        {/* <Chart /> */}
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="stat-container">
-                            <div className="stat-item">
-                                <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
-                                <h3>Response Given</h3>
-                                <p>{gotResponse.length}</p>
-                            </div>
-
-                            <div className="stat-item">
-                                <AssignmentTurnedInOutlinedIcon className="small-image" />
-                                <h3>Fully Closed Cases</h3>
-                                <p>{fullyClosedCases+adminRejected}</p>
-                            </div>
-                            <div className="stat-item">
-                            <PendingActionsOutlinedIcon className="small-image" />
-                                <h3>Working Cases</h3>
-                                <p>{workingCases-adminRejected}</p>
-                            </div>
-                            <div className="stat-item">
-                            <PendingOutlinedIcon className="small-image" />
-                                <h3>Non Started Cases</h3>
-                                <p>{totalAssignedCases.length - gotResponse.length}</p>
-                            </div>
-                        </div>
-
-                        <div className="statistics">
-                            <div className="charts">
-
-                                <div className="chart-item">
-                                    <h3 className="chart-title"> Vehicle Working Status</h3>
-                                    <Doughnut data={doughnutData} />
-                                </div>
-
-                                <div className="chart-item">
-                                    <h3 className="chart-title"> Admin Cases Status</h3>
-                                    <Doughnut data={doughnutData2} />
-                                </div>
-                                <Featured />
-
-
-                                {/* <Chart /> */}
-
-                            </div>
+                        <div className="map-container" style={{ height: '400px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
+                            <MapContainer center={[19.0760, 72.8777]} zoom={10} style={{ height: '100%', width: '100%' }}>
+                                <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                />
+                                <Marker position={[19.0760, 72.8777]} icon={markerIcon}>
+                                    <Popup>
+                                        Mumbai
+                                    </Popup>
+                                </Marker>
+                                <Marker position={[28.6139, 77.2090]} icon={markerIcon}>
+                                    <Popup>
+                                        Delhi
+                                    </Popup>
+                                </Marker>
+                                <Marker position={[12.9716, 77.5946]} icon={markerIcon}>
+                                    <Popup>
+                                        Karnataka
+                                    </Popup>
+                                </Marker>
+                                <Marker position={[20.9517, 85.0985]} icon={markerIcon}>
+                                    <Popup>
+                                        Orissa
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>
                         </div>
                     </div>
-                </div>
-
-                <div className="map-container" style={{ height: '400px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
-                    <MapContainer center={[19.0760, 72.8777]} zoom={10} style={{ height: '100%', width: '100%' }}>
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        />
-                        <Marker position={[19.0760, 72.8777]} icon={markerIcon}>
-                            <Popup>
-                                Mumbai
-                            </Popup>
-                        </Marker>
-                        <Marker position={[28.6139, 77.2090]} icon={markerIcon}>
-                            <Popup>
-                                Delhi
-                            </Popup>
-                        </Marker>
-                        <Marker position={[12.9716, 77.5946]} icon={markerIcon}>
-                            <Popup>
-                                Karnataka
-                            </Popup>
-                        </Marker>
-                        <Marker position={[20.9517, 85.0985]} icon={markerIcon}>
-                            <Popup>
-                                Orissa
-                            </Popup>
-                        </Marker>
-                    </MapContainer>
-                </div>
+                )}
+                {isNewCase && (
+                    <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
+                )}
             </main>
         </div>
     );

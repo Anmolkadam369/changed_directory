@@ -91,3 +91,11 @@ body {
     margin-top: 7rem;
   }
 }
+
+
+
+@media (max-width: 768px) {
+  .carousel-caption p {
+    font-size: 10px;
+  }
+}

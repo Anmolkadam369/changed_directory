@@ -16,9 +16,22 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
+import feedbackByVendor from '../../Assets/feedbackByVendor.png'
+import commissionbyvendor from '../../Assets/commissionbyvendor.png'
+import paymentcheck from '../../Assets/payment-check.png'
+import onlinepayment from '../../Assets/onlinepayment.png'
+import cash from '../../Assets/cash.png'
+import list from '../../Assets/list.png'
+import imageshowing from '../../Assets/imageshowing.png'
+import exploration from '../../Assets/exploration.png'
+const modalTitleFontSize = window.innerWidth < 576 ? '1rem' : window.innerWidth < 768 ? '0.9rem' : '1.0rem';
+const modalBodyFontSize = window.innerWidth < 576 ? '0.9rem' : window.innerWidth < 768 ? '0.6rem' : '0.9rem';
+
+
 
 
 function CraneResponse({ data, onUpdate }) {
+    console.log("DATA IS HERE BUDDY", data)
     const location = useLocation();
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -99,18 +112,79 @@ function CraneResponse({ data, onUpdate }) {
         await onSubmit(modalData.action);
     };
 
+
+
+
+    const [isReadOnlyPayment, setIsReadOnlyPayment] = useState(true)
+    const [feedbackRating, setfeedbackRating] = useState(null);
+    const [isfeedbackRatingModalOpen, setIsfeedbackRatingModalOpen] = useState(false);
+    const [isCommissionModelOpen, setIsCommissionModelOpen] = useState(false);
+    let [paymentThrough, setPaymentThrough] = useState("");
+    console.log("paymentThrgesh", paymentThrough)
+    const [isChequeModalOpen, setIsChequeModalOpen] = useState(false);
+    const [isOnlinePaymentModalOpen, setIsOnlinePaymentModalOpen] = useState(false);
+
+    const openChequeModal = (e) => {
+        e.preventDefault();
+        setIsChequeModalOpen(true);
+    };
+
+    const closeChequeModal = () => {
+        setIsChequeModalOpen(false);
+    };
+
+    const openOnlinePaymentModal = () => {
+        setIsOnlinePaymentModalOpen(true);
+    };
+
+    const closeOnlinePaymentModal = () => {
+        setIsOnlinePaymentModalOpen(false);
+    };
+
+    const openfeedbackRatingModal = (e) => {
+        e.preventDefault()
+        setIsfeedbackRatingModalOpen(true);
+        setIsCommissionModelOpen(false);
+    };
+
+    const openCommissionModel = (e) => {
+        e.preventDefault();
+        setIsCommissionModelOpen(true);
+        setIsfeedbackRatingModalOpen(false);
+    }
+
+    const closefeedbackRatingModal = (e) => {
+        e.preventDefault()
+        setIsfeedbackRatingModalOpen(false);
+    };
+
+
+    const closeCommisionModel = (e) => {
+        e.preventDefault()
+        setIsCommissionModelOpen(false);
+    };
+
+
+
+
+    const [alreadyRating, setAlreadyRating] = useState(false);
+    const paymentBy = (value) => {
+        setPaymentThrough(value);
+    }
     // Initially set formData from location state if available
+    console.log("mydata is her", data)
     const initialData = data || {
-        advancedPayment: "",
-        balancePayment: "",
-        recoveryVanEstimate: "",
-        vehicleHandover: "",
-        vehicleInspection: "",
-        feedback: "",
-        vehicleTakeOver: "",
-        workEstimate: "",
-        reasonOfReject: "",
-        feedbackRating:""
+        advancedPayment: data[0].advancedPayment || "",
+        balancePayment: data[0].balancePayment || "",
+        recoveryVanEstimate: data[0].recoveryVanEstimate || "",
+        vehicleHandover: data[0].vehicleHandover || "",
+        vehicleInspection: data[0].vehicleInspection || "",
+        feedback: data[0].feedback || "",
+        vehicleTakeOver: data[0].vehicleTakeOver || "",
+        workEstimate: data[0].workEstimate || "",
+        reasonOfReject: data[0].reasonOfReject || "",
+        feedbackRating: data[0].feedbackRating || "",
+        commisionAmount: data[0].commisionAmount || "",
     };
     const [formData, setFormData] = useState(initialData[0]);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -136,7 +210,7 @@ function CraneResponse({ data, onUpdate }) {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
-            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
+            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}/${formData.commisionAmount}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setTimeout(() => {
@@ -217,6 +291,27 @@ function CraneResponse({ data, onUpdate }) {
         };
     }, []);
 
+    const [showSideImage, setShowSideImage] = useState(false)
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 986) {
+                setShowSideImage(false)
+            } else {
+                setShowSideImage(true)
+
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    const agoda = parseInt(formData.advancedPayment)
+    console.log("advantedfadsfasdfasdfasfd", typeof (agoda))
+
 
     return (
         <form className="customer-response-form" style={{ marginBottom: "50px" }}>
@@ -229,11 +324,11 @@ function CraneResponse({ data, onUpdate }) {
 
 
             <form className="customer-response-form" style={{ background: "white", marginLeft, padding, width }}>
-            <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
-                <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
-                <h2 className='bigtitle'>Accident Images</h2>
-            </div>
-            <div className="form-row">
+                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
+                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
+                    <h2 className='bigtitle'>Accident Images</h2>
+                </div>
+                <div className="form-row">
                     <label className="form-field">
                         Chassis Number:
                         {formData.ChassisNoView ? (
@@ -241,7 +336,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openChassisModal}
                                 />
                                 <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Number Modal">
@@ -275,7 +370,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
@@ -309,7 +404,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
@@ -348,7 +443,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
@@ -382,7 +477,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
@@ -416,7 +511,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
@@ -454,7 +549,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
@@ -489,7 +584,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
@@ -523,7 +618,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
@@ -561,7 +656,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -596,7 +691,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
@@ -631,7 +726,7 @@ function CraneResponse({ data, onUpdate }) {
                                 <img
                                     src={formData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px" , borderRadius:"10px"}}
+                                    style={{ maxWidth: '100px', display: 'block', cursor: 'pointer', border: 'solid black 2px', padding: "3px", marginTop: "6px", borderRadius: "10px" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
@@ -663,7 +758,7 @@ function CraneResponse({ data, onUpdate }) {
 
 
 
-            <div class="header-container">
+                {/* <div class="header-container">
                 <h3 class="bigtitle">Data Uploaded by Crane Manager</h3>
                 <h5 style={{
                                 color: 'green',
@@ -676,39 +771,42 @@ function CraneResponse({ data, onUpdate }) {
                             }}>Last Updated On : {formData.updateResponseOn ? formData.updateResponseOn : formData.firstResponseOn}</h5>
             </div>
             <div className='form-row'>
-                {/* Ensure correct name attribute values are used */}
                 <label className="form-field">
                     Vehicle Inspection Remarks:
-                    <textarea className='inputField' name="advancedPayment" value={formData.advancedPayment} readOnly />
+                    <textarea className='inputField' name="advancedPayment" value={formData.vehicleInspection} readOnly />
                 </label>
                 <label className="form-field">
-                    Labour Estimate:
-                    <input type="text" className='inputField' name="balancePayment" value={formData.balancePayment} readOnly />
-                </label>
-                <label className="form-field">
-                    Parts Arrangement:
-                    <textarea name="partsArrangement" className='inputField' value={formData.recoveryVanEstimate} readOnly />
-                </label>
-            </div>
-            <div className='form-row'>
-            <label className="form-field">
-                    workEstimate:
+                    Work Estimate:
                     <input type="text" className='inputField' name="workEstimate" value={formData.workEstimate} readOnly />
                 </label>
                 <label className="form-field">
-                    vehicleHandover:
+                    Recovery Van Estimate:
+                    <input type="text" className='inputField' name="workEstimate" value={formData.recoveryVanEstimate} readOnly />
+                </label>
+               
+                
+            </div>
+            <div className='form-row'>
+            <label className="form-field">
+                    Vehicle Handover:
                     <input type="text" className='inputField' name="vehicleHandover" value={formData.vehicleHandover} readOnly />
                 </label>
-                <label className="form-field">
-                    vehicleInspection:
-                    <input type="text" className='inputField' name="vehicleInspection" value={formData.vehicleInspection} readOnly />
+            <label className="form-field">
+                    Advanced Payment:
+                    <input type="text" className='inputField' name="balancePayment" value={formData.advancedPayment} readOnly />
                 </label>
+            <label className="form-field">
+                    Vehicle Take over:
+                    <textarea name="partsArrangement" className='inputField' value={formData.vehicleTakeOver} readOnly />
+                </label>
+              
+               
             </div>
 
             <div className='form-row'>
             <label className="form-field">
-                    vehicleTakeOver:
-                    <input type="text" className='inputField' name="vehicleTakeOver" value={formData.vehicleTakeOver} readOnly />
+                    Balance Payment:
+                    <input type="text" className='inputField' name="vehicleTakeOver" value={formData.balancePayment} readOnly />
                 </label>
                 <label className="form-field">
                     Feedback:
@@ -779,57 +877,492 @@ function CraneResponse({ data, onUpdate }) {
                     >
                         Reject
                     </button>
-                    {/* {fullInfomation && (
-                        <div
-                            className="form-control generate-button"
-                            onClick={handlePayment}
-                            style={{
-                                display: 'inline-block',
-                                padding: '10px 30px',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                                backgroundColor: '#4CAF50',
-                                color: 'white',
-                                marginRight: '20px'
-                            }}
-                        >
-                            {isLoading ? (
-                                <ClipLoader color="#ffffff" loading={isLoading} />
-                            ) : (
-                                'Payment Request'
-                            )}
+                   
+                </div> */}
+
+                <div style={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
+                    <form style={{ maxWidth: "600px", flexGrow: 1, }} className='Customer-master-form'>
+
+                        <div class='header-container'>
+                            <h2 className='bigtitle'>Document Upload - Crane</h2>
                         </div>
+
+                        <div className='form-row' style={{ flexDirection: "column" }}>
+                            <label className="form-field">
+                                Vehicle Inspection Remarks:
+                                <textarea
+                                    className='inputField form-control'
+                                    name="vehicleInspection"
+                                    value={formData.vehicleInspection}
+
+                                    readOnly={true}
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Work Estimate :
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="workEstimate"
+                                    value={formData.workEstimate}
+
+                                    readOnly={true}
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Recovery Van Estimate:
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="recoveryVanEstimate"
+                                    value={formData.recoveryVanEstimate}
+
+                                    readOnly={true}
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Vehicle Handover:
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="vehicleHandover"
+                                    value={formData.vehicleHandover}
+
+                                    readOnly={true}
+                                />
+                            </label>
+                        </div>
+
+                        <div className='form-row' style={{ flexDirection: "column" }}>
+
+                            <label className="form-field">
+                                Advanced Payment:
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="advancedPayment"
+                                    value={formData.advancedPayment}
+
+                                    readOnly={true}
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Vehicle TakeOver:
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="vehicleTakeOver"
+                                    value={formData.vehicleTakeOver}
+
+                                    readOnly={true}
+                                />
+                            </label>
+
+                            <label className="form-field">
+                                Balance Payment:
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="balancePayment"
+                                    value={formData.balancePayment}
+
+                                    readOnly={true}
+                                />
+                            </label>
+                        </div>
+
+
+
+
+                        <div className='form-row'>
+                            <button className='btn btn-light' onClick={openfeedbackRatingModal} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", boxShadow: "0 4px 8px rgba(0,0,0,0.5)", borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <img src={feedbackByVendor} style={{ height: "20px", width: "20px" }} alt="feedback" /> <p> Given Feedback </p>
+                            </button>
+                            <button className='btn btn-light' onClick={openCommissionModel} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", boxShadow: "0 4px 8px rgba(0,0,0,0.5)", borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
+                                <img src={commissionbyvendor} style={{ height: "20px", width: "20px" }} alt="feedback" /> <p> Commission </p>
+
+                            </button>
+                        </div>
+
+                        {formData.advancedPayment && formData.balancePayment && formData.paidOn == null && (
+                            <div style={{ color: 'green' }}>
+
+                                <p>
+                                    * Calculated Commission For The Vendor is = ₹
+                                    <input
+                                        type="number"
+                                        value={
+                                            formData.commisionAmount ??
+                                            (parseFloat(formData.advancedPayment) + parseFloat(formData.balancePayment)) * 2 / 100
+                                        }
+                                        onChange={(e) =>
+                                            setFormData((prevFormData) => ({
+                                                ...prevFormData,    
+                                                commisionAmount: parseFloat(e.target.value),
+                                            }))
+                                        }
+                                        style={{ width: "100px", marginLeft: "5px", color: "green", background: "#ffffff08", border: "none" }}
+                                    />
+                                </p>
+                            </div>
+                        )}
+                        {formData.paidOn && (
+                            <div style={{ color: 'green' }}>Commission Paid On : {formData.paidOn}</div>
+                        )}
+
+
+                        {isfeedbackRatingModalOpen && (
+
+                            <div className="modal fade show" style={{ display: 'block', minWidth: "350px", maxWidth: "1000px", background: "#ffecec00", boxShadow: "none" }} id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" >
+                                <div className="modal-dialog modal-dialog-centered" role="document">
+                                    <div className="modal-content" style={{ backgroundSize: 'cover', backgroundPosition: "top" }}>
+                                        <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <h5 className="modal-title" id="exampleModalLongTitle" style={{ paddingLeft: "10px", borderRadius: "10px", color: 'black', fontWeight: 'bold', fontSize: modalTitleFontSize, animation: 'blinking 1.5s infinite' }}>
+                                                Rate Customer Behaviour
+                                            </h5>
+
+                                        </div>
+
+                                        <div className="modal-body" style={{ textAlign: 'center', color: "black", fontSize: modalBodyFontSize, padding: '20px', fontWeight: "bold" }}>
+                                            <div style={{ display: "flex" }}>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="100"
+                                                    value={formData.feedbackRating || 0}
+                                                    // onChange={onfeedbackRatingChange}
+                                                    className="slider"
+                                                    name="feedbackRating"
+                                                    disabled={alreadyRating}
+                                                    style={{ display: 'block', marginTop: '10px' }}
+                                                />
+                                                <div style={{
+                                                    color: formData.feedbackRating < 30 ? 'red' :
+                                                        formData.feedbackRating < 70 ? 'blue' : 'green'
+
+                                                }}>
+                                                    {formData.feedbackRating < 30 ? `${formData.feedbackRating}% 😒` : formData.feedbackRating < 70 ? `${formData.feedbackRating}% 😊` : `${formData.feedbackRating}% 😃`}
+                                                </div>
+
+
+                                            </div>
+
+                                            <label className="form-field">
+                                                Feedback:
+                                                <textarea
+                                                    name="feedback"
+                                                    className="inputField form-control"
+                                                    value={formData.feedback}
+
+                                                    readOnly={true}
+                                                />
+                                            </label>
+
+                                        </div>
+                                        <button type="button" onClick={closefeedbackRatingModal} className="btn btn-primary" style={{ color: "white", background: "#ca8787", padding: '3px 10px', fontSize: modalBodyFontSize }}>
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {isCommissionModelOpen && (
+                            <div>
+                                <div className="modal fade show" style={{ display: 'block', minWidth: "350px", maxWidth: "1000px", background: "#ffecec00", boxShadow: "none" }} id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" >
+                                    <div className="modal-dialog modal-dialog-centered" role="document">
+                                        <div className="modal-content" style={{ backgroundSize: 'cover', backgroundPosition: "top" }}>
+                                            <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <h5 className="modal-title" id="exampleModalLongTitle" style={{ paddingLeft: "10px", borderRadius: "10px", color: 'black', fontWeight: 'bold', fontSize: modalTitleFontSize, animation: 'blinking 1.5s infinite' }}>
+                                                    Commission
+                                                    <ul style={{ gap: "10px" }} className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                                                        <li className="nav-item" role="presentation">
+                                                            <button
+                                                                // className={`nav-link ${paymentThrough === "cheque" ? "active" : ""}`}
+                                                                // id="tab-login"
+                                                                // href="#pills-login"
+                                                                role="tab"
+                                                                aria-controls="pillsz`-login"
+                                                                aria-selected={paymentThrough === "cheque"}
+                                                                onClick={(e) => {
+                                                                    e.preventDefault()
+                                                                    paymentBy("cheque")
+                                                                }}>
+                                                                <img src={paymentcheck} style={{ height: "20px", width: "20px" }} alt="paymentcheck" /> <p style={{ fontSize: "9px" }}>By Cheque</p>
+                                                            </button>
+                                                        </li>
+                                                        <li className="nav-item" role="presentation">
+                                                            <button
+                                                                // className={`nav-link ${paymentThrough === "onlinePayment" ? "active" : ""}`}
+                                                                // id="tab-register"
+                                                                // href="#pills-register"
+                                                                role="tab"
+                                                                aria-controls="pills-register"
+                                                                aria-selected={paymentThrough === "onlinePayment"}
+                                                                onClick={() => paymentBy("onlinePayment")}
+                                                            >
+                                                                <img src={onlinepayment} style={{ height: "20px", width: "20px" }} alt="paymentcheck" /> <p style={{ fontSize: "9px" }}>Online</p>
+
+                                                            </button>
+                                                        </li>
+                                                        <li className="nav-item" role="presentation">
+                                                            <div style={{ padding: "10px 20px", borderRadius: "4px", background: '#cccccc', transition: "background-color 0.3s", marginTop: "15px", cursor: "pointer" }}
+                                                                // className={`nav-link ${paymentThrough === "cash" ? "active" : ""}`}
+                                                                // id="tab-register"
+                                                                // href="#pills-register"
+                                                                role="tab"
+                                                                aria-controls="pills-register"
+                                                                aria-selected={paymentThrough === "cash"}
+                                                                onClick={() => paymentBy("cash")}
+                                                            >
+
+                                                                <img src={cash} style={{ height: "20px", width: "20px" }} alt="cash" /> <p style={{ fontSize: "9px" }}>By Cash</p>
+
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </h5>
+
+                                            </div>
+
+                                            <div className="modal-body" style={{ textAlign: 'center', color: "black", fontSize: modalBodyFontSize, padding: '20px', fontWeight: "bold" }}>
+                                                <div className="tab-content">
+                                                    {paymentThrough === "cheque" && (
+                                                        <div>
+                                                            <p>Your Cheque Image :</p>
+                                                            {isReadOnlyPayment && typeof formData.cheque === 'string' && formData.cheque.startsWith("https") && (
+                                                                <div>
+                                                                    <img
+                                                                        src={formData.cheque}
+                                                                        alt="cheque"
+                                                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                                                        onClick={openChequeModal}
+                                                                    />
+
+
+                                                                    <Modal isOpen={isChequeModalOpen} onRequestClose={closeChequeModal} contentLabel="Open Cheque Modal">
+                                                                        <div className="modal-header">
+                                                                            <IconButton href={formData.cheque} download color="primary">
+                                                                                <DownloadIcon />
+                                                                            </IconButton>
+                                                                            <IconButton onClick={closeChequeModal} color="secondary">
+                                                                                <CloseIcon />
+                                                                            </IconButton>
+                                                                        </div>
+                                                                        <div className="modal-image-container">
+                                                                            <img src={formData.cheque} alt="Cheque Image" className="modal-image" />
+                                                                        </div>
+                                                                    </Modal>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className='tab-content'>
+                                                    {paymentThrough === "onlinePayment" && (
+                                                        <div>
+                                                            <p>Payment Request</p>
+
+                                                            {isReadOnlyPayment && typeof formData.onlinePaymentImg === 'string' && formData.onlinePaymentImg.startsWith("https") ? (
+                                                                <>
+                                                                    <label className="form-field" style={{ marginTop: "30px" }}>
+                                                                        Transaction ID:
+                                                                        <input
+                                                                            type='text'
+                                                                            name="transactionId"
+                                                                            placeholder='Transaction ID'
+                                                                            value={formData.transactionId}
+
+                                                                            className="form-control"
+                                                                            required
+                                                                            readOnly
+                                                                        />
+                                                                    </label>
+
+                                                                    <img
+                                                                        src={formData.onlinePaymentImg}
+                                                                        alt="online payment"
+                                                                        style={{ maxWidth: '100px', display: 'block', cursor: 'pointer' }}
+                                                                        onClick={openOnlinePaymentModal}
+                                                                    />
+
+                                                                    <Modal isOpen={isOnlinePaymentModalOpen} onRequestClose={closeOnlinePaymentModal} contentLabel="Open Online Payment Modal">
+                                                                        <div className="modal-header">
+                                                                            <IconButton href={formData.onlinePaymentImg} download color="primary">
+                                                                                <DownloadIcon />
+                                                                            </IconButton>
+                                                                            <IconButton onClick={closeOnlinePaymentModal} color="secondary">
+                                                                                <CloseIcon />
+                                                                            </IconButton>
+                                                                        </div>
+                                                                        <div className="modal-image-container">
+                                                                            <img src={formData.onlinePaymentImg} alt="Online Payment Image" className="modal-image" />
+                                                                        </div>
+                                                                    </Modal>
+                                                                </>
+                                                            ) : (
+                                                                <div>
+                                                                    <label className="form-field" style={{ marginTop: "30px" }}>
+                                                                        Transaction ID:
+                                                                        <input
+                                                                            type='text'
+                                                                            name="transactionId"
+                                                                            placeholder='Transaction ID'
+                                                                            value={formData.transactionId}
+
+                                                                            className="form-control"
+                                                                            required
+                                                                        />
+                                                                    </label>
+
+                                                                    <input
+                                                                        type="file"
+                                                                        name="onlinePaymentImg"
+                                                                        readOnly={true}
+                                                                        accept=".pdf,image/*"
+                                                                        required
+                                                                        className="form-control"
+                                                                        style={{ marginTop: "30px" }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+
+                                                </div>
+                                                <div className='tab-content'>
+                                                    {paymentThrough === "cash" && (
+                                                        <div>
+                                                            <p>Paid By Cash:</p>
+                                                            {isReadOnlyPayment && formData.paidByCash == true && (
+                                                                <>
+                                                                    <label s style={{
+                                                                        display: "flex",
+                                                                        alignItems: "center",
+                                                                        justifyContent: "center",
+                                                                        backgroundColor: "#f9f9f9",
+                                                                        padding: "10px 15px",
+                                                                        borderRadius: "8px",
+                                                                        border: "1px solid #ccc",
+                                                                        cursor: "pointer",
+                                                                        fontWeight: "500",
+                                                                        color: "#333",
+                                                                        transition: "background-color 0.3s ease",
+                                                                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+                                                                    }}>
+
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            name="paidByCash"
+                                                                            checked={formData.paidByCash}
+                                                                            readOnly={true}
+                                                                            style={{ marginRight: "10px" }}
+                                                                        />
+                                                                        <p style={{ marginTop: "10px" }}>Paid By Cash</p>
+                                                                    </label>
+
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="modal-footer" style={{ justifyContent: 'flex-end' }}>
+
+                                                <button type="button" onClick={closeCommisionModel} className="btn btn-primary" style={{ color: "white", background: "#ca8787", padding: '3px 10px', fontSize: modalBodyFontSize }}>
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        )}
+
+
+
+                        {action === "reject" && (
+                            <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
+                                Reason to Reject:
+                                <label>
+                                    <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
+                                        onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => openModal({ action: 'reject' })}
+                                        style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}>
+                                        Submit
+                                    </button>
+                                </label>
+
+                            </div>
+                        )}
+
+                        {alertInfo.show && (
+                            <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                {alertInfo.message}
+                            </Alert>
+                        )}
+                        <div style={{ padding: '20px 0' }}>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setAction('accept');
+                                    openModal({ action: 'accept' });
+                                }}
+                                style={{
+                                    display: 'inline-block',
+                                    padding: '10px 30px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#4CAF50',
+                                    color: 'white',
+                                    marginRight: '20px'
+                                }}
+                            >
+                                Submit
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setAction('reject')}
+                                style={{
+                                    display: 'inline-block',
+                                    padding: '10px 30px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#4CAF50',
+                                    color: 'white',
+                                    marginRight: '20px'
+                                }}
+                            >
+                                Reject
+                            </button>
+                        </div>
+                    </form>
+                    {showSideImage && (
+                        <img style={{ height: "auto", width: "30%", borderRadius: '8px', boxShadow: "0 4px 15px rgba(0,0,0,0.3)", filter: "blur(1px)" }} src={exploration} />
                     )}
-                    {comingLink && (
-                        <a
-                            href={comingLink}
-                            className="form-control download-link"
-                            style={{
-                                display: 'inline-block',
-                                padding: '10px 30px',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                                backgroundColor: '#4CAF50',
-                                color: 'white',
-                                textDecoration: 'none',
-                                marginRight: '20px'
-                            }}
-                        >
-                            Pay Now
-                        </a>
-                    )} */}
                 </div>
-            {modalData && (
-                <ActivationModel
-                    isOpen={isModalOpen}
-                    onConfirm={handleConfirm}
-                    onCancel={handleCancel}
-                />
-            )}
+
+                {modalData && (
+                    <ActivationModel
+                        isOpen={isModalOpen}
+                        onConfirm={handleConfirm}
+                        onCancel={handleCancel}
+                    />
+                )}
+            </form>
         </form>
-    </form>
     );
 }
 

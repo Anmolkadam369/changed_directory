@@ -28,6 +28,7 @@ import EditScrapProduct from './EditScrapProduct';
 import { Co2Sharp } from '@mui/icons-material';
 import ProductRegister from './ProductRegsiter';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ProductDetailsSeller from './ProductDetailsSeller';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -526,7 +527,7 @@ const ViewProduct = ({onUpdate}) => {
     const [paddingLeft, setPaddingLeft] = useState('30px');
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-    const [scrpaCode, setScrapCode] = useState("")
+    const [scrapCode, setScrapCode] = useState("")
     const [seeProduct, setSeeProduct] = useState(true);
     const [editingProduct, setEditingProduct] = useState(false);
     const [deleteProduct, setDeleteProduct] = useState(false);
@@ -564,6 +565,12 @@ const ViewProduct = ({onUpdate}) => {
         setScrapCode(code);
         resetState();
         setEditingProduct(true);
+    }
+
+    const viewDetails =(code)=>{
+        setScrapCode(code);
+        resetState();
+        setSeeDetails(true);
     }
 
     const addingProduct = () => {
@@ -637,9 +644,9 @@ const ViewProduct = ({onUpdate}) => {
                                         </p>
                                     </div>
                                     <div className="card-footer d-flex justify-content-between">
-                                        <a href="#" className="btn btn-outline-primary btn-sm">
+                                        <button onClick={() => { viewDetails(item.scrapCode) }} className="btn btn-outline-primary btn-sm">
                                             <span style={{ fontSize: "11px" }}><ViewKanbanOutlinedIcon /> View Details</span>
-                                        </a>
+                                        </button>
                                         <button onClick={() => { editProduct(item.scrapCode) }} className="btn btn-outline-warning btn-sm">
                                             <span style={{ fontSize: "11px" }}> <ModeEditOutlinedIcon /> Edit </span>
                                         </button>
@@ -655,12 +662,17 @@ const ViewProduct = ({onUpdate}) => {
 
                         {editingProduct && (
                             <div>
-                                <EditScrapProduct code={scrpaCode} onUpdate={comeToPage} />
+                                <EditScrapProduct code={scrapCode} onUpdate={comeToPage} />
                             </div>
                         )}
                         {addProduct && (
                             <div>
                                 <ProductRegister onUpdate={comeToPage} />
+                            </div>
+                        )}
+                        {seeDetails && (
+                            <div>
+                                <ProductDetailsSeller code={scrapCode} onUpdate={comeToPage} />
                             </div>
                         )}
                     </div>

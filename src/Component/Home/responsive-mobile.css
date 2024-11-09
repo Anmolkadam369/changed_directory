@@ -58,7 +58,9 @@
 
     .home-elem-20 {
         flex-wrap: wrap;
-        row-gap: 60px
+        row-gap: 60px;
+    padding: 100px 16px 100px 16px;
+
     }
 
     .home-elem-21 {

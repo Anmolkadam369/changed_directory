@@ -41,6 +41,11 @@ body, html {
   margin: 0;
   position: relative;
 }
+.blur {
+  filter: blur(5px); /* Adjust the value for more or less blur */
+  transition: filter 0.3s ease; /* Smooth transition effect */
+}
+
 
 .admin-page .sidebar li {
   position: relative;
@@ -299,7 +304,7 @@ body, html {
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   padding: 20px;
-  text-align: center; /* Center the text */
+  text-align: center; /* Center athe text */
   flex-basis: calc(33.333% - 20px); /* Take up a third of the container width, minus gap */
 }
 
@@ -325,6 +330,8 @@ body, html {
 .dropdown-container.show {
   opacity: 1;
   transform: translateY(0);
+  width: 225px;
+
 }
 
 .icon {

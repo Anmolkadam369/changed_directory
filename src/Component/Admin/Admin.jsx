@@ -48,6 +48,9 @@ import CustomerEnquiry from '../CustomerEnquiry/CustomerEnquiry';
 import DummyDashboard from '../Dashboard/DummyDashboard';
 import NotFoundPage from '../NotFound';
 import Login from '../Login/LoginPage';
+import SurveyorMaster from '../Surveyor/SurveyorMaster';
+import SurveyorApproved from '../Surveyor/SurveyorApproved';
+import VendorSignUp from '../VendorApproved/VendorSignUp';
 
 
 const Admin = () => {
@@ -71,6 +74,8 @@ const Admin = () => {
     const [showAssignedVehicleReport, setShowAssignedVehicleReport] = useState(false);
 
     const [showAddVendor, setShowAddVendor] = useState(false);
+    const [addSurveyor, setAddSurveyor] = useState(false);
+    const [viewSurveyor, setViewSurveyor] = useState(false);
     const [startingPage, setStartingPage] = useState(true);
     const [showViewVendor, setShowViewVendor] = useState(false);
     const [showAddCustomer, setShowAddCustomer] = useState(false);
@@ -85,6 +90,8 @@ const Admin = () => {
     const [showEmployeeView, setShowEmployeeView] = useState(false);
     const [visitorForm, setVisitorForm] = useState(false);
     const [customerEnquiryForm, setCustomerEnquiryForm] = useState(false);
+    const [showPotentialVendor, setShowPotentialVendor] = useState(false);
+
     const [showVisitorForm, setShowVisitorForm] = useState(false);
     const dropdownRef = useRef(null);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -92,6 +99,8 @@ const Admin = () => {
     const resetStates = () => {
         setShowAddVendor(false);
         setShowViewVendor(false);
+        setAddSurveyor(false);
+        setViewSurveyor(false);
         setShowViewCustomer(false);
         setShowAddCustomer(false);
         setStartingPage(false);
@@ -104,6 +113,7 @@ const Admin = () => {
         setShowEmployeeView(false);
         setVisitorForm(false);
         setCustomerEnquiryForm(false)
+        setShowPotentialVendor(false)
     };
 
     const vendorData = [10, 5, 15, 20];
@@ -156,22 +166,22 @@ const Admin = () => {
         };
     }, []);
 
-    const handleConfirmSignOut =async () => {
+    const handleConfirmSignOut = async () => {
         const response = await axios.put(`${backendUrl}/api/logout`, {
-            loginId 
-          });
-          if (response.status === 200) {
-        localStorage.setItem("token", "");
-        localStorage.setItem("userId", "");
-        localStorage.setItem("loginId", "");
-        localStorage.setItem("department", "");
-        setRefreshToken("");
-        setRefreshUserId("");
-        setModalOpen(false);
-          }
-          else{
+            loginId
+        });
+        if (response.status === 200) {
+            localStorage.setItem("token", "");
+            localStorage.setItem("userId", "");
+            localStorage.setItem("loginId", "");
+            localStorage.setItem("department", "");
+            setRefreshToken("");
+            setRefreshUserId("");
+            setModalOpen(false);
+        }
+        else {
             setModalOpen(true);
-          }
+        }
     };
 
     const handleCancelSignOut = () => { setModalOpen(false) };
@@ -410,7 +420,7 @@ const Admin = () => {
         startingPage(true);
     }
 
-console.log("getData.randomId",getData.randomId)
+    console.log("getData.randomId", getData.randomId)
 
     return (
         <div>
@@ -468,6 +478,13 @@ console.log("getData.randomId",getData.randomId)
                                                 }}>
                                                     <StoreIcon className="icon" />
                                                     View Vendor</li>
+                                                <li classname="li-class" onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    resetStates();
+                                                    setShowPotentialVendor(true);
+                                                }}>
+                                                    <StoreIcon className="icon" />
+                                                    Sign-up</li>
                                             </ul>
                                         )}
                                     </li>
@@ -605,7 +622,7 @@ console.log("getData.randomId",getData.randomId)
                                         <HailIcon className="icon" />
                                         Other Form
                                         {showVisitorForm && (
-                                            <div className='submenu' style={{width:'200px'}}>
+                                            <div className='submenu' style={{ width: '200px' }}>
                                                 <li onClick={(e) => {
                                                     e.stopPropagation();
                                                     resetStates();
@@ -625,7 +642,35 @@ console.log("getData.randomId",getData.randomId)
                                     </li>
                                 </ul>
 
-
+                                <ul>
+                                    <li onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowVisitorForm(!showVisitorForm);
+                                        // resetStates();
+                                        // setVisitorForm(true);
+                                    }}>
+                                        <HailIcon className="icon" />
+                                        Surveryor
+                                        {showVisitorForm && (
+                                            <div className='submenu' style={{ width: '200px' }}>
+                                                <li onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    resetStates();
+                                                    setAddSurveyor(true);
+                                                }}>
+                                                    <HailIcon className="icon" />
+                                                    Add Surveyor</li>
+                                                <li onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    resetStates();
+                                                    setViewSurveyor(true);
+                                                }}>
+                                                    <HailIcon className="icon" />
+                                                    View Surveyor</li>
+                                            </div>
+                                        )}
+                                    </li>
+                                </ul>
 
                             </ul>
                         </aside>
@@ -635,7 +680,7 @@ console.log("getData.randomId",getData.randomId)
                                 <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
                             )}
                         </div>
-                    )}
+                    )}  
 
                     <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
                         <div className='first-container'>
@@ -728,6 +773,11 @@ console.log("getData.randomId",getData.randomId)
                         }
 
                         {
+                            showPotentialVendor && 
+                            <VendorSignUp/>
+                        }
+
+                        {
                             showAddEmployee &&
                             <EmployeeForm />
                         }
@@ -762,14 +812,23 @@ console.log("getData.randomId",getData.randomId)
                             <VendorResponse />
                         }
 
+                        {
+                            addSurveyor &&
+                            <SurveyorMaster />
+                        }
+                        {
+                            viewSurveyor &&
+                            <SurveyorApproved />
+                        }
+
 
                     </main>
                 </div>
             ) : (
                 <div>
-                <Login/>
-            </div>
-           )}
+                    <Login />
+                </div>
+            )}
         </div>
     );
 };

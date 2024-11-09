@@ -123,11 +123,12 @@
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
   box-shadow: 20px 20px 60px #00000041,inset -20px -20px 60px #ffffff47;
   text-align: center;
-  width: 280px;
+  width: 200px;
   margin-right: 1rem;
   margin-bottom: 1rem;
   transition: transform 0.3s, box-shadow 0.3s;
   animation: slideInFromTop 1.0s ease-out; /* Add this line */
+  border: 1px solid greenyellow;
 }
 
 /* .gradient-background {
@@ -199,7 +200,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   flex: 1 1;
-  min-width: 300px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -243,7 +244,7 @@
 }
 
 .small-image {
-  width: 40px;
+  width: 30px;
   height: auto;
   margin-bottom: 10px;
 }
@@ -486,6 +487,38 @@
   
 
 }
+
+/* @keyframes shine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.stat-item.shine {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 215, 0, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%;
+  animation: shine 2s infinite;
+} */
+
+
+@keyframes shine {
+  0% {
+    background-position: -200% 0; /* Start completely off-screen to the left */
+  }
+  100% {
+    background-position: 200% 0; /* Move completely off-screen to the right */
+  }
+}
+
+
+.stat-item.shine {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 215, 0, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%; /* Double the width to allow for animation */
+  animation: shine 2s linear infinite; /* Adjust duration and set animation to linear */
+}
+
 
 /* @media (max-width : 340px){
   .stat-item {

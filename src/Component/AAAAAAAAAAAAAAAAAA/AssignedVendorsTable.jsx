@@ -284,7 +284,7 @@ const AssignedVendorsTable = () => {
           </ul>
         </div>
     {/* </div> */}
-      <Bar data={data} options={options} />
+      <Bar data={data} options={options} /> 
     </div>
   );
 }

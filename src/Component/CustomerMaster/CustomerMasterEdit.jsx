@@ -461,7 +461,12 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         [name]: validValue,
       });
     } else if (name === "CustomerPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
-      const validValue = value.replace(/\D/g, '').slice(0, 10);
+      let validValue = value.replace(/\D/g, ''); // Remove non-digit characters
+      if (validValue && validValue[0].match(/[6-9]/)) {
+        validValue = validValue.slice(0, 10); // Only keep up to 10 digits if it starts with 6-9
+      } else {
+        validValue = ''; // Return an empty string if the first digit isn't between 6-9
+      }
       setFormData({
         ...formData,
         [name]: validValue,

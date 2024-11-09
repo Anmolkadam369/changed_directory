@@ -96,8 +96,8 @@ const DummyDashboard = () => {
     const [showVehicleClaimView, setShowVehicleClaimView] = useState(false)
     const [vendorResponsing, setVendorResponsing] = useState(false)
     const [visitorForm, setVisitorForm] = useState(false)
-    const [allDashboard, setAllDashboard] = useState(true)
-    const [vendorDashboard, setVendorDashboard] = useState(false)
+    const [allDashboard, setAllDashboard] = useState(false)
+    const [vendorDashboard, setVendorDashboard] = useState(true)
     const [customerDashboard, setCustomerDashboard] = useState(false)
     const [personalVehicleInfo, setPersonalVehicleInfo] = useState([])
     const [personalAccidentVehicle, setPersonalAccidentVehicle] = useState([])
@@ -724,40 +724,40 @@ const DummyDashboard = () => {
                                     )}
 
 
-    <Grid container spacing={4}>
-      <Grid item xs={11} xl={7}>
-        <div >
-            <Sales/>
-        </div>
-      </Grid>
-      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
-        <div>
-            <VisitorInsights/>
-        </div>
-      </Grid>
+                                    <Grid container spacing={4}>
+                                        <Grid item xs={11} xl={7}>
+                                            <div >
+                                                <Sales />
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+                                            <div>
+                                                <VisitorInsights />
+                                            </div>
+                                        </Grid>
 
-      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
-        <div>
-            <TotalRevenue/>
-        </div>
-      </Grid>
-      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
-      <div>
-            <CustomerSatisfaction/>
-        </div>
-      </Grid>
-      <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
-      <div>
-           <TargetVsReality/>
-        </div>
-      </Grid>
+                                        <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+                                            <div>
+                                                <TotalRevenue />
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+                                            <div>
+                                                <CustomerSatisfaction />
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={11} sm={9} md={7} lg={6} xl={4}>
+                                            <div>
+                                                <TargetVsReality />
+                                            </div>
+                                        </Grid>
 
-      <Grid item  xs={11} xl={7}>
-      <div >
-      {/* <TopProducts/> */}
-        </div>
-      </Grid>
-      {/* <Grid item xs={12} md={6} xl={4}>
+                                        <Grid item xs={11} xl={7}>
+                                            <div >
+                                                {/* <TopProducts/> */}
+                                            </div>
+                                        </Grid>
+                                        {/* <Grid item xs={12} md={6} xl={4}>
       <div style={{border:'1px solid red'}}>
             hey7
         </div>
@@ -772,7 +772,7 @@ const DummyDashboard = () => {
             hey9
         </div>
       </Grid> */}
-    </Grid>
+                                    </Grid>
 
 
 
@@ -944,7 +944,6 @@ const DummyDashboard = () => {
                                             <VendorIndPerf />
                                         </div>
                                         <div style={{ flex: chartSize, maxWidth: "300px" }}>
-                                            <p style={{ fontSize: "13px", color: "purple", marginBottom: "15px" }}>Full Report Accepted/Rejected </p>
                                             <VendorAccpetedDoughnut />
                                         </div>
 

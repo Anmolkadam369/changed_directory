@@ -36,6 +36,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const [surveyorData, setSurveyorData] = useState([]);
 
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -108,6 +109,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
     useEffect(() => {
         loadStates();
         getDataById(id);
+        getDataSurveyor()
         console.log("token", token, userId);
         // if (token === "" || userId === "") {
         //     navigate("/");
@@ -566,6 +568,12 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
     });
 
     console.log("setAccidentData", accidentData)
+
+    const getDataSurveyor = async () => {
+        const response = await axios.get(`${backendUrl}/api/getSurveyor`);
+        const fetchedData = response.data.data;
+        setSurveyorData(fetchedData);
+      };
 
     const loadStates = () => {
         setIsLoadingStates(true);
@@ -1324,14 +1332,17 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Spot Surveyor Name:
-                        <input
-                            className='inputField form-control'
+                        <select
+                            className='inputField'
                             name="surveyorName"
-                            value={accidentData.surveyorName}
+                            disabled={IsReadOnly}
                             onChange={handleChange}
-                            readOnly={IsReadOnly}
-
-                        />
+                            value={accidentData.surveyorName}>
+                            <option value="">Select Surveyor</option>
+                            {surveyorData.map(surveyor => (
+                                <option key={surveyor.id} value={surveyor.fullName}>{surveyor.fullName}</option>
+                            ))}
+                        </select>
                     </label>
                     <label className="form-field">
                         Contact No:
@@ -1377,14 +1388,17 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Material Surveyor Name:
-                        <input
-                            className='inputField form-control'
+                        <select
+                            className='inputField'
                             name="materialSurveyorName"
-                            value={accidentData.materialSurveyorName}
                             onChange={handleChange}
-                            readOnly={IsReadOnly}
-
-                        />
+                            disabled={IsReadOnly}
+                            value={accidentData.materialSurveyorName}>
+                            <option value="">Select Material Surveyor</option>
+                            {surveyorData.map(surveyor => (
+                                <option key={surveyor.id} value={surveyor.fullName}>{surveyor.fullName}</option>
+                            ))}
+                        </select>
                     </label>
 
                     <label className="form-field">
@@ -1434,14 +1448,17 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
                         Final Surveyor Name:
-                        <input
-                            className='inputField form-control'
+                        <select
+                            className='inputField'
                             name="finalSurveyorName"
-                            value={accidentData.finalSurveyorName}
                             onChange={handleChange}
-                            readOnly={IsReadOnly}
-
-                        />
+                            disabled={IsReadOnly}
+                            value={accidentData.finalSurveyorName}>
+                            <option value="">Select Final Surveyor</option>
+                            {surveyorData.map(surveyor => (
+                                <option key={surveyor.id} value={surveyor.fullName}>{surveyor.fullName}</option>
+                            ))}
+                        </select>
                     </label>
 
                     <label className="form-field">

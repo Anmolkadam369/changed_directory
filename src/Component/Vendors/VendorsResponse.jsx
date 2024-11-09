@@ -19,6 +19,7 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TaskIcon from '@mui/icons-material/Task';
+import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 
 const formatDate = (isoDateString) => {
   if (!isoDateString) return "___"; // Handle null or undefined input
@@ -139,16 +140,36 @@ const VendorResponse = () => {
   };
   const handleUpdate = () => {
     getData();
-    setShowActualVendorResponse(false); // Hide VendorMasterEdit
+    setShowActualVendorResponse(false); 
   };
 
 
   const isAnyPending = (vehicle) => {
     let arr = [];
-    if (vehicle.mechanicData.length !== 0) arr.push(vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin);
-    if (vehicle.craneData.length !== 0) arr.push(vehicle.craneData[0].acceptedByAdmin == null ? "pending" : vehicle.craneData[0].acceptedByAdmin)
-    if (vehicle.advocateData.length !== 0) arr.push(vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin)
-    if (vehicle.workshopData.length !== 0) arr.push(vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin)
+    if (vehicle.mechanicData.length !== 0 ) {
+      for(let i=0; i< vehicle.mechanicData.length; i++){
+        if(vehicle.mechanicData[i].acceptedByAdmin != 'reject')
+        arr.push(vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin)
+      }
+    }
+    if (vehicle.craneData.length !== 0 ) {
+      for(let i=0; i< vehicle.craneData.length; i++){
+        if(vehicle.craneData[i].acceptedByAdmin != 'reject')
+        arr.push(vehicle.craneData[0].acceptedByAdmin == null ? "pending" : vehicle.craneData[0].acceptedByAdmin)
+      }
+    }
+    if (vehicle.advocateData.length !== 0 ) {
+      for(let i=0; i< vehicle.advocateData.length; i++){
+        if(vehicle.advocateData[i].acceptedByAdmin != 'reject')
+        arr.push(vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin)
+      }
+    }
+    if (vehicle.workshopData.length !== 0 ) {
+      for(let i=0; i< vehicle.workshopData.length; i++){
+        if(vehicle.workshopData[i].acceptedByAdmin != 'reject')
+        arr.push(vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin)
+      }
+    }
 
     console.log("arrary", arr)
     let count = 0;
@@ -202,14 +223,14 @@ const VendorResponse = () => {
     {
       name: "Customer Name",
       selector: (row) => row.CustomerName,
-      sortable: true, width: "150px",
+      sortable: true, width: "200px",
       cell: (row) => row.CustomerName.charAt(0).toUpperCase() + row.CustomerName.slice(1),
     },
 
     {
       name: "Vehicle No",
       selector: (row) => row.vehicleNumber, 
-      sortable: true,
+      sortable: true, width:"150px",
       cell: (row) => (
         <span style={{ color: 'green' }}>
           {row.vehicleNumber || '---'}

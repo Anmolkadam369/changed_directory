@@ -29,6 +29,7 @@ function CustomerViewDetails({ id, onUpdate }) {
     const userId = localStorage.getItem("userId");
     const [comingData, setComingData] = useState([]);
     const [vendorData, setVendorData] = useState([]);
+    console.log("vendorData123456", vendorData)
     const [accidentVehicleData, setAccidentVehicleData] = useState([]);
     console.log("accdient", accidentVehicleData)
     console.log("Comingdasdas", comingData)
@@ -36,6 +37,27 @@ function CustomerViewDetails({ id, onUpdate }) {
     const [IsReadOnly, setIsReadOnly] = useState(true);
     console.log("avengerdata", vendorData)
     console.log("vendorData type:", typeof vendorData, vendorData);
+
+
+    const [selectedAdvocate, setSelectedAdvocate] = useState('');
+    const [selectedAdvocateId, setSelectedAdvocateId] = useState('');
+    console.log("selectedAdvocateId", selectedAdvocateId)
+
+    const [selectedCrane, setSelectedCrane] = useState('');
+    const [selectedCraneId, setSelectedCraneId] = useState('');
+    console.log("selectedCraneId", selectedCraneId)
+
+
+    const [selectedWorkshop, setSelectedWorkshop] = useState('');
+    const [selectedWorkshopId, setSelectedWorkshopId] = useState('');
+    console.log("selectedWorkshopId", selectedWorkshopId)
+
+
+    const [selectedMechanic, setSelectedMechanic] = useState('');
+    const [selectedMechanicId, setSelectedMechanicId] = useState('');
+    console.log("selectedMechanicId", selectedMechanicId)
+
+
 
     const [isChassisModalOpen, setIsChassisModalOpen] = useState(false);
     const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
@@ -273,9 +295,9 @@ function CustomerViewDetails({ id, onUpdate }) {
         console.log('Form data submitted:', userId);
         setAlertInfo({ ...alertInfo, show: false });
         console.log('myformdataformData123456789', formData);
-        console.log(`${backendUrl}/customersRating/${formData.accidentFileNo}/${userId}`)
+        console.log("asdadfasdfasdf", `${backendUrl}/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "None"}/${selectedWorkshopId != "" ? selectedWorkshopId : "None"}/${selectedCraneId != "" ? selectedCraneId : "None"}/${selectedAdvocateId != "" ? selectedAdvocateId : "None"}`)
         try {
-            const response = await axios.put(`${backendUrl}/api/customersRating/${formData.accidentFileNo}/${userId}`, JSON.stringify(formData), {
+            const response = await axios.put(`${backendUrl}/api/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "Not_added"}/${selectedWorkshopId != "" ? selectedWorkshopId : "Not_added"}/${selectedCraneId != "" ? selectedCraneId : "Not_added"}/${selectedAdvocateId != "" ? selectedAdvocateId : "Not_added"}`, JSON.stringify(formData), {
                 headers: {
                     'authorization': token,
                     'Content-Type': 'application/json'
@@ -340,34 +362,38 @@ function CustomerViewDetails({ id, onUpdate }) {
         }));
     }
 
-    const [selectedAdvocate, setSelectedAdvocate] = useState('');
-    const [selectedCrane, setSelectedCrane] = useState('');
-    const [selectedWorkshop, setSelectedWorkshop] = useState('');
-    const [selectedMechanic, setSelectedMechanic] = useState('');
+
 
     useEffect(() => {
-        if (formData.advocate) {
-            const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.advocate);
-            if (selectedVendor) {
-                setSelectedAdvocate(selectedVendor.vendorName);
+        if (vendorData.length != 0) {
+            if (formData.advocate) {
+                const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.advocate);
+                if (selectedVendor) {
+                    setSelectedAdvocate(selectedVendor.vendorName);
+                    setSelectedAdvocateId(selectedVendor.vendorCode)
+                }
             }
-        }
-        if (formData.crane) {
-            const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.crane);
-            if (selectedVendor) {
-                setSelectedCrane(selectedVendor.vendorName);
+            if (formData.crane) {
+                const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.crane);
+                if (selectedVendor) {
+                    console.log("MAN PUSUN KADHLI", selectedAdvocate)
+                    setSelectedCrane(selectedVendor.vendorName);
+                    setSelectedCraneId(selectedVendor.vendorCode)
+                }
             }
-        }
-        if (formData.workshop) {
-            const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.workshop);
-            if (selectedVendor) {
-                setSelectedWorkshop(selectedVendor.vendorName);
+            if (formData.workshop) {
+                const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.workshop);
+                if (selectedVendor) {
+                    setSelectedWorkshop(selectedVendor.vendorName);
+                    setSelectedWorkshopId(selectedVendor.vendorCode)
+                }
             }
-        }
-        if (formData.mechanic) {
-            const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.mechanic);
-            if (selectedVendor) {
-                setSelectedMechanic(selectedVendor.vendorName);
+            if (formData.mechanic) {
+                const selectedVendor = vendorData?.data.find(vendor => vendor.vendorCode === formData.mechanic);
+                if (selectedVendor) {
+                    setSelectedMechanic(selectedVendor.vendorName);
+                    setSelectedMechanicId(selectedVendor.vendorCode)
+                }
             }
         }
     }, [formData.advocate, formData.crane, formData.workshop, formData.mechanic, vendorData]);
@@ -604,7 +630,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.ChassisNoView}
                                     alt="Front LH"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openChassisModal}
                                 />
                                 <Modal isOpen={isChassisModalOpen} onRequestClose={closeChassisModal} contentLabel="Chassis Card Modal">
@@ -632,7 +658,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.ClusterView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openClusterModal}
                                 />
                                 <Modal isOpen={isClusterModalOpen} onRequestClose={closeClusterModal} contentLabel="Cluster Number Modal">
@@ -660,7 +686,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.frontLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openFrontLHModal}
                                 />
                                 <Modal isOpen={isFrontLHModalOpen} onRequestClose={closeFrontLHModal} contentLabel="Cluster Number Modal">
@@ -688,7 +714,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.frontRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openFrontRHModal}
                                 />
                                 <Modal isOpen={isFrontRHModalOpen} onRequestClose={closeFrontRHModal} contentLabel="Cluster Number Modal">
@@ -718,7 +744,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.frontView}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openFrontViewModal}
                                 />
                                 <Modal isOpen={isFrontViewModalOpen} onRequestClose={closeFrontViewModal} contentLabel="Cluster Number Modal">
@@ -746,7 +772,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.rearLH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openRearLHModal}
                                 />
                                 <Modal isOpen={isRearLHModalOpen} onRequestClose={closeRearLHModal} contentLabel="Cluster Number Modal">
@@ -774,7 +800,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.rearRH}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openRearRHModal}
                                 />
                                 <Modal isOpen={isRearRHModalOpen} onRequestClose={closeRearRHModal} contentLabel="Cluster Number Modal">
@@ -802,7 +828,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages1}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openMajorDamage1Modal}
                                 />
                                 <Modal isOpen={isMajorDamage1ModalOpen} onRequestClose={closeMajorDamage1Modal} contentLabel="Cluster Number Modal">
@@ -832,7 +858,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages2}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openMajorDamage2Modal}
                                 />
                                 <Modal isOpen={isMajorDamage2ModalOpen} onRequestClose={closeMajorDamage2Modal} contentLabel="Cluster Number Modal">
@@ -860,7 +886,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages3}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openMajorDamage3Modal}
                                 />
                                 <Modal isOpen={isMajorDamage3ModalOpen} onRequestClose={closeMajorDamage3Modal} contentLabel="Cluster Number Modal">
@@ -888,7 +914,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages4}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openMajorDamage4Modal}
                                 />
                                 <Modal isOpen={isMajorDamage4ModalOpen} onRequestClose={closeMajorDamage4Modal} contentLabel="Cluster Number Modal">
@@ -916,7 +942,7 @@ function CustomerViewDetails({ id, onUpdate }) {
                                 <img
                                     src={comingData.MajorDamages5}
                                     alt="Chassis Number"
-                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor:"pointer" }}
+                                    style={{ maxWidth: '100px', display: 'block', marginTop: "20px", cursor: "pointer" }}
                                     onClick={openMajorDamage5Modal}
                                 />
                                 <Modal isOpen={isMajorDamage5ModalOpen} onRequestClose={closeMajorDamage5Modal} contentLabel="Cluster Number Modal">
