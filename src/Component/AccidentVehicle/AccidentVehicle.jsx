@@ -108,6 +108,7 @@ const AccidentVehicle = () => {
       ...item,
       systemDate: formatDate(item.systemDate),
     }));
+    console.log("formattedData", formattedData)
     setData(formattedData);
     setCurrentItems(formattedData);
   };
@@ -136,6 +137,7 @@ const AccidentVehicle = () => {
   };
 
   const [currentItems, setCurrentItems] = useState(data);
+  console.log("ok this is curentlid", currentItems)
   const columns = [
     {
       name: "Date",
@@ -265,6 +267,7 @@ const AccidentVehicle = () => {
             <DataTable
               columns={columns}
               data={currentItems}
+              keyField="AccidentVehicleCode" 
               fixedHeader
               pagination
               selectableRows

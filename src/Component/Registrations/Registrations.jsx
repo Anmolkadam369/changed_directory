@@ -448,8 +448,8 @@ const Registrations = () => {
                                 style={{
                                     borderRadius: "15px",
                                     marginBottom: "20px",
-                                    width: "90%",
-                                    marginLeft: "30px"
+                                    width: "97%",
+                                    marginLeft: "5px"
                                 }}>
 
 

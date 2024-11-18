@@ -25,6 +25,8 @@ import AssignedVehicleCrane from './AssignedVehiclesCrane';
 import CaseFirstCard from '../CaseFirstCard/CaseFirstCard';
 import TargetVsReality from '../AAAAAAAAAAAAAAAAAA/TargetVsReality/TargetVsReality.tsx';
 import VendorViewRating from '../VendorViewRating/VendorViewRating.jsx';
+import VendorMoving from './VendorMoving.jsx';
+import crossUser from '../../Assets/crossUser.png'
 
 const CraneDashboard = ({ getData }) => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
@@ -34,8 +36,26 @@ const CraneDashboard = ({ getData }) => {
     const [adminAccepted, setAdminAccepted] = useState(0)
     const [adminRejected, setAdminRejected] = useState(0)
     const [adminPending, setAdminPending] = useState(0)
+    const [rejectedByVendor, setRejectedByVendor] = useState(0)
+
     const [workingCases, setWorkingCases] = useState(0)
     const [fullyClosedCases, setFullyClosedCases] = useState(0)
+    const [approvedCase, setApprovedCase] = useState([])
+    const [caseDetails, setCaseDetails] = useState(false);
+
+    console.log("approvedCase", approvedCase[0])
+
+    useEffect(() => {
+        if (approvedCase.length > 0) {
+            setCaseDetails(true)
+        }
+    }, [approvedCase])
+
+    const choosenCase=(item)=>{
+        setApprovedCase([])
+        setApprovedCase([item])
+        setCaseDetails(true)
+    }
 
 
     const [doughnutData, setDoughnutData] = useState({
@@ -160,11 +180,21 @@ const CraneDashboard = ({ getData }) => {
     };
 
 
+
     const fetchAssignedCases = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
+            //totalAssignedCases[i].details[0].vendorDecision != 'reject'
+
+            response.data.data.map((item) => {
+                if (item.details[0]?.customerAcceptedVendor && !item.details[0]?.vendorMoved) {
+                    console.log("some inside fetchAssigneCases", item.details[0]?.customerAcceptedVendor, item.details[0]?.approvedReaching)
+                    setApprovedCase([item]);
+                }
+            })
+
         } catch (error) {
             console.error("Failed to fetch assigned cases:", error);
         }
@@ -271,24 +301,33 @@ const CraneDashboard = ({ getData }) => {
     }, [gotResponse])
 
     useEffect(() => {
-        console.log("INSIDE TOTALASSIGNED CASES")
+        console.log("INSIDE TOTALASSIGNED CASES", totalAssignedCases)
         if (totalAssignedCases.length !== 0) {
             let acceptedCount = 0;
             let rejectedCount = 0;
             let pendingCount = 0;
+            let rejectedByVendor = 0;
+
 
             for (let i = 0; i < totalAssignedCases.length; i++) {
-                if (totalAssignedCases[i].details.length === 0 || totalAssignedCases[i].details[0].acceptedByAdmin === null) {
+                console.log("totalAssignedCases[i].details[0].vendorDecision", i, totalAssignedCases[i].details[0].vendorDecision)
+                if (totalAssignedCases[i].details[0].vendorDecision != 'reject' && (totalAssignedCases[i].details.length === 0 || totalAssignedCases[i].details[0].acceptedByAdmin === null)) {
                     pendingCount++;
                 } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "accept") {
                     acceptedCount++;
                 } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "reject") {
                     rejectedCount++;
                 }
+                else if (totalAssignedCases[i].details[0].vendorDecision === "reject") {
+                    console.log("insidehere ima m", i, totalAssignedCases[i].details[0].vendorDecision)
+                    rejectedByVendor++
+                }
             }
             setAdminAccepted(acceptedCount);
             setAdminRejected(rejectedCount);
             setAdminPending(pendingCount);
+            setRejectedByVendor(rejectedByVendor);
+
         }
     }, [totalAssignedCases]);
 
@@ -358,7 +397,7 @@ const CraneDashboard = ({ getData }) => {
         console.log("totalAssignedCases:", totalAssignedCases);
         console.log("gotResponse:", gotResponse);
         console.log("Difference:", totalAssignedCases.length - gotResponse.length);
-    
+
         if ((totalAssignedCases.length - gotResponse.length) > 0) {
             const filteredItems = totalAssignedCases.filter((caseItem) => caseItem?.details[0]?.firstResponseOn == null);
             setNewCasesItems(filteredItems);
@@ -368,7 +407,7 @@ const CraneDashboard = ({ getData }) => {
             setNewCase(false);
         }
     }, [totalAssignedCases, gotResponse]);
-    
+
     const handleBack = () => {
         setNewCase(false)
         getGotResponseVehicle()
@@ -492,12 +531,35 @@ const CraneDashboard = ({ getData }) => {
                                         <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
                                         <p>{workingCases - adminRejected}</p>
                                     </div>
-                                    <div className="stat-item" style={{ background: "#f0f0f000", border: 'none', boxShadow: "none" }}>
+
+
+                                    <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
+                                        style={{
+                                            cursor: "pointer",
+                                            backgroundColor: isSelected == "Working Vehicles" ? '#00000074' : 'white', // Change background color on selection
+                                        }}>
+                                        <PendingActionsOutlinedIcon className="small-image" />
+                                        <h3 style={{ fontSize: "0.6rem" }} >Rejected By You</h3>
+                                        <p>{rejectedByVendor}</p>
                                     </div>
+
+
+
+
+
                                     <div className="stat-item" style={{ background: "#f0f0f000", border: 'none', boxShadow: "none" }}>
                                     </div>
 
                                 </div>
+
+                                {totalAssignedCases.length > 0 && (
+                                    totalAssignedCases.map((item)=>(
+                                        <div>
+                                            <div style={{border:"1px solid red", padding:"10px"}} onClick={()=>choosenCase(item)}>View Case</div>
+                                        </div>
+                                    ))
+                                )}
+
 
                                 <div style={{ marginBottom: "30px" }}>
                                     <AssignedVehicleCrane getFilterInfo={filterForVehicleCrane} />
@@ -518,7 +580,7 @@ const CraneDashboard = ({ getData }) => {
                                         <Featured />
 
                                         {/* <TargetVsReality /> */}
-                                        <VendorViewRating/>
+                                        <VendorViewRating />
 
 
                                         {/* <Chart /> */}
@@ -561,6 +623,50 @@ const CraneDashboard = ({ getData }) => {
                 {isNewCase && (
                     <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
                 )}
+
+                {caseDetails && (
+
+
+
+                    <div  style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                        zIndex: 1000,
+                        display: "flex",
+                        alignItems: "flex-end", // positions the container at the bottom
+                        justifyContent: "center",
+                        animation: "slideUp 0.5s ease-out",
+                    }}>
+
+                        <div className="image-container" >
+                            <div className="background-image"></div>
+                            <img
+                                src={crossUser}
+                                onClick={() => setCaseDetails(false)}
+                                style={{
+                                    position: "fixed",
+                                    // top: "-10px",
+                                    left: "calc(100% - 80px)",
+                                    width: "25px",
+                                    height: "25px",
+                                    cursor: "pointer",
+                                    zIndex: 1001,
+                                    filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+                                    bottom:"360px"
+                                }}
+                            />
+                            <VendorMoving item={approvedCase[0]} />
+                        </div>
+                    </div>
+
+
+
+                )}
+
             </main>
         </div>
     );

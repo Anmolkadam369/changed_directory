@@ -8,8 +8,8 @@ import iarkerIcon from '../../Assets/markerIcon1.png'
 
 const MapComponent = ({ accidentLocation1, additionalInfo }) => {
   console.log("accidentLocation1 ", accidentLocation1, additionalInfo)
-  console.log("accienent latitude ", accidentLocation1.latitude)
-  console.log('accienent longitude', accidentLocation1.longitude)
+  console.log("accienent latitude ", accidentLocation1.accidentLatitude)
+  console.log('accienent longitude', accidentLocation1.accidentLongitude)
   const [map, setMap] = useState(null);
   const [vendorLocationData, setVendorLocationData] = useState([]);
   console.log("vendorlocatin", vendorLocationData)

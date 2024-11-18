@@ -51,6 +51,8 @@ import Login from '../Login/LoginPage';
 import SurveyorMaster from '../Surveyor/SurveyorMaster';
 import SurveyorApproved from '../Surveyor/SurveyorApproved';
 import VendorSignUp from '../VendorApproved/VendorSignUp';
+import Registration from '../Registration/Registration';
+import InitialRegistration from './InitialRegistration';
 
 
 const Admin = () => {
@@ -91,6 +93,8 @@ const Admin = () => {
     const [visitorForm, setVisitorForm] = useState(false);
     const [customerEnquiryForm, setCustomerEnquiryForm] = useState(false);
     const [showPotentialVendor, setShowPotentialVendor] = useState(false);
+    const [showInitialReg, setShowInitialReg] = useState(false);
+
 
     const [showVisitorForm, setShowVisitorForm] = useState(false);
     const dropdownRef = useRef(null);
@@ -113,7 +117,8 @@ const Admin = () => {
         setShowEmployeeView(false);
         setVisitorForm(false);
         setCustomerEnquiryForm(false)
-        setShowPotentialVendor(false)
+        setShowPotentialVendor(false);
+        setShowInitialReg(false)
     };
 
     const vendorData = [10, 5, 15, 20];
@@ -330,7 +335,7 @@ const Admin = () => {
                     console.log('Registering service worker...');
                     const registration = await navigator.serviceWorker.register('/service-worker.js');
                     console.log('Service worker registered:', registration);
-
+                    
                     const subscription = await registration.pushManager.subscribe({
                         userVisibleOnly: true,
                         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
@@ -559,6 +564,13 @@ const Admin = () => {
                                         Vehicle Reported
                                         {showVehicleInfo && (
                                             <ul className='submenu'>
+                                                  <li classname="li-class" onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    resetStates();
+                                                    setShowInitialReg(true);
+                                                }}>
+                                                    <AppRegistrationIcon className="icon" />
+                                                    Initial Reg</li>
                                                 <li classname="li-class" onClick={(e) => {
                                                     e.stopPropagation();
                                                     resetStates();
@@ -680,7 +692,7 @@ const Admin = () => {
                                 <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
                             )}
                         </div>
-                    )}  
+                    )}
 
                     <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
                         <div className='first-container'>
@@ -773,8 +785,13 @@ const Admin = () => {
                         }
 
                         {
-                            showPotentialVendor && 
-                            <VendorSignUp/>
+                            showPotentialVendor &&
+                            <VendorSignUp />
+                        }
+
+                        {
+                            showInitialReg &&
+                            <InitialRegistration/>
                         }
 
                         {

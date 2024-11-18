@@ -575,10 +575,11 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
       if (key === "perHR") continue;
     }
 
+    if(formData.email  !== "No Email ID"){
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
       return 'Please enter a valid email address.';
-    }
+    }}
 
     const phoneRegex = /^[0-9]{10}$/
     if (!phoneRegex.test(formData.vendorPhone)) {

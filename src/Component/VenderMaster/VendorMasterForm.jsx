@@ -363,15 +363,17 @@ const VendorMasterForm = () => {
           return `Field '${key}' is required.`;
         }
       }
-      if ((key !== "remark" && key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
+      if ((key !== "remark" && key !=='email' && key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
         return `Field '${key}' is required.`;
       }
     }
 
+    if(formData.email !== ""){
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
       return 'Please enter a valid email address.';
     }
+  }
 
     const phoneRegex = /^[0-9]{10}$/
     if (!phoneRegex.test(formData.vendorPhone)) {
@@ -941,7 +943,7 @@ const VendorMasterForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder='E-Mail'
-                  required
+                  // required
                   pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                   title="Please enter a valid email address."
                   className="form-control"

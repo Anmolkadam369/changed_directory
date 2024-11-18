@@ -21,9 +21,11 @@ const config = {
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-function Registration({ onVehicleData }) {
+function Registration({ item, fromPageHere }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
-    const [regNo, setRegNo] = useState('');
+
+    console.log("item", item)
+    const [regNo, setRegNo] = useState('' || item?.regNo);
     const [vehicleInfo, setVehicleInfo] = useState([]);
     const [comingVehicleInfo, setComingVehicleInfo] = useState([]);
     const [comingVehicle, setComingVehicle] = useState(null);
@@ -31,7 +33,9 @@ function Registration({ onVehicleData }) {
     const [getData, setGetData] = useState({});
     const [showPopup, setShowPopup] = useState(true);
     const [isVerified, setIsVerified] = useState(false);
+    const { isItDone } = useLocation();
 
+    fromPageHere  = fromPageHere? fromPageHere: ""
 
 
     console.log("comingData", comingVehicle)
@@ -51,6 +55,8 @@ function Registration({ onVehicleData }) {
         //     navigate("/");
         // }
         findUserById(userId)
+        if (item !== undefined && item !== null) setIsVerified(true)
+        // if (item !== null) setIsVerified(true)
     }, [token, userId, navigate]);
 
 
@@ -58,7 +64,16 @@ function Registration({ onVehicleData }) {
         console.log("HEY", id)
         const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
         console.log("daa", response.data)
+        response.data.data = response.data.data.filter((individualResponse)=>{
+            if (individualResponse.latitude !== null && individualResponse.longitude !== null) {
+                individualResponse.latitude = null;
+                individualResponse.longitude = null;
+                return true;
+            }
+            return false;
+        })
         console.log("reginstration data", response.data.data[0]);
+
         setGetData(response.data.data[0])
     }
 
@@ -79,11 +94,23 @@ function Registration({ onVehicleData }) {
 
     const handleChange = (event) => {
         setRegNo(event.target.value);
+        localStorage.setItem('regNo', event.target.value);
     };
+
+    useEffect(() => {
+        const storedRegNo = localStorage.getItem('regNo');
+        if (storedRegNo) {
+            setRegNo(storedRegNo);
+        }
+        if (localStorage.getItem('isVerified') == 'true') {
+            setIsVerified(true)
+        }
+    }, []);
 
     const handleNext = () => {
         // onVehicleData(comingVehicle);
         setIsVerified(true)
+        localStorage.setItem('isVerified', "true");
         closeModal()
     };
 
@@ -91,21 +118,30 @@ function Registration({ onVehicleData }) {
         setIsModalOpen(false);
     };
 
-    const [photoPreviews, setPhotoPreviews] = useState({});
-    const [photos, setPhotos] = useState({
-        DamageImage: null,
-        DamageImage2: null,
-        DamageImage3: null,
-        DamageImage4: null,
-        DamageImage5: null
+    const [photoPreviews, setPhotoPreviews] = useState({
+        MajorDamages1: item?.MajorDamages1 || null,
+        MajorDamages2: item?.MajorDamages2 || null,
+        MajorDamages3: item?.MajorDamages3 || null,
+        MajorDamages4: item?.MajorDamages4 || null,
+        MajorDamages5: item?.MajorDamages5 || null 
     });
+
+    const [photos, setPhotos] = useState({
+        MajorDamages1: item?.MajorDamages1 || null,
+        MajorDamages2: item?.MajorDamages2 || null,
+        MajorDamages3: item?.MajorDamages3 || null,
+        MajorDamages4: item?.MajorDamages4 || null,
+        MajorDamages5: item?.MajorDamages5 || null
+    });
+    const [expandedImage, setExpandedImage] = useState(null);
+
     const photoRefs = {
 
         MajorDamages1: useRef(null),
-        DamageImage2: useRef(null),
-        DamageImage3: useRef(null),
-        DamageImage4: useRef(null),
-        DamageImage5: useRef(null)
+        MajorDamages2: useRef(null),
+        MajorDamages3: useRef(null),
+        MajorDamages4: useRef(null),
+        MajorDamages5: useRef(null)
     };
     const handleFileChange = (event, type) => {
         const file = event.target.files[0];
@@ -125,7 +161,7 @@ function Registration({ onVehicleData }) {
         }
     };
 
-    const [showImageDiv, setShowImageDiv] = useState(true)
+    const [showImageDiv, setShowImageDiv] = useState(false)
     const [isMaterialLoaded, setIsMaterialLoaded] = useState(false)
     const [quantity, setQuantity] = useState('')
     const [budget, setBudget] = useState('')
@@ -249,55 +285,85 @@ function Registration({ onVehicleData }) {
         }
     };
 
-    const accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, latitude, longitude, ...getData, selectedOptions: 'crane' };
+    let accidentDataObject
+    if (item != null) {
+        console.log("item is not null")
+        console.log("GETDATA123", getData)
+        accidentDataObject = {
+            regNo: item.reg,
+            fullAddress: item.fullAddress,
+            states: item.states,
+            district: item.district,
+            pincode: item.pincode,
+            onSpotContact: item.onSpotContact,
+            onSpotName: item.onSpotName,
+            isRecoveryVan: item.isRecoveryVan,
+            isMaterialLoaded: item.isMaterialLoaded,
+            quantity: item.quantity,
+            budget: item.budget,
+            ...photos,               // Assuming 'photos' is an object
+            ...comingVehicle,        // Assuming 'comingVehicle' is an object
+            ...getData,              // Assuming 'getData' is an object
+            selectedOptions: ['crane'],
+            latitude: item.accidentLatitude,
+            longitude: item.accidentLongitude,
+        };
+    }
+    else {
+        accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, latitude, longitude, ...getData, selectedOptions: ['crane'] };
+    }
+    console.log("accidentDataObject123445", accidentDataObject)
+
 
     const handleSubmit = async (e) => {
 
-        setSuccessDone(true)
-        setIsVerified(false)
         setTimeout(() => {
-            navigate('/FirstPage')
+            navigate('/User-landing-page');
         }, 4000);
-        // e.preventDefault();
-        // setIsSubmitting(true);
-        // setIsLoading(true);
 
-        // const formDataObj = new FormData();
-        // for (const key in accidentDataObject) {
-        //     if (accidentDataObject[key]) {  // Check if the data is not undefined or null
-        //         if (accidentDataObject[key] instanceof File) {
-        //             formDataObj.append(key, accidentDataObject[key], accidentDataObject[key].name);
-        //         } else {
-        //             formDataObj.append(key, accidentDataObject[key]);
-        //         }
-        //     }
-        // }
 
-        // try {
-        //     const response = await axios({
-        //         method: 'POST',
-        //         url: `${backendUrl}/addVehicleInfo`,
-        //         data: formDataObj,
-        //         headers: {
-        //             'Authorization': token
-        //         }
-        //     });
-        //     setIsLoading(false);
-        //     setAlertInfo({ show: true, message: "Data Successfully Added", severity: 'success' });
-        // } catch (error) {
-        //     setIsLoading(false);
-        //     const errorMessage = error.response?.data?.message || 'An error occurred';
-        //     if (errorMessage === "jwt expired") {
-        //         setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
-        //         setTimeout(() => {
-        //             window.location.href = '/';
-        //         }, 2000);
-        //     } else {
-        //         setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
-        //     }
-        // } finally {
-        //     setIsSubmitting(false);
-        // }
+        e.preventDefault();
+
+        const formDataObj = new FormData();
+        for (const key in accidentDataObject) {
+            if (accidentDataObject[key]) {  // Check if the data is not undefined or null
+                if (accidentDataObject[key] instanceof File) {
+                    formDataObj.append(key, accidentDataObject[key], accidentDataObject[key].name);
+                } else {
+                    formDataObj.append(key, accidentDataObject[key]);
+                }
+            }
+        }
+
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${backendUrl}/addVehicleInfo`,
+                data: formDataObj,
+                headers: {
+                    'Authorization': token
+                }
+            });
+            console.log("response.data.message", response.data.message)
+            if (response.data.message == "Updated AccidentVehicle and craneAccidentDetails successfully") {
+                setSuccessDone(true)
+                setIsVerified(false)
+                setAlertInfo({ show: true, message: "Data Successfully Added!!!", severity: 'success' });
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.log("Hey i am the errror", error.response?.data?.message)
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } finally {
+        }
     };
 
     const { state } = useLocation();
@@ -315,10 +381,18 @@ function Registration({ onVehicleData }) {
     }, [state]);
 
     const goToMap = () => {
-        navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025] } })
+        if (item != null) {
+            console.log("item", "item is ehrere")
+            navigate('/SelectLocationOnMap', { state: { center: [28.7041, 88.4345], fromPage: "firstPage" } })
+        }
+        else {
+            navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025] } })
+        }
     }
 
     const [byManualLocation, setByManualLocation] = useState(false)
+
+
 
     return (
         <div>
@@ -377,9 +451,9 @@ function Registration({ onVehicleData }) {
                                             type="text"
                                             className="Registrationdetails-elem-9"
                                             style={{ textAlign: 'left', margin: '10px 10px 10px 0px', width: '80%' }}
-                                            value={regNo}
+                                            value={item?.reg ? item.reg : regNo}
                                             placeholder='RJ 03 ED 2343'
-                                            onChange={handleChange}
+                                            onChange={!item ? handleChange : ""}
                                             disabled={getData.isActive === "false"}
                                         />
 
@@ -392,63 +466,238 @@ function Registration({ onVehicleData }) {
                                         )}
                                     </div>
 
-                                    {/* <div>
-                                        <p style={{ fontSize: '13px', marginTop: "20px" }}> Spot-On Person Details </p>
-                                        <div style={{
-                                            marginTop: "20px",
-                                            border: '1px solid',
-                                            borderRadius: "20px",
-                                            padding: '20px',
-                                            background: "radial-gradient(#7395c0, transparent)",
-                                            position: 'relative',
-                                            maxWidth: "400px"
-                                        }}>
-                                            <div style={{ content: '', position: 'absolute', top: '-10px', left: '20%', transform: 'translateX(-50%)', width: '0', height: '0', borderLeft: '10px solid transparent', borderRight: '10px solid transparent', borderBottom: '10px solid rgb(206 209 209)' }}></div>
-                                            <p style={{ fontSize: '11px' }}> Full Name :  </p>
-
-                                            <input
-                                                type="text"
-                                                className="Registrationdetails-elem-9"
-                                                style={{ textAlign: 'center', width: '90%' }}
-                                                value={regNo}
-                                                placeholder='Full Name'
-                                                onChange={handleChange}
-                                                disabled={getData.isActive === "false"}
-                                            />
-
-                                            <div style={{ display: 'flex', marginTop: "20px" }}>
-                                                <div>
-                                                    <p style={{ fontSize: '11px', marginBottom: "0px" }}> Contact No </p>
-                                                    <input
-                                                        type="text"
-                                                        className="Registrationdetails-elem-9"
-                                                        style={{ textAlign: 'center', width: '80%' }}
-                                                        value={regNo}
-                                                        placeholder='Contact No'
-                                                        onChange={handleChange}
-                                                        disabled={getData.isActive === "false"}
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <p style={{ fontSize: '11px', marginBottom: "0px" }}> Alternate No </p>
-                                                    <input
-                                                        type="text"
-                                                        className="Registrationdetails-elem-9"
-                                                        style={{ textAlign: 'center', width: '80%' }}
-                                                        value={regNo}
-                                                        placeholder='Contact No'
-                                                        onChange={handleChange}
-                                                        disabled={getData.isActive === "false"}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> */}
-
                                     {isVerified && (
 
                                         <div>
-                                            <div style={{ display: 'flex', marginTop:"30px" }}>
+
+
+
+                                            <div class="col-sm-6" >
+                                                <div class="card" style={{ marginBottom: "20px", maxWidth: "400px", minWidth: "300px" }}>
+                                                    <div class="card-body">
+                                                        <h5 class="card-title" style={{ textAlign: 'center', fontSize: "13px", fontWeight: "bold", color: 'blue' }}>Spot-On Person Details</h5>
+                                                        {/* <div style={{ content: '', position: 'absolute', top: '-10px', left: '20%', transform: 'translateX(-50%)', width: '0', height: '0', borderLeft: '10px solid transparent', borderRight: '10px solid transparent', borderBottom: '10px solid rgb(206 209 209)' }}></div> */}
+
+                                                        <div style={{ display: 'flex', marginTop: "20px" }}>
+                                                            <div>
+                                                                <p style={{ fontSize: '11px', marginBottom: "0px" }}> Full Name </p>
+                                                                <input
+                                                                    type="text"
+                                                                    className="Registrationdetails-elem-9"
+                                                                    style={{ textAlign: 'center', width: '90%' }}
+                                                                    value={item?.onSpotName ? item.onSpotName : onSpotName}
+                                                                    placeholder='Spot Person Name'
+                                                                    readOnly={item?.onSpotName ? true : false}
+                                                                    onChange={(e) => setOnSpotName(e.target.value)}
+                                                                    disabled={getData.isActive === "false"}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <p style={{ fontSize: '11px', marginBottom: "0px" }}> Contact No </p>
+                                                                <input
+                                                                    type="text"
+                                                                    className="Registrationdetails-elem-9"
+                                                                    style={{ textAlign: 'center', width: '90%' }}
+                                                                    value={item?.onSpotContact ? item.onSpotContact : onSpotContact}
+                                                                    placeholder='Contact No'
+                                                                    readOnly={item?.onSpotContact ? true : false}
+                                                                    onChange={(e) => {
+                                                                        const newValue = e.target.value;
+                                                                        if (/^\d{0,10}$/.test(newValue)) {
+                                                                            setOnSpotContact(newValue);
+                                                                        }
+                                                                    }}
+
+                                                                    disabled={getData.isActive === "false"}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* <br /> */}
+
+                                            {showImageDiv && (
+                                                <div style={{ padding: "10px" }}>
+
+
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <span style={{ margin: "13px", textDecoration: 'underline' }}>Vehicle Image (Optional)</span>
+                                                    <img src={crossUser} style={{ width: '20px', height: '20px', marginLeft: 'auto' }} onClick={(e) => { setShowImageDiv(false) }} />
+                                                </div>
+
+
+
+                                                {Object.keys(photos).map((type, index) => (
+                                                    <div key={type} style={{ display: 'flex' }} className="photo-input-section">
+                                                        <label>
+                                                            <h6 style={{ fontSize: "11px" }}>
+                                                                {type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:
+                                                            </h6>
+                                                            <input
+                                                                type="file"
+                                                                style={{ fontSize: '0.7rem', marginBottom: "10px" }}
+                                                                ref={photoRefs[type]}
+                                                                accept="image/*"
+                                                                capture="environment"
+                                                                className="form-control"
+                                                                onChange={(e) => handleFileChange(e, type)}
+                                                            />
+                                                        </label>
+                                                        {photoPreviews[type] && (
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '20px' }}>
+                                                                <img
+                                                                    src={photoPreviews[type]}
+                                                                    alt={`Upload preview ${type}`}
+                                                                    style={{ width: 100, height: 100, cursor: 'pointer' }}
+                                                                    onClick={() => setExpandedImage(photoPreviews[type])}
+                                                                />
+                                                                <Button
+                                                                    variant="contained"
+                                                                    onClick={() => {
+                                                                        setPhotos(prev => ({ ...prev, [type]: null }));
+                                                                        setPhotoPreviews(prev => ({ ...prev, [type]: null }));
+                                                                        if (photoRefs[type].current) {
+                                                                            photoRefs[type].current.value = ""; // Reset the file input
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    Remove
+                                                                </Button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+
+                                                {/* Modal for expanded image view */}
+                                                <Modal
+                                                    open={!!expandedImage}
+                                                    onClose={() => setExpandedImage(null)}
+                                                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                >
+                                                    <img
+                                                        src={expandedImage}
+                                                        alt="Expanded preview"
+                                                        style={{ maxWidth: '90%', maxHeight: '90%' }}
+                                                    />
+                                                </Modal>
+                                            </div>)}
+                                            {!showImageDiv && (
+
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <span onClick={(e) => setShowImageDiv(true)} style={{ fontSize: "13px", marginRight: "20px" }}>Share Accident Images ?</span>
+                                                    <div style={{
+                                                        border: "1px solid blue",
+                                                        padding: "3px",
+                                                        textAlign: "center",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        borderRadius: "10px",
+                                                        background: "radial-gradient(#818181, transparent)",
+                                                        padding: '10px',
+                                                        backgroundColor: '#4a4a4a',
+                                                        color: 'white'
+
+                                                    }}>
+                                                        <span
+                                                            style={{ fontSize: '11px', cursor: 'pointer' }}
+                                                            onClick={(e) => { setShowImageDiv(true) }}
+                                                        >
+                                                            Accident Images
+                                                        </span>
+                                                    </div>
+
+
+                                                </div>
+                                            )}
+
+                                            <div style={{ display: 'flex' }}>
+                                                <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}> Is Material Loaded ? </p>
+                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" disabled={item?.isMaterialLoaded != null ? true : false} onClick={(e) => setIsMaterialLoaded(true)}>Yes</button>
+                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" disabled={item?.isMaterialLoaded != null ? true : false} onClick={(e) => setIsMaterialLoaded(false)}>No</button>
+                                            </div>
+                                            
+                                            {isMaterialLoaded || item?.isMaterialLoaded && (
+                                                <div style={{ display: 'flex' }}>
+                                                    <span style={{ fontSize: '12px', marginRight: "5px", marginTop: "15px", marginBottom: "15px" }}>Quantity In Tons:</span>
+                                                    <input
+                                                        type="number"
+                                                        name="quantity"
+                                                        style={{ width: '50%', textAlign: 'center', marginTop: "10px", marginBottom: "15px" }}
+                                                        value={item?.quantity ? item.quantity : quantity}
+                                                        readOnly={item?.quantity ? true : false}
+                                                        onChange={(e) => {
+                                                            const newValue = e.target.value;
+                                                            if (/^\d*$/.test(newValue)) {
+                                                                setQuantity(newValue);
+                                                            }
+                                                        }}
+                                                        placeholder="Quantity"
+                                                        className="form-control"
+                                                    />
+
+                                                </div>
+                                            )}
+
+                                            <div style={{ display: 'flex' }}>
+                                                <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Recovery Van Needed?</p>
+
+                                                {/* Required Button */}
+                                                <button
+                                                    style={{
+                                                        fontSize: "10px",
+                                                        height: "30px",
+                                                        marginTop: "10px",
+                                                        marginRight: "10px",
+                                                        backgroundColor: isRecoveryVan ? "green" : "black", // Green when selected
+                                                        color: isRecoveryVan ? "white" : "lightgray",
+                                                    }}
+                                                    type="button"
+                                                    className="btn btn-dark"
+                                                    disabled={item?.isRecoveryVan != null ? true : false}
+                                                    onClick={() => setIsRecoveryVan(true)}
+                                                >
+                                                    Required
+                                                </button>
+
+                                                {/* Not Required Button */}
+                                                <button
+                                                    style={{
+                                                        fontSize: "9px",
+                                                        height: "30px",
+                                                        marginTop: "10px",
+                                                        marginRight: "10px",
+                                                        minWidth: '80px',
+                                                        backgroundColor: !isRecoveryVan ? "#f35e5e" : "black", // Red when selected
+                                                        color: !isRecoveryVan ? "white" : "lightgray",
+                                                    }}
+                                                    type="button"
+                                                    className="btn btn-dark"
+                                                    disabled={item?.isRecoveryVan != null ? true : false}
+                                                    onClick={() => setIsRecoveryVan(false)}
+                                                >
+                                                    Not Required
+                                                </button>
+                                            </div>
+
+
+                                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                                <p style={{ fontSize: "12px", marginTop: '15px', marginRight: "10px" }}>Estimated Budget : </p>
+                                                <input
+                                                    type="number"
+                                                    name="vendorPhone"
+                                                    value={item?.budget ? item.budget : budget}
+                                                    readOnly={item?.budget ? true : false}
+                                                    onChange={(e) => setBudget(e.target.value)}
+                                                    placeholder="Budget"
+                                                    style={{ width: "100px", textAlign: 'center' }}
+                                                    className="form-control"
+                                                />
+                                            </div>
+
+                                            <div style={{ display: 'flex', marginTop: "30px" }}>
                                                 <p style={{ fontSize: "13px", marginTop: "10px", marginRight: '2px', fontWeight: "bold" }}>Click if you are on the Accident Location ?</p>
                                                 <p style={{
                                                     fontSize: '11px',
@@ -467,8 +716,14 @@ function Registration({ onVehicleData }) {
                                                     cursor: "pointer",
                                                     maxWidth: "400px",
                                                     minWidth: "180px",
-                                                    height: "35px"
-                                                }} onClick={getLocation}>
+                                                    height: "35px",
+                                                    cursor : item?.accidentLatitude ? 'not-allowed':'pointer',
+                                                    opacity : item?.accidentLatitude? 0.5 : 1,
+                                                }} onClick={(e)=>{
+                                                    if(!item?.accidentLatitude){
+                                                        getLocation()
+                                                    }
+                                                }} >
                                                     SEND LOCATION
                                                     <KeyboardDoubleArrowRightIcon style={{
                                                         position: "absolute",
@@ -496,8 +751,15 @@ function Registration({ onVehicleData }) {
                                                     position: "relative",
                                                     cursor: "pointer",
                                                     maxWidth: "400px",
-                                                    minWidth: "150px"
-                                                }} onClick={goToMap}>
+                                                    minWidth: "150px",
+                                                    cursor: item?.accidentLatitude ? "not-allowed" : "pointer",
+                                                    opacity: item.accidentLatitude ? 0.5 : 1,
+                                                }} onClick={(e) => {
+                                                    if(!item?.accidentLatitude){ 
+                                                        goToMap()
+                                                    }
+                                                }}>
+                                               
                                                     Go to map
                                                     <KeyboardDoubleArrowRightIcon style={{
                                                         position: "absolute",
@@ -506,7 +768,6 @@ function Registration({ onVehicleData }) {
                                                 </p>
                                             </div>
                                             <p style={{ fontSize: "11px", marginTop: "10px", textAlign: 'center', color: "teal", fontWeight: 'bold' }}>__________________OR_______________</p>
-
 
                                             <div style={{ display: 'flex' }}>
                                                 <p style={{ fontSize: "13px", marginTop: "20px", marginRight: '20px', fontWeight: "bold" }}>Manual Accident Location ?</p>
@@ -524,8 +785,13 @@ function Registration({ onVehicleData }) {
                                                     fontSize: "11px",
                                                     minWidth: "100px",
                                                     marginTop: '10px',
-                                                    marginBottom: "10px"
-                                                }} onClick={(e) => setByManualLocation(!byManualLocation)}>
+                                                    marginBottom: "10px",
+                                                    cursor: item?.accidentLatitude ? "not-allowed" : "pointer",
+                                                    opacity: item.accidentLatitude ? 0.5 : 1,
+                                                }} onClick={(e) =>{
+                                                    if(! item?.accidentLatitude)
+                                                     setByManualLocation(!byManualLocation)}
+                                                    } >
                                                     Manual Location
 
                                                 </p>
@@ -577,7 +843,7 @@ function Registration({ onVehicleData }) {
                                                         <div style={{ display: "flex", maxWidth: "400px", marginTop: "20px", marginBottom: "30px" }}>
                                                             <select className="Registrationdetails-elem-9"
                                                                 name="district"
-                                                                style={{ fontSize: "13px", textAlign: 'center', width: '90%', marginRight: "10px", height: "35px", padding: "0px", marginTop: "5px" }}
+                                                                style={{ fontSize: "13px", textAlign: 'center', width: '95%', marginRight: "10px", height: "35px", padding: "0px", marginTop: "5px" }}
                                                                 value={district}
                                                                 onChange={(e) => setDistrict(e.target.value)}
                                                                 disabled={isLoadingCities || !selectedState}
@@ -591,7 +857,7 @@ function Registration({ onVehicleData }) {
                                                             <input
                                                                 type="text"
                                                                 className="Registrationdetails-elem-9"
-                                                                style={{ width: '90%' }}
+                                                                style={{ width: '83%', marginRight: "10px" }}
                                                                 value={pincode}
                                                                 placeholder="Pincode"
                                                                 onChange={(e) => {
@@ -617,7 +883,7 @@ function Registration({ onVehicleData }) {
                                                             type="text"
                                                             className="Registrationdetails-elem-9"
                                                             style={{ textAlign: 'center', width: '90%', marginRight: "10px" }}
-                                                            value={latitude}
+                                                            value={item?.accidentLatitude ? item.accidentLatitude : latitude}
                                                             placeholder='Latitude'
                                                             onChange={(e) => {
                                                                 // Only update the value if it is numeric
@@ -632,7 +898,7 @@ function Registration({ onVehicleData }) {
                                                             type="text"
                                                             className="Registrationdetails-elem-9"
                                                             style={{ textAlign: 'center', width: '90%' }}
-                                                            value={longitude}
+                                                            value={item?.accidentLongitude ? item.accidentLongitude : longitude}
                                                             placeholder='Longitude'
                                                             onChange={(e) => {
                                                                 const newValue = e.target.value;
@@ -646,201 +912,7 @@ function Registration({ onVehicleData }) {
                                                 </div>
                                             </div>
 
-
-                                            <div class="col-sm-6" >
-                                                <div class="card" style={{ marginBottom: "20px", maxWidth: "400px", minWidth: "300px" }}>
-                                                    <div class="card-body">
-                                                        <h5 class="card-title" style={{ textAlign: 'center', fontSize: "13px", fontWeight: "bold", color: 'blue' }}>Spot-On Person Details</h5>
-                                                        {/* <div style={{ content: '', position: 'absolute', top: '-10px', left: '20%', transform: 'translateX(-50%)', width: '0', height: '0', borderLeft: '10px solid transparent', borderRight: '10px solid transparent', borderBottom: '10px solid rgb(206 209 209)' }}></div> */}
-
-                                                        <div style={{ display: 'flex', marginTop: "20px" }}>
-                                                            <div>
-                                                                <p style={{ fontSize: '11px', marginBottom: "0px" }}> Full Name </p>
-                                                                <input
-                                                                    type="text"
-                                                                    className="Registrationdetails-elem-9"
-                                                                    style={{ textAlign: 'center', width: '90%' }}
-                                                                    value={onSpotName}
-                                                                    placeholder='Spot Person Name'
-                                                                    onChange={(e) => setOnSpotName(e.target.value)}
-                                                                    disabled={getData.isActive === "false"}
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <p style={{ fontSize: '11px', marginBottom: "0px" }}> Contact No </p>
-                                                                <input
-                                                                    type="text"
-                                                                    className="Registrationdetails-elem-9"
-                                                                    style={{ textAlign: 'center', width: '90%' }}
-                                                                    value={onSpotContact}
-                                                                    placeholder='Contact No'
-                                                                    onChange={(e) => {
-                                                                        const newValue = e.target.value;
-                                                                        if (/^\d{0,10}$/.test(newValue)) {
-                                                                            setOnSpotContact(newValue);
-                                                                        }
-                                                                    }}
-
-                                                                    disabled={getData.isActive === "false"}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* <br /> */}
-
-                                            {showImageDiv && (<div style={{ padding: "10px" }}>
-
-
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                    <span style={{ margin: "13px", textDecoration: 'underline' }}>Vehicle Image (Optional)</span>
-                                                    <img src={crossUser} style={{ width: '20px', height: '20px', marginLeft: 'auto' }} onClick={(e) => { setShowImageDiv(false) }} />
-                                                </div>
-
-
-
-                                                {Object.keys(photos).map((type, index) => (
-                                                    <div key={type} style={{ display: 'flex' }} className="photo-input-section">
-                                                        <label>
-                                                            <h6 style={{ fontSize: "11px" }}>{type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:</h6>
-                                                            <input
-                                                                type="file"
-                                                                style={{ fontSize: '0.7rem', marginBottom: "10px" }}
-                                                                ref={photoRefs[type]}
-                                                                accept="image/*"
-                                                                capture="environment"
-                                                                className="form-control"
-                                                                onChange={(e) => handleFileChange(e, type)}
-                                                            />
-                                                        </label>
-                                                        {photoPreviews[type] && (
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '20px' }}>
-                                                                <img src={photoPreviews[type]} alt={`Upload preview ${type}`} style={{ width: 100, height: 100 }} />
-                                                                <Button variant="contained" onClick={() => {
-                                                                    setPhotos(prev => ({ ...prev, [type]: null }));
-                                                                    setPhotoPreviews(prev => ({ ...prev, [type]: null }));
-                                                                    if (photoRefs[type].current) {
-                                                                        photoRefs[type].current.value = ""; // Reset the file input
-                                                                    }
-                                                                }}>Remove</Button>
-                                                            </div>
-                                                        )}
-
-                                                    </div>
-                                                ))}
-
-                                            </div>)}
-                                            {!showImageDiv && (
-
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <span onClick={(e) => setShowImageDiv(true)} style={{ fontSize: "13px", marginRight: "20px" }}>Share Accident Images ?</span>
-                                                    <div style={{
-                                                        border: "1px solid blue",
-                                                        padding: "3px",
-                                                        textAlign: "center",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        borderRadius: "10px",
-                                                        background: "radial-gradient(#818181, transparent)",
-                                                        padding: '10px',
-                                                        backgroundColor: '#4a4a4a',
-                                                        color: 'white'
-
-                                                    }}>
-                                                        <span
-                                                            style={{ fontSize: '11px', cursor: 'pointer' }}
-                                                            onClick={(e) => { setShowImageDiv(true) }}
-                                                        >
-                                                            Accident Images
-                                                        </span>
-                                                    </div>
-
-
-                                                </div>
-                                            )}
-
-                                            <div style={{ display: 'flex' }}>
-                                                <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}> Is Material Loaded ? </p>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => setIsMaterialLoaded(true)}>Yes</button>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => setIsMaterialLoaded(false)}>No</button>
-                                            </div>
-
-                                            {isMaterialLoaded && (
-                                                <div style={{ display: 'flex' }}>
-                                                    <span style={{ fontSize: '12px', marginRight: "5px", marginTop: "15px", marginBottom: "15px" }}>Quantity In Tons:</span>
-                                                    <input
-                                                        type="number"
-                                                        name="vendorPhone"
-                                                        style={{ width: '50%', textAlign: 'center', marginTop: "10px", marginBottom: "15px" }}
-                                                        value={quantity}
-                                                        onChange={(e) => {
-                                                            const newValue = e.target.value;
-                                                            if (/^\d*$/.test(newValue)) {
-                                                                setQuantity(newValue);
-                                                            }
-                                                        }}
-                                                        placeholder="Quantity"
-                                                        className="form-control"
-                                                    />
-
-                                                </div>
-                                            )}
-
-                                            <div style={{ display: 'flex' }}>
-                                                <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Recovery Van Needed?</p>
-
-                                                {/* Required Button */}
-                                                <button
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        height: "30px",
-                                                        marginTop: "10px",
-                                                        marginRight: "10px",
-                                                        backgroundColor: isRecoveryVan ? "green" : "black", // Green when selected
-                                                        color: isRecoveryVan ? "white" : "lightgray",
-                                                    }}
-                                                    type="button"
-                                                    className="btn btn-dark"
-                                                    onClick={() => setIsRecoveryVan(true)}
-                                                >
-                                                    Required
-                                                </button>
-
-                                                {/* Not Required Button */}
-                                                <button
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        height: "30px",
-                                                        marginTop: "10px",
-                                                        marginRight: "10px",
-                                                        backgroundColor: !isRecoveryVan ? "#f35e5e" : "black", // Red when selected
-                                                        color: !isRecoveryVan ? "white" : "lightgray",
-                                                    }}
-                                                    type="button"
-                                                    className="btn btn-dark"
-                                                    onClick={() => setIsRecoveryVan(false)}
-                                                >
-                                                    Not Required
-                                                </button>
-                                            </div>
-
-
-                                            <div style={{ display: 'flex', marginTop: '5px' }}>
-                                                <p style={{ fontSize: "12px", marginTop: '15px', marginRight: "10px" }}>Estimated Budget : </p>
-                                                <input
-                                                    type="number"
-                                                    name="vendorPhone"
-                                                    value={budget}
-                                                    onChange={(e) => setBudget(e.target.value)}
-                                                    placeholder="Budget"
-                                                    style={{ width: "100px", textAlign: 'center' }}
-                                                    className="form-control"
-                                                />
-                                            </div>
-
+                                           {fromPageHere != "quotationUpdate" && ( 
                                             <p style={{
                                                 fontSize: '11px',
                                                 marginTop: "20px",
@@ -863,7 +935,7 @@ function Registration({ onVehicleData }) {
                                                     right: '10px'
                                                 }} />
                                                 Submit Details
-                                            </p>
+                                            </p>)}
 
                                         </div>)}
 

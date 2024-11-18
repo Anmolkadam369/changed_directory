@@ -110,9 +110,12 @@ import ErrorIcon from './Component/CaseFirstCard/ErrorIcon';
 import CompletePayment from './Component/Charts/CompletePayment';
 
 import FirstPage from './Component/User/FirstPage';
+import CraneFirstPage from './Component/User/Crane/CraneFirstPage';
 import UserSideBar from './Component/User/UserSideBar'
 import SelectLocationOnMap from './Component/User/SelectLocationOnMap';
+import CraneUserLanding from './Component/Vendors/Crane/CraneUserLanding';
 
+import MapForVendorDistance from './Component/User/MapForVendorDistance';
 
 function App() {
   return (
@@ -127,7 +130,14 @@ function App() {
           <Route path='/SuccessIcon' element={<SuccessIcon/>}/>
           <Route path='/ErrorIcon' element={<ErrorIcon/>}/>
           <Route path='/CompletePayment' element={<CompletePayment/>}/>
-          <Route path='/FirstPage' element={<FirstPage/>}/>
+          <Route path='/User-landing-page' element={<ProtectedRoute element={<FirstPage />} />} />
+          <Route path='/Crane-dashboard' element={<ProtectedRoute element={<CraneFirstPage />} />} />
+
+          {/* Crane Dashboard */}
+          <Route path='/crane-user-landing-page' element={<ProtectedRoute element={<CraneUserLanding />} />} />
+          <Route path='/map-vendor-distance' element={<ProtectedRoute element ={<MapForVendorDistance/>}/>}/>
+
+        
           <Route path='/UserSideBar' element={<UserSideBar/>}/>
           <Route path='/SelectLocationOnMap' element={<SelectLocationOnMap/>}/>
 
@@ -164,7 +174,7 @@ function App() {
           {/* <Route path='/VendorMasterEdit' element={<ProtectedRoute element={<VendorMasterEdit />} />} /> */}
           {/* <Route path='/CustomerMasterEdit' element={<ProtectedRoute element={<CustomerMasterEdit />} />} /> */}
           {/* <Route path='/VehicleClaimEdit' element={<ProtectedRoute element={<VehicleClaimEdit />} />} /> */}
-          {/* <Route path='/VendorMasterViewOnly' element={<ProtectedRoute element={<VendorMasterViewOnly />} />} /> */}
+          <Route path='/VendorMasterViewOnly' element={<ProtectedRoute element={<VendorMasterViewOnly />} />} />
           {/* <Route path='/ImageUpload' element={<ProtectedRoute element={<ImageUpload />} />} /> */}
           <Route path='/UserDashboard' element={<ProtectedRoute element={<User />} />} />
           {/* <Route path='/AccidentVehicle' element={<ProtectedRoute element={<AccidentVehicle />} />} /> */}

@@ -3,12 +3,33 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import backendUrl from '../../environment';
 import onlinePaymentImage from "../../Assets/onlinePaymentImage.png"
-import { useParams } from 'react-router-dom';
+import { useParams , useLocation, useNavigate} from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 
 function Payment() {
   const { token } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate()
+  const { state } = useLocation();
+  
+  const [vehicleNo, setVehicleNo] = useState('')
+  const [accidentVehicleCode, setAccidentVehicleCode] = useState('')
+  const [vendorCode, setVendorCode] = useState('')
+  const [customerCode, setCustomerCode] = useState('')
+  const [vendorType, setVendorType] = useState('')
+
+
+  useEffect (()=>{
+    if(state?.vehicleNo && state?.accidentVehicleCode && state?.vendorCode && state?.customerCode && state?.vendorType){
+      setVehicleNo(state.vehicleNo)
+      setAccidentVehicleCode(state.accidentVehicleCode)
+      setVendorCode(state.vendorCode)
+      setCustomerCode(state.customerCode)
+      setVendorType(state.vendorType)
+    }
+  },[state])
+  
   const [isTokenValid, setIsTokenValid] = useState(null);
   console.log("isxepirationsto", isTokenValid)
   const [book, setbook] = useState({
@@ -37,17 +58,18 @@ function Payment() {
       key: "rzp_test_UH0rkDW0Rkm44R",
       amount: data.amount,
       currency: data.currency,
-      name: book.name,
+      name: `Payment For ${vehicleNo} Vehicle ${vendorType} Services`,
       description: "Test Transaction",
       img: book.img,
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = `${backendUrl}/api/verify/${token}`;
+          const verifyUrl = `${backendUrl}/api/verify/${token}/${accidentVehicleCode}/${customerCode}/${vendorType}`;
           const { data } = await axios.post(verifyUrl, response);
           console.log("verifyData", data);
+          navigate('/Crane-dashboard')
         } catch (error) {
-          console.log(error)
+          console.log("error", error)
         }
       },
       theme: {
@@ -60,18 +82,20 @@ function Payment() {
 
   const handlePayment = async () => {
     try {
-      const orderUrl = `${backendUrl}/api/orders/${token}`;
-      const { data } = await axios.post(orderUrl, {
-        amount: book.price
-      });
+      const orderUrl = `${backendUrl}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`;
+      const { data } = await axios.post(orderUrl);
       console.log("orderData", data);
+      // is token valid  checkTokenExpired(data.token) it will check token time is done or not
       initPayment(data.data);
     } catch (error) {
       console.log(error)
     }
   }
-
-
+  if(isTokenValid){
+    handlePayment()
+  }
+  
+  
   return (
     <div>
       <Helmet>
@@ -100,7 +124,7 @@ function Payment() {
           </form>
         </div>
       )}
-      {isTokenValid === true && (
+      {/* {isTokenValid === true && (
         <div className="payment">
           <div className='book_container'>
             <img src={onlinePaymentImage} alt="book_img" className='book_img' />
@@ -108,11 +132,11 @@ function Payment() {
               <h2 className='book_name'>{book.name}</h2>
               <p className='book_description'>{book.description}</p>
               <p className='book_price'>Price: {book.price}</p>
-              <button onClick={handlePayment} className='buy_btn'>Buy Now</button>
+              <button className='buy_btn'>Buy Now</button>
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

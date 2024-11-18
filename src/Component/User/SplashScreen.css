@@ -1,0 +1,36 @@
+.star-light-effect {
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 10px;
+  height: 10px;
+  background:radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  transform: scale(0.8) rotate(45deg);
+  z-index: 2;
+  animation: star-light-move 3s ease-in-out infinite;
+  pointer-events: none;
+  box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.8);
+}
+
+
+@keyframes star-light-move {
+  0% {
+    transform: translate(0, 0) scale(0.8) rotate(45deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(200px, -200px) scale(1.5) rotate(45deg);
+    opacity: 1;
+  }
+  /* 75% {
+    opacity: 0.8;
+  } */
+  100% {
+    transform: translate(400px, -400px) scale(0.8) rotate(45deg);
+    opacity: 0;
+  }
+}

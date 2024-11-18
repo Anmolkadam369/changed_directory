@@ -72,12 +72,13 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     });
 
     const [cransData, setCransData] = useState([]);
+    console.log("cransData", cransData)
     const [mechanicsData, setMechanicsData] = useState([]);
     const [workshopsData, setWorkshopsData] = useState([]);
     const [advocatesData, setAdvocatesData] = useState([]);
 
     const [DataRejected, setDataRejected] = useState([]);
-    console.log("DATAREJECTED", DataRejected)
+    console.log("DATAREJECTED first", DataRejected)
     console.log("DATAREJECTEDhere", DataRejected[0])
 
 
@@ -87,11 +88,14 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
             console.log("vanva", vehicle.craneData)
             const result = someFunct(vehicle.craneData);
             const result2 = someFunct2(vehicle.craneData);
+            console.log("REUSLTS2 here",result2)
             setCransData(result);
-            setDataRejected(prevState => [
-                ...prevState,
-                result2[0]
-            ]);
+            for(let i =0; i<result2.length; i++){
+                setDataRejected(prevState => [
+                    ...prevState,
+                    result2[i]
+                ]);
+            }
         }
         if (vehicle.mechanicData.length !== 0) {
             const result = someFunct(vehicle.mechanicData);
@@ -126,17 +130,30 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         return data.filter(item => item.acceptedByAdmin !== 'reject');
     };
     const someFunct2 = (data) => {
-        return data.filter(item => item.acceptedByAdmin == 'reject');
+        console.log('data in someFunction1', data)
+       return data.filter((item)=>{
+        console.log("accepted", item.acceptedByAdmin);
+        console.log("vendorDecision", item.vendorDecision);
+        console.log(item.acceptedByAdmin === 'reject' || item.vendorDecision === 'reject')
+        return (item.acceptedByAdmin === 'reject' || item.vendorDecision === 'reject')
+       })
     };
 
     useEffect(() => {
         const fetchVendorData = async () => {
             if (vehicle) {
                 let vendors = [];
+                console.log("VEHICLER 145", vehicle)
                 if (vehicle.advocate) vendors.push(vehicle.advocate);
                 if (vehicle.mechanic) vendors.push(vehicle.mechanic);
                 if (vehicle.crane) vendors.push(vehicle.crane);
                 if (vehicle.workshop) vendors.push(vehicle.workshop);
+
+                if(vehicle.craneData.length > 0){
+                    vehicle.craneData.map((individualCraneData)=>{
+                        vendors.push(individualCraneData.VendorCode)
+                    })
+                }
                 console.log("VEDORDSSSDD", vendors)
                 for (const ven of vendors) {
                     try {
@@ -267,8 +284,13 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
     }, [comingVendorData])
 
+    console.log("comigDatahere", comingVendorData)
     const uniqueVendors = comingVendorData.filter((vendor, index, self) =>
         index === self.findIndex((v) => v.vendorCode === vendor.vendorCode));
+
+    console.log("uniqueVendorsstaff",uniqueVendors)
+    console.log("datarejectedsatff",DataRejected)
+
 
     const [DataRejectedVendors, setDataRejectedVendors] = useState([]);
     const [craneDataRejected, setCraneDataRejected] = useState([]);
@@ -286,46 +308,62 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                     .filter(item => item?.VendorCode) // Ensure VendorCode exists
                     .map(item => {
                         const matchedVendor = uniqueVendors.find(vendor => vendor.vendorCode === item.VendorCode);
-
-                        if (matchedVendor) {
-                            return { ...matchedVendor, ...item }; // Merge uniqueVendor and DataRejected item
-                        }
-                        return null;
+                        return matchedVendor ? { ...matchedVendor, ...item } : null;
                     })
                     .filter(item => item !== null); // Filter out null values
-
+                    console.log("matchedVendors123", matchedVendors)
                 // Remove duplicates based on VendorCode
                 const uniqueMatchedVendors = matchedVendors.reduce((acc, current) => {
                     const x = acc.find(item => item.vendorCode === current.vendorCode);
-                    if (!x) {
-                        return acc.concat([current]);
-                    }
-                    return acc;
+                    return x ? acc : acc.concat([current]);
                 }, []);
+                console.log("uniqueMatchedVendors123", uniqueMatchedVendors)
+                console.log("DataRejectedVendors", DataRejectedVendors)
 
-                console.log("ACCOUNDT", uniqueMatchedVendors)
-                for (let i = 0; i < uniqueMatchedVendors.length; i++) {
-                    console.log("uniqueMatchedVendirs", uniqueMatchedVendors[i].vendorType)
-                    if (uniqueMatchedVendors[i].vendorType == 'crane') setCraneDataRejected(uniqueMatchedVendors[i])
-                    if (uniqueMatchedVendors[i].vendorType == 'advocate') setAdvocateDataRejected(uniqueMatchedVendors[i])
-                    if (uniqueMatchedVendors[i].vendorType == 'mechanic') setMechanicDataRejected(uniqueMatchedVendors[i])
-                    if (uniqueMatchedVendors[i].vendorType == 'workshop') setWorkshopDataRejected(uniqueMatchedVendors[i])
 
-                }
-
-                // Check if uniqueMatchedVendors has changed before updating state
-                if (JSON.stringify(uniqueMatchedVendors) !== JSON.stringify(DataRejectedVendors)) {
+    
+                // Only update states if uniqueMatchedVendors has changed
+                // if (JSON.stringify(uniqueMatchedVendors) !== JSON.stringify(DataRejectedVendors)) {
                     setDataRejectedVendors(uniqueMatchedVendors);
-                }
+                    
+                    const newCraneDataRejected = [];
+                    const newAdvocateDataRejected = [];
+                    const newMechanicDataRejected = [];
+                    const newWorkshopDataRejected = [];
+    
+                    // Populate arrays for each vendor type
+                    uniqueMatchedVendors.forEach(vendor => {
+                        switch (vendor.vendorType) {
+                            case 'crane':
+                                newCraneDataRejected.push(vendor);
+                                break;
+                            case 'advocate':
+                                newAdvocateDataRejected.push(vendor);
+                                break;
+                            case 'mechanic':
+                                newMechanicDataRejected.push(vendor);
+                                break;
+                            case 'workshop':
+                                newWorkshopDataRejected.push(vendor);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+    
+                    setCraneDataRejected(newCraneDataRejected);
+                    setAdvocateDataRejected(newAdvocateDataRejected);
+                    setMechanicDataRejected(newMechanicDataRejected);
+                    setWorkshopDataRejected(newWorkshopDataRejected);
+                // }
             }
         };
-        console.log("SODSMDSD")
-
-        // Only call uniquehere if both arrays have data
+    
         if (uniqueVendors.length !== 0 && DataRejected.length !== 0) {
             uniquehere(uniqueVendors);
         }
-    }, [DataRejected, uniqueVendors]);
+    }, [DataRejected, uniqueVendors, DataRejectedVendors]);
+    
 
     const [selected, setSelected] = useState("accepted")
 
@@ -516,14 +554,15 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                 <th>Vendor Name</th>
                                                 <th>Type Of Vendor</th>
                                                 <th>Vendor Email</th>
-                                                <th>Accepted</th>
+                                                <th>Vendor</th>
+                                                <th>Admin</th>
                                                 <th>View</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {uniqueVendors.length === 0 ? (
                                                 <tr>
-                                                    <td colSpan="5" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from the assigned vendors...</td>
+                                                    <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Response from the assigned vendors...</td>
                                                 </tr>
                                             ) : (
                                                 uniqueVendors.map((vendor, index) => (
@@ -534,6 +573,38 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                         <td style={{ color: "blue" }}><a href={`mailto:${vendor.email}`} style={{ color: "blue", textDecoration: "none" }}>
                                                             {vendor.email}
                                                         </a></td>
+                                                        <td>
+                                                            <div>
+                                                                {vendor.vendorType === "crane" && (
+                                                                     cransData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{cransData[0].vendorDecision == null ? "pending" : cransData[0].vendorDecision.charAt(0).toUpperCase() + cransData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "mechanic" && (
+                                                                    vehicle.mechanicData.length !== 0 && mechanicsData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{mechanicsData[0].vendorDecision == null ? "pending" : mechanicsData[0].vendorDecision.charAt(0).toUpperCase() + mechanicsData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "advocate" && (
+                                                                    vehicle.advocateData.length !== 0 && advocatesData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{advocatesData[0].vendorDecision == null ? "pending" : advocatesData[0].vendorDecision.charAt(0).toUpperCase() + advocatesData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "workshop" && (
+                                                                    vehicle.workshopData.length !== 0 && workshopsData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{workshopsData[0].vendorDecision == null ? "pending" : workshopsData[0].vendorDecision.charAt(0).toUpperCase() + workshopsData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <div>
                                                                 {vendor.vendorType === "crane" && (
@@ -622,6 +693,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                 <th>Vendor Name</th>
                                                 <th>Type Of Vendor</th>
                                                 <th>Vendor Email</th>
+                                                <th>Vendor</th>
                                                 <th>Accepted</th>
                                                 <th>View</th>
                                             </tr>
@@ -629,7 +701,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                         <tbody>
                                             {DataRejectedVendors.length === 0 ? (
                                                 <tr>
-                                                    <td colSpan="5" style={{ textAlign: "center", fontWeight: "bold" }}>No Rejected Vendors Yet</td>
+                                                    <td colSpan="6" style={{ textAlign: "center", fontWeight: "bold" }}>No Rejected Vendors Yet</td>
                                                 </tr>
                                             ) : (
                                                 DataRejectedVendors.map((vendor, index) => (
@@ -640,6 +712,38 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                                         <td style={{ color: "blue" }}><a href={`mailto:${vendor.email}`} style={{ color: "blue", textDecoration: "none" }}>
                                                             {vendor.email}
                                                         </a></td>
+                                                        <td>
+                                                            <div>
+                                                                {vendor.vendorType === "crane" && (
+                                                                     cransData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{cransData[0].vendorDecision == null ? "pending" : cransData[0].vendorDecision.charAt(0).toUpperCase() + cransData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "mechanic" && (
+                                                                    vehicle.mechanicData.length !== 0 && mechanicsData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{mechanicsData[0].vendorDecision == null ? "pending" : mechanicsData[0].vendorDecision.charAt(0).toUpperCase() + mechanicsData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "advocate" && (
+                                                                    vehicle.advocateData.length !== 0 && advocatesData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{advocatesData[0].vendorDecision == null ? "pending" : advocatesData[0].vendorDecision.charAt(0).toUpperCase() + advocatesData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                                {vendor.vendorType === "workshop" && (
+                                                                    vehicle.workshopData.length !== 0 && workshopsData.length !== 0 ? (
+                                                                        <p style={{ color: "brown", fontSize: "14px" }}>{workshopsData[0].vendorDecision == null ? "pending" : workshopsData[0].vendorDecision.charAt(0).toUpperCase() + workshopsData[0].vendorDecision.slice(1)}</p>
+                                                                    ) : (
+                                                                        <p style={{ color: "red", fontSize: "14px" }}>no response</p>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <div>
                                                                 {vendor.vendorType === "crane" && (

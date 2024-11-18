@@ -142,7 +142,7 @@ const RotatingBoard = () => {
                 style={{
                   maxWidth: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'none',
                 }}
               />
               <rect width="100%" height="100%" fill="#777" />
@@ -177,7 +177,7 @@ const RotatingBoard = () => {
                 style={{
                   maxWidth: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'fill',
                 }}
               />
 

@@ -339,14 +339,15 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       // }
       if (key === "city") continue;
 
-      if (key !== "GSTNo" && key !== "GST" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+      if (key !== "GSTNo" && key !== "email" && key !== "GST" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'agreement' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
         if (value === '') return `Fields '${key}' is required.`;
       }
     }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(formData.email)) {
-      return 'Please enter a valid email address.';
+    if (formData.email != "N/A") {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(formData.email)) {
+        return 'Please enter a valid email address.';
+      }
     }
 
     const phoneRegex = /^[0-9]{10}$/
@@ -476,24 +477,24 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         ...prevState,
         [name]: value
       }));
-    }else if (name === "email") {
+    } else if (name === "email") {
       setFormData({
         ...formData,
         [name]: value,
       });
-    } 
-    else if(name ==="district"){
+    }
+    else if (name === "district") {
       setFormData({
         ...formData,
-        [name]:value,
+        [name]: value,
       })
     }
 
     else {
       const capitalizedValue = value
-  .split(' ')
-  .map(word => word.toUpperCase())
-  .join(' ');
+        .split(' ')
+        .map(word => word.toUpperCase())
+        .join(' ');
 
       setFormData(prevState => ({
         ...prevState,
@@ -1194,26 +1195,26 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
               <p className='notUploaded'>No Location Uploaded</p>
             ) : (
               <div>
-              {/* <Button variant="contained">Send Location</Button> */}
-              <>
-                <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
-                  <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
+                {/* <Button variant="contained">Send Location</Button> */}
+                <>
+                  <form className='Customer-master-form' style={{ marginBottom: "40px", background: "#c4c4ff3d", marginLeft: "0px", marginRight: "0px", }}>
+                    <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
 
-                  Send Location Of Address (this is by your address):
-                  <div className='form-row'>
-                    <label className='form-field'>
-                      Latitude:
-                      <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
-                    </label>
-                    <label className='form-field'>
-                      Longitude:
-                      <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
-                    </label>
-                    <label className='form-field'></label>
-                  </div>
-                </form>
-              </>
-            </div>
+                    Send Location Of Address (this is by your address):
+                    <div className='form-row'>
+                      <label className='form-field'>
+                        Latitude:
+                        <input type="text" name="latitude" readOnly={IsReadOnly} value={formData.latitude} onChange={handleChange} />
+                      </label>
+                      <label className='form-field'>
+                        Longitude:
+                        <input type="text" name="longitude" readOnly={IsReadOnly} value={formData.longitude} onChange={handleChange} />
+                      </label>
+                      <label className='form-field'></label>
+                    </div>
+                  </form>
+                </>
+              </div>
             )
           ) : (
             <>

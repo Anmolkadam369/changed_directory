@@ -476,7 +476,7 @@ const VendorApproved = () => {
               </label>
 
               <label className="label-class" style={{ marginTop: "20px" }}>
-                {!isGenerated && (
+                {!isGenerated && userId == "EMPID-4784aef8-63c7-4f9d-a40a-4c2d6e20e2f7" && (
                   <div
                     className="form-control generate-button"
                     onClick={generateFile}

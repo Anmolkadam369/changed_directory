@@ -65,6 +65,9 @@ function SearchControl() {
 export default function SelectLocationMap({ onLocationChange }) {
     const { state } = useLocation();
     let [center, setCenter] = useState(state?.center || DEFAULT_POSITION);
+    let [fromPage, setFromPage] = useState(state?.fromPage);
+    console.log("fromPage", fromPage)
+
     console.log("CENTER", center)
     const navigate = useNavigate(); // Get the navigate function from React Router
 
@@ -92,6 +95,8 @@ export default function SelectLocationMap({ onLocationChange }) {
 
     const handleLocationSelect = (location) => {
         console.log('Selected Location:', location);
+        setCenter([location.lat, location.lng])
+
         // Call the onLocationChange function passed as a prop from the parent component
         if (onLocationChange) {
             onLocationChange(location);
@@ -101,7 +106,27 @@ export default function SelectLocationMap({ onLocationChange }) {
     const handleSelectButtonClick = () => {
         // Navigate back to the previous page
         // center = {center}
-        navigate('/VehicleDetails', {state :{ center }}); // Use navigate(-1) to go back
+        console.log('handleSelectButtonClick:', center);
+
+        console.log("navigating to admin", fromPage)
+
+        if(fromPage == "Admin"){
+        console.log("navigating to admin1", fromPage)
+
+            setTimeout(() => {
+                navigate('/Admin', {state :{ center }}); // Use navigate(-1) to go back
+            }, 2000);
+        }
+        
+        if(fromPage == "firstPage"){
+    
+                setTimeout(() => {
+                    navigate('/user-landing-page', {state :{ center }}); // Use navigate(-1) to go back
+                }, 2000);
+            }
+        else{
+            navigate('/VehicleDetails', {state :{ center }}); // Use navigate(-1) to go back
+        }
 
     };
 

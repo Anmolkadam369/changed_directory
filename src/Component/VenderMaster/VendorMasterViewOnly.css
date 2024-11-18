@@ -1,0 +1,87 @@
+.ahrefhere {
+    color:green;
+    border: 1px solid green;
+    padding:20px;
+    font-size: 20px;
+}
+
+.p {
+    font-size: 20px;
+}
+
+.TP-bottom-div{
+    margin-top: 100px;
+    padding:20px;
+    border:1px solid red;
+    border-radius: 20px;
+    
+}
+
+.TP-hover-button{
+    margin:20px;
+    padding:20px;
+    background-color: blue;
+    box-shadow: 20px 20px 5px red;
+    transition: background-color 0.3s ease , box-shadow 0.3s ease;
+}
+
+.TP-hover-button:hover{
+    background-color: green;
+    box-shadow: 10px 20px 60px yellow;
+}
+
+.card-containerTP {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.cardTP {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 20px 10px 5px red;
+    text-align: center;
+}
+
+.cardTP img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: 1fr; /* Stack cards vertically on small screens */
+    }
+}
+
+
+.TP-image-container1{
+    box-shadow: 10px 4px 25px black ;
+    max-width: 170px;
+    height: 250px;
+    border-radius: 10px;
+    /* display: flex; */
+    text-align: center;
+    padding-top: 10px;
+}
+
+.TP-image{
+    width: 150px;
+    height: 150px;
+}
+
+.TP-flexingshowing{
+    display: flex;
+    gap:20px;
+}
+
+@media (max-width: 465px){
+    .TP-flexingshowing{
+        display: block;
+        margin-top: 20px;
+    }
+}

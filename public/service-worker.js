@@ -4,7 +4,7 @@ self.addEventListener('push', event => {
     console.log("Push event data:", data);
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: 'path/to/your/icon.png'
+      icon: '../src/Assets/claimproassistwithoutName.jpg'
     });
   } else {
     console.log("Push event but no data");

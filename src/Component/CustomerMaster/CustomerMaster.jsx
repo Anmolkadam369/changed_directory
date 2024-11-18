@@ -277,14 +277,16 @@ const CustomerMaster = () => {
         }
       }
 
-      if (key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "panNo" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
-        if (value === '') return `Fields '${key}' is required.`;
+      if (key !== "GSTNo" && key !== 'email' && key !== "fleetSize" && key !== "GST" && key !== "adharNo" && key !== "panNo" && key !== "contactPersonNum2" && key !== 'panCard' && key !== 'adharCard' && key !== 'GST' && key != 'fleetSize' && key != 'vehicleNo' && key != 'chassisNo' && key != 'engineNo' && key != 'make' && key != 'model' && key != 'year' && key != 'type' && key != 'application' && key != 'GVW' && key != 'ULW' && key != 'InsuranceName' && key != 'plan') {
+        if (value === '') return `Field '${key}' is required.`;
       }
     }
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(formData.email)) {
-      return 'Please enter a valid email address.';
+    if (formData.email !== "") {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(formData.email)) {
+        return 'Please enter a valid email address.';
+      }
     }
 
     const phoneRegex = /^[0-9]{10}$/
@@ -382,10 +384,10 @@ const CustomerMaster = () => {
         [name]: validValue,
       });
     }
-    else if(name ==="district"){
+    else if (name === "district") {
       setFormData({
         ...formData,
-        [name]:value,
+        [name]: value,
       })
     }
     else if (name === "CustomerPhone" || name === "contactPersonNum" || name === "contactPersonNum2") {
@@ -399,7 +401,7 @@ const CustomerMaster = () => {
         ...formData,
         [name]: validValue,
       });
-    }else if (name === "email") {
+    } else if (name === "email") {
       setFormData({
         ...formData,
         [name]: value,
@@ -408,7 +410,7 @@ const CustomerMaster = () => {
     else if (name === "CustomerType") {
       console.log("valueinside", value)
       if (value === "retail") {
-      console.log("valueinsideretail", value)
+        console.log("valueinsideretail", value)
         setIsRetail(true);
         setIsFleetOwner(false);
       } else if (value === "fleetOwner") {
@@ -417,16 +419,16 @@ const CustomerMaster = () => {
       }
       setFormData({
         ...formData,
-        [name]:value,
+        [name]: value,
       })
     }
 
     else {
       const capitalizedValue = value
-      .split(' ')
-      .map(word => word.toUpperCase())
-      .join(' ');
-    
+        .split(' ')
+        .map(word => word.toUpperCase())
+        .join(' ');
+
       setFormData(prevState => ({
         ...prevState,
         [name]: capitalizedValue
@@ -728,7 +730,7 @@ const CustomerMaster = () => {
               </label>
 
               <label className="form-field input-group mb-3">
-                City : 
+                City :
                 <select
                   name="district"
                   value={formData.district}
@@ -976,12 +978,12 @@ const CustomerMaster = () => {
 
           <form className='Customer-master-form' style={{ marginBottom: "40px" }}>
             <h1 style={{ fontWeight: 'bold', fontSize: "25px", marginBottom: "20px" }}>Location</h1>
-           <p> Send Your Current Location (if it's same for filling address):</p>
+            <p> Send Your Current Location (if it's same for filling address):</p>
             <div className='form-row'>
               <Button variant="contained" onClick={getLocation}>Send Location</Button>
             </div>
 
-           <p> Send Location Of Address (this is by your address):</p>
+            <p> Send Location Of Address (this is by your address):</p>
             <div className='form-row'>
               <label className='form-field'>
                 Latitude:
@@ -1012,7 +1014,7 @@ const CustomerMaster = () => {
                       ref={fleetSizeRef}
                       onChange={handleChange}
                       className="form-control"
-                      required />
+                       />
                   </label>
                   <label className="form-field">
                     <IconButton href={fleetInfo} download="fleetInfo.xlsx" color="primary">

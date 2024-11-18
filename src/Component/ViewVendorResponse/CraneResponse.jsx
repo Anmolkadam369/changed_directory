@@ -888,6 +888,17 @@ function CraneResponse({ data, onUpdate }) {
                         </div>
 
                         <div className='form-row' style={{ flexDirection: "column" }}>
+                        <label className="form-field">
+                                Vendor Charges:
+                                <input
+                                    type="text"
+                                    className='inputField form-control'
+                                    name="charges"
+                                    value={formData.charges}
+
+                                    readOnly={true}
+                                />
+                            </label>
                             <label className="form-field">
                                 Vehicle Inspection Remarks:
                                 <textarea

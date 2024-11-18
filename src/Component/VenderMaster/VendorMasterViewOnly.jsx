@@ -7,6 +7,8 @@
 // import { useRecoilValue } from 'recoil';
 // import { tokenState, userIdState } from '../Auth/Atoms';
 
+
+
 // // import { faCoffee, faHome, faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 // const VendorMasterViewOnly = () => {
 //   const location = useLocation();
@@ -25,7 +27,7 @@
 //     }
 //     getDataById(id);
 //   }, [token, userId, navigate, id]); // Removed comingData from dependencies
-  
+
 //   useEffect(() => {
 //     if (comingData) {
 //       setFormData(prevFormData => ({
@@ -51,7 +53,7 @@
 //       }));
 //     }
 //   }, [comingData]); // Separate useEffect for handling comingData updates
-  
+
 
 //   const [formData, setFormData] = useState({
 //     systemDate: today,
@@ -112,7 +114,7 @@
 //   };
 //   return (
 //     <div style={{ display: 'flex' }}>
-      
+
 //     <form onSubmit={handleSubmit} className="vendor-master-form">
 //     <div style={{  flex: 1, backgroundColor: 'lightGreen',  textAlign: 'center', padding: '20px', margin: '20px auto', width: '100%'}}> 
 //     <h3 >Vendor Master Edit</h3> 
@@ -346,12 +348,12 @@
 
 //       <div style={{ textAlign: 'center'}}>
 //   <button type="submit" style={{                     fontSize: "14px",
-                    // padding: "5px 20px",
-                    // border: "3px solid lightblue",
-                    // borderRadius: "4px",
-                    // cursor: "pointer",
-                    // backgroundColor: "transparent",
-                    // color: "green",}}>
+// padding: "5px 20px",
+// border: "3px solid lightblue",
+// borderRadius: "4px",
+// cursor: "pointer",
+// backgroundColor: "transparent",
+// color: "green",}}>
 //     Submit
 //   </button>
 // </div>
@@ -430,7 +432,7 @@
 //           }));
 //         }
 //       }, [comingData]); // Separate useEffect for handling comingData updates
-      
+
 
 //   const today = new Date().toISOString().split('T')[0];
 //   const [isRetail, setIsRetail]=useState(false);
@@ -518,7 +520,7 @@
 //   };
 //   return (
 //     <div style={{ display: 'flex' }}>
-      
+
 //     <form onSubmit={handleSubmit} className="Customer-master-form">
 //     <div style={{  flex: 1, backgroundColor: 'lightGreen',  textAlign: 'center', padding: '20px', margin: '20px auto', width: '100%'}}> 
 //     <h3 >Customer Master</h3> 
@@ -895,12 +897,12 @@
 
 //       <div style={{ textAlign: 'center'}}>
 //   <button type="submit" style={{                     fontSize: "14px",
-                    // padding: "5px 20px",
-                    // border: "3px solid lightblue",
-                    // borderRadius: "4px",
-                    // cursor: "pointer",
-                    // backgroundColor: "transparent",
-                    // color: "green",}}>
+// padding: "5px 20px",
+// border: "3px solid lightblue",
+// borderRadius: "4px",
+// cursor: "pointer",
+// backgroundColor: "transparent",
+// color: "green",}}>
 //     Submit
 //   </button>
 // </div>
@@ -919,1135 +921,1349 @@
 
 
 
-import React, { useState, useEffect } from 'react';
-// import styles from './VehicleClaimRegistration.css'; // Ensure this path is correct
-import { useNavigate, useLocation } from 'react-router-dom'
-import { useRecoilValue } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+// import React, { useState, useEffect } from 'react';
+// // import styles from './VehicleClaimRegistration.css'; // Ensure this path is correct
+// import { useNavigate, useLocation } from 'react-router-dom'
+// import { useRecoilValue } from 'recoil';
+// import { tokenState, userIdState } from '../Auth/Atoms';
+// import axios from 'axios';
+// import { loadStates, loadCities } from '../StateAPI';
+
+// const config = {
+//     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
+//     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+// };
+
+// const VehicleClaimEdit = () => {
+
+//     const location = useLocation();
+//     const { id } = location.state || {};
+//     console.log("Received IDssss:", id);
+//     const [comingData, setComingData]=useState([]); 
+
+//     const navigate = useNavigate();
+//     const token = localStorage.getItem("token");
+//     const userId = localStorage.getItem("userId");
+
+//     const [states, setStates] = useState([]);
+//     const [cities, setCities] = useState([]);
+//     const [selectedState, setSelectedState] = useState('');
+//     const [isLoadingStates, setIsLoadingStates] = useState(true);
+//     const [isLoadingCities, setIsLoadingCities] = useState(true);
+
+//     const [errorMessage, setErrorMessage] = useState('');
+
+//     useEffect(() => {
+//         loadStates();
+//         getDataById(id);
+//         console.log("token", token, userId);
+//         // if (token === "" || userId === "") {
+//         //     navigate("/");
+//         // }
+//     }, [token, userId, navigate]);
+
+//     const formatDateForInput = (dateStr) => {
+//         if (!dateStr) return '';
+//         const date = new Date(dateStr);
+//         return date.toISOString().split('T')[0];
+//     };
+
+
+//     useEffect(() => {
+//         if (comingData) {
+//             setAccidentData(prevFormData => ({
+//                 ...prevFormData,
+//                 dateTime: formatDateForInput(comingData.dateTime),
+//                 // systemGenerated: formatDateForInput(comingData.systemGener   ated),
+//                 railwayTime: formatDateForInput(comingData.railwayTime),
+//                 state: comingData.state || "",
+//                 district: comingData.district || "",
+//                 accidentDate: formatDateForInput(comingData.accidentDate),
+//                 reason: comingData.reason || "",
+//                 insuredBy: comingData.insuredBy || "",
+//                 intimatedDate: formatDateForInput(comingData.intimatedDate),
+//                 policyNo: comingData.policyNo || "",
+//                 driverName: comingData.driverName || "",
+//                 DLNo: comingData.DLNo || "",
+//                 DLNoValidity: formatDateForInput(comingData.DLNoValidity),  
+//                 DOB: formatDateForInput(comingData.DOB),
+//                 policeStation: comingData.policeStation || "",
+//                 FIRNo: comingData.FIRNo || "",
+//                 firDate: formatDateForInput(comingData.firDate),
+//                 advocateName: comingData.advocateName || "",
+//                 advocateNo: comingData.advocateNo || "",
+//                 courtName: comingData.courtName || "",
+//                 surveyorName: comingData.surveyorName || "",
+//                 surveyorNo: comingData.surveyorNo || "",
+//                 dateOfSurvey: formatDateForInput(comingData.dateOfSurvey),
+//                 remarksSurveyor: comingData.remarksSurveyor || "",
+//                 materialSurveyorName: comingData.materialSurveyorName || "",
+//                 materialSurveyorNo: comingData.materialSurveyorNo || "",
+//                 dateOfMaterialSurvey: formatDateForInput(comingData.dateOfMaterialSurvey),
+//                 remarksMaterialSurvey: comingData.remarksMaterialSurvey || "",
+//                 finalSurveyorName: comingData.finalSurveyorName || "",
+//                 FinalSurveyorNo: comingData.FinalSurveyorNo || "",
+//                 dateOfFinalSurvey: formatDateForInput(comingData.dateOfFinalSurvey),
+//                 remarksFinalSurvey: comingData.remarksFinalSurvey || "",
+//                 investigatorName: comingData.investigatorName || "",
+//                 investigatorNo: comingData.investigatorNo || "",
+//                 investigationDate: formatDateForInput(comingData.investigationDate),
+//                 investigatorRemarks: comingData.investigatorRemarks || "",
+//                 representativeName: comingData.representativeName || "",
+//                 representativeNo: comingData.representativeNo || "",
+//                 dateRepairedOnSpot: formatDateForInput(comingData.dateRepairedOnSpot),
+//                 transshippedVehicleNo: comingData.transshippedVehicleNo || "",
+//                 transshippedDate: formatDateForInput(comingData.transshippedDate),
+//                 reportedFinalDestination: comingData.reportedFinalDestination || "",
+//                 reportedFinalDestinationDate: formatDateForInput(comingData.reportedFinalDestinationDate),
+//                 deadLineDate: formatDateForInput(comingData.deadLineDate),
+//                 readyDate: formatDateForInput(comingData.readyDate),
+//                 reInspectionDate: formatDateForInput(comingData.reInspectionDate),
+//                 finallyReleasedDate: formatDateForInput(comingData.finallyReleasedDate),
+//                 totalDaysFromAccident: comingData.totalDaysFromAccident || "",
+//                 daysInWorkShop: comingData.daysInWorkShop || "",
+//                 deadlineTAT: comingData.deadlineTAT || "",
+//                 docketName: comingData.docketName || "",
+//                 docketDate: formatDateForInput(comingData.docketDate),
+//                 origin: comingData.origin || "",
+//                 destination: comingData.destination || "",
+//                 consignor: comingData.consignor || "",
+//                 consignee: comingData.consignee || "",
+//                 invoiceNo: comingData.invoiceNo || "",
+//                 invoiceDate: formatDateForInput(comingData.invoiceDate),
+//                 material: comingData.material || "",
+//                 package: comingData.package || "",
+//                 weight: comingData.weight || ""
+//             }));
+//         }
+//     }, [comingData]);
+
+
+//     const [accidentData, setAccidentData] = useState({
+//         dateTime: '',
+//         systemGenerated: '',
+//         railwayTime: '',
+//         state: '',
+//         district: '',
+//         accidentDate: '',  //date
+//         reason: '',
+//         insuredBy: '',
+//         intimatedDate: '', //date
+//         intimationUpload: '',
+//         policyNo: "",
+//         driverName: "",
+//         DLNo: "",
+//         DLNoValidity: "",
+//         DOB: "",  //date
+//         policeStation: "",
+//         FIRNo: "",
+//         firDate: "", //date
+//         firUpload: "",
+//         advocateName: "",
+//         advocateNo: "",
+//         courtName: "",
+//         releaseUpload: "",
+//         surveyorName: "",
+//         surveyorNo: "",
+//         dateOfSurvey: "",
+//         remarksSurveyor: "",
+//         materialSurveyorName: "",
+//         materialSurveyorNo: "",
+//         dateOfMaterialSurvey: "",
+//         remarksMaterialSurvey: "",
+//         finalSurveyorName: "",
+//         FinalSurveyorNo: "",
+//         dateOfFinalSurvey: "",
+//         remarksFinalSurvey: "",
+//         investigatorName: "",
+//         investigatorNo: "",
+//         investigationDate: "", //date
+//         investigatorRemarks: "",
+
+//         representativeName: "",
+//         representativeNo: "",
+//         reportUpload: "",
+//         dateRepairedOnSpot: "",
+//         transshippedVehicleNo: "",
+//         transshippedDate: "",//date
+//         reportedFinalDestination: "",
+//         reportedFinalDestinationDate: "",
+
+//         deadLineDate: '',//date
+//         readyDate: "",//date
+//         reInspectionDate: "",//date
+//         finallyReleasedDate: "",//date
+
+//         totalDaysFromAccident: "",
+//         daysInWorkShop: "",
+//         deadlineTAT: "",
+
+//         docketName: "",
+//         docketDate: "",//date
+//         origin: "",
+//         destination: "",
+//         consignor: "",
+//         consignee: "",
+//         invoiceNo: "",
+//         invoiceDate: "",//date
+//         material: "",
+//         package: "",
+//         weight: "",
+//     });
+
+//     const loadStates = () => {
+//         setIsLoadingStates(true);
+//         fetch(`${config.cUrl}/states`, {
+//             headers: { "X-CSCAPI-KEY": config.ckey }
+//         })
+//             .then(response => response.json())
+//             .then(data => {
+//                 setStates(data);
+//                 setIsLoadingStates(false);
+//             })
+//             .catch(error => {
+//                 console.error('Error loading states:', error);
+//                 setIsLoadingStates(false);
+//             });
+//     };
+
+//     const loadCities = (stateCode) => {
+//         setIsLoadingCities(true);
+//         fetch(`${config.cUrl}/states/${stateCode}/cities`, {
+//             headers: { "X-CSCAPI-KEY": config.ckey }
+//         })
+//             .then(response => response.json())
+//             .then(data => {
+//                 setCities(data);
+//                 setIsLoadingCities(false);
+//             })
+//             .catch(error => {
+//                 console.error('Error loading cities:', error);
+//                 setIsLoadingCities(false);
+//             });
+//     };
+
+//     const getDataById= async (id)=>{
+//         const response = await axios.get(`http://localhost:3001/api/getVehicle/${id}`);
+//         console.log("daa",response.data.data)
+//         // console.log("response", response.data.data[0]);   
+//         setComingData(response.data.data[0])
+//       }
+
+//       console.log('Form data submitted:', token,"some",userId);
+//     const handleSubmit = async (e) => {
+//       console.log('Form data submitted inside:', token,"some",userId);
+//         e.preventDefault();
+//         const response = await axios.put(`http://localhost:3001/api/updateVehicleClaim/${id}/${userId}`, JSON.stringify(accidentData),{
+//             headers: {
+//                 'authorization': token,
+//                 'Content-Type': 'application/json'
+//               }
+//         });
+//        console.log("response here")
+//         console.log("response", response.data.message);
+
+//     };
+
+//     const handleChange = (e) => {
+
+//         const { name, value } = e.target;
+//         if (name === 'advocateNo') {
+//             const re = /^[0-9\b]+$/;
+//             console.log("value", value)
+//             if (value === '' || re.test(value)) {
+//                 if (name === 'advocateNo' && value.length <= 10) {
+//                     setAccidentData({ ...accidentData, [e.target.name]: e.target.value });;
+//                 }
+//             }
+//         }
+//         // setSelectedState(e.target.value);
+//         console.log("STATE", value)
+//         if (name == 'state') loadCities(value);
+//         setAccidentData({ ...accidentData, [e.target.name]: e.target.value });
+//     };
+
+//     return (
+//         <div className='container'>
+//             <div style={{
+//                 textAlign: 'center',
+//                 backgroundColor: '#4CAF50', // Choose your color
+//                 color: 'white', // Choose text color
+//                 padding: '20px 0', // Vertical padding and no horizontal padding
+//                 marginBottom: '30px', // Space below the header
+//             }}>
+//                 <h1>VEHICLE CLAIM REGISTRATION (UPDATING)</h1>
+//                 <hr style={{
+//                     border: '0',
+//                     height: '2px', // Thickness of the hr
+//                     backgroundColor: '#fff', // Same as the text color for consistency
+//                     maxWidth: '50%', // Width of the hr
+//                     margin: '0 auto', // Center the hr
+//                 }} />
+//             </div>
+
+//             <h2 className='heading-box'>Accident Details</h2>
+//             <form>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Date & Time:
+//                         <input
+//                             className='inputField'
+//                             type="text"
+//                             name="dateTime"
+//                             value={accidentData.dateTime}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         System Generated - Vehicle No.:
+//                         <input
+//                             className='inputField'
+//                             type="text"
+//                             name="systemGenerated"
+//                             value={accidentData.systemGenerated}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         Time (Railway):
+//                         <input
+//                             className='inputField'
+//                             type="text"
+//                             name="railwayTime"
+//                             value={accidentData.railwayTime}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         State
+//                         <select
+//                             className='inputField'
+//                             name="state"
+//                             onChange={handleChange}
+//                             disabled={isLoadingStates}
+//                             value={accidentData.state}>
+//                             <option value="">Select State</option>
+//                             {states.map(state => (
+//                                 <option key={state.iso2} value={state.iso2}>{state.name}</option>
+//                             ))}
+//                         </select>
+//                     </label>
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         City : 
+//                         <select
+//                             className='inputField'
+//                             name="district"
+//                             value={accidentData.district}
+//                             onChange={handleChange}
+//                             disabled={isLoadingCities || !accidentData.state}
+//                         >
+//                             <option value="">Select City</option>
+//                             {!cities.error && cities.map(city => (
+//                                 <option key={city.iso2} value={city.iso2}>{city.name}</option>
+//                             ))}
+//                         </select>
+//                     </label>
+
+//                     <label className="form-field">
+//                         Accident Date:
+//                         <input
+//                             className='inputField'
+//                             type="text"
+//                             name="accidentDate"
+//                             value={accidentData.accidentDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         Reason of Accident:
+//                         <textarea
+//                             className='inputField'
+//                             name="reason"
+//                             value={accidentData.reason}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+//                 <hr />
+//                 <h2 className='heading-box'>Insurance Details</h2>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Insured By:
+//                         <input
+//                             className='inputField'
+//                             name="insuredBy"
+//                             value={accidentData.insuredBy}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Intimated Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="intimatedDate"
+//                             value={accidentData.intimatedDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Intimation Upload:
+//                         <input
+//                             type='file'
+//                             className='inputField'
+//                             name="intimationUpload"
+//                             value={accidentData.intimationUpload}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Policy Number:
+//                         <input
+//                             className='inputField'
+//                             name="policyNo"
+//                             value={accidentData.policyNo}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+//                 <hr />
+//                 <h2 className='heading-box'>Driver Details</h2>
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Driver Name:
+//                         <input
+//                             className='inputField'
+//                             name="driverName"
+//                             value={accidentData.driverName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         D/L No:
+//                         <input
+//                             className='inputField'
+//                             name="DLNo"
+//                             value={accidentData.DLNo}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         D/L Number Validity:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="DLNoValidity"
+//                             value={accidentData.DLNoValidity}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Date Of Birth:
+//                         <input
+//                             className='inputField'
+//                             name="DOB"
+//                             value={accidentData.DOB}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+//                 <hr />
+//                 <h2 className='heading-box'>Police Reports</h2>
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Police Station:
+//                         <input
+//                             className='inputField'
+//                             name="policeStation"
+//                             value={accidentData.policeStation}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         FIR No:
+//                         <input
+//                             className='inputField'
+//                             name="FIRNo"
+//                             value={accidentData.FIRNo}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         FIR Date:
+//                         <input
+//                             type="date"
+//                             className='inputField'
+//                             name="firDate"
+//                             value={accidentData.firDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         FIR Upload:
+//                         <input
+//                             type='file'
+//                             className='inputField'
+//                             name="firUpload"
+//                             value={accidentData.firUpload}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Advocate Name:
+//                         <input
+//                             className='inputField'
+//                             name="advocateName"
+//                             value={accidentData.advocateName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Advocate Contact No:
+//                         <input
+//                             type='tel'
+//                             className='inputField'
+//                             name="advocateNo"
+//                             value={accidentData.advocateNo}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Court Name:
+//                         <input
+//                             className='inputField'
+//                             name="courtName"
+//                             value={accidentData.courtName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Release Order Upload:
+//                         <input
+//                             type='file'
+//                             className='inputField'
+//                             name="releaseUpload"
+//                             value={accidentData.releaseUpload}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+//                 <hr />
+//                 <h2 className='heading-box'>Surveyor Details</h2>
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Spot Surveyor Name:
+//                         <input
+//                             className='inputField'
+//                             name="surveyorName"
+//                             value={accidentData.surveyorName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Contact No:
+//                         <input
+//                             type='tel'
+//                             className='inputField'
+//                             name="surveyorNo"
+//                             value={accidentData.surveyorNo}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="dateOfSurvey"
+//                             value={accidentData.dateOfSurvey}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Remarks:
+//                         <textarea
+//                             className='inputField'
+//                             name="remarksSurveyor"
+//                             value={accidentData.remarksSurveyor}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Material Surveyor Name:
+//                         <input
+//                             className='inputField'
+//                             name="materialSurveyorName"
+//                             value={accidentData.materialSurveyorName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Contact No:
+//                         <input
+//                             type='tel'
+//                             className='inputField'
+//                             name="materialSurveyorNo"
+//                             value={accidentData.materialSurveyorNo}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="dateOfMaterialSurvey"
+//                             value={accidentData.dateOfMaterialSurvey}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Remarks:
+//                         <textarea
+//                             className='inputField'
+//                             name="remarksMaterialSurvey"
+//                             value={accidentData.remarksMaterialSurvey}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Final Surveyor Name:
+//                         <input
+//                             className='inputField'
+//                             name="finalSurveyorName"
+//                             value={accidentData.finalSurveyorName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Contact No:
+//                         <input
+//                             type='tel'
+//                             className='inputField'
+//                             name="FinalSurveyorNo"
+//                             value={accidentData.FinalSurveyorNo}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="dateOfFinalSurvey"
+//                             value={accidentData.dateOfFinalSurvey}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Remarks:
+//                         <textarea
+//                             className='inputField'
+//                             name="remarksFinalSurvey"
+//                             value={accidentData.remarksFinalSurvey}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Investigator Name:
+//                         <input
+//                             className='inputField'
+//                             name="investigatorName"
+//                             value={accidentData.investigatorName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Investigator Contact No:
+//                         <input
+//                             type='tel'
+//                             className='inputField'
+//                             name="investigatorNo"
+//                             value={accidentData.investigatorNo}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="investigationDate"
+//                             value={accidentData.investigationDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Remarks:
+//                         <textarea
+//                             className='inputField'
+//                             name="investigatorRemarks"
+//                             value={accidentData.investigatorRemarks}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+//                 <hr />
+//                 <h2 className='heading-box'>Action Details</h2>
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Company Representative Name:
+//                         <input
+//                             className='inputField'
+//                             name="representativeName"
+//                             value={accidentData.representativeName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Contact No:
+//                         <input
+//                             type='tel'
+//                             className='inputField'
+//                             name="representativeNo"
+//                             value={accidentData.representativeNo}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Representative Report Upload:
+//                         <input
+//                             type='file'
+//                             className='inputField'
+//                             name="reportUpload"
+//                             value={accidentData.reportUpload}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Vehicle Repaired On Spot Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="dateRepairedOnSpot"
+//                             value={accidentData.dateRepairedOnSpot}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Material Transshiped in Vehicle No:
+//                         <input
+//                             className='inputField'
+//                             name="transshippedVehicleNo"
+//                             value={accidentData.transshippedVehicleNo}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Vehicle Transshiped Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="transshippedDate"
+//                             value={accidentData.transshippedDate}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Vehicle Reported on Final Destination:
+//                         <input
+//                             className='inputField'
+//                             name="reportedFinalDestination"
+//                             value={accidentData.reportedFinalDestination}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Vehicle Reported on Final Destination:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="reportedFinalDestinationDate"
+//                             value={accidentData.reportedFinalDestinationDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+//                 <h2 className='heading-box'>Operational Details</h2>
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Deadline Date:
+//                         <input
+//                             type="date"
+//                             className='inputField'
+//                             name="deadLineDate"
+//                             value={accidentData.deadLineDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Actual Ready Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="readyDate"
+//                             value={accidentData.readyDate}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Re-Inspection Date:
+//                         <input
+//                             type="date"
+//                             className='inputField'
+//                             name="reInspectionDate"
+//                             value={accidentData.reInspectionDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Vehicle Finally Released:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="finallyReleasedDate"
+//                             value={accidentData.finallyReleasedDate}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                 </div>
+
+//                 <h2 className='heading-box'>Analyses</h2>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Total Days From Accident:
+//                         <input
+//                             className='inputField'
+//                             name="totalDaysFromAccident"
+//                             value={accidentData.totalDaysFromAccident}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Total Days In WorkShop:
+//                         <input
+//                             className='inputField'
+//                             name="daysInWorkShop"
+//                             value={accidentData.daysInWorkShop}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Deadline TAT:
+//                         <input
+//                             className='inputField'
+//                             name="deadlineTAT"
+//                             value={accidentData.deadlineTAT}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+
+//                 </div>
+
+//                 <h2 className='heading-box'>Docket Information</h2>
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Docket Name:
+//                         <input
+//                             className='inputField'
+//                             name="docketName"
+//                             value={accidentData.docketName}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Docket Date:
+//                         <input
+//                             className='inputField'
+//                             name="docketDate"
+//                             value={accidentData.docketDate}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Origin:
+//                         <input
+//                             className='inputField'
+//                             name="origin"
+//                             value={accidentData.origin}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         Destination:
+//                         <input
+//                             className='inputField'
+//                             name="destination"
+//                             value={accidentData.destination}
+//                             onChange={handleChange}
+
+//                         />
+
+//                     </label>
+
+
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Consignor Name:
+//                         <input
+//                             className='inputField'
+//                             name="consignor"
+//                             value={accidentData.consignor}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Consignee Name:
+//                         <input
+//                             className='inputField'
+//                             name="consignee"
+//                             value={accidentData.consignee}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Invoice Number:
+//                         <input
+//                             className='inputField'
+//                             name="invoiceNo"
+//                             value={accidentData.invoiceNo}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         Invoice Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="invoiceDate"
+//                             value={accidentData.invoiceDate}
+//                             onChange={handleChange}
+
+//                         />
+
+//                     </label>
+
+
+//                 </div>
+
+//                 <div className="form-row">
+//                     <label className="form-field">
+//                         Material:
+//                         <input
+//                             className='inputField'
+//                             name="material"
+//                             value={accidentData.material}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Package:
+//                         <input
+//                             className='inputField'
+//                             name="package"
+//                             value={accidentData.package}
+//                             onChange={handleChange}
+
+//                             pattern="\d{10}"
+//                             title="Phone number must be 10 digits"
+//                         />
+//                     </label>
+
+//                     <label className="form-field">
+//                         Weight:
+//                         <input
+//                             className='inputField'
+//                             name="weight"
+//                             value={accidentData.weight}
+//                             onChange={handleChange}
+
+//                         />
+//                     </label>
+//                     <label className="form-field">
+//                         Invoice Date:
+//                         <input
+//                             type='date'
+//                             className='inputField'
+//                             name="invoiceDate"
+//                             value={accidentData.invoiceDate}
+//                             onChange={handleChange}
+
+//                         />
+
+//                     </label>
+
+
+//                 </div>
+
+//                 {/* <h2 className='heading-box'>Task Details</h2> */}
+
+
+//                 <div className="form-row">
+//                     <button type="submit" className='button' onClick={handleSubmit}>Submit</button>
+//                 </div>
+//             </form>
+//         </div>
+//     );
+// };
+
+// export default VehicleClaimEdit;
+
+
+import { useEffect, useState } from 'react';
+import backendUrl from '../../environment';
 import axios from 'axios';
-import { loadStates, loadCities } from '../StateAPI';
+import { Alert } from '@mui/material';
+import './VendorMasterViewOnly.css'
 
-const config = {
-    cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
-    ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
-};
 
-const VehicleClaimEdit = () => {
+const VendorMasterViewOnly = () => {
 
-    const location = useLocation();
-    const { id } = location.state || {};
-    console.log("Received IDssss:", id);
-    const [comingData, setComingData]=useState([]); 
 
-    const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    const [states, setStates] = useState([]);
-    const [cities, setCities] = useState([]);
-    const [selectedState, setSelectedState] = useState('');
-    const [isLoadingStates, setIsLoadingStates] = useState(true);
-    const [isLoadingCities, setIsLoadingCities] = useState(true);
-
-    const [errorMessage, setErrorMessage] = useState('');
+    const [data, setData] = useState([])
+    console.log("data", data)
+    // const [alertInfo, setAlertInfo] = useState('')
+    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamps: null })
 
     useEffect(() => {
-        loadStates();
-        getDataById(id);
-        console.log("token", token, userId);
-        // if (token === "" || userId === "") {
-        //     navigate("/");
-        // }
-    }, [token, userId, navigate]);
+        console.log("this is useEffect")
+        console.log(data)
+    }, [data])
 
-    const formatDateForInput = (dateStr) => {
-        if (!dateStr) return '';
-        const date = new Date(dateStr);
-        return date.toISOString().split('T')[0];
-    };
-    
 
     useEffect(() => {
-        if (comingData) {
-            setAccidentData(prevFormData => ({
-                ...prevFormData,
-                dateTime: formatDateForInput(comingData.dateTime),
-                // systemGenerated: formatDateForInput(comingData.systemGener   ated),
-                railwayTime: formatDateForInput(comingData.railwayTime),
-                state: comingData.state || "",
-                district: comingData.district || "",
-                accidentDate: formatDateForInput(comingData.accidentDate),
-                reason: comingData.reason || "",
-                insuredBy: comingData.insuredBy || "",
-                intimatedDate: formatDateForInput(comingData.intimatedDate),
-                policyNo: comingData.policyNo || "",
-                driverName: comingData.driverName || "",
-                DLNo: comingData.DLNo || "",
-                DLNoValidity: formatDateForInput(comingData.DLNoValidity),  
-                DOB: formatDateForInput(comingData.DOB),
-                policeStation: comingData.policeStation || "",
-                FIRNo: comingData.FIRNo || "",
-                firDate: formatDateForInput(comingData.firDate),
-                advocateName: comingData.advocateName || "",
-                advocateNo: comingData.advocateNo || "",
-                courtName: comingData.courtName || "",
-                surveyorName: comingData.surveyorName || "",
-                surveyorNo: comingData.surveyorNo || "",
-                dateOfSurvey: formatDateForInput(comingData.dateOfSurvey),
-                remarksSurveyor: comingData.remarksSurveyor || "",
-                materialSurveyorName: comingData.materialSurveyorName || "",
-                materialSurveyorNo: comingData.materialSurveyorNo || "",
-                dateOfMaterialSurvey: formatDateForInput(comingData.dateOfMaterialSurvey),
-                remarksMaterialSurvey: comingData.remarksMaterialSurvey || "",
-                finalSurveyorName: comingData.finalSurveyorName || "",
-                FinalSurveyorNo: comingData.FinalSurveyorNo || "",
-                dateOfFinalSurvey: formatDateForInput(comingData.dateOfFinalSurvey),
-                remarksFinalSurvey: comingData.remarksFinalSurvey || "",
-                investigatorName: comingData.investigatorName || "",
-                investigatorNo: comingData.investigatorNo || "",
-                investigationDate: formatDateForInput(comingData.investigationDate),
-                investigatorRemarks: comingData.investigatorRemarks || "",
-                representativeName: comingData.representativeName || "",
-                representativeNo: comingData.representativeNo || "",
-                dateRepairedOnSpot: formatDateForInput(comingData.dateRepairedOnSpot),
-                transshippedVehicleNo: comingData.transshippedVehicleNo || "",
-                transshippedDate: formatDateForInput(comingData.transshippedDate),
-                reportedFinalDestination: comingData.reportedFinalDestination || "",
-                reportedFinalDestinationDate: formatDateForInput(comingData.reportedFinalDestinationDate),
-                deadLineDate: formatDateForInput(comingData.deadLineDate),
-                readyDate: formatDateForInput(comingData.readyDate),
-                reInspectionDate: formatDateForInput(comingData.reInspectionDate),
-                finallyReleasedDate: formatDateForInput(comingData.finallyReleasedDate),
-                totalDaysFromAccident: comingData.totalDaysFromAccident || "",
-                daysInWorkShop: comingData.daysInWorkShop || "",
-                deadlineTAT: comingData.deadlineTAT || "",
-                docketName: comingData.docketName || "",
-                docketDate: formatDateForInput(comingData.docketDate),
-                origin: comingData.origin || "",
-                destination: comingData.destination || "",
-                consignor: comingData.consignor || "",
-                consignee: comingData.consignee || "",
-                invoiceNo: comingData.invoiceNo || "",
-                invoiceDate: formatDateForInput(comingData.invoiceDate),
-                material: comingData.material || "",
-                package: comingData.package || "",
-                weight: comingData.weight || ""
-            }));
+        getData()
+    }, [])
+
+    // const getData=async()=>{
+    //     try {
+    //         const response = await (`${backendUrl}/getVendor`)
+    //         if(response.data.status == 200){
+    //             setData(response.data.data)
+    //         }
+    //         else{
+    //             setAlertInfo('No data got from back')
+    //         }
+    //     } catch (error) {
+    //         setAlertInfo('error is ', error?.data?.message)
+    //     }
+    // }
+
+    // const getData= async ()=>{
+    //     try {
+    //         const rawData = await axios.get(`${backendUrl}/api/getVendor`)
+    //         let fetchedData = rawData.data.data;
+    //         fetchedData = fetchedData.map((dataStrip)=>({
+    //             ...dataStrip,
+    //             vendorName : 'it me babe'
+    //         }))
+    //         setData(fetchedData)
+    //     } catch (error) {
+    //         setAlertInfo({show:true, message:'there is an error', severity:"success"})
+    //     }
+    // }
+
+    const getData = async () => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/getVendor`)
+            let fetchedData = response.data.data
+            fetchedData = fetchedData.map((datastrip) => ({
+                ...datastrip,
+                vendorName: "Anmol Kadam"
+            }))
+            setData(fetchedData)
+            setAlertInfo({ show: true, message: "your data is here", severity: 'success' })
         }
-    }, [comingData]);
-    
-
-    const [accidentData, setAccidentData] = useState({
-        dateTime: '',
-        systemGenerated: '',
-        railwayTime: '',
-        state: '',
-        district: '',
-        accidentDate: '',  //date
-        reason: '',
-        insuredBy: '',
-        intimatedDate: '', //date
-        intimationUpload: '',
-        policyNo: "",
-        driverName: "",
-        DLNo: "",
-        DLNoValidity: "",
-        DOB: "",  //date
-        policeStation: "",
-        FIRNo: "",
-        firDate: "", //date
-        firUpload: "",
-        advocateName: "",
-        advocateNo: "",
-        courtName: "",
-        releaseUpload: "",
-        surveyorName: "",
-        surveyorNo: "",
-        dateOfSurvey: "",
-        remarksSurveyor: "",
-        materialSurveyorName: "",
-        materialSurveyorNo: "",
-        dateOfMaterialSurvey: "",
-        remarksMaterialSurvey: "",
-        finalSurveyorName: "",
-        FinalSurveyorNo: "",
-        dateOfFinalSurvey: "",
-        remarksFinalSurvey: "",
-        investigatorName: "",
-        investigatorNo: "",
-        investigationDate: "", //date
-        investigatorRemarks: "",
-
-        representativeName: "",
-        representativeNo: "",
-        reportUpload: "",
-        dateRepairedOnSpot: "",
-        transshippedVehicleNo: "",
-        transshippedDate: "",//date
-        reportedFinalDestination: "",
-        reportedFinalDestinationDate: "",
-
-        deadLineDate: '',//date
-        readyDate: "",//date
-        reInspectionDate: "",//date
-        finallyReleasedDate: "",//date
-
-        totalDaysFromAccident: "",
-        daysInWorkShop: "",
-        deadlineTAT: "",
-
-        docketName: "",
-        docketDate: "",//date
-        origin: "",
-        destination: "",
-        consignor: "",
-        consignee: "",
-        invoiceNo: "",
-        invoiceDate: "",//date
-        material: "",
-        package: "",
-        weight: "",
-    });
-
-    const loadStates = () => {
-        setIsLoadingStates(true);
-        fetch(`${config.cUrl}/states`, {
-            headers: { "X-CSCAPI-KEY": config.ckey }
-        })
-            .then(response => response.json())
-            .then(data => {
-                setStates(data);
-                setIsLoadingStates(false);
-            })
-            .catch(error => {
-                console.error('Error loading states:', error);
-                setIsLoadingStates(false);
-            });
-    };
-
-    const loadCities = (stateCode) => {
-        setIsLoadingCities(true);
-        fetch(`${config.cUrl}/states/${stateCode}/cities`, {
-            headers: { "X-CSCAPI-KEY": config.ckey }
-        })
-            .then(response => response.json())
-            .then(data => {
-                setCities(data);
-                setIsLoadingCities(false);
-            })
-            .catch(error => {
-                console.error('Error loading cities:', error);
-                setIsLoadingCities(false);
-            });
-    };
-
-    const getDataById= async (id)=>{
-        const response = await axios.get(`http://localhost:3001/api/getVehicle/${id}`);
-        console.log("daa",response.data.data)
-        // console.log("response", response.data.data[0]);   
-        setComingData(response.data.data[0])
-      }
-
-      console.log('Form data submitted:', token,"some",userId);
-    const handleSubmit = async (e) => {
-      console.log('Form data submitted inside:', token,"some",userId);
-        e.preventDefault();
-        const response = await axios.put(`http://localhost:3001/api/updateVehicleClaim/${id}/${userId}`, JSON.stringify(accidentData),{
-            headers: {
-                'authorization': token,
-                'Content-Type': 'application/json'
-              }
-        });
-       console.log("response here")
-        console.log("response", response.data.message);
-        
-    };
-
-    const handleChange = (e) => {
-
-        const { name, value } = e.target;
-        if (name === 'advocateNo') {
-            const re = /^[0-9\b]+$/;
-            console.log("value", value)
-            if (value === '' || re.test(value)) {
-                if (name === 'advocateNo' && value.length <= 10) {
-                    setAccidentData({ ...accidentData, [e.target.name]: e.target.value });;
-                }
-            }
+        catch (error) {
+            setAlertInfo({ show: false, message: error.message, severity: "error" })
         }
-        // setSelectedState(e.target.value);
-        console.log("STATE", value)
-        if (name == 'state') loadCities(value);
-        setAccidentData({ ...accidentData, [e.target.name]: e.target.value });
-    };
+    }
+
+    // const handleSubmit = async()=>{
+    //     try {
+    //     const response = await axios({
+    //         method:'post',
+    //         url:`${backendUrl}/api/senddata`,
+    //         data:formdata,
+    //         headers:{
+    //             'Authorization':token
+    //         }
+
+    //     })
+    //     if(response.data.status == 200){
+    //         setAlertInfo({show:true, message:response.data.message,severity:'successs'})
+    //     }
+    //     else(
+    //         setAlertInfo({show:true, message:"no data inserted", severity:'error'})
+    //     )
+
+    //     } catch (error) {
+    //         setAlertInfo({show:true , message:error.message, severity:'error'})
+    //     }
+    // }
+
+    let index = 0
 
     return (
-        <div className='container'>
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: '#4CAF50', // Choose your color
-                color: 'white', // Choose text color
-                padding: '20px 0', // Vertical padding and no horizontal padding
-                marginBottom: '30px', // Space below the header
-            }}>
-                <h1>VEHICLE CLAIM REGISTRATION (UPDATING)</h1>
-                <hr style={{
-                    border: '0',
-                    height: '2px', // Thickness of the hr
-                    backgroundColor: '#fff', // Same as the text color for consistency
-                    maxWidth: '50%', // Width of the hr
-                    margin: '0 auto', // Center the hr
-                }} />
+        <div>
+
+            <div>
+                <div class="card-containerTP">
+                    <div class="cardTP">
+                        <img src="https://via.placeholder.com/150" alt="Placeholder Image" />
+                        <h3>Card Title</h3>
+                        <p>This is a description of the card.</p>
+                    </div>
+                    <div class="cardTP">
+                        <img src="https://via.placeholder.com/150" alt="Placeholder Image" />
+                        <h3>Card Title</h3>
+                        <p>This is a description of the card.</p>
+                    </div>
+                </div>
             </div>
 
-            <h2 className='heading-box'>Accident Details</h2>
-            <form>
 
-                <div className="form-row">
-                    <label className="form-field">
-                        Date & Time:
-                        <input
-                            className='inputField'
-                            type="text"
-                            name="dateTime"
-                            value={accidentData.dateTime}
-                            onChange={handleChange}
 
-                        />
-                    </label>
-                    <label className="form-field">
-                        System Generated - Vehicle No.:
-                        <input
-                            className='inputField'
-                            type="text"
-                            name="systemGenerated"
-                            value={accidentData.systemGenerated}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                    <label className="form-field">
-                        Time (Railway):
-                        <input
-                            className='inputField'
-                            type="text"
-                            name="railwayTime"
-                            value={accidentData.railwayTime}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                    <label className="form-field">
-                        State
-                        <select
-                            className='inputField'
-                            name="state"
-                            onChange={handleChange}
-                            disabled={isLoadingStates}
-                            value={accidentData.state}>
-                            <option value="">Select State</option>
-                            {states.map(state => (
-                                <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                            ))}
-                        </select>
-                    </label>
+            <div className='TP-flexingshowing'>
+                <div className='TP-image-container1'>
+                    <img className='TP-image' src='https://via.placeholder.com/150'/>
+                    <h3>Card Title</h3>
+                    <p>This is a description of the card.</p>
                 </div>
 
-                <div className="form-row">
-                    <label className="form-field">
-                        City : 
-                        <select
-                            className='inputField'
-                            name="district"
-                            value={accidentData.district}
-                            onChange={handleChange}
-                            disabled={isLoadingCities || !accidentData.state}
-                        >
-                            <option value="">Select City</option>
-                            {!cities.error && cities.map(city => (
-                                <option key={city.iso2} value={city.iso2}>{city.name}</option>
-                            ))}
-                        </select>
-                    </label>
-
-                    <label className="form-field">
-                        Accident Date:
-                        <input
-                            className='inputField'
-                            type="text"
-                            name="accidentDate"
-                            value={accidentData.accidentDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                    <label className="form-field">
-                        Reason of Accident:
-                        <textarea
-                            className='inputField'
-                            name="reason"
-                            value={accidentData.reason}
-                            onChange={handleChange}
-
-                        />
-                    </label>
+                <div className='TP-image-container1'>
+                    <img className='TP-image' src='https://via.placeholder.com/150'/>
+                    <h3>Card Title</h3>
+                    <p>This is a description of the card.</p>
                 </div>
-                <hr />
-                <h2 className='heading-box'>Insurance Details</h2>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Insured By:
-                        <input
-                            className='inputField'
-                            name="insuredBy"
-                            value={accidentData.insuredBy}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Intimated Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="intimatedDate"
-                            value={accidentData.intimatedDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Intimation Upload:
-                        <input
-                            type='file'
-                            className='inputField'
-                            name="intimationUpload"
-                            value={accidentData.intimationUpload}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Policy Number:
-                        <input
-                            className='inputField'
-                            name="policyNo"
-                            value={accidentData.policyNo}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-                <hr />
-                <h2 className='heading-box'>Driver Details</h2>
-                <div className="form-row">
-                    <label className="form-field">
-                        Driver Name:
-                        <input
-                            className='inputField'
-                            name="driverName"
-                            value={accidentData.driverName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        D/L No:
-                        <input
-                            className='inputField'
-                            name="DLNo"
-                            value={accidentData.DLNo}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        D/L Number Validity:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="DLNoValidity"
-                            value={accidentData.DLNoValidity}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Date Of Birth:
-                        <input
-                            className='inputField'
-                            name="DOB"
-                            value={accidentData.DOB}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-                <hr />
-                <h2 className='heading-box'>Police Reports</h2>
-                <div className="form-row">
-                    <label className="form-field">
-                        Police Station:
-                        <input
-                            className='inputField'
-                            name="policeStation"
-                            value={accidentData.policeStation}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        FIR No:
-                        <input
-                            className='inputField'
-                            name="FIRNo"
-                            value={accidentData.FIRNo}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        FIR Date:
-                        <input
-                            type="date"
-                            className='inputField'
-                            name="firDate"
-                            value={accidentData.firDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        FIR Upload:
-                        <input
-                            type='file'
-                            className='inputField'
-                            name="firUpload"
-                            value={accidentData.firUpload}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Advocate Name:
-                        <input
-                            className='inputField'
-                            name="advocateName"
-                            value={accidentData.advocateName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Advocate Contact No:
-                        <input
-                            type='tel'
-                            className='inputField'
-                            name="advocateNo"
-                            value={accidentData.advocateNo}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Court Name:
-                        <input
-                            className='inputField'
-                            name="courtName"
-                            value={accidentData.courtName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Release Order Upload:
-                        <input
-                            type='file'
-                            className='inputField'
-                            name="releaseUpload"
-                            value={accidentData.releaseUpload}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-                <hr />
-                <h2 className='heading-box'>Surveyor Details</h2>
-                <div className="form-row">
-                    <label className="form-field">
-                        Spot Surveyor Name:
-                        <input
-                            className='inputField'
-                            name="surveyorName"
-                            value={accidentData.surveyorName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Contact No:
-                        <input
-                            type='tel'
-                            className='inputField'
-                            name="surveyorNo"
-                            value={accidentData.surveyorNo}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="dateOfSurvey"
-                            value={accidentData.dateOfSurvey}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Remarks:
-                        <textarea
-                            className='inputField'
-                            name="remarksSurveyor"
-                            value={accidentData.remarksSurveyor}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Material Surveyor Name:
-                        <input
-                            className='inputField'
-                            name="materialSurveyorName"
-                            value={accidentData.materialSurveyorName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Contact No:
-                        <input
-                            type='tel'
-                            className='inputField'
-                            name="materialSurveyorNo"
-                            value={accidentData.materialSurveyorNo}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="dateOfMaterialSurvey"
-                            value={accidentData.dateOfMaterialSurvey}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Remarks:
-                        <textarea
-                            className='inputField'
-                            name="remarksMaterialSurvey"
-                            value={accidentData.remarksMaterialSurvey}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Final Surveyor Name:
-                        <input
-                            className='inputField'
-                            name="finalSurveyorName"
-                            value={accidentData.finalSurveyorName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Contact No:
-                        <input
-                            type='tel'
-                            className='inputField'
-                            name="FinalSurveyorNo"
-                            value={accidentData.FinalSurveyorNo}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="dateOfFinalSurvey"
-                            value={accidentData.dateOfFinalSurvey}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Remarks:
-                        <textarea
-                            className='inputField'
-                            name="remarksFinalSurvey"
-                            value={accidentData.remarksFinalSurvey}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Investigator Name:
-                        <input
-                            className='inputField'
-                            name="investigatorName"
-                            value={accidentData.investigatorName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Investigator Contact No:
-                        <input
-                            type='tel'
-                            className='inputField'
-                            name="investigatorNo"
-                            value={accidentData.investigatorNo}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="investigationDate"
-                            value={accidentData.investigationDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Remarks:
-                        <textarea
-                            className='inputField'
-                            name="investigatorRemarks"
-                            value={accidentData.investigatorRemarks}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-                <hr />
-                <h2 className='heading-box'>Action Details</h2>
-                <div className="form-row">
-                    <label className="form-field">
-                        Company Representative Name:
-                        <input
-                            className='inputField'
-                            name="representativeName"
-                            value={accidentData.representativeName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Contact No:
-                        <input
-                            type='tel'
-                            className='inputField'
-                            name="representativeNo"
-                            value={accidentData.representativeNo}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Representative Report Upload:
-                        <input
-                            type='file'
-                            className='inputField'
-                            name="reportUpload"
-                            value={accidentData.reportUpload}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Vehicle Repaired On Spot Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="dateRepairedOnSpot"
-                            value={accidentData.dateRepairedOnSpot}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Material Transshiped in Vehicle No:
-                        <input
-                            className='inputField'
-                            name="transshippedVehicleNo"
-                            value={accidentData.transshippedVehicleNo}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Vehicle Transshiped Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="transshippedDate"
-                            value={accidentData.transshippedDate}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Vehicle Reported on Final Destination:
-                        <input
-                            className='inputField'
-                            name="reportedFinalDestination"
-                            value={accidentData.reportedFinalDestination}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Vehicle Reported on Final Destination:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="reportedFinalDestinationDate"
-                            value={accidentData.reportedFinalDestinationDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-                <h2 className='heading-box'>Operational Details</h2>
-                <div className="form-row">
-                    <label className="form-field">
-                        Deadline Date:
-                        <input
-                            type="date"
-                            className='inputField'
-                            name="deadLineDate"
-                            value={accidentData.deadLineDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Actual Ready Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="readyDate"
-                            value={accidentData.readyDate}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Re-Inspection Date:
-                        <input
-                            type="date"
-                            className='inputField'
-                            name="reInspectionDate"
-                            value={accidentData.reInspectionDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Vehicle Finally Released:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="finallyReleasedDate"
-                            value={accidentData.finallyReleasedDate}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                </div>
-
-                <h2 className='heading-box'>Analyses</h2>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Total Days From Accident:
-                        <input
-                            className='inputField'
-                            name="totalDaysFromAccident"
-                            value={accidentData.totalDaysFromAccident}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Total Days In WorkShop:
-                        <input
-                            className='inputField'
-                            name="daysInWorkShop"
-                            value={accidentData.daysInWorkShop}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Deadline TAT:
-                        <input
-                            className='inputField'
-                            name="deadlineTAT"
-                            value={accidentData.deadlineTAT}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-
-                </div>
-
-                <h2 className='heading-box'>Docket Information</h2>
-                <div className="form-row">
-                    <label className="form-field">
-                        Docket Name:
-                        <input
-                            className='inputField'
-                            name="docketName"
-                            value={accidentData.docketName}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Docket Date:
-                        <input
-                            className='inputField'
-                            name="docketDate"
-                            value={accidentData.docketDate}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Origin:
-                        <input
-                            className='inputField'
-                            name="origin"
-                            value={accidentData.origin}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                    <label className="form-field">
-                        Destination:
-                        <input
-                            className='inputField'
-                            name="destination"
-                            value={accidentData.destination}
-                            onChange={handleChange}
-
-                        />
-
-                    </label>
-
-
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Consignor Name:
-                        <input
-                            className='inputField'
-                            name="consignor"
-                            value={accidentData.consignor}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Consignee Name:
-                        <input
-                            className='inputField'
-                            name="consignee"
-                            value={accidentData.consignee}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Invoice Number:
-                        <input
-                            className='inputField'
-                            name="invoiceNo"
-                            value={accidentData.invoiceNo}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                    <label className="form-field">
-                        Invoice Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="invoiceDate"
-                            value={accidentData.invoiceDate}
-                            onChange={handleChange}
-
-                        />
-
-                    </label>
-
-
-                </div>
-
-                <div className="form-row">
-                    <label className="form-field">
-                        Material:
-                        <input
-                            className='inputField'
-                            name="material"
-                            value={accidentData.material}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Package:
-                        <input
-                            className='inputField'
-                            name="package"
-                            value={accidentData.package}
-                            onChange={handleChange}
-
-                            pattern="\d{10}"
-                            title="Phone number must be 10 digits"
-                        />
-                    </label>
-
-                    <label className="form-field">
-                        Weight:
-                        <input
-                            className='inputField'
-                            name="weight"
-                            value={accidentData.weight}
-                            onChange={handleChange}
-
-                        />
-                    </label>
-                    <label className="form-field">
-                        Invoice Date:
-                        <input
-                            type='date'
-                            className='inputField'
-                            name="invoiceDate"
-                            value={accidentData.invoiceDate}
-                            onChange={handleChange}
-
-                        />
-
-                    </label>
-
-
-                </div>
-
-                {/* <h2 className='heading-box'>Task Details</h2> */}
-
-
-                <div className="form-row">
-                    <button type="submit" className='button' onClick={handleSubmit}>Submit</button>
-                </div>
-            </form>
+            </div>
+
+
+
+
+            <div>
+                <button className='TP-hover-button'>
+                    Click me
+                </button>
+            </div>
+            <div className='TP-bottom-div'>
+                <p> Hey I Am  here</p>
+
+                <a className="ahrefhere" href="http://localhost:3000" target="_blank">click on link </a>
+
+                {/* {data && (
+                data.map((individualData)=>(
+                    <p>{individualData.vendorName}</p>
+                ))
+            )} */}
+
+                {/* {data.length > 0 && (
+                <table>
+                    <thead>
+                        <tr>
+                            <td>vendor Name</td>
+                            <td>vendor type</td>
+                            <td>vendor date</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map((individualData)=>(
+                            <tr>
+                            <td>{individualData.vendorName}</td>
+                            <td>{individualData.vendorType}</td>
+                            <td>{individualData.systemDate}</td>
+                            </tr>
+
+                        ))}
+                    </tbody>
+                </table>
+            )} */}
+                {alertInfo.show && (
+                    <Alert severity={alertInfo.severity} onClose={() => { setAlertInfo({ ...alertInfo, show: false }) }}>
+                        {alertInfo.message}
+
+                    </Alert>
+                )}
+
+                {data.length > 0 && (
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>index</td>
+                                <td>Vendor date</td>
+                                <td>Vendor Name</td>
+                                <td>Vendor type</td>
+
+                            </tr>
+                        </thead>
+
+                        {data.map((individualData) => (
+                            <tr>
+                                <td>{index += 1}</td>
+                                <td>{individualData.systemDate}</td>
+                                <td>{individualData.vendorName}</td>
+                                <td>{individualData.vendorType}</td>
+
+                            </tr>
+                        ))}
+
+                    </table>
+                )}
+
+            </div>
         </div>
-    );
-};
 
-export default VehicleClaimEdit;
+    )
+
+}
+
+
+export default VendorMasterViewOnly;
+
+
+

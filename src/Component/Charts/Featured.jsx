@@ -71,6 +71,8 @@ const Featured = () => {
 
       for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].vendorDetails.length; j++) {
+          console.log("data[i].vendorDetails[j]", data[i].vendorDetails[j].paidOn)
+          if(data[i].vendorDetails[j].paidOn != null){
           let getTime = data[i].vendorDetails[j].paidOn.split('|');
           let assignedDate = getTime[0];
           let assignedTime = getTime[1];
@@ -104,6 +106,7 @@ const Featured = () => {
 
             getFilteredTempMonthlyData.push(data[i])
           }
+        }
         }
       }
       setGetFilteredDailyData(getFilteredTempDailyData)

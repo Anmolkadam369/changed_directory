@@ -180,7 +180,7 @@ const Login = () => {
           navigate("../Salesteam");
         }
         else {
-          navigate('../userDashboard');
+          navigate('../user-landing-page');
         }
 
       }

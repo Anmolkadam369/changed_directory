@@ -601,10 +601,10 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
       width: "80px"
     },
     {
-      name: "Accident File No",
-      selector: (row) => row.accidentFileNo,
+      name: "Vehicle No",
+      selector: (row) => row.reg ? row.reg.toUpperCase():"",
       sortable: true,
-      width: "200px"
+      width: "150px"
     },
 
     {
@@ -618,6 +618,25 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
       selector: (row) => row.details.length > 0 && row.details[0].firstResponseOn
         ? row.details[0].firstResponseOn.includes("|") ? row.details[0].firstResponseOn.split("|")[0] : row.details[0].firstResponseOn : "",
       sortable: true,
+      width: "100px"
+    },
+
+    {
+      name: "Vendor Decision",
+      selector: (row) => row.details.length > 0 && row.details[0].vendorDecision
+        ? row.details[0].vendorDecision ? row.details[0].vendorDecision.charAt(0).toUpperCase() + row.details[0].vendorDecision.slice(1).toLowerCase() : ""
+        : "Pending",
+      cell: (row) => (
+        <span style={{
+          color: row.details.length > 0 && row.details[0].vendorDecision
+            ? (row.details[0].vendorDecision === "reject" ? 'red' : 'darkblue')
+            : 'darkorange'
+        }}>
+          {row.details.length > 0 && row.details[0].firstResponseOn != null
+            ? row.details[0].vendorDecision ? row.details[0].vendorDecision.charAt(0).toUpperCase() + row.details[0].vendorDecision.slice(1).toLowerCase() : "pending"
+            : "Not requested"}
+        </span>
+      ),
       width: "100px"
     },
 
@@ -642,27 +661,54 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
     {
       name: "View Doc",
       selector: (row) => row.AccidentVehicleCode,
-      cell: (row) => (
-        <button
-          onClick={() => view(row.AccidentVehicleCode, row)}
-          className="view-button"
-          disabled={row.details.length > 0 && row.details[0].acceptedByAdmin === "reject"}
-          style={{
-            backgroundColor: row.details.length > 0 && row.details[0].acceptedByAdmin === "reject" ? '#d3d3d3' : 'rgb(216 220 224)',
-            color: 'black',
-            padding: '10px 10px',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '9px',
-            marginTop:"0px",
-            cursor: row.details.length > 0 && row.details[0].acceptedByAdmin === "reject" ? 'not-allowed' : 'pointer'
-          }}
-        >
-          Upload Data
-        </button>
-      ),
-      width: "150px"
-    }
+      cell: (row) => {
+        const isButtonVisible =
+          row.details.length > 0 &&
+          row.details[0].acceptedByAdmin !== "reject" &&
+          row.details[0].vendorDecision !== "reject" &&
+          (row.details[0]?.approvedReaching);
+  
+        return isButtonVisible ? (
+          <button
+            onClick={() => view(row.AccidentVehicleCode, row)}
+            className="view-button"
+            disabled={
+              row.details.length > 0 &&
+              (row.details[0].acceptedByAdmin === "reject" ||
+                row.details[0].vendorDecision === "reject")
+            }
+            style={{
+              backgroundColor:
+                row.details.length > 0 &&
+                (row.details[0].acceptedByAdmin === "reject" ||
+                  row.details[0].vendorDecision === "reject")
+                  ? "rgb(45 45 45 / 61%)"
+                  : "rgb(216 220 224)",
+              color:
+                row.details.length > 0 &&
+                (row.details[0].acceptedByAdmin === "reject" ||
+                  row.details[0].vendorDecision === "reject")
+                  ? "white"
+                  : "black",
+              padding: "10px 10px",
+              border: "none",
+              borderRadius: "4px",
+              fontSize: "9px",
+              marginTop: "0px",
+              cursor:
+                row.details.length > 0 &&
+                (row.details[0].acceptedByAdmin === "reject" ||
+                  row.details[0].vendorDecision === "reject")
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            Upload Data
+          </button>
+        ) : null; // Return null if the button should not be displayed
+      },
+      width: "150px",
+    },
   ];
 
   useEffect(() => {
@@ -685,7 +731,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
   const fetchAssignedCases = async (vendorCode) => {
     console.log("randomId", GetDataOfUser.randomId);
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/VC-1c33dc26-6e10-458c-a779-61a46482ccad`);
+      const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${vendorCode}`);
       console.log("accident vehicle table", response.data.data);
       setData(response.data.data);
       setCurrentItems(response.data.data)
@@ -696,7 +742,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
 
   const findUserById = async (id) => {
     console.log("HEY", id)
-    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/VC-1c33dc26-6e10-458c-a779-61a46482ccad`);
+    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
     console.log("findByIdForVendor", response.data)
     console.log("findByIdForVendor", response.data.data[0]);
     setGetDataOfUser(response.data.data[0])
