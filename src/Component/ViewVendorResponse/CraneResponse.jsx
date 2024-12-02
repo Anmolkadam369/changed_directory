@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef, useId} from 'react';
 import './vendorResponse.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -23,6 +23,8 @@ import onlinepayment from '../../Assets/onlinepayment.png'
 import cash from '../../Assets/cash.png'
 import list from '../../Assets/list.png'
 import imageshowing from '../../Assets/imageshowing.png'
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import exploration from '../../Assets/exploration.png'
 const modalTitleFontSize = window.innerWidth < 576 ? '1rem' : window.innerWidth < 768 ? '0.9rem' : '1.0rem';
 const modalBodyFontSize = window.innerWidth < 576 ? '0.9rem' : window.innerWidth < 768 ? '0.6rem' : '0.9rem';
@@ -173,6 +175,7 @@ function CraneResponse({ data, onUpdate }) {
     }
     // Initially set formData from location state if available
     console.log("mydata is her", data)
+    const[firstlyCameData, setFirstlyCameData]= useState([data[0]])
     const initialData = data || {
         advancedPayment: data[0].advancedPayment || "",
         balancePayment: data[0].balancePayment || "",
@@ -185,6 +188,7 @@ function CraneResponse({ data, onUpdate }) {
         reasonOfReject: data[0].reasonOfReject || "",
         feedbackRating: data[0].feedbackRating || "",
         commisionAmount: data[0].commisionAmount || "",
+        charges : data[0].charges || ""
     };
     const [formData, setFormData] = useState(initialData[0]);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
@@ -205,13 +209,55 @@ function CraneResponse({ data, onUpdate }) {
         console.log('formData updated:', formData[0]);
     }, [formData]);
 
+    const onlinePaymentRef = useRef(null);
+    const chequeRef = useRef(null);
+
+    const handleChange = (event) => {
+        const { name, value, type, checked, files } = event.target;
+        if (type === 'file') {
+            if (files[0] && files[0].size > 2097152) {
+                setAlertInfo({ show: true, message: "File size should be less than 2 MB!", severity: 'error' });
+                const refs = {
+                    onlinePaymentImg: onlinePaymentRef,
+                    cheque: chequeRef,
+                };
+
+                if (refs[name] && refs[name].current) {
+                    refs[name].current.value = "";
+                }
+
+                setFormData(prevState => ({
+                    ...prevState,
+                    [name]: null
+                }));
+                return;
+            }
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: files[0]
+            }));
+        }
+        else if (type === "checkbox") {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: type === 'checkbox' ? checked : value,
+            }));
+        }
+        else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+
 
     const onSubmit = async (event) => {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
             const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}/${formData.commisionAmount}`);
-            if (response.data.message === "Updated successfully") {
+            if (response.data.message === "send successfully !!!.") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setTimeout(() => {
                     onUpdate()
@@ -234,6 +280,57 @@ function CraneResponse({ data, onUpdate }) {
         }
     };
 
+
+    const changesSubmit = async(event)=>{
+        event.preventDefault();
+        try {
+            const formDataObj = new FormData();
+            for (const key in formData) {
+                if (formData[key] !== undefined && formData[key] !== null && formData[key] !== "") {
+                    if (formData[key] instanceof File) {
+                        formDataObj.append(key, formData[key], formData[key].name);
+                    } else {
+                        formDataObj.append(key, formData[key]);
+                    }
+                }
+            }
+
+            for (let pair of formDataObj.entries()) {
+                console.log(`${pair[0]}:`, pair[1]);
+            }
+            console.log("299")
+            console.log("firstlyCame Data", firstlyCameData[0].AccidentVehicleCode)
+            console.log( `${backendUrl}/api/vendorOnAssignedVehicle/admin`)
+            const response = await axios({
+                method: 'POST',
+                url: `${backendUrl}/api/adminOnAssignedVehicle/${firstlyCameData[0].AccidentVehicleCode}/${userId}/${firstlyCameData[0].VendorCode}`,
+                data: formDataObj,
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            console.log("response", response.data);
+            if (response.data.status === true) {
+                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+
+            } else {
+                const errorMessage = 'An error occurred';
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        } catch (error) {
+            console.error('Error response:', error.response);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (errorMessage === "jwt expired") {
+                setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+            }
+        }
+    }
     const handlePayment = async () => {  // added
         console.log("crane1231432", data[0].crane) //added
         const id = data[0].crane;// added
@@ -312,6 +409,32 @@ function CraneResponse({ data, onUpdate }) {
     const agoda = parseInt(formData.advancedPayment)
     console.log("advantedfadsfasdfasdfasfd", typeof (agoda))
 
+    const [comingLinkHere, setComingLinkHere] = useState("");
+    const getPaymentLink = async (item) => {
+        try {
+            console.log(`${backendUrl}/api/sendPaymentLinkToVendor/${userId}/${formData.AccidentVehicleCode}/${formData.VendorCode}`)
+            const response = await axios.get(`${backendUrl}/api/sendPaymentLinkToVendor/${userId}/${formData.AccidentVehicleCode}/${formData.VendorCode}`);
+            if (response.data.status == true) {
+                let link = response.data.data;
+                console.log("link coming", link)
+                setComingLinkHere(link)
+            }
+        } catch (error) {
+            console.log("Error from get Vendor Rating", error.message)
+        }
+    }
+    const getPaymentLinkPage = () => {
+        console.log("comingLink", comingLinkHere)
+        navigate(`${comingLinkHere}`, {
+            state: {
+                accidentVehicleCode: formData.AccidentVehicleCode,
+                vendorCode: formData.VendorCode,
+                vendorType: 'crane',
+            }
+        })
+    }
+
+
 
     return (
         <form className="customer-response-form" style={{ marginBottom: "50px" }}>
@@ -323,7 +446,7 @@ function CraneResponse({ data, onUpdate }) {
             </Helmet>
 
 
-            <form className="customer-response-form" style={{ background: "white", marginLeft, padding, width }}>
+            <form className="customer-response-form" style={{ background: "white",border:"1px solid blue",borderRadius:"10px", marginLeft, padding, width }}>
                 <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
                     <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
                     <h2 className='bigtitle'>Accident Images</h2>
@@ -758,128 +881,7 @@ function CraneResponse({ data, onUpdate }) {
 
 
 
-                {/* <div class="header-container">
-                <h3 class="bigtitle">Data Uploaded by Crane Manager</h3>
-                <h5 style={{
-                                color: 'green',
-                                // fontStyle: 'italic',
-                                fontSize: '15px',
-                                marginLeft:'20px',
-                                marginTop:"10px",
-                                textAlign: 'center'
-                                
-                            }}>Last Updated On : {formData.updateResponseOn ? formData.updateResponseOn : formData.firstResponseOn}</h5>
-            </div>
-            <div className='form-row'>
-                <label className="form-field">
-                    Vehicle Inspection Remarks:
-                    <textarea className='inputField' name="advancedPayment" value={formData.vehicleInspection} readOnly />
-                </label>
-                <label className="form-field">
-                    Work Estimate:
-                    <input type="text" className='inputField' name="workEstimate" value={formData.workEstimate} readOnly />
-                </label>
-                <label className="form-field">
-                    Recovery Van Estimate:
-                    <input type="text" className='inputField' name="workEstimate" value={formData.recoveryVanEstimate} readOnly />
-                </label>
-               
-                
-            </div>
-            <div className='form-row'>
-            <label className="form-field">
-                    Vehicle Handover:
-                    <input type="text" className='inputField' name="vehicleHandover" value={formData.vehicleHandover} readOnly />
-                </label>
-            <label className="form-field">
-                    Advanced Payment:
-                    <input type="text" className='inputField' name="balancePayment" value={formData.advancedPayment} readOnly />
-                </label>
-            <label className="form-field">
-                    Vehicle Take over:
-                    <textarea name="partsArrangement" className='inputField' value={formData.vehicleTakeOver} readOnly />
-                </label>
               
-               
-            </div>
-
-            <div className='form-row'>
-            <label className="form-field">
-                    Balance Payment:
-                    <input type="text" className='inputField' name="vehicleTakeOver" value={formData.balancePayment} readOnly />
-                </label>
-                <label className="form-field">
-                    Feedback:
-                    <textarea name="feedback" className='inputField' value={formData.feedback} readOnly />
-                </label>
-                <label className="form-field">
-                    Feedback Rating:
-                    <input type="text" className='inputField' name="feedbackRating" value={formData.feedbackRating} readOnly />
-                </label>
-            </div>
-
-
-            {action === "reject" && (
-                <div className="form-field" style={{ display: 'flex', gap: '20px' }}>
-                    Reason to Reject:
-                    <label>
-                        <textarea name="reasonOfReject" className='inputField' value={formData.reasonOfReject}
-                            onChange={e => setFormData({ ...formData, reasonOfReject: e.target.value })}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => openModal({ action: 'reject' })}
-                            style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', marginLeft: "50px", marginTop: "20px" }}>
-                            Submit
-                        </button>
-                    </label>
-
-                </div>
-            )}
-            {alertInfo.show && (
-                <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                    {alertInfo.message}
-                </Alert>
-            )}
-                <div style={{ padding: '20px 0' }}>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setAction('accept');
-                            openModal({ action: 'accept' });
-                        }}
-                        style={{
-                            display: 'inline-block',
-                            padding: '10px 30px',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            marginRight: '20px'
-                        }}
-                    >
-                        Submit
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setAction('reject')}
-                        style={{
-                            display: 'inline-block',
-                            padding: '10px 30px',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            marginRight: '20px'
-                        }}
-                    >
-                        Reject
-                    </button>
-                   
-                </div> */}
-
                 <div style={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
                     <form style={{ maxWidth: "600px", flexGrow: 1, }} className='Customer-master-form'>
 
@@ -888,6 +890,9 @@ function CraneResponse({ data, onUpdate }) {
                         </div>
 
                         <div className='form-row' style={{ flexDirection: "column" }}>
+                        {formData.confirmDoneWorking==true && (
+                        <p style={{fontSize:"16px", fontWeight:"bold", color:"blue"}}>Vendor completed working confirmed by customer  </p>
+                    )}
                         <label className="form-field">
                                 Vendor Charges:
                                 <input
@@ -895,8 +900,8 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="charges"
                                     value={formData.charges}
-
-                                    readOnly={true}
+                                    onChange={handleChange}
+                                    // readOnly={true}
                                 />
                             </label>
                             <label className="form-field">
@@ -905,8 +910,8 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="vehicleInspection"
                                     value={formData.vehicleInspection}
-
-                                    readOnly={true}
+                                    onChange={handleChange}
+                                    // readOnly={true}
                                 />
                             </label>
 
@@ -917,8 +922,9 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="workEstimate"
                                     value={formData.workEstimate}
+                                    onChange={handleChange}
 
-                                    readOnly={true}
+                                    // readOnly={true}
                                 />
                             </label>
 
@@ -929,8 +935,9 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="recoveryVanEstimate"
                                     value={formData.recoveryVanEstimate}
+                                    onChange={handleChange}
 
-                                    readOnly={true}
+                                    // readOnly={true}
                                 />
                             </label>
 
@@ -941,8 +948,9 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="vehicleHandover"
                                     value={formData.vehicleHandover}
+                                    onChange={handleChange}
 
-                                    readOnly={true}
+                                    // readOnly={true}
                                 />
                             </label>
                         </div>
@@ -956,8 +964,8 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="advancedPayment"
                                     value={formData.advancedPayment}
-
-                                    readOnly={true}
+                                    onChange={handleChange}
+                                    // readOnly={true}
                                 />
                             </label>
 
@@ -968,8 +976,8 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="vehicleTakeOver"
                                     value={formData.vehicleTakeOver}
-
-                                    readOnly={true}
+                                    onChange={handleChange}
+                                    // readOnly={true}
                                 />
                             </label>
 
@@ -980,8 +988,8 @@ function CraneResponse({ data, onUpdate }) {
                                     className='inputField form-control'
                                     name="balancePayment"
                                     value={formData.balancePayment}
-
-                                    readOnly={true}
+                                    onChange={handleChange}
+                                    // readOnly={true}
                                 />
                             </label>
                         </div>
@@ -1021,8 +1029,54 @@ function CraneResponse({ data, onUpdate }) {
                                 </p>
                             </div>
                         )}
-                        {formData.paidOn && (
-                            <div style={{ color: 'green' }}>Commission Paid On : {formData.paidOn}</div>
+                        {comingLinkHere == "" && !formData.vendorComissionPaid && (<p style={{
+                                    fontSize: '11px',
+                                    marginTop: "5px",
+                                    background: "green",
+                                    padding: "10px",
+                                    border: '1px solid blue',
+                                    textAlign: 'center',
+                                    borderRadius: '30px',
+                                    fontWeight: "bold",
+                                    color: "white",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: "center",
+                                    position: "relative",
+                                    cursor: "pointer"
+                                }} onClick={(e) => { getPaymentLink(formData) }}>
+                                    <KeyboardDoubleArrowRightIcon style={{
+                                        position: "absolute",
+                                        left: '10px'
+                                    }} />
+                                    Pay Comission   {/* payment.jsx */}
+                                </p>)}
+                                {comingLinkHere != "" && (
+                                    <p className='shine-payment-button' style={{
+                                        fontSize: '11px',
+                                        marginTop: "5px",
+                                        padding: "10px",
+                                        border: '1px solid blue',
+                                        textAlign: 'center',
+                                        borderRadius: '30px',
+                                        fontWeight: "bold",
+                                        color: "#8d01ff",
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: "center",
+                                        position: "relative",
+                                        cursor: "pointer",
+                                        // color:"green"
+
+                                    }} onClick={getPaymentLinkPage}>
+                                        <KeyboardDoubleArrowRightIcon style={{
+                                            position: "absolute",
+                                            left: '10px'
+                                        }} />
+                                        Proceed to payment   {/* payment.jsx */}
+                                    </p>)}
+                        {formData.vendorComissionPaidOn && (
+                            <div style={{ color: 'green' }}>Commission Paid On : {formData.vendorComissionPaidOn}</div>
                         )}
 
 
@@ -1322,6 +1376,24 @@ function CraneResponse({ data, onUpdate }) {
                                 {alertInfo.message}
                             </Alert>
                         )}
+                         <button
+                                type="button"
+                                onClick={
+                                    changesSubmit
+                                }
+                                style={{
+                                    display: 'inline-block',
+                                    padding: '10px 30px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#4CAF50',
+                                    color: 'white',
+                                    marginRight: '20px'
+                                }}
+                            >
+                                Submit Edited Details
+                            </button>
                         <div style={{ padding: '20px 0' }}>
                             <button
                                 type="button"
@@ -1340,7 +1412,7 @@ function CraneResponse({ data, onUpdate }) {
                                     marginRight: '20px'
                                 }}
                             >
-                                Submit
+                                Accept Vendor
                             </button>
                             <button
                                 type="button"
@@ -1356,7 +1428,7 @@ function CraneResponse({ data, onUpdate }) {
                                     marginRight: '20px'
                                 }}
                             >
-                                Reject
+                                Reject Vendor
                             </button>
                         </div>
                     </form>

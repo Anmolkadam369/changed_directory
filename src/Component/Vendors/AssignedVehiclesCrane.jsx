@@ -709,7 +709,19 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
       },
       width: "150px",
     },
+    {
+      name: "Rejection Reason",
+      cell: (row) =>
+        row.details.length > 0 &&
+        row.details[0].acceptedByAdmin === "reject" &&
+        row.details[0].reasonforRejection
+          ? row.details[0].reasonforRejection
+          : "",
+      width: "200px",
+    }
+    
   ];
+
 
   useEffect(() => {
     console.log("token", token, userId);

@@ -47,9 +47,7 @@ const UserDashboard = () => {
                     console.log('Push Manager subscription:', subscription);
 
                     await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
-                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
 
-                    // alert('Login notification sent successfully');
                 } catch (error) {
                     console.error('Error sending login notification:', error);
                 }

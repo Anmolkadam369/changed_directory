@@ -273,7 +273,7 @@ const VendorSignUp = () => {
   console.log("DFDFSKLDJflkadsjf;okjsd;lkfjslkdfj;oksdj")
   const filteredData = currentItems.filter(row => {
     console.log("ROSWSDFDSFSDF",row.vendorName,  row.first_approval)
-    return !((row.first_approval === "not_approved" || row.first_approval_at == null) && userId === "yat167034");
+    return !((row.first_approval === "not_approved" || row.first_approval_at == null) && userId === "EMPID-f2251370-99ac-40ee-a05d-dcc37c3534e2");
   })
   console.log("filterData", filteredData)
 

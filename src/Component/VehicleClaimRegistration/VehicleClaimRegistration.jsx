@@ -1033,7 +1033,7 @@ console.log("accidentdata123456789", accidentData)
                         />
                     </label>
                     <label className="form-field">
-                        System Generated - Vehicle No.:
+                        {/* System Generated - Vehicle No.:
                         <input
                             className='inputField'
                             type="text"
@@ -1041,10 +1041,10 @@ console.log("accidentdata123456789", accidentData)
                             value="System Generated"
                             onChange={handleChange}
                             readOnly
-                        />
+                        /> */}
                     </label>
                     <label className="form-field">
-                        Time (Railway):
+                        {/* Time (Railway):
                         <input
                             className='inputField'
                             type="time"
@@ -1052,7 +1052,7 @@ console.log("accidentdata123456789", accidentData)
                             value={accidentData.railwayTime}
                             onChange={handleChange}
                             placeholder='Time'
-                        />
+                        /> */}
                     </label>
 
                 </div>
@@ -1353,6 +1353,7 @@ console.log("accidentdata123456789", accidentData)
                             ))}
                         </select>
                     </label>
+                    
                     <label className="form-field">
                         Contact No:
                         <input
@@ -1388,7 +1389,20 @@ console.log("accidentdata123456789", accidentData)
 
                         />
                     </label>
+                    <label className="form-field">
+                        Spot Surveyor Name (if not in list):
+                        <input
+                            type='text'
+                            className='inputField'
+                            name="surveyorName"
+                            value={accidentData.surveyorName}
+                            onChange={handleChange}
+                        />
+                    </label>
                     <label className="form-field"></label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
+
                 </div>
                 <div className="form-row" style={{ gap: '0px' }}>
                     <label className="form-field">
@@ -1443,6 +1457,18 @@ console.log("accidentdata123456789", accidentData)
 
                         />
                     </label>
+                    <label className="form-field">
+                    Material Surveyor Name (if not in list):
+                        <input
+                            type='text'
+                            className='inputField'
+                            name="materialSurveyorName"
+                            value={accidentData.materialSurveyorName}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                     <label className="form-field"></label>
 
                 </div>
@@ -1499,6 +1525,20 @@ console.log("accidentdata123456789", accidentData)
 
                         />
                     </label>
+
+                    
+                    <label className="form-field">
+                    Final Surveyor Name (if not in list):
+                        <input
+                            type='text'
+                            className='inputField'
+                            name="finalSurveyorName"
+                            value={accidentData.finalSurveyorName}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                     <label className="form-field"></label>
                 </div>
                 <div className="form-row" style={{ gap: '0px' }}>

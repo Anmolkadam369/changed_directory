@@ -44,9 +44,11 @@
     display: table-cell;
     padding: 8px;
     border-bottom: 1px solid #ddd;
+    color: white;
 }
 
 .table-cell:first-child {
     font-weight: bold;
-    background-color: #f2f2f2;
+    background-color: #1d7a0f;
+    color: black;
 }

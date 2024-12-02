@@ -1,0 +1,561 @@
+import React, { useState, useEffect } from 'react';
+import BottomNavigationVendor from "./BottomNavigationVendor/BottomNavigationVendor"
+import crossUser from '../../Assets/crossUser.png'
+import { Doughnut } from 'react-chartjs-2';
+import emergencycall from '../../Assets/emergencycall.png'
+import nearbyRestaurant from '../../Assets/nearbyRestaurant.png'
+import nearbyhospital from '../../Assets/nearbyhospital.png'
+import nearbyPetrolPump from '../../Assets/nearbyPetrolPump.png'
+import nearbyParking from '../../Assets/nearbyParking.png'
+import nearbytoll from '../../Assets/nearbytoll.png'
+import axios from 'axios';
+import backendUrl from "../../environment"
+import { useNavigate } from "react-router-dom"
+import VendorMoving from '../Vendors/VendorMoving';
+import CaseFirstCard from '../CaseFirstCard/CaseFirstCard';
+
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
+import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
+import vehicleIcon from '../../Assets/vehicleIcon.webp';
+import craneadvocatemechanic from '../../Assets/camw.webp';
+
+import Featured from '../Charts/Featured';
+import VendorViewRating from '../VendorViewRating/VendorViewRating';
+
+
+
+const CraneUserDashboard = () => {
+
+    const navigate = useNavigate()
+    const [totalAssignedCases, setTotalAssignedCases] = useState([]);
+    const [approvedCase, setApprovedCase] = useState([])
+    const [gotResponse, setGotResponse] = useState([]);
+    const [distance, setDistances] = useState([])
+
+    const [caseDetails, setCaseDetails] = useState(false);
+
+    const [isNewCase, setNewCase] = useState(false)
+    const [newCasesItems, setNewCasesItems] = useState([])
+    const [avg, setAvg] = useState([])
+    const [vendorCurrentLatitude, setVendorCurrentLatitude] = useState("")
+    const [vendorCurrentLongitude, setVendorCurrentLongitude] = useState("")
+
+    console.log("newCasesItems", newCasesItems)
+
+    const [adminAccepted, setAdminAccepted] = useState(0)
+    const [adminRejected, setAdminRejected] = useState(0)
+    const [adminPending, setAdminPending] = useState(0)
+    const [rejectedByVendor, setRejectedByVendor] = useState(0)
+    const [workingCases, setWorkingCases] = useState(0)
+    const [fullyClosedCases, setFullyClosedCases] = useState(0)
+
+    const [filterForVehicleCrane, setFilterForVehicleCrane] = useState("all")
+    const [isSelected, setIsSelected] = useState("")
+
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    useEffect(() => {
+        if (token === '' || userId === '') {
+            navigate('/');
+        }
+        fetchAssignedCases();
+        getGotResponseVehicle()
+    }, [token, userId, navigate]);
+
+    const choosenCase = (item) => {
+        setApprovedCase([])
+        setApprovedCase([item])
+        setCaseDetails(true)
+    }
+
+    const casesFilterForVehicleCrane = (filter) => {
+        setFilterForVehicleCrane(filter)
+        setIsSelected(filter);
+    }
+
+    const [doughnutData, setDoughnutData] = useState({
+        labels: ['Total Vehicles', 'Fully Closed Inc. Rejected', 'Working Vehicles', 'Non Working Vehicles'],
+        datasets: [
+            {
+                label: 'Vehicles',
+                data: Array(4).fill(0),
+                backgroundColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    });
+
+    const [doughnutData2, setDoughnutData2] = useState({
+        labels: ['Total Cases', 'Accepted Cases', 'Rejected Cases', 'Real Pending Cases', "Response Not Sent By Vendor"],
+        datasets: [
+            {
+                label: 'Vehicles',
+                data: Array(4).fill(0),
+                backgroundColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    });
+
+    useEffect(() => {
+
+        const totalCases = totalAssignedCases.length;
+        const fullyClosedCasesVendor = fullyClosedCases + adminRejected;
+        const workingCasesVendor = workingCases - adminRejected;
+        const NonworkingCasesVehicle = totalAssignedCases.length - gotResponse.length; // Update this with the actual resolved vehicles count
+
+        setDoughnutData((prevData) => ({
+            ...prevData,
+            datasets: [
+                {
+                    ...prevData.datasets[0],
+                    data: [totalCases, fullyClosedCasesVendor, workingCasesVendor, NonworkingCasesVehicle],
+                },
+            ],
+        }));
+    }, [totalAssignedCases, gotResponse, fullyClosedCases, workingCases]);
+
+    useEffect(() => {
+        const totalCases = totalAssignedCases.length;
+        const acceptedCases = adminAccepted;
+        const realPendingCases = adminPending - (totalAssignedCases.length - gotResponse.length);
+        const rejectedCases = adminRejected; // Update this with the actual resolved vehicles count
+        const responseNotSentToAdmin = adminPending - realPendingCases
+        setDoughnutData2((prevData) => ({
+            ...prevData,
+            datasets: [
+                {
+                    ...prevData.datasets[0],
+                    data: [totalCases, acceptedCases, rejectedCases, realPendingCases, responseNotSentToAdmin],
+                },
+            ],
+        }));
+    }, [totalAssignedCases, adminAccepted, adminPending, adminRejected]);
+
+
+
+    useEffect(() => {
+
+        if (totalAssignedCases.length !== 0) {
+            let acceptedCount = 0;
+            let rejectedCount = 0;
+            let pendingCount = 0;
+            let rejectedByVendor = 0;
+
+
+            for (let i = 0; i < totalAssignedCases.length; i++) {
+                console.log("totalAssignedCases[i].details[0].vendorDecision", i, totalAssignedCases[i].details[0].vendorDecision)
+                if (totalAssignedCases[i].details[0].vendorDecision != 'reject' && (totalAssignedCases[i].details.length === 0 || totalAssignedCases[i].details[0].acceptedByAdmin === null)) {
+                    pendingCount++;
+                } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "accept") {
+                    acceptedCount++;
+                } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "reject") {
+                    rejectedCount++;
+                }
+                else if (totalAssignedCases[i].details[0].vendorDecision === "reject") {
+                    console.log("insidehere ima m", i, totalAssignedCases[i].details[0].vendorDecision)
+                    rejectedByVendor++
+                }
+            }
+            setAdminAccepted(acceptedCount);
+            setAdminRejected(rejectedCount);
+            setAdminPending(pendingCount);
+            setRejectedByVendor(rejectedByVendor);
+
+        }
+
+        if (gotResponse.length !== 0) {
+            let fullyClosedCount = 0;
+            let workingCount = 0;
+
+            for (let i = 0; i < gotResponse.length; i++) {
+                if (gotResponse[i].confirmDoneWorking == true) {
+                    fullyClosedCount++;
+                } else {
+                    workingCount++;
+                }
+            }
+            setFullyClosedCases(fullyClosedCount);
+            setWorkingCases(workingCount);
+        }
+
+        if ((totalAssignedCases.length - gotResponse.length) > 0) {
+            const filteredItems = totalAssignedCases.filter((caseItem) => caseItem?.details[0]?.firstResponseOn == null);
+            setNewCasesItems(filteredItems);
+            setNewCase(true);
+        } else {
+            setNewCasesItems([]);
+            setNewCase(false);
+        }
+        if (totalAssignedCases.length > 0 && totalAssignedCases.length) {
+            totalAssignedCases.map((item) => {
+                avg.push(0)
+            })
+            // totalAssignedCases.map((item) => {
+            //     let gotStage = getStage(item.vendorMoved, item.approvedReaching)
+            //     currentStage.push(gotStage)
+            // })
+            totalAssignedCases.forEach((item, index) => {
+                getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude, index);
+                // getVendorRating(item.crane)
+            });
+        }
+    }, [totalAssignedCases, gotResponse]);
+
+
+    const fetchAssignedCases = async () => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
+            console.log("Total assignedTasksMechanic", response.data.data);
+            setTotalAssignedCases(response.data.data);
+            //totalAssignedCases[i].details[0].vendorDecision != 'reject'
+
+            response.data.data.map((item) => {
+                if (item.details[0]?.customerAcceptedVendor && !item.details[0]?.vendorMoved) {
+                    console.log("some inside fetchAssigneCases", item.details[0]?.customerAcceptedVendor, item.details[0]?.approvedReaching)
+                    setApprovedCase([item]);
+                }
+            })
+
+        } catch (error) {
+            console.error("Failed to fetch assigned cases:", error);
+        }
+    };
+
+
+    const getGotResponseVehicle = async () => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
+            console.log("getAssignedVehicleForDashboard success", response.data.data);
+            const filteredResponse = [];
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].firstResponseOn != null) {
+                    console.log("response.data.data.firstResponseOn", response.data.data[i].firstResponseOn);
+                    filteredResponse.push(response.data.data[i]);
+                }
+            }
+            setGotResponse(filteredResponse);
+        } catch (error) {
+            console.error("Failed to fetch existing data", error.response || error);
+            if (error.response) {
+                console.log("Error data:", error.response.data);
+                console.log("Error status:", error.response.status);
+                console.log("Error headers:", error.response.headers);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    };
+
+
+    function haversine(lat1, lon1, lat2, lon2) {
+        console.log("accident latitude", lat1)
+        console.log("accident longtitude", lon1)
+        console.log("vehicle latitiude", lat2)
+        console.log("vehicle longtitude", lon2)
+
+        const toRad = (value) => (value * Math.PI) / 180;
+        const R = 6371; // Earth radius in km
+
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return distance;
+    }
+
+    const getVendorLocation = async (crane, accidentLatitude, accidentLongitude, index) => {
+        try {
+            console.log("disntaceadfafdaf", distance)
+            console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
+
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            if (response.data.status == true) {
+                let vendorCurrentLatitude = response.data.data[0].latitude;
+                let vendorCurrentLongitude = response.data.data[0].longitude;
+                setVendorCurrentLatitude(vendorCurrentLatitude)
+                setVendorCurrentLongitude(vendorCurrentLongitude)
+
+                const calculatedDistance = haversine(accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude).toFixed(2);
+
+                distance.push(calculatedDistance)
+            }
+            else if (response.data.message == "User Not found take Location") {
+                console.log("User Not found take Location")
+            }
+        } catch (error) {
+            console.log("error in get Vendor Location", error.message)
+        }
+    }
+
+
+    const handleBack = () => {
+        setNewCase(false)
+        getGotResponseVehicle()
+        fetchAssignedCases()
+        // getAllAccidentVehicleData()
+    }
+
+    return (
+        <div>
+            {/* Red Top Section */}
+            <div
+                style={{
+                    color: "white",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%", // Set a specific height for scrollability
+                    overflow: "auto", // Enable scrolling
+                    background: "#ffbfbf",
+                    clipPath: "polygon(0px 0px, 200% 0px, 0% 12%, 0px 60%)",
+                }}
+            >
+                <p style={{ marginTop: "30px", marginLeft: "20px", fontWeight: "bolder", fontSize: "15px" }}>PAPPU TRUCK BODY REPAIRING WORKS</p>
+                <div style={{ display: 'flex' }}>
+                    <p style={{ marginTop: "10px", marginLeft: "20px", fontWeight: "bolder", fontSize: "17px" }}>Service: </p>
+                    <p style={{ marginTop: "10px", marginLeft: "10px", fontWeight: "bolder", fontSize: "17px" }}>Crane</p>
+                </div>
+            </div>
+            <div style={{ margin: "30% 10px 10px 20px", background: "white", boxShadow: "black 2px 14px 24px", borderRadius: "30px" }}>
+                <div className='imageContainer' style={{ gap: "25px", padding: '20px', alignItems: 'center' }}>
+                    <div>
+                        <img src={nearbyhospital} style={{ height: "35px", width: "35px", textAlign: 'center' }} />
+                        <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Hospital</p>
+                    </div>
+                    <div>
+                        <img src={nearbytoll} style={{ height: "35px", width: "40px", textAlign: 'center' }} />
+                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Toll</p>
+                    </div>                <div>
+                        <img src={nearbyRestaurant} style={{ height: "25px", width: "30px", textAlign: 'center' }} />
+                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Restaurant</p>
+                    </div>
+                    <div>
+                        <img src={nearbyPetrolPump} style={{ height: "30px", width: "35px", textAlign: 'center' }} />
+                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Pump</p>
+                    </div>
+                    <div>
+                        <img src={nearbyParking} style={{ height: "40px", width: "40px", textAlign: 'center', marginLeft: "5px", marginBottom: "8px" }} />
+                        <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Parking</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div className="stat-container">
+
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('getAll')}
+                    style={{
+                        margin: "40px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "getAll" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
+                    <h3 style={{ fontSize: "0.6rem" }}>Total Cases Assigned</h3>
+                    <p>{totalAssignedCases.length}</p>
+                </div>
+
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Accepted Vehicles')}
+                    style={{
+                        margin: "40px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Accepted Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <ThumbUpAltOutlinedIcon className="small-image" />
+                    {/* <img src={SwipeRightAltOutlinedIcon}  className="small-image" alt="accpeted By Admin" /> */}
+                    <h3 style={{ fontSize: "0.6rem" }}>Accepted By Admin</h3>
+                    <p>{adminAccepted}</p>
+                </div>
+
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Rejected Vehicles')}
+                    style={{
+                        margin: "40px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Rejected Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <ThumbDownOutlinedIcon className="small-image" />
+                    <h3 style={{ fontSize: "0.6rem" }}>Rejected By Admin</h3>
+                    <p>{adminRejected}</p>
+                </div>
+
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Pending Vehicles')}
+                    style={{
+                        margin: "40px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Pending Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <PendingActionsOutlinedIcon className="small-image" />
+                    <h3 style={{ fontSize: "0.6rem" }}>Pending (Admin and Not Requested)</h3>
+                    <p>{adminPending}</p>
+                </div>
+
+            </div>
+
+            <div className="stat-container">
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Response given')}
+                    style={{
+                        margin: "10px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Response given" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
+                    <h3 style={{ fontSize: "0.6rem" }}>Response Given by admin</h3>
+                    <p>{gotResponse.length}</p>
+                </div>
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Completed Cases')}
+                    style={{
+                        margin: "10px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Completed Cases" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <AssignmentTurnedInOutlinedIcon className="small-image" />
+                    <h3 style={{ fontSize: "0.6rem" }}>Fully Closed Cases</h3>
+                    <p>{fullyClosedCases + adminRejected}</p>
+                </div>
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
+                    style={{
+                        margin: "10px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Working Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <PendingActionsOutlinedIcon className="small-image" />
+                    <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
+                    <p>{workingCases - adminRejected}</p>
+                </div>
+
+
+                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
+                    style={{
+                        margin: "10px 5px 5px 5px",
+                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                        borderLeft: "2px solid darkgreen",
+                        borderTop: "1px solid darkgreen",
+                        cursor: "pointer",
+                        backgroundColor: isSelected == "Working Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                    }}>
+                    <PendingActionsOutlinedIcon className="small-image" />
+                    <h3 style={{ fontSize: "0.6rem" }} >Rejected By You</h3>
+                    <p>{rejectedByVendor}</p>
+                </div>
+
+
+            </div>
+
+            <center>
+                <div className="container">
+
+                    <h1 style={{textAlign:"center",color:"green"}}>
+                        GeeksforGeeks
+                    </h1>
+                    <h3>
+                        To make horizontal scrollable in a bootstrap row?
+                    </h3>
+                    <div className="container horizontal-scrollable">
+                        <div className="row text-center">
+                            <div className="col-xs-4">1</div>
+                            <div className="col-xs-4">2</div>
+                            <div className="col-xs-4">3</div>
+                            <div className="col-xs-4">4</div>
+                            <div className="col-xs-4">5</div>
+                            <div className="col-xs-4">6</div>
+                            <div className="col-xs-4">7</div>
+                        </div>
+                    </div>
+                </div>
+            </center>
+
+            <div className="statistics">
+                <div className="charts">
+
+                    <div className="chart-item" style={{ background: "radial-gradient(rgb(171 221 193), rgba(245, 245, 245, 0))" }}>
+                        <h3 className="chart-title"> Vehicle Working Status</h3>
+                        <Doughnut data={doughnutData} />
+                    </div>
+
+                    <div className="chart-item" style={{ background: "radial-gradient(rgb(81 ,191, 213), rgba(245, 245, 245, 0))" }}>
+                        <h3 className="chart-title"> Admin Cases Status</h3>
+                        <Doughnut data={doughnutData2} />
+                    </div>
+                    <Featured />
+                    <VendorViewRating />
+
+
+
+                </div>
+            </div>
+
+
+
+            {isNewCase && (
+                <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
+            )}
+
+
+
+            {/* Black Bottom Section */}
+
+            <div>
+                <BottomNavigationVendor />
+            </div>
+        </div>
+
+
+
+    )
+}
+
+
+export default CraneUserDashboard

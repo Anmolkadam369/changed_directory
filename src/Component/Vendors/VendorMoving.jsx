@@ -9,11 +9,13 @@ import telephonecall from '../../Assets/telephonecall.png'
 
 const VendorMoving = ({ item }) => {
     const navigate = useNavigate()
+    console.log("itemfromvendormoving", item)
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-    const [isStarted, setIsStarted] = useState(false)
     const [vendorCurrentLatitude, setVendorCurrentLatitude] = useState("")
     const [vendorCurrentLongitude, setVendorCurrentLongitude] = useState("")
+    const [alertMessage, setAlertMessage] = useState(null);
+    const [alertType, setAlertType] = useState(null);
     const [distance, setDistance] = useState('')
     console.log("distacne", distance)
 
@@ -32,17 +34,16 @@ const VendorMoving = ({ item }) => {
     }
 
     console.log("item in vendorMoving", item)
-    const[imageContainer, setImageContainer] = useState(false)
+    const [imageContainer, setImageContainer] = useState(false)
 
-    useEffect(()=>{
+    useEffect(() => {
         if (item.reg != undefined) {
             getCurrentLocation()
             setImageContainer(true)
         }
+    }, [item])
 
-    },[item])
-
-  const getCurrentLocation = async () => {
+    const getCurrentLocation = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${userId}`);
             if (response.data.status == true) {
@@ -51,7 +52,7 @@ const VendorMoving = ({ item }) => {
                 setVendorCurrentLatitude(vendorCurrentLatitude)
                 setVendorCurrentLongitude(vendorCurrentLongitude)
                 console.log("userId", userId)
-                console.log( 'baho', item.accidentLatitude,  item.accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude)
+                console.log('baho', item.accidentLatitude, item.accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude)
 
                 setDistance(haversine(item.accidentLatitude, item.accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude).toFixed(2))
             }
@@ -63,7 +64,6 @@ const VendorMoving = ({ item }) => {
         }
     }
 
-
     const readyToGo = async () => {
         try {
             let response = await axios(`${backendUrl}/api/vendorMoved/${userId}/${item.AccidentVehicleCode}`, {
@@ -74,7 +74,8 @@ const VendorMoving = ({ item }) => {
                 },
             })
             if (response.data.status) {
-                setIsStarted(true)
+                // setIsStarted(true)
+                console.log('successfully updated status')
             }
             else console.log("there is some issue")
 
@@ -92,17 +93,25 @@ const VendorMoving = ({ item }) => {
                     Authorization: token,
                     'Content-Type': 'application/json',
                 },
-            })
-            if (response.data.status) {
-                console.log("updated successfully")
-            }
-            else console.log("there is some issue")
+            });
 
+            if (response.data.status) {
+                setAlertMessage("Updated successfully!");
+                setAlertType("success"); // Bootstrap alert type for success
+            } else {
+                setAlertMessage("There is some issue.");
+                setAlertType("danger"); // Bootstrap alert type for error
+            }
+        } catch (error) {
+            setAlertMessage(`An error occurred: ${error.message}`);
+            setAlertType("danger"); // Bootstrap alert type for error
         }
-        catch (error) {
-            console.log("the error occured", error.message)
-        }
-    }
+
+        // Hide the alert automatically after 5 seconds
+        setTimeout(() => {
+            setAlertMessage(null);
+        }, 5000);
+    };
 
     const goToMap = () => {
         navigate('/map-vendor-distance', {
@@ -112,7 +121,7 @@ const VendorMoving = ({ item }) => {
                 vendorLatitude: vendorCurrentLatitude,
                 vendorLongitude: vendorCurrentLongitude,
                 vehicleNo: item.reg,
-                fromPage :"vendorMoving"
+                fromPage: "vendorMoving"
             }
         })
     }
@@ -124,9 +133,9 @@ const VendorMoving = ({ item }) => {
 
     return (
         <div>
-       {imageContainer  && (
-        
-       
+            {imageContainer && (
+
+
 
                 <div className="text-overlay">
                     <p style={{ fontSize: '14px', padding: "5px", border: '3px solid blue', borderImage: 'linear-gradient(to top, white 10% , black 90%) 1', textAlign: 'center', borderRadius: '30px', fontWeight: "bold" }}>
@@ -141,11 +150,9 @@ const VendorMoving = ({ item }) => {
                     <div style={{ display: 'flex' }}>
                         <p style={{ fontSize: '11px', paddingRight: '10px', marginTop: '2px' }}>Accident Location : {distance} km</p>
                     </div>
-
                     <div className="text-overlay text-overlay2">
-
                         {/* <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
-                        {!isStarted && (<p style={{
+                        {item.details[0]?.vendorMoved == false && item.details[0].customerAcceptedVendor == true && (<p style={{
                             fontSize: '11px',
                             marginTop: "5px",
                             background: "green",
@@ -167,7 +174,7 @@ const VendorMoving = ({ item }) => {
                             }} />
                             Ready To Go
                         </p>)}
-                        {isStarted && (<p style={{
+                        { item.details[0]?.vendorMoved == true && (<p style={{
                             fontSize: '12px',
                             marginTop: "10px",
                             background: "white",
@@ -210,12 +217,12 @@ const VendorMoving = ({ item }) => {
                         }} onClick={() => (window.location.href = 'tel: 9867756819')}>
                             <img src={telephonecall} style={{
                                 position: "absolute",
-                                left: '10px', height:'20px', width:'20px', color:'white'
+                                left: '10px', height: '20px', width: '20px', color: 'white'
                             }} />
                             Call For Help
                         </p>
 
-                        <p style={{
+                        { item.details[0]?.vendorMoved == true && (<p style={{
                             fontSize: '11px',
                             marginTop: "5px",
                             background: "#8f4325",
@@ -235,12 +242,17 @@ const VendorMoving = ({ item }) => {
                                 position: 'absolute',
                                 right: "10px"
                             }} />
-                        </p>
+                        </p>)}
+                        {alertMessage && (
+                            <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
+                                {alertMessage}
+                            </div>
+                        )}
                     </div>
 
                 </div>
-            
-        )}
+
+            )}
         </div>
     )
 }

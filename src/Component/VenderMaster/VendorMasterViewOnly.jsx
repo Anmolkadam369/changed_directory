@@ -2055,30 +2055,30 @@
 // export default VehicleClaimEdit;
 
 
-import { useEffect, useState } from 'react';
-import backendUrl from '../../environment';
-import axios from 'axios';
-import { Alert } from '@mui/material';
-import './VendorMasterViewOnly.css'
+// import { useEffect, useState } from 'react';
+// import backendUrl from '../../environment';
+// import axios from 'axios';
+// import { Alert } from '@mui/material';
+// import './VendorMasterViewOnly.css'
 
 
 const VendorMasterViewOnly = () => {
 
 
-    const [data, setData] = useState([])
-    console.log("data", data)
-    // const [alertInfo, setAlertInfo] = useState('')
-    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamps: null })
+    // const [data, setData] = useState([])
+    // console.log("data", data)
+    // // const [alertInfo, setAlertInfo] = useState('')
+    // const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info', timestamps: null })
 
-    useEffect(() => {
-        console.log("this is useEffect")
-        console.log(data)
-    }, [data])
+    // useEffect(() => {
+    //     console.log("this is useEffect")
+    //     console.log(data)
+    // }, [data])
 
 
-    useEffect(() => {
-        getData()
-    }, [])
+    // useEffect(() => {
+    //     getData()
+    // }, [])
 
     // const getData=async()=>{
     //     try {
@@ -2110,17 +2110,17 @@ const VendorMasterViewOnly = () => {
 
     const getData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendor`)
-            let fetchedData = response.data.data
-            fetchedData = fetchedData.map((datastrip) => ({
-                ...datastrip,
-                vendorName: "Anmol Kadam"
-            }))
-            setData(fetchedData)
-            setAlertInfo({ show: true, message: "your data is here", severity: 'success' })
+            // const response = await axios.get(`${backendUrl}/api/getVendor`)
+            // let fetchedData = response.data.data
+            // fetchedData = fetchedData.map((datastrip) => ({
+            //     ...datastrip,
+            //     vendorName: "Anmol Kadam"
+            // }))
+            // setData(fetchedData)
+            // setAlertInfo({ show: true, message: "your data is here", severity: 'success' })
         }
         catch (error) {
-            setAlertInfo({ show: false, message: error.message, severity: "error" })
+            // setAlertInfo({ show: false, message: error.message, severity: "error" })
         }
     }
 
@@ -2147,45 +2147,219 @@ const VendorMasterViewOnly = () => {
     //     }
     // }
 
-    let index = 0
+    // let index = 0
 
-    return (
-        <div>
+    // const [addItem, setAddItem] = useState('')
+    // const [allItem, setAllItems] = useState([])
+    // console.log("allitem", allItem)
 
+    // const handleAdd=()=>{
+    //     if(addItem.trim()){
+    //         setAllItems([...allItem, addItem])
+    //         setAddItem('')
+    //     }
+    // }
+
+    // const deleteHere=(index)=>{
+    //    setAllItems(allItem.filter((_,i)=>i!=index))
+    // }
+
+
+    // const [showPara, setShowPara] = useState(false)
+
+    // const [myName, setMyName] = useState("")
+    // const [myEmail, setMyEmail] = useState("")
+    // const [error, setError] = useState("")
+    // const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+    // const handleSubmitHere=(e)=>{
+    //     e.preventDefault()
+    //     if(myName.trim() == '' || myEmail.trim() == ''){
+    //         setError("fill it")
+    //     }
+    //    else if(!emailRegex.test(myEmail.trim())){
+    //     setError("please email")
+    //    }
+    //     else{
+    //         setError('filled')
+    //     }
+    //     setTimeout(()=>{
+    //         setError('')
+    //     },2000)
+    // }
+
+    //Build a counter component with "Increment" and "Decrement" buttons. Prevent the count from going below zero.
+    // const [count, setCount] = useState(10)
+    // const addCounter=()=>{
+    //     setCount(count+1)
+    // }
+
+    // const minusCounter=()=>{
+    //     if(count > 0 ) setCount(count-1)
+    // }
+    // const [randomNumberArray, setRandomNumberArray] = useState([])
+
+    // const addRandNum=()=>{
+    //     const random = Math.random()
+    //     setRandomNumberArray([...randomNumberArray, random])
+    // }
+    // const deleteLastNum=()=>{
+    //     setRandomNumberArray(randomNumberArray.filter((_, i)=>i != randomNumberArray.length-1))
+    // }
+
+
+
+    //Implement a component that displays the current time
+    // and updates every second using the useEffect hook.
+
+    // const [currentSeconds, setCurrentSeconds] = useState([])
+
+    // useEffect(()=>{
+    //     let interval = setInterval(()=>{
+    //         setCurrentSeconds(new Date().getSeconds())
+    //     },1000)
+    //     return ()=> clearInterval(interval)
+    // },[])
+
+    // Create a component that shows a loader while data is being fetched from an API.
+    // const [data, setData] = useState(null); // Holds the fetched data
+    // const [loading, setLoading] = useState(true); // Tracks loading state
+    // const [error, setError] = useState(null); // Tracks any errors
+  
+    // useEffect(() => {
+    //   const fetchData = async () => {
+    //     try {
+    //       setLoading(true); // Set loading to true before fetching
+    //       const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    //       if (!response.ok) {
+    //         throw new Error(`HTTP error! Status: ${response.status}`);
+    //       }
+    //       const result = await response.json();
+    //       setData(result);
+    //     } catch (err) {
+    //       setError(err.message);
+    //     } finally {
+    //       setLoading(false); // Set loading to false after fetching is complete
+    //     }
+    //   };
+  
+    //   fetchData();
+    // }, []);
+  
+    // if (loading) {
+    //   return <div>Loading...</div>; // Loader
+    // }
+  
+    // if (error) {
+    //   return <div>Error: {error}</div>; // Error message
+    // }
+  
+   
+    // return (
+
+    //     <div>
+    //          <div>
+    //   <h1>Fetched Data:</h1>
+    //   <ul>
+    //     {data.map((item) => (
+    //       <li key={item.id}>{item.title}</li>
+    //     ))}
+    //   </ul>
+    // </div>
+
+            {/* <button onClick={addRandNum}>add random</button>
+            <button onClick={deleteLastNum}>delete random</button>
+            {randomNumberArray} */}
+
+{/* {new Date().getHours()}: {new Date().getMinutes()}: {currentSeconds} */}
+
+
+{/* 
+        <button onClick={addCounter}>+</button>
+        {count}
+        <button onClick={minusCounter}>-</button> */}
+
+            {/*Build a component that allows users to add items to a list using an input field and delete them. */}
+{/* 
             <div>
-                <div class="card-containerTP">
-                    <div class="cardTP">
-                        <img src="https://via.placeholder.com/150" alt="Placeholder Image" />
-                        <h3>Card Title</h3>
-                        <p>This is a description of the card.</p>
-                    </div>
-                    <div class="cardTP">
-                        <img src="https://via.placeholder.com/150" alt="Placeholder Image" />
-                        <h3>Card Title</h3>
-                        <p>This is a description of the card.</p>
-                    </div>
+
+                <input type='text' name = "addItem" value={addItem} onChange={(e)=>{setAddItem(e.target.value)}}/>
+                    <button onClick={handleAdd}> add</button>
+
+                {allItem.length > 0 && (
+                        allItem.map((item, index)=>(
+                            <div>
+                            {item} 
+                            <div>
+                                <button onClick={()=>deleteHere(index)}>delete</button>
+                            </div>
+                            </div>
+                        ))
+                )}
+            </div> */}
+
+
+
+    {/* <button onClick={()=>{setShowPara(!showPara)}}>click</button>
+        {showPara && (<div>
+           <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis facere aspernatur, animi aperiam illum sapiente! Animi quod impedit, perferendis ea assumenda neque cupiditate iure molestias distinctio odio in officia amet quos temporibus nulla quasi dolores debitis illo laudantium. Corporis, beatae soluta quas tenetur ipsam cupiditate exercitationem unde labore eos, dolorem culpa ipsum, maiores nam quae. Placeat!
+          </p> 
+           </div>)} */}
+
+
+           {/* <input type="text" name="myName" value={myName} onChange={(e)=>{setMyName(e.target.value)}}/>
+           <input type="text" name="myEmail" value={myEmail} onChange={(e)=>{setMyEmail(e.target.value)}}/>
+           {error}
+        <button onClick={handleSubmitHere}> submit</button> */}
+
+
+{/* 
+<div className = "hovering" style={{transition:"transform 0.3s , box-shadow 0.3s", height:"200px", width:"200px",background:"red",margin:"20px", display:"flex", justifyContent:'center',alignItems:'center', textAlign:"center"}}>
+    hey here i am
+</div> */}
+
+
+
+{/* 
+<div className='navbar'>
+    <div className='logo'>logo</div>
+    <div className= 'menu'>menu</div>
+
+</div>
+
+<div className = "some-spinner"></div> */}
+
+
+
+
+
+{/* 
+            <div style={{ height: '30px', border: '1px solid red', position: 'sticky', top: '10' }}>
+                <div style={{ animation: 'sildeIn 0.3 ease-out' }}>
+                    Home
                 </div>
             </div>
 
-
-
-            <div className='TP-flexingshowing'>
-                <div className='TP-image-container1'>
-                    <img className='TP-image' src='https://via.placeholder.com/150'/>
+            <div class="card-containerTP">
+                <div class="cardTP">
+                    <img src="https://via.placeholder.com/150" alt="Placeholder Image" />
                     <h3>Card Title</h3>
                     <p>This is a description of the card.</p>
                 </div>
-
-                <div className='TP-image-container1'>
-                    <img className='TP-image' src='https://via.placeholder.com/150'/>
+                <div class="cardTP">
+                    <img src="https://via.placeholder.com/150" alt="Placeholder Image" />
                     <h3>Card Title</h3>
                     <p>This is a description of the card.</p>
                 </div>
-            </div>
+            </div> */}
 
 
 
 
+
+
+{/* 
             <div>
                 <button className='TP-hover-button'>
                     Click me
@@ -2194,7 +2368,7 @@ const VendorMasterViewOnly = () => {
             <div className='TP-bottom-div'>
                 <p> Hey I Am  here</p>
 
-                <a className="ahrefhere" href="http://localhost:3000" target="_blank">click on link </a>
+                <a className="ahrefhere" href="http://localhost:3000" target="_blank">click on link </a> */}
 
                 {/* {data && (
                 data.map((individualData)=>(
@@ -2223,7 +2397,7 @@ const VendorMasterViewOnly = () => {
                     </tbody>
                 </table>
             )} */}
-                {alertInfo.show && (
+                {/* {alertInfo.show && (
                     <Alert severity={alertInfo.severity} onClose={() => { setAlertInfo({ ...alertInfo, show: false }) }}>
                         {alertInfo.message}
 
@@ -2255,10 +2429,10 @@ const VendorMasterViewOnly = () => {
                     </table>
                 )}
 
-            </div>
-        </div>
+            </div> */}
+        // </div>
 
-    )
+    // )
 
 }
 

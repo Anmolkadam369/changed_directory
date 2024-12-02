@@ -390,7 +390,7 @@ const CraneDashboard = ({ getData }) => {
     console.log("GotRepsonce", gotResponse)
 
     const [newCasesItems, setNewCasesItems] = useState([])
-    console.log("setNewCasesItems bonenza", setNewCasesItems)
+    console.log("setNewCasesItems bonenza", newCasesItems)
     console.log("(totalAssignedCases.length - gotResponse.length)", (totalAssignedCases.length - gotResponse.length))
 
     useEffect(() => {

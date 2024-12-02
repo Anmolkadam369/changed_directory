@@ -1,0 +1,54 @@
+/* Calendar Container Styling */
+.calendar-container {
+    width: 300px;
+    height: 300px;
+    background-color: #000; /* Black background */
+    color: #fff; /* Default text color white */
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    border: 3px solid darkgreen;
+    border-radius: 10px;
+  }
+  
+  /* Date Cells */
+  .calendar-container div {
+    width: 14%; /* Each date cell */
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Default Date Cell Color */
+  .calendar-container div:not(.selected) {
+    background-color: darkgreen;
+    color: white;
+  }
+  
+  /* Hover Effect */
+  .calendar-container div:hover {
+    background-color: red;
+    transform: scale(1.1);
+  }
+  
+  /* Selected Date Styling */
+  .calendar-container .selected {
+    background-color: red;
+    color: black;
+    font-size: 1.2em;
+    border: 2px solid black;
+  }
+  
+  /* Selected Date Display */
+  .selected-date {
+    font-size: 18px;
+    font-weight: bold;
+    color: darkgreen;
+  }
+  

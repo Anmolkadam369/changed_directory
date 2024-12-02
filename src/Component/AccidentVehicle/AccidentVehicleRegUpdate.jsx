@@ -259,9 +259,9 @@ const AccidentVehicleRegUpdate = () => {
       name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true,
       cell: (row) => (
         <span style={{
-          color: 'darkblue', padding: '5px', borderRadius: '4px', border: "4px solid darkgrey"
+          color: 'darkblue', padding: '5px', width:"150px", borderRadius: '4px', border: "4px solid darkgrey"
         }}>
-          {row.accidentFileNo ? row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1).toLowerCase() : ""}
+          {row.accidentFileNo ? row.accidentFileNo.toUpperCase() : ""}
         </span>
       ),
     },

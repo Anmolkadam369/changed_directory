@@ -99,12 +99,18 @@ const CaseFirstCard = ({ data, getBackPage }) => {
             setRate(getVendorData[0].rate)
     }, [getVendorData])
 
+    const [vendorCurrentLatitude, setVendorCurrentLatitude] = useState('')
+    const [vendorCurrentLongitude, setVendorCurrentLongitude] = useState('')
+
+
     useEffect(() => {
         if (accidentDataById.length && getVendorData.length) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const currentLat = position.coords.latitude;
                     const currentLon = position.coords.longitude;
+                    setVendorCurrentLatitude(currentLat)
+                    setVendorCurrentLongitude(currentLon)
                     const accidentLocation = {
                         lat: accidentDataById[0].accidentLatitude,
                         lon: accidentDataById[0].accidentLongitude
@@ -330,8 +336,17 @@ const CaseFirstCard = ({ data, getBackPage }) => {
         }
     };
 
-    const goToMap = () => {
-        navigate('/SelectLocationOnMap', { state: { center: [28.701, 77.1025], fromPage: 'caseFirstCard' } })
+    const goToMap = (item) => {
+        console.log("item", item)
+        navigate('/map-vendor-distance', {
+            state: {
+                accidentLatitude: item.accidentLatitude,
+                accidentLongitude: item.accidentLongitude,
+                vendorLatitude: vendorCurrentLatitude,
+                vendorLongitude: vendorCurrentLongitude,
+                fromPage: "caseFirstCard"
+            }
+        })
     }
 
 
@@ -339,9 +354,20 @@ const CaseFirstCard = ({ data, getBackPage }) => {
     return (
         <div>
             {FirstPage && accidentLocationDistance && accidentDataById.length !== 0 && getVendorData.length != 0 && (
-                <div className='parent-container'>
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                    zIndex: 1000,
+                    display: "flex",
+                    alignItems: "flex-end", // positions the container at the bottom
+                    justifyContent: "center",
+                    animation: "slideUp 0.5s ease-out",
+                }}>
                     <div className="image-container">
-                        {/* Background Image */}
                         <div className="background-image"></div>
 
                         {/* Text Overlay with green background */}
@@ -382,7 +408,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                                     cursor: "pointer",
                                     maxWidth: "400px",
                                     minWidth: "150px"
-                                }} onClick={goToMap}>
+                                }} onClick={() => goToMap(data[0])}>
                                     Go to map
                                     <KeyboardDoubleArrowRightIcon style={{
                                         position: "absolute",
@@ -441,8 +467,20 @@ const CaseFirstCard = ({ data, getBackPage }) => {
             {isRejected && (
                 <div>
                     {!completeSuccessfully && (
-                        <div className='parent-container'>
-                            <div className="image-container" style={{ background: "rgb(209 209 209 / 29%)" }}>
+                        <div style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                            zIndex: 1000,
+                            display: "flex",
+                            alignItems: "flex-end", // positions the container at the bottom
+                            justifyContent: "center",
+                            animation: "slideUp 0.5s ease-out",
+                        }}>
+                            <div className="image-container" style={{ background: "rgb(245 245 245 / 78%)" }}>
                                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                     <h1 style={{ textAlign: "center", fontWeight: "bold", fontSize: "15px", border: "4px solid black", borderImage: 'linear-gradient(to bottom, white 10%, black 90%) 1', borderRadius: "20px", margin: "20px 50px 0px 30px", padding: "5px", flex: 1 }}>Reason For Decline</h1>
                                     <div onClick={closeRejected}>
@@ -494,7 +532,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                                     <p type="submit"
                                         style={{
                                             fontSize: '11px',
-                                            marginTop: "5px",
+                                            margin: "5px",
                                             background: "#8f4325",
                                             padding: "10px",
                                             border: '1px solid blue',
@@ -531,7 +569,19 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                 </div>
             )}
             {isAccepted && (
-                <div className='parent-container'>
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                    zIndex: 1000,
+                    display: "flex",
+                    alignItems: "flex-end", // positions the container at the bottom
+                    justifyContent: "center",
+                    animation: "slideUp 0.5s ease-out",
+                }}>
                     <div className="image-container" style={{ background: "radial-gradient(yellow, transparent)" }}>
                         <div style={{ marginTop: "40%" }}>
                         </div>
@@ -542,9 +592,22 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                     </div>
                 </div>
             )}
-            {isBudget  && (
-                <div className='parent-container'>
-                    <div className="image-container" style={{ background: "radial-gradient(#6e6a75a8, transparent)" }}>
+            {isBudget && (
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                    zIndex: 1000,
+                    display: "flex",
+                    alignItems: "flex-end", // positions the container at the bottom
+                    justifyContent: "center",
+                    animation: "slideUp 0.5s ease-out",
+
+                }}>
+                    <div className="image-container" style={{ background: "yellow" }}>
                         <img
                             src={crossUser}
                             onClick={closeViewBudget}
@@ -556,7 +619,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                                 cursor: "pointer",
                                 zIndex: 1001,
                                 filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
-                                marginTop: "15px"
+                                marginTop: "15px",
                             }}
                         />
                         <p style={{ fontSize: "12px", fontWeight: "bold", margin: "30px 60px 0px 10px" }}>Service Charge</p>

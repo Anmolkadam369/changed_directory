@@ -1384,7 +1384,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
           {pageFrom == "VendorSignUp" &&
           (
             <div>
-            {userId === "abhi98324" && (
+            {userId === "EMPID-94cda3d2-a317-49f5-8faf-f59cf18906e2" && (
             <div>
               <div style={{ fontSize: "12px" }}> Pre Approval:</div>
               {formData.first_approval === "" && (
@@ -1464,7 +1464,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
             )
           )}
 
-          {userId === "yat167034" && (
+          {userId === "EMPID-f2251370-99ac-40ee-a05d-dcc37c3534e2" && (
             <div>
               <div style={{ fontSize: "12px" }}> Admin Approval:</div>
               {formData.second_approval === "" && (

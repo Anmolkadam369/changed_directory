@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { useMap } from 'react-leaflet/hooks';
@@ -38,29 +38,48 @@ function LocationMarker({ onLocationSelect }) {
 
 function SearchControl() {
     const map = useMap();
+    const searchControlRef = useRef(null); // Use a ref to track the search control instance
 
     useEffect(() => {
-        const provider = new OpenStreetMapProvider();
+        if (!searchControlRef.current) {
+            const provider = new OpenStreetMapProvider();
 
-        const searchControl = new GeoSearchControl({
-            provider,
-            style: 'bar', // You can set 'bar' or 'button' style or customize it further.
-            showMarker: true, // Set to true to show a marker when a location is selected from the search box
-            retainZoomLevel: true, // Retain zoom level after selecting a location
-            animateZoom: true, // Whether to animate zoom on result selection
-            autoClose: true, // Automatically close the search box when a result is selected
-            keepResult: true, // Keep the result highlighted in the search box after selection
-            searchLabel: 'Search for a place', // Placeholder text in the search box
-            position: 'topright', // Position of the search box (can be topleft, topright, bottomleft, bottomright)
-        });
+            const searchControl = new GeoSearchControl({
+                provider,
+                style: 'bar', // Bar style for the search box
+                showMarker: true, // Show marker at the searched location
+                retainZoomLevel: true, // Keep the same zoom level
+                animateZoom: true, // Smooth zoom animation
+                autoClose: true, // Close the results after selecting a location
+                keepResult: true, // Keep the search result visible
+                searchLabel: 'Search for a place...', // Placeholder for the search bar
+                position: 'topright', // Position the search bar in the top-right corner
+                maxSuggestions: 5, // Maximum number of suggestions to display
+                autoComplete: true, // Enable autocomplete for the search input
+                autoCompleteDelay: 100, // Delay (ms) for autocomplete suggestions
+                marker: {
+                    // Customize marker appearance
+                    icon: markerIcon, // Custom icon
+                    draggable: true, // Allow the marker to be draggable
+                },
+            });
+            
 
-        map.addControl(searchControl);
+            searchControlRef.current = searchControl;
+            map.addControl(searchControl);
+        }
 
-        return () => map.removeControl(searchControl);
+        return () => {
+            if (searchControlRef.current) {
+                map.removeControl(searchControlRef.current);
+                searchControlRef.current = null;
+            }
+        };
     }, [map]);
 
     return null;
 }
+
 
 export default function SelectLocationMap({ onLocationChange }) {
     const { state } = useLocation();
@@ -117,6 +136,12 @@ export default function SelectLocationMap({ onLocationChange }) {
                 navigate('/Admin', {state :{ center }}); // Use navigate(-1) to go back
             }, 2000);
         }
+
+        if(fromPage == "allVehicles"){
+            setTimeout(()=>{
+                navigate("/register-new-accidentvehicle", {state:{center}})
+            })
+        }
         
         if(fromPage == "firstPage"){
     
@@ -124,6 +149,9 @@ export default function SelectLocationMap({ onLocationChange }) {
                     navigate('/user-landing-page', {state :{ center }}); // Use navigate(-1) to go back
                 }, 2000);
             }
+        else if(fromPage == "Crane-dashboard"){
+            navigate("/Crane-dashboard", { state: { indexFor: 2 , center:center} });
+        }
         else{
             navigate('/VehicleDetails', {state :{ center }}); // Use navigate(-1) to go back
         }
@@ -132,7 +160,7 @@ export default function SelectLocationMap({ onLocationChange }) {
 
     return (
         <div style={{ height: '800px' }}>
-            <MapContainer center={center} zoom={13} style={{ width: '100%', height: '100%' }}>
+            <MapContainer center={center} zoom={13} style={{ width: '100%', height: '100vh' }}>
                 <TileLayer
                     url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                     attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'

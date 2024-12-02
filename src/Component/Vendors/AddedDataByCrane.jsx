@@ -24,6 +24,7 @@ import cash from '../../Assets/cash.png'
 import list from '../../Assets/list.png'
 import imageshowing from '../../Assets/imageshowing.png'
 import exploration from '../../Assets/exploration.png'
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 
 
 
@@ -461,6 +462,27 @@ function AddedDataByCrane() {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+
+    const workDone = async()=>{
+        try {
+            let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: token,
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (response.data.status) {
+                setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                console.log("updated successfully")
+            }
+            else console.log("there is some issue")
+
+        }
+        catch (error) {
+            console.log("the error occured", error.message)
+        }
+}
 
 
     return (
@@ -1062,6 +1084,31 @@ function AddedDataByCrane() {
                                     readOnly={!!existingData?.balancePayment}
                                 />
                             </label>
+                            <p style={{
+                                        fontSize: '11px',
+                                        marginTop: "2px",
+                                        background: "lightgreen",
+                                        padding: "10px",
+                                        border: '1px solid blue',
+                                        textAlign: 'center',
+                                        borderRadius: '30px',
+                                        fontWeight: "bold",
+                                        color: "white",
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: "center",
+                                        position: "relative",
+                                        cursor: "pointer",
+                                        margin: '5px 5px 5px 5px',
+                                        maxWidth: "400px",
+                                        minWidth: "140px",
+                                    }} onClick={workDone} >
+                                        <KeyboardDoubleArrowLeftIcon style={{
+                                            position: "absolute",
+                                            right: '10px' 
+                                        }} />
+                                        Work Done
+                                    </p>
                         </div>
 
                         {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (

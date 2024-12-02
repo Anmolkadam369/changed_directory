@@ -68,7 +68,7 @@ function InitialRegistration() {
 
     async function getVehicleData() {
         try {
-            const getData = await axios.get(`${backendUrl}/api/VehicleDetails/${regNo}`);
+            const getData = await axios.get(`${backendUrl}/api/VehicleDetails/${regNo}/crane`);
             if (getData.data.message === 'Vehicle found') {
                 setVehicleInfo([getData.data]);
                 setComingVehicle(getData.data);
@@ -289,13 +289,13 @@ function InitialRegistration() {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addVehicleInfoByAdmin/${userId}`,
+                url: `${backendUrl}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
                     'Authorization': token
                 }
             });
-            setAlertInfo({ show: true, message: "Data Successfully Added", severity: 'success' });
+            setAlertInfo({ show: true, message: "Data Successfully Inserted.", severity: 'success' });
         } catch (error) {
             setIsLoading(false);
             const errorMessage = error.response?.data?.message || 'An error occurred';

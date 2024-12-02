@@ -68,6 +68,7 @@ import EmployeeFormEdit from './Component/EmployeeForm/EmployeeFormEdit';
 
 import Visitors from './Component/Visitors/Visitors';
 import Payment from './Component/PaymentPage/Payment';
+import VendorPayment from './Component/PaymentPage/VendorPayment';
 
 import Chart from './Component/Charts/Chart'
 import Featured from './Component/Charts/Featured';
@@ -116,6 +117,13 @@ import SelectLocationOnMap from './Component/User/SelectLocationOnMap';
 import CraneUserLanding from './Component/Vendors/Crane/CraneUserLanding';
 
 import MapForVendorDistance from './Component/User/MapForVendorDistance';
+import AllVehicles from './Component/User/AllVehicles/AllVehicles';
+import AllAccidentVehiclesUser from './Component/User/AllAccidentVehiclesUser';
+import HistoryPageUser from './Component/User/History/HistoryPageUser';
+import UserProfileFirst from './Component/User/UserProfile/UserProfileFIrst';
+import UserProfileDetails from './Component/User/UserProfile/UserProfileDetails';
+import CraneUserDashboard from './Component/Crane-user/CraneUserDashboard';
+import CraneOrders from './Component/Crane-user/CraneOrders/CraneOrders';
 
 function App() {
   return (
@@ -137,7 +145,15 @@ function App() {
           <Route path='/crane-user-landing-page' element={<ProtectedRoute element={<CraneUserLanding />} />} />
           <Route path='/map-vendor-distance' element={<ProtectedRoute element ={<MapForVendorDistance/>}/>}/>
 
+          <Route path='/all-vehicles-registered' element={<ProtectedRoute element ={<AllVehicles/>}/>}/>
+          <Route path='/all-accident-vehicles' element={<ProtectedRoute element ={<AllAccidentVehiclesUser/>}/>}/>
+          <Route path='/all-accident-vehicles-history' element={<ProtectedRoute element ={<HistoryPageUser/>}/>}/>
+            <Route path='/user-profile' element={<ProtectedRoute element ={<UserProfileFirst/>}/>}/>
+          <Route path='/user-profile-details' element={<ProtectedRoute element={<UserProfileDetails/>}/>}/>
         
+        <Route path='/crane-user-dashboard' element={<ProtectedRoute element = {<CraneUserDashboard/>}/>}/>
+        <Route path='/crane-user-all-cases' element={<ProtectedRoute element = {<CraneOrders/>}/>}/>
+
           <Route path='/UserSideBar' element={<UserSideBar/>}/>
           <Route path='/SelectLocationOnMap' element={<SelectLocationOnMap/>}/>
 
@@ -152,7 +168,8 @@ function App() {
           <Route path='/Sidebar' element={<Sidebar/>}/>
 
           <Route exact path='/LoginPage' element={<LoginPage />} />
-          {/* <Route path='/Register' element={<Registration />} /> */}
+          <Route path='/register-new-accidentvehicle' element={<Registration />} />
+
           <Route path= "/KanduTable" element={<ProtectedRoute element={<KanduTable/>}/>}/>
           
           {/* <Route paath='/Location' element={<ProtectedRoute element={<Location />} />} /> */}
@@ -164,7 +181,7 @@ function App() {
           {/* <Route path='/AdvocateHistoryComponent' element={<ProtectedRoute element={<AdvocateHistoryComponent />} />} /> */}
           {/* <Route path='/AdminInfoPage' element={<ProtectedRoute element={<AdminInfoPage />} />} /> */}
           {/* <Route path='/Location2' element={<ProtectedRoute element={<Location2 />} />} /> */}
-          {/* <Route path='/VendorMaster' element={<ProtectedRoute element={<VendorMasterForm />} />} /> */}
+          <Route path='/vendor-form' element={<ProtectedRoute element={<VendorMasterForm />} />} />
           {/* <Route path='/VendorApporoved' element={<ProtectedRoute element={<VendorApporoved />} />} /> */}
           {/* <Route path='/CustomerMaster' element={<ProtectedRoute element={<CustomerMasterForm />} />} /> */}
           {/* <Route path='/CustomerApproved' element={<ProtectedRoute element={<CustomerApproved />} />} /> */}
@@ -217,6 +234,8 @@ function App() {
           {/* <Route path='/Visitors' element={<ProtectedRoute element={<Visitors />} />} /> */}
 
           <Route path='/Payment/:token' element={<Payment />} />
+          <Route path='/vendor-comission/:token' element={<VendorPayment />} />
+
 
           {/* <Route path='/Chart' element={<ProtectedRoute element={<Chart />} />} /> */}
           {/* <Route path='/Featured' element={<ProtectedRoute element={<Featured />} />} /> */}

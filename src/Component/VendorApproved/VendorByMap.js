@@ -214,9 +214,9 @@ const VendorByMap = ({ onUpdate }) => {
 
 
                 <div>
-                    <div style={{ border: "1px solid", borderRadius: "20px", marginLeft: "10px", padding: "15px" }} className='form-row'>
+                    <div style={{ marginLeft: "10px", padding: "15px" }} className='form-row'>
 
-                        <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px" }}>
+                        <label className="form-field" style={{ marginLeft: "5px", marginBottom: "0px", flex: "1 1 15%" }}>
                             <p style={{ fontSize: "13px", fontWeight: "bold" }}>Vendor Id:</p>
                             <input
                                 type="text"
@@ -294,36 +294,48 @@ const VendorByMap = ({ onUpdate }) => {
                         </div>
 
                     </div>
-                  
+
                     <div style={{ display: "flex", alignItems: 'center', margin: "30px 0px 10ox 30px" }}>
                         <h6 style={{ fontSize: "16px", fontWeight: "bold", textDecoration: "underline" }}>Filtered Vendors  </h6>
                         <span style={{ marginBottom: "10px", fontSize: "10px", background: "green", color: "white", borderRadius: "50px", width: "40px", height: "15px", display: 'inline-block', lineHeight: "15px", textAlign: "center", marginLeft: "10px", fontWeight: "bold" }}>{foundVendors.length}</span>
-                        {/* <span style={{
-                            fontSize: "12px",
-                            color: "white",
-                            backgroundColor: "green",
-                            borderRadius: "50%",
-                            width: "20px",
-                            height: "20px",
-                            display: "inline-block",
-                            lineHeight: "20px",
-                            textAlign: "center",
-                            marginLeft: "10px",
-                            fontWeight: "bold"
-                        }}>
-                            {foundVendors.length}
-                        </span> */}
                     </div>
-                    <div style={{ overflowX: 'hidden', height: "150px", marginBottom: "100px", display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                    <div
+                        style={{
+                            overflowX: 'hidden',
+                            height: "110px",
+                            marginBottom: "100px",
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                            gap: '20px',
+                            padding: '10px',
+                        }}
+                    >
                         {foundVendors.map((vendor, index) => (
-                            <div key={index} style={{ border: "1px solid purple", margin: "10px", borderRadius: "20px", padding: "15px", flex: '1 1 calc(50% - 20px)', boxSizing: 'border-box', minWidth: "300px", maxWidth: "300px", }}>
-                                <strong style={{ color: "rgb(0 155 137)", fontSize: "12px", marginRight: "10px" }}>Vendor Name: {vendor.vendorName}</strong><br />
-                                <strong style={{ color: "rgb(38 4 247)", fontSize: "12px", marginRight: "10px" }}>Type: {vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1).toLowerCase()}</strong><br />
-                                <strong style={{ color: "#1976d2", fontStyle: "italic", fontSize: "12px", marginRight: "10px" }}>Address: {vendor.address}</strong><br />
+                            <div
+                                key={index}
+                                style={{
+                                    border: "1px solid black",
+                                    background: "linear-gradient(1000deg, #80000036, transparent)",
+                                    borderRadius: "5px",
+                                    padding: "15px",
+                                    boxSizing: 'border-box',
+                                }}
+                            >
+                                <strong style={{ color: "rgb(0 155 137)", fontSize: "12px", marginRight: "10px" }}>
+                                    Vendor Name: {vendor.vendorName}
+                                </strong>
+                                <br />
+                                <strong style={{ color: "rgb(38 4 247)", fontSize: "12px", marginRight: "10px" }}>
+                                    Type: {vendor.vendorType.charAt(0).toUpperCase() + vendor.vendorType.slice(1).toLowerCase()}
+                                </strong>
+                                <br />
+                                <strong style={{ color: "#1976d2", fontStyle: "italic", fontSize: "12px", marginRight: "10px" }}>
+                                    Address: {vendor.address}
+                                </strong>
+                                <br />
                             </div>
                         ))}
                     </div>
-
 
                     <div className="map-container" style={{ border: '4px solid lightgreen', height: '400px', width: '100%', borderRadius: '10px', margin: '10px' }}>
                         <MapContainer center={[28.7041, 77.1025]} zoom={4} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>

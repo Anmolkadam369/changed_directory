@@ -413,7 +413,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                             readOnly={IsReadOnly}
                         />
                     </label>
-                    <label className="form-field">
+                    <label className="form-field">c
                         latitude:
                         <input
                             type="text"

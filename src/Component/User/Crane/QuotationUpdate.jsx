@@ -1,13 +1,15 @@
 
 import React, { useEffect, useState } from 'react';
 import '../FirstPage.css'
-import axios from 'axios';
+import axios, { isCancel } from 'axios';
 import backendUrl from '../../../environment';
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { FaClipboardCheck, FaTruck, FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import { ClipLoader } from 'react-spinners';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 import casefiled from '../../../Assets/casefiled.png'
 import telephonecall from '../../../Assets/telephonecall.png'
@@ -16,18 +18,42 @@ import crossUser from '../../../Assets/crossUser.png'
 
 
 import Registration from '../../Registration/Registration';
+import NoDataFound from '../Cards/NoDataFound';
+
+import SuccessIcon from '../../CaseFirstCard/SuccessIcon';
+import filterUser from '../../../Assets/filterUser.png'
+import Modal from '../../Location1/Modal.jsx';
+
+
 
 const QuotationUpdate = ({ number }) => {
     const [currentStage, setCurrentStage] = useState([]); // Example stage
     console.log("currentStage123", currentStage)
     const [currentStage1, setCurrentStage1] = useState(2); // Example stage
     const [isImageContainerVisible, setIsImageContainerVisible] = useState(false);
+    const [isCancelContainerVisible, setIsCancelContainerVisible] = useState(false);
+
+    const [reasonsForDrop, setReasonsForDrop] = useState(false);
+
+
+    const [alreadyCancelled, setAlreadyCancelled] = useState(false);
+    const [cancelled, setCancelled] = useState(false);
+
+
+    console.log("reasonForDrop", reasonsForDrop)
+
+
     const [caseDetails, setCaseDetails] = useState(false);
     const [currentItem, setCurrentItem] = useState({});
     console.log("currentItme", currentItem)
 
 
     const [data, setData] = useState([]);
+    const [dummyData, setDummyData] = useState([]);
+    const [filter, setFilter] = useState('')
+    const [openFilterModal, setOpenFilterModal] = useState(false)
+
+
     console.log("DATA HERE", data)
     const [currentItems, setCurrentItems] = useState(data);
     const token = localStorage.getItem("token");
@@ -50,6 +76,148 @@ const QuotationUpdate = ({ number }) => {
             setIsImageContainerVisible(true)
         }
     }, [number, data])
+
+    const [selectedReasons, setSelectedReasons] = useState([]);
+    const [otherReason, setOtherReason] = useState("");
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const getFilteredData = (filter) => {
+        console.log("data is here");
+        const filteredData = [];
+
+        const now = new Date();  // Current date and time
+        const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
+        const yesterday = new Date(now.getTime() - oneDay); // Yesterday's date and time
+        const weekBefore = new Date(now.getTime() - (oneDay * 7));
+        const monthBefore = new Date(now.getTime() - (oneDay * 30));
+
+
+
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const todayDate = formatDate(now);
+        const yesterdayDate = formatDate(yesterday);
+        const weekBeforeDate = formatDate(weekBefore)
+        const monthBeforeDate = formatDate(monthBefore)
+
+        console.log("todayDate", todayDate)
+        console.log("yesterdayDate", yesterdayDate)
+
+
+        for (let i = 0; i < dummyData.length; i++) {
+            let getTime = dummyData[i].filedCaseFullyTime.split('|');
+            let assignedDate = getTime[0];
+            let assignedTime = getTime[1];
+            let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
+
+            if (filter === 'daily') {
+                console.log("here i am daily")
+                if (assignedDate === todayDate || assignedDate === yesterdayDate) {
+                    const timeDifference = now - assignedDateTime;
+                    if (timeDifference <= oneDay) {
+                        console.log("Match found within last 24 hours:", data[i]);
+                        filteredData.push(dummyData[i]);
+                    }
+                }
+            }
+            else if (filter === 'weekly') {
+                console.log("here i am weekly")
+                if (assignedDateTime >= weekBefore && assignedDateTime <= now) {
+                    console.log("Match found within last 7 days:", data[i]);
+                    filteredData.push(dummyData[i]);
+                }
+            }
+            else if (filter === 'monthly') {
+                if (assignedDateTime >= monthBefore && assignedDateTime <= now) {
+                    console.log("Match found within last 30 days:", data[i]);
+                    filteredData.push(dummyData[i]);
+                }
+            }
+
+        }
+        setData(filteredData)
+    };
+
+    const settingFilter = (filter) => {
+        console.log("filter", filter)
+        setFilter(filter)
+        getFilteredData(filter)
+        setOpenFilterModal(false)
+    }
+
+
+    const reasons = [
+        "Too much time taking",
+        "Got Other Services",
+        "Not Needed Now", "Changed my mind"
+    ];
+
+    const handleSelectReason = (reason) => {
+        if (selectedReasons.includes(reason)) {
+            // Remove from selected if already in array
+            setSelectedReasons(selectedReasons.filter((item) => item !== reason));
+        } else {
+            // Add to selected array
+            setSelectedReasons([...selectedReasons, reason]);
+        }
+    };
+
+
+    const [reasonsSecForDrop, setReasonsSecForDrop] = useState(false);
+    const [isCancelSecondaryContainerVisible, setIsCancelSecondaryContainerVisible] = useState(false);
+    const [selectedSecReasons, setSelectedSecReasons] = useState([]);
+    const [otherSecReason, setOtherSecReason] = useState("");
+
+    const secReasons = [
+        "Too much time taking",
+        "Got Other Services",
+        "Not Needed Now", "Changed my mind", 'charging too much'
+    ];
+
+    const handleSelectSecReason = (reason) => {
+        if (selectedSecReasons.includes(reason)) {
+            // Remove from selected if already in array
+            setSelectedSecReasons(selectedSecReasons.filter((item) => item !== reason));
+        } else {
+            // Add to selected array
+            setSelectedSecReasons([...selectedSecReasons, reason]);
+        }
+    };
+
+    const cancelingSecOrder = async (currentItem) => {
+        try {
+            const response = await axios({
+                method: "PUT",
+                url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}/${currentItem.VendorCode}`,
+                headers: {
+                    'Authorization': token
+                },
+                data: {
+                    cancleOrderReason: [...selectedSecReasons, otherSecReason]
+                }
+            });
+
+            if (response.data.status === true) {
+                setIsCancelSecondaryContainerVisible(false);
+                setReasonsSecForDrop(false);
+                setIsImageContainerVisible(false)
+                setCurrentItem({})
+                getData()
+            } else {
+                setAlreadyCancelled(true);
+            }
+        } catch (error) {
+            console.error("Error canceling order:", error);
+        }
+    };
 
     const navigate = useNavigate()
 
@@ -79,18 +247,20 @@ const QuotationUpdate = ({ number }) => {
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info.selectedOptions === 'crane' && info.filedCaseFully == true && !info.customerAcceptedVendor
+                 info.filedCaseFully && !info.customerAcceptedVendor
             );
 
-           let filteredImportant = filteredData.filter((info)=>
+            let filteredImportant = filteredData.filter((info) =>
                 info.connectedVendorFully == true
             )
 
-            let filteredLessImportant = filteredData.filter((info)=>
+            let filteredLessImportant = filteredData.filter((info) =>
                 info.connectedVendorFully == false
             )
             filteredData = [...filteredImportant, ...filteredLessImportant]
             setData(filteredData)
+            setDummyData(filteredData)
+
             console.log("seTDATIOATN", filteredData);
 
             setCurrentItems(response.data.data);
@@ -148,20 +318,31 @@ const QuotationUpdate = ({ number }) => {
         }
     }
 
-    // const getPaymentLinkPage = ()=>{
-    //     const vehicleNo = currentItem.vehicleNo;
-    //     const AccidentVehicleCode = currentItem.AccidentVehicleCode;
-    //     const vendorCode = currentItem.crane;
-    //     const customerCode = userId;
-    //     const vendorType = 'crane';
-    //     const newWindow  = window.open(comingLink, '_blank')
+    const cancelingOrder = async (currentItem) => {
+        try {
+            const response = await axios({
+                method: "PUT",
+                url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}`,
+                headers: {
+                    'Authorization': token
+                },
+                data: {
+                    cancleOrderReason: [...selectedReasons, otherReason]
+                }
+            });
 
-    //     console.log(vehicleNo, AccidentVehicleCode,vendorCode,customerCode, vendorType)
-
-    //     newWindow.onload = ()=>{
-    //         newWindow.postmessage({vehicleNo, AccidentVehicleCode,vendorCode,customerCode, vendorType}, "*")
-    //     }
-    // }
+            if (response.data.status === true) {
+                setIsCancelContainerVisible(false);
+                setReasonsForDrop(false);
+                setCancelled(true)
+                getData()
+            } else {
+                setAlreadyCancelled(true);
+            }
+        } catch (error) {
+            console.error("Error canceling order:", error);
+        }
+    };
 
     const getPaymentLinkPage = () => {
         navigate(`${comingLink}`, {
@@ -170,7 +351,7 @@ const QuotationUpdate = ({ number }) => {
                 accidentVehicleCode: currentItem.AccidentVehicleCode,
                 vendorCode: currentItem.crane,
                 customerCode: userId,
-                vendorType :'crane',
+                vendorType: 'crane',
             }
         })
     }
@@ -200,6 +381,20 @@ const QuotationUpdate = ({ number }) => {
     const assignedCaseViewVendor = (item) => {
         setCurrentItem(item)
         setIsImageContainerVisible(true)
+        getVendorRating(item.crane)
+        getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude)
+    }
+    const cancleCaseProcedureFunc = (item) => {
+        setCurrentItem(item)
+        setIsCancelContainerVisible(true)
+        setReasonsForDrop(false)
+        getVendorRating(item.crane)
+        getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude)
+    }
+    const cancleCaseSecondaryProcedureFunc = (item) => {
+        setCurrentItem(item)
+        setIsCancelSecondaryContainerVisible(true)
+        setReasonsForDrop(false)
         getVendorRating(item.crane)
         getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude)
     }
@@ -246,24 +441,49 @@ const QuotationUpdate = ({ number }) => {
         }
     }
 
+    const [searchValue, setSearchValue] = useState('');
+    const handleSearch = (e) => {
+        console.log("serachvaue", e.target.value)
+        const value = e.target.value.toLowerCase();
+        setSearchValue(value);
+        const newRows = dummyData.filter((row) => {
+            const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
+            const searchLower = value; // Use the updated search value directly
+
+            const idValue = formattedId.includes(searchLower);
+            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchLower);
+            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(searchLower);
+
+            return vehicleNoValue || chassisNoValue;
+        });
+
+        setData(newRows);
+    };
 
 
 
     return (
-        <div>
-            <div className="container h-100" style={{
-                filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                pointerEvents: isImageContainerVisible ? "none" : "auto" // Disable clicking
-            }}>
-                <div className="d-flex justify-content-center h-100">
-                    <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                        <input className="search_input" type="text" placeholder="Search..." />
-                        {/* <a href="#" className="search_icon">
+        <div style={{marginBottom:"60px"}}>
+
+            <div style={{ display: 'flex', justifyContent: "space-between" }}>
+
+                <div className="container " style={{
+                    height: "100%", overflow: "visible", margin: "10px 10px 0px 20px",
+                    filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
+                    opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
+                    pointerEvents: isImageContainerVisible ? "none" : "auto" // Disable clicking
+                }}>
+                    <div className="d-flex justify-content-center h-100"  >
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
+                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
+                            {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                         </a> */}
-                        <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-
+                            <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
+                        </div>
+                        <div style={{ margin: "23px 20px 0px" }}>
+                            <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -274,11 +494,10 @@ const QuotationUpdate = ({ number }) => {
                         filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
                         opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
                         pointerEvents: isImageContainerVisible ? "none" : "auto",
-                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px"
+                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background:"#00e1ff36"
                     }}>
 
                         <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
-
                             {stages.map((stage, index) => (
 
                                 <div
@@ -345,13 +564,10 @@ const QuotationUpdate = ({ number }) => {
                                     )}
                                 </div>
                             ))}
-
-
                         </div>
 
-
                         {item.connectedVendorFully == true && (
-                            <div>
+                            <div >
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
 
@@ -362,6 +578,10 @@ const QuotationUpdate = ({ number }) => {
                                     </div>
 
                                     <div style={{ marginTop: "5px", marginRight: "10px", width: "35px", background: '#ccb300', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'black' }}>{average}</div>
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
+                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
+                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item.filedCaseFullyTime.split("|")[0]}</span>
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>File No : </p>
@@ -382,7 +602,7 @@ const QuotationUpdate = ({ number }) => {
                                     <p style={{
                                         fontSize: '11px',
                                         marginTop: "5px",
-                                        background: "green",
+                                        background: "#909090",
                                         padding: "10px",
                                         border: '1px solid blue',
                                         textAlign: 'center',
@@ -396,47 +616,22 @@ const QuotationUpdate = ({ number }) => {
                                         cursor: "pointer",
                                         margin: '5px 5px 5px 5px',
                                         maxWidth: "400px",
-                                        minWidth: "150px",
+                                        minWidth: "280px",
                                     }} onClick={(e) => assignedCaseViewVendor(item)} >
                                         <KeyboardDoubleArrowRightIcon style={{
                                             position: "absolute",
                                             left: '10px'
                                         }} />
-                                        View More
+                                        View Vendor's Deal
                                     </p>
-                                    <p style={{
-                                        fontSize: '11px',
-                                        marginTop: "5px",
-                                        background: "white",
-                                        padding: "10px",
-                                        border: '2px solid #000000',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "blue",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        maxWidth: "400px",
-                                        minWidth: "150px",
-                                        margin: '5px 5px 5px 5px',
-                                        height: "30px"
-                                    }}>
-                                        Cancel Process
-                                        <img src={crossUser} style={{
-                                            position: "absolute",
-                                            right: '10px', width: '20px', height: '20px'
-                                        }} />
-                                    </p>
+
 
                                 </div>
                             </div>
                         )}
 
                         {item.filedCaseFully && item.connectedVendorFully == false && (
-                            <div>
+                            <div style={{background:"white",marginTop:"30px", borderRadius:"20px 20px 0px 0px", boxShadow:"#808080 1px -4px 0px 0px"}}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
@@ -444,6 +639,10 @@ const QuotationUpdate = ({ number }) => {
                                     </div>
 
                                     {/* <div style={{ marginTop: "5px", marginRight: "10px", width: "35px", background: '#ccb300', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'black' }}>4.5</div> */}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
+                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
+                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item.filedCaseFullyTime.split("|")[0]}</span>
                                 </div>
 
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
@@ -500,7 +699,7 @@ const QuotationUpdate = ({ number }) => {
                                         minWidth: "150px",
                                         margin: '5px 5px 5px 5px',
                                         height: "30px"
-                                    }}>
+                                    }} onClick={() => { cancleCaseProcedureFunc(item) }}>
                                         Cancel Process
                                         <img src={crossUser} style={{
                                             position: "absolute",
@@ -513,10 +712,6 @@ const QuotationUpdate = ({ number }) => {
                     </div>
                 ))
             )}
-
-
-
-
 
             {isImageContainerVisible && (
 
@@ -538,6 +733,7 @@ const QuotationUpdate = ({ number }) => {
                         {/* Cross Icon */}
                         <img src={crossUser} onClick={(e) => setIsImageContainerVisible(false)}
                             style={{
+
                                 position: "absolute",
                                 top: "-10px", // Position slightly above the container
                                 left: "50%",
@@ -694,7 +890,7 @@ const QuotationUpdate = ({ number }) => {
                                     justifyContent: "center",
                                     position: "relative",
                                     cursor: "pointer"
-                                }}>
+                                }} onClick={(e) => cancleCaseSecondaryProcedureFunc(currentItem)}>
                                     Reject Deal
                                     <KeyboardDoubleArrowLeftIcon style={{
                                         position: 'absolute',
@@ -702,6 +898,430 @@ const QuotationUpdate = ({ number }) => {
                                     }} />
                                 </p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isCancelContainerVisible && (
+
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                    zIndex: 1000, // ensure it appears above other content
+                    display: "flex",
+                    alignItems: "flex-end", // positions the container at the bottom
+                    justifyContent: "center",
+                    animation: "slideUp 0.5s ease-out" // apply the animation
+                }}>
+
+                    <div style={{ position: "absolute", width: "90%", maxWidth: "600px", marginBottom: "430px" }}>
+                        {/* Cross Icon */}
+                        <img src={crossUser} onClick={(e) => {
+                            setIsCancelContainerVisible(false)
+                            setReasonsForDrop(false)
+                            setSelectedReasons([])
+                            setOtherReason('')
+                        }}
+                            style={{
+
+                                position: "absolute",
+                                top: "-20px", // Position slightly above the container
+                                left: "50%",
+                                width: '25px',
+                                height: '25px',
+                                cursor: "pointer",
+                                zIndex: 1001, // Ensure it’s above other elements
+                                filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"
+                            }}
+                        // Add a close function if needed
+                        />
+                    </div>
+
+
+                    <div className="image-container" style={{
+                        backgroundColor: "#ffffff",
+                        padding: "20px",
+                        borderRadius: "15px 15px 0px 0px",
+                        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                        maxWidth: "600px",
+                        width: "97%",
+                        marginBottom: "20px"
+                    }}>
+
+                        <div className="background-image"></div>
+
+                        <div className="text-overlay">
+                            <p style={{
+                                fontSize: '14px',
+                                padding: "5px",
+                                border: '3px solid red',
+                                borderImage: 'linear-gradient(to top, white 10% , lightblue 90%) 1',
+                                textAlign: 'center',
+                                borderRadius: '30px',
+                                fontWeight: "bold",
+                                color: 'red'
+                            }}>
+                                Drop Case Procedure!
+                            </p>
+                            {reasonsForDrop == false && (
+                                <div>
+                                    <p style={{ fontSize: "17px", marginTop: "20px", fontWeight: "bold", textAlign: "center", color: "black" }}>We are almost there to get you perfect crane service!!! </p>
+                                    <p style={{ fontSize: "17px", marginTop: "20px", fontWeight: "bold", textAlign: "center", color: "red" }}>Still want to opt-out for ❓ 🤔 </p>
+                                    <div className="text-overlay text-overlay2" style={{ height: "40%" }}>
+                                        <p style={{
+                                            fontSize: '11px',
+                                            marginTop: "5px",
+                                            background: "green",
+                                            padding: "10px",
+                                            border: '1px solid blue',
+                                            textAlign: 'center',
+                                            borderRadius: '30px',
+                                            fontWeight: "bold",
+                                            color: "white",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: "center",
+                                            position: "relative",
+                                            cursor: "pointer"
+                                        }} onClick={(e) => {
+                                            setReasonsForDrop(false)
+                                            setIsCancelContainerVisible(false)
+                                            setSelectedReasons([])
+                                            setOtherReason('')
+                                        }}>
+                                            Don't Drop
+                                            <KeyboardDoubleArrowLeftIcon style={{
+                                                position: 'absolute',
+                                                right: "10px"
+                                            }} />
+                                            <KeyboardDoubleArrowRightIcon style={{
+                                                position: 'absolute',
+                                                left: "10px"
+                                            }} />
+                                        </p>
+                                        <p style={{
+                                            fontSize: '11px',
+                                            marginTop: "5px",
+                                            background: "#8f4325",
+                                            padding: "10px",
+                                            border: '1px solid blue',
+                                            textAlign: 'center',
+                                            borderRadius: '30px',
+                                            fontWeight: "bold",
+                                            color: "white",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: "center",
+                                            position: "relative",
+                                            cursor: "pointer"
+                                        }} onClick={() => setReasonsForDrop(true)}>
+                                            Drop Case
+                                            <KeyboardDoubleArrowLeftIcon style={{
+                                                position: 'absolute',
+                                                right: "10px"
+                                            }} />
+                                            <KeyboardDoubleArrowRightIcon style={{
+                                                position: 'absolute',
+                                                left: "10px"
+                                            }} />
+                                        </p>
+                                    </div>
+                                </div>)}
+
+                            {reasonsForDrop == true && (
+                                <div>
+                                    <div>
+                                        <div style={{ background: "rgb(209 209 209 / 29%)" }}>
+
+                                            <div style={{ margin: "10px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                                                {reasons.map((reason) => (
+                                                    <button
+                                                        key={reason}
+                                                        onClick={() => handleSelectReason(reason)}
+                                                        style={{
+                                                            fontSize: '14px',
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            padding: "10px",
+                                                            borderRadius: "20px",
+                                                            backgroundColor: selectedReasons.includes(reason) ? "yellow" : "white",
+                                                            border: "1px solid black",
+                                                            cursor: "pointer",
+                                                            boxShadow: selectedReasons.includes(reason) ? "0 4px 8px rgba(0,0,0,1.2)" : "0 3px 6px rgba(0, 0, 0, 0.5)"
+                                                        }}
+                                                    >
+                                                        {reason}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+
+                                            <label className="form-field" style={{ color: '#3f3c00', marginTop: '20px', fontSize: "14px" }}>
+                                                <p style={{ textAlign: "left" }}> Other Reason  : </p>
+                                                <textarea
+                                                    style={{ margin: "10px 10px 5px 0px", width: "280px" }} className="form-control" name="otherReason" value={otherReason} onChange={(e) => setOtherReason(e.target.value)} />
+                                            </label>
+
+                                            {errorMessage && <div style={{ color: "red", margin: "10px 10px 20px 10px", marginBottom: "10px" }}>{errorMessage}</div>}
+
+
+                                            <div>
+                                                {isLoading && (
+                                                    <div style={{ marginTop: '10px', display: "flex", justifyContent: "center", alignItems: 'center' }}>
+                                                        <ClipLoader color="black" loading={isLoading} />
+                                                        <div style={{ marginTop: '10px', color: 'black' }}> Please Wait...</div>
+                                                    </div>
+                                                )}
+                                                {alreadyCancelled && (<div class="alert alert-danger" role="alert">
+                                                    You have already Cancelled Case !!!
+                                                </div>)}
+                                                <p type="submit"
+                                                    style={{
+                                                        fontSize: '11px',
+                                                        marginTop: "5px",
+                                                        background: "#8f4325",
+                                                        padding: "10px",
+                                                        border: '1px solid blue',
+                                                        textAlign: 'center',
+                                                        borderRadius: '30px',
+                                                        fontWeight: "bold",
+                                                        color: "white",
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: "center",
+                                                        position: "relative",
+                                                    }}
+                                                    disabled={isLoading}
+                                                    onClick={(e) => { cancelingOrder(currentItem) }}
+                                                >
+                                                    < NotInterestedIcon style={{
+                                                        position: 'absolute',
+                                                        left: "70px"
+                                                    }} />Confirm Drop Case
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isCancelSecondaryContainerVisible && (
+
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                    zIndex: 1000, // ensure it appears above other content
+                    display: "flex",
+                    alignItems: "flex-end", // positions the container at the bottom
+                    justifyContent: "center",
+                    animation: "slideUp 0.5s ease-out" // apply the animation
+                }}>
+
+                    <div style={{ position: "absolute", width: "90%", maxWidth: "600px", marginBottom: "430px" }}>
+                        {/* Cross Icon */}
+                        <img src={crossUser} onClick={(e) => {
+                            setIsCancelSecondaryContainerVisible(false)
+                            setReasonsSecForDrop(false)
+                            setSelectedReasons([])
+                            setOtherSecReason('')
+                        }}
+                            style={{
+
+                                position: "absolute",
+                                top: "-10px", // Position slightly above the container
+                                left: "50%",
+                                width: '25px',
+                                height: '25px',
+                                cursor: "pointer",
+                                zIndex: 1001, // Ensure it’s above other elements
+                                filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"
+                            }}
+                        // Add a close function if needed
+                        />
+                    </div>
+
+
+                    <div className="image-container" style={{
+                        backgroundColor: "#ffffff",
+                        padding: "20px",
+                        borderRadius: "15px 15px 0px 0px",
+                        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                        maxWidth: "600px",
+                        width: "97%",
+                        marginBottom: "20px"
+                    }}>
+
+                        <div className="background-image"></div>
+
+                        <div className="text-overlay">
+                            <p style={{
+                                fontSize: '14px',
+                                padding: "5px",
+                                border: '3px solid red',
+                                borderImage: 'linear-gradient(to top, white 10% , lightblue 90%) 1',
+                                textAlign: 'center',
+                                borderRadius: '30px',
+                                fontWeight: "bold",
+                                color: 'red'
+                            }}>
+                                Drop Case Procedure!
+                            </p>
+                            {reasonsSecForDrop == false && (
+                                <div>
+                                    <p style={{ fontSize: "17px", marginTop: "20px", fontWeight: "bold", textAlign: "center", color: "black" }}>We are almost there to get you perfect crane service!!! </p>
+                                    <p style={{ fontSize: "13px", marginTop: "20px", fontWeight: "bold", textAlign: "center", color: "red" }}>Still want to opt-out for services of {currentItem.vehicleNo}❓ 🤔 </p>
+                                    <div className="text-overlay text-overlay2" style={{ height: "40%" }}>
+                                        <p style={{
+                                            fontSize: '11px',
+                                            marginTop: "5px",
+                                            background: "green",
+                                            padding: "10px",
+                                            border: '1px solid blue',
+                                            textAlign: 'center',
+                                            borderRadius: '30px',
+                                            fontWeight: "bold",
+                                            color: "white",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: "center",
+                                            position: "relative",
+                                            cursor: "pointer"
+                                        }} onClick={(e) => {
+                                            setIsCancelSecondaryContainerVisible(false)
+                                            setReasonsSecForDrop(false)
+                                            setSelectedReasons([])
+                                            setOtherSecReason('')
+                                        }}>
+                                            Don't Drop
+                                            <KeyboardDoubleArrowLeftIcon style={{
+                                                position: 'absolute',
+                                                right: "10px"
+                                            }} />
+                                            <KeyboardDoubleArrowRightIcon style={{
+                                                position: 'absolute',
+                                                left: "10px"
+                                            }} />
+                                        </p>
+                                        <p style={{
+                                            fontSize: '11px',
+                                            marginTop: "5px",
+                                            background: "#8f4325",
+                                            padding: "10px",
+                                            border: '1px solid blue',
+                                            textAlign: 'center',
+                                            borderRadius: '30px',
+                                            fontWeight: "bold",
+                                            color: "white",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: "center",
+                                            position: "relative",
+                                            cursor: "pointer"
+                                        }} onClick={() => setReasonsSecForDrop(true)}>
+                                            Drop Case
+                                            <KeyboardDoubleArrowLeftIcon style={{
+                                                position: 'absolute',
+                                                right: "10px"
+                                            }} />
+                                            <KeyboardDoubleArrowRightIcon style={{
+                                                position: 'absolute',
+                                                left: "10px"
+                                            }} />
+                                        </p>
+                                    </div>
+                                </div>)}
+
+                            {reasonsSecForDrop == true && (
+                                <div>
+                                    <div>
+                                        <div style={{ background: "rgb(209 209 209 / 29%)" }}>
+
+                                            <div style={{ margin: "5px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                                                {secReasons.map((reason) => (
+                                                    <button
+                                                        key={reason}
+                                                        onClick={() => handleSelectSecReason(reason)}
+                                                        style={{
+                                                            fontSize: '12px',
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            padding: "5px",
+                                                            borderRadius: "20px",
+                                                            backgroundColor: selectedSecReasons.includes(reason) ? "yellow" : "white",
+                                                            border: "1px solid black",
+                                                            cursor: "pointer",
+                                                            boxShadow: selectedSecReasons.includes(reason) ? "0 4px 8px rgba(0,0,0,1.2)" : "0 3px 6px rgba(0, 0, 0, 0.5)"
+                                                        }}
+                                                    >
+                                                        {reason}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+
+                                            <label className="form-field" style={{ color: '#3f3c00', marginTop: '20px', fontSize: "14px" }}>
+                                                <p style={{ textAlign: "left" }}> Other Reason  : </p>
+                                                <textarea
+                                                    style={{ margin: "10px 10px 5px 0px", width: "280px" }} className="form-control" name="otherReason" value={otherSecReason} onChange={(e) => setOtherSecReason(e.target.value)} />
+                                            </label>
+
+                                            {errorMessage && <div style={{ color: "red", margin: "10px 10px 20px 10px", marginBottom: "10px" }}>{errorMessage}</div>}
+
+
+                                            <div>
+                                                {isLoading && (
+                                                    <div style={{ marginTop: '10px', display: "flex", justifyContent: "center", alignItems: 'center' }}>
+                                                        <ClipLoader color="black" loading={isLoading} />
+                                                        <div style={{ marginTop: '10px', color: 'black' }}> Please Wait...</div>
+                                                    </div>
+                                                )}
+                                                {alreadyCancelled && (<div class="alert alert-danger" role="alert">
+                                                    You have already Cancelled Case !!!
+                                                </div>)}
+                                                <p type="submit"
+                                                    style={{
+                                                        fontSize: '11px',
+                                                        marginTop: "5px",
+                                                        background: "#8f4325",
+                                                        padding: "10px",
+                                                        border: '1px solid blue',
+                                                        textAlign: 'center',
+                                                        borderRadius: '30px',
+                                                        fontWeight: "bold",
+                                                        color: "white",
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: "center",
+                                                        position: "relative",
+                                                    }}
+                                                    disabled={isLoading}
+                                                    onClick={(e) => { cancelingSecOrder(currentItem) }}
+                                                >
+                                                    < NotInterestedIcon style={{
+                                                        position: 'absolute',
+                                                        left: "70px"
+                                                    }} />Confirm Drop Case
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -760,9 +1380,74 @@ const QuotationUpdate = ({ number }) => {
                 </div>
             )}
 
+            {cancelled && (
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                    zIndex: 1000, // ensure it appears above other content
+                    display: "flex",
+                    alignItems: "flex-end", // positions the container at the bottom
+                    justifyContent: "center",
+                    animation: "slideUp 0.5s ease-out" // apply the animation
+                }}>
+                    <div style={{ position: "absolute", width: "90%", maxWidth: "600px", marginBottom: "430px" }}>
+                        {/* Cross Icon */}
+                        <img src={crossUser} onClick={(e) => setCancelled(false)}
+                            style={{
+
+                                position: "absolute",
+                                top: "-10px", // Position slightly above the container
+                                left: "50%",
+                                width: '25px',
+                                height: '25px',
+                                cursor: "pointer",
+                                zIndex: 1001, // Ensure it’s above other elements
+                                filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"
+                            }}
+                        // Add a close function if needed
+                        />
+                    </div>
+                    <div className="image-container" style={{
+                        backgroundColor: "#ffffff",
+                        padding: "20px",
+                        borderRadius: "15px 15px 0px 0px",
+                        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                        maxWidth: "600px",
+                        width: "97%"
+                    }}>
+
+                        <div style={{ marginTop: "30%" }}>
+                        </div>
+                        <SuccessIcon />
+                        <h1 style={{ textAlign: "center", fontWeight: "bold", fontSize: "17px", color: "green", margin: "0px 50px 20px 30px", padding: "5px", flex: 1 }}>Hope. we could help you in future !!! </h1>
 
 
-        </div>
+                    </div>
+                </div>
+            )
+            }
+
+            {
+                data.length == 0 && (
+                    <NoDataFound />
+                )
+            }
+
+            <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
+                {openFilterModal && (
+                    <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Year</p>
+                    </div>
+                )}
+            </Modal>
+        </div >
     )
 }
 

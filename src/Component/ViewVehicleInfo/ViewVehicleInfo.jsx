@@ -230,8 +230,8 @@ const ViewVehicleInfo = () => {
     },
     { name: "Accident File No", selector: (row) => row.accidentFileNo, sortable: true,width:'200px',
       cell: (row) => (
-        <span style={{color: 'black', border:"1px solid red", padding: '5px', borderRadius: '4px', margin:"5px"}}>
-            {row.accidentFileNo ? row.accidentFileNo.charAt(0).toUpperCase() + row.accidentFileNo.slice(1).toLowerCase() : ""}
+        <span style={{color: 'black', border:"1px solid red",width:"150px", padding: '5px', borderRadius: '4px', margin:"5px"}}>
+            {row.accidentFileNo ? row.accidentFileNo.toUpperCase() : ""}
         </span>
       ),
     },

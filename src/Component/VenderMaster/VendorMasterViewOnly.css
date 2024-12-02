@@ -58,30 +58,73 @@
     }
 }
 
+.TP-flexingshowing{
+    display: grid;
+    grid-template-columns: (repeat(auto-fill),minmax(200px, 1fr));
+    gap:20px;
+    padding: 20px;
+}
 
 .TP-image-container1{
-    box-shadow: 10px 4px 25px black ;
-    max-width: 170px;
-    height: 250px;
-    border-radius: 10px;
-    /* display: flex; */
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 20px 10px 5px red;
     text-align: center;
-    padding-top: 10px;
 }
 
-.TP-image{
-    width: 150px;
+.TP-image-container1 img{
+    width: 100%;
     height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
-.TP-flexingshowing{
-    display: flex;
-    gap:20px;
-}
 
-@media (max-width: 465px){
+@media (max-width: 768px){
     .TP-flexingshowing{
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.hovering:hover{
+    box-shadow:4px 4px 4px green;
+    transform: scale(1.05);
+}
+
+.navbar{
+    display:'flex';
+    justify-content: space-between;
+    padding:"30px";
+    gap:"50px";
+}
+
+.menu{
+    display: none;
+}
+
+@media (min-width : 768px){
+    .menu{
         display: block;
-        margin-top: 20px;
+    }
+}
+
+
+
+.some-spinner{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border:1px solid red;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin{
+    from{
+        transform : rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
     }
 }

@@ -19,6 +19,12 @@ const MapForVendorDistance = () => {
     let [vendorLongitude, setVendorLongitude] = useState(state?.vendorLongitude);
     let [vehicleNo, setVehicleNo] = useState(state?.vehicleNo);
 
+    console.log("accidentLatitude",accidentLatitude)
+    console.log("accidentLongitude",accidentLongitude)
+    console.log("vendorLatitude",vendorLatitude)
+    console.log("vendorLongitude",vendorLongitude)
+
+
     const [distance, setDistance] = useState(0.00)
     console.log("distance from map for vendor", accidentLatitude, accidentLongitude, vendorLatitude, vendorLongitude)
 
@@ -85,10 +91,14 @@ const MapForVendorDistance = () => {
         
 
         if(state?.fromPage == "statusTracking"){
+            console.log("frompage 88", state?.fromPage)
         navigate("/Crane-dashboard");
         }
-        if(state?.fromPage == "vendorMoving") {
+        else if(state?.fromPage == "vendorMoving") {
         navigate("/craneDashboard");
+        }
+        else if(state?.fromPage == 'caseFirstCard'){
+            navigate('/crane-user-dashboard')
         }
         else{
             navigate("/Crane-dashboard", { state: { indexFor: 1, vehicleNo: vehicleNo } });

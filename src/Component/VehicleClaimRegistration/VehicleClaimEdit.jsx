@@ -128,6 +128,8 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
         if (comingData) {
             setAccidentData(prevFormData => ({
                 ...prevFormData,
+                vehicleNo : comingData.vehicleNo,
+                systemDate:comingData.systemDate,
                 accidentFileNo: comingData.accidentFileNo || "",
                 dateTime: formatDateForInput(comingData.dateTime),
                 // systemGenerated: formatDateForInput(comingData.systemGener   ated),
@@ -349,6 +351,8 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
 
     const [accidentData, setAccidentData] = useState({
+        systemDate:"",
+        vehicleNo:"",
         dateTime: '',
         systemGenerated: '',
         railwayTime: '',
@@ -890,12 +894,12 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         />
                     </label>
                     <label className="form-field">
-                        Date & Time:
+                        Registered Date:
                         <input
                             className='inputField'
                             type="text"
-                            name="dateTime"
-                            value={accidentData.dateTime}
+                            name="systemDate"
+                            value={accidentData.systemDate}
                             onChange={handleChange}
                             placeholder='Date-Time'
                             readOnly
@@ -903,18 +907,18 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                         />
                     </label>
                     <label className="form-field">
-                        System Generated - Vehicle No.:
+                        {/* Vehicle No.:
                         <input
                             className='inputField'
                             type="text"
-                            name="systemGenerated"
-                            value="System Generated"
+                            name="vehicleNo"
+                            value={accidentData.vehicleNo}
                             onChange={handleChange}
                             readOnly
-                        />
+                        /> */}
                     </label>
                     <label className="form-field">
-                        Time (Railway):
+                        {/* Time (Railway):
                         <input
                             className='inputField'
                             type="text"
@@ -923,7 +927,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                             onChange={handleChange}
                             placeholder='Time'
                             readOnly={IsReadOnly}
-                        />
+                        /> */}
                     </label>
                 </div>
 
@@ -1383,6 +1387,18 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                         />
                     </label>
+                    <label className="form-field">
+                        Spot Surveyor Name (if not in list):
+                        <input
+                            type='text'
+                            className='inputField'
+                            name="surveyorName"
+                            value={accidentData.surveyorName}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                     <label className="form-field"></label>
                 </div>
                 <div className="form-row" style={{ gap: '0px' }}>
@@ -1442,6 +1458,18 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                         />
                     </label>
+                    <label className="form-field">
+                    Material Surveyor Name (if not in list):
+                        <input
+                            type='text'
+                            className='inputField'
+                            name="materialSurveyorName"
+                            value={accidentData.materialSurveyorName}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                     <label className="form-field"></label>
 
                 </div>
@@ -1503,6 +1531,18 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
                         />
                     </label>
+                    <label className="form-field">
+                    Final Surveyor Name (if not in list):
+                        <input
+                            type='text'
+                            className='inputField'
+                            name="finalSurveyorName"
+                            value={accidentData.finalSurveyorName}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label className="form-field"></label>
+                    <label className="form-field"></label>
                     <label className="form-field"></label>
                 </div>
                 <div className="form-row" style={{ gap: '0px' }}>

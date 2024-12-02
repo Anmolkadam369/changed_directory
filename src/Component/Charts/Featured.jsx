@@ -246,14 +246,14 @@ const Featured = () => {
             <div className="itemTitle">Weekly Earning's</div>
             <div className="itemResult positive">
               <KeyboardArrowUpOutlinedIcon fontSize="small" />
-              <div className="resultAmount">₹{completeWeeklyEarning.totalEarnings}</div>
+              <div className="resultAmount">₹{isNaN(completeWeeklyEarning.totalEarnings) ? 0:completeWeeklyEarning.totalEarnings}</div>
             </div>
           </div>
           <div className="item">
             <div className="itemTitle">Monthly Earning's</div>
             <div className="itemResult positive">
               <KeyboardArrowUpOutlinedIcon fontSize="small" />
-              <div className="resultAmount">₹{completeMonthlyEarning.totalEarnings}</div>
+              <div className="resultAmount">₹{isNaN(completeMonthlyEarning.totalEarnings)?0:completeMonthlyEarning.totalEarnings}</div>
             </div>
           </div>
         </div>
