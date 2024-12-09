@@ -109,7 +109,7 @@ const MapForVendorDistance = () => {
         <div>
             {distance && (
                 <div>
-                    <div className="map-container" style={{ height: '450px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
+                    <div className="map-container" style={{ height: '1200px', marginRight: "40px", width: '100%', borderRadius: '10px' }}>
                         <MapContainer center={[accidentLatitude, accidentLongitude]} zoom={10} whenCreated={setMap} style={{ height: "100%", width: "100%" }}>
                             <TileLayer
                                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

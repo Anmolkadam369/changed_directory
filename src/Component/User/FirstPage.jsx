@@ -230,9 +230,9 @@ const FirstPage = () => {
                     background: 'linear-gradient(rgb(181 235 178), rgb(255 255 255), rgb(255, 255, 255))'
                 }}>
                     <div>
-                        <div style={{height:"100vh"}}>
+                        <div style={{ height: "100vh" }}>
                             <div className="container" style={{
-                                paddingTop:"30px",
+                                paddingTop: "30px",
                                 maxWidth: "500px",
                                 height: "30px",
                                 marginBottom: "30px",
@@ -307,31 +307,42 @@ const FirstPage = () => {
                                 </button>
                             </div>
 
-
-                            <div style={{ margin: "10px", background:"white", boxShadow:"4px 4px 4px lightgreen" , borderRadius:"30px"}}>
-                                <div className='imageContainer' style={{ gap: "25px", padding: '20px', alignItems: 'center' }}>
-                                    <div>
-                                        <img src={nearbyhospital} style={{ height: "35px", width: "35px", textAlign: 'center' }} />
-                                        <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Hospital</p>
+                           
+                                <div style={{
+                                    margin: "10px",
+                                    background: "white",
+                                    boxShadow: "4px 4px 4px lightgreen",
+                                    borderRadius: "30px"
+                                }}>
+                                    <div className='imageContainer' style={{
+                                        display: 'flex',
+                                        gap: "25px",
+                                        padding: '20px',
+                                        alignItems: 'center'
+                                    }}>
+                                        <div>
+                                            <img src={nearbyhospital} style={{ height: "35px", width: "35px", textAlign: 'center' }} />
+                                            <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Hospital</p>
+                                        </div>
+                                        <div>
+                                            <img src={nearbytoll} style={{ height: "35px", width: "40px", textAlign: 'center' }} />
+                                            <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Toll</p>
+                                        </div>
+                                        <div>
+                                            <img src={nearbyRestaurant} style={{ height: "25px", width: "30px", textAlign: 'center' }} />
+                                            <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Restaurant</p>
+                                        </div>
+                                        <div>
+                                            <img src={nearbyPetrolPump} style={{ height: "30px", width: "35px", textAlign: 'center' }} />
+                                            <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Pump</p>
+                                        </div>
+                                        <div>
+                                            <img src={nearbyParking} style={{ height: "40px", width: "40px", textAlign: 'center', marginLeft: "5px", marginBottom: "8px" }} />
+                                            <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Parking</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <img src={nearbytoll} style={{ height: "35px", width: "40px", textAlign: 'center' }} />
-                                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Toll</p>
-                                    </div>                <div>
-                                        <img src={nearbyRestaurant} style={{ height: "25px", width: "30px", textAlign: 'center' }} />
-                                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Restaurant</p>
-                                    </div>
-                                    <div>
-                                        <img src={nearbyPetrolPump} style={{ height: "30px", width: "35px", textAlign: 'center' }} />
-                                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Pump</p>
-                                    </div>
-                                    <div>
-                                        <img src={nearbyParking} style={{ height: "40px", width: "40px", textAlign: 'center', marginLeft: "5px", marginBottom: "8px" }} />
-                                        <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Parking</p>
-                                    </div>
-
                                 </div>
-                            </div>
+
 
                             {isImageContainerVisible && (
                                 <div className="image-container">
@@ -434,102 +445,102 @@ const FirstPage = () => {
                             )}
                             {data.map((item, index) => (
                                 <div>
-                                    <p style={{fontWeight:"bold"}}>New Case</p>
-                                <div key={index} style={{
-                                    filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                                    opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                                    pointerEvents: isImageContainerVisible ? "none" : "auto",
-                                    border: "1px solid teal",
-                                    minWidth: "280px",
-                                    margin: '10px',
-                                    boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
-                                    borderRadius: "5px",
-                                    padding: "10px",
-                                    maxWidth: "410px"
-                                }}>
+                                    <p style={{ fontWeight: "bold" }}>New Case</p>
+                                    <div key={index} style={{
+                                        filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
+                                        opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
+                                        pointerEvents: isImageContainerVisible ? "none" : "auto",
+                                        border: "1px solid teal",
+                                        minWidth: "280px",
+                                        margin: '10px',
+                                        boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                        borderRadius: "5px",
+                                        padding: "10px",
+                                        maxWidth: "410px"
+                                    }}>
 
-                                    <div>
-                                        <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                            <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
+                                        <div>
+                                            <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
+                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
+                                                <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
+                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}> Time for process:</p>
+                                            <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>40 Minutes</span>
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
+                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Current Status:</p>
+                                            <span style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                marginLeft: "5px",
+                                                padding: "3px 10px",
+                                                fontSize: "12px",
+                                                borderRadius: "10px",
+                                                color: 'blue',
+                                                border: "1px solid green",
+                                                background: 'white'
+                                            }}>Processing...</span>
+                                        </div>
+
+                                        <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
+                                            <p style={{
+                                                fontSize: '11px',
+                                                marginTop: "5px",
+                                                background: "green",
+                                                padding: "10px",
+                                                border: '1px solid blue',
+                                                textAlign: 'center',
+                                                borderRadius: '30px',
+                                                fontWeight: "bold",
+                                                color: "white",
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: "center",
+                                                position: "relative",
+                                                cursor: "pointer",
+                                                margin: '5px 5px 5px 5px',
+                                                maxWidth: "400px",
+                                                minWidth: "150px",
+                                            }} onClick={() => { changeCaseDetails(item, index) }}>
+                                                <KeyboardDoubleArrowRightIcon style={{
+                                                    position: "absolute",
+                                                    left: '10px'
+                                                }} />
+                                                View More
+                                            </p>
+                                            <p style={{
+                                                fontSize: '11px',
+                                                marginTop: "5px",
+                                                background: "white",
+                                                padding: "10px",
+                                                border: '2px solid #000000',
+                                                textAlign: 'center',
+                                                borderRadius: '30px',
+                                                fontWeight: "bold",
+                                                color: "blue",
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: "center",
+                                                position: "relative",
+                                                cursor: "pointer",
+                                                maxWidth: "400px",
+                                                minWidth: "150px",
+                                                margin: '5px 5px 5px 5px',
+                                                height: "30px"
+                                            }} onClick={(e) => { cancleCaseProcedureFunc(item) }}>
+                                                Cancel Process
+                                                <img src={crossUser} style={{
+                                                    position: "absolute",
+                                                    right: '10px', width: '20px', height: '20px'
+                                                }} />
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}> Time for process:</p>
-                                        <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>40 Minutes</span>
-                                    </div>
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Current Status:</p>
-                                        <span style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            marginLeft: "5px",
-                                            padding: "3px 10px",
-                                            fontSize: "12px",
-                                            borderRadius: "10px",
-                                            color: 'blue',
-                                            border: "1px solid green",
-                                            background: 'white'
-                                        }}>Processing...</span>
-                                    </div>
-
-                                    <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
-                                        <p style={{
-                                            fontSize: '11px',
-                                            marginTop: "5px",
-                                            background: "green",
-                                            padding: "10px",
-                                            border: '1px solid blue',
-                                            textAlign: 'center',
-                                            borderRadius: '30px',
-                                            fontWeight: "bold",
-                                            color: "white",
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: "center",
-                                            position: "relative",
-                                            cursor: "pointer",
-                                            margin: '5px 5px 5px 5px',
-                                            maxWidth: "400px",
-                                            minWidth: "150px",
-                                        }} onClick={() => { changeCaseDetails(item, index) }}>
-                                            <KeyboardDoubleArrowRightIcon style={{
-                                                position: "absolute",
-                                                left: '10px'
-                                            }} />
-                                            View More
-                                        </p>
-                                        <p style={{
-                                            fontSize: '11px',
-                                            marginTop: "5px",
-                                            background: "white",
-                                            padding: "10px",
-                                            border: '2px solid #000000',
-                                            textAlign: 'center',
-                                            borderRadius: '30px',
-                                            fontWeight: "bold",
-                                            color: "blue",
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: "center",
-                                            position: "relative",
-                                            cursor: "pointer",
-                                            maxWidth: "400px",
-                                            minWidth: "150px",
-                                            margin: '5px 5px 5px 5px',
-                                            height: "30px"
-                                        }} onClick={(e) => { cancleCaseProcedureFunc(item) }}>
-                                            Cancel Process
-                                            <img src={crossUser} style={{
-                                                position: "absolute",
-                                                right: '10px', width: '20px', height: '20px'
-                                            }} />
-                                        </p>
-                                    </div>
-                                </div>
                                 </div>
                             ))}
 
@@ -777,10 +788,10 @@ const FirstPage = () => {
                                     >
                                         <img
                                             src={crossUser}
-                                            onClick={() => { 
+                                            onClick={() => {
                                                 setCaseDetailsHere(false)
                                                 getData()
-                                             }}
+                                            }}
                                             style={{
                                                 position: "fixed",
                                                 left: "calc(100% - 35px)",

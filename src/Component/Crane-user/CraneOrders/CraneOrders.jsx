@@ -74,7 +74,7 @@ const CraneOrders = () => {
             response.data.data.forEach((item) => {
                 if (item.details[0]?.firstResponseOn != null && item.details[0]?.vendorDecision == 'accept' &&
                     (item.details[0]?.acceptedByAdmin == null || item.details[0]?.acceptedByAdmin == 'accept') &&
-                    item.details[0]?.customerAcceptedVendor == false ) {
+                    item.details[0]?.cancelOrderReason == null ) {
                     tempApprovedCaseByYou.push(item);
                 }
                 if (item.details[0]?.vendorDecision == 'reject') {
@@ -83,7 +83,7 @@ const CraneOrders = () => {
                 if (item.details[0]?.vendorDecision == 'accept' && item.details[0]?.acceptedByAdmin == 'reject') {
                     tempRejectedByAdmin.push(item);
                 }
-                if (item.details[0]?.vendorDecision == 'accept' && item.details[0]?.cancelOrder == true) {
+                if (item.details[0]?.cancelOrder == true && item.details[0].cancelOrderReason != null) {
                     tempRejectedByCustomer.push(item);
                 }
                 if (item.details[0]?.approvedReaching == true) {
@@ -91,6 +91,12 @@ const CraneOrders = () => {
                 }
             });
     
+            console.log("tempApprovedCaseByYou",tempApprovedCaseByYou)
+            console.log("tempRejectedByYou",tempRejectedByYou)
+            console.log("tempRejectedByAdmin",tempRejectedByAdmin)
+            console.log("tempRejectedByCustomer",tempRejectedByCustomer)
+            console.log("tempCompletedVehicl1e",tempCompletedVehicle)
+
             // Update state with collected results
             setApprovedCaseByYou(tempApprovedCaseByYou);
             setRejectedByYou(tempRejectedByYou);
@@ -120,7 +126,7 @@ const CraneOrders = () => {
         <div>
             <div className="start-container" style={{ background: "#166937", height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px" }}>
                 <div className="imageContainer" style={{ marginTop: "10px", height: "0px" }}>
-                    {["Accepted case", "Rejected case", "Completed case"].map((text, index) => (
+                    {["Working cases", "Rejected cases", "Completed cases"].map((text, index) => (
                         <div
                             key={index}
                             style={{ cursor: 'pointer' }}
@@ -171,15 +177,15 @@ const CraneOrders = () => {
             )}
 
             <div
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    background: "linear-gradient(45deg, #ffffff69, transparent)",
-                    clipPath: "polygon(0px 20%, 10% 90%, 200% 100%, 0px 100%)",
-                }}
+                // style={{
+                //     position: "absolute",
+                //     top: 0,
+                //     left: 0,
+                //     width: "100%",
+                //     height: "100%",
+                //     background: "linear-gradient(45deg, #ffffff69, transparent)",
+                //     clipPath: "polygon(0px 20%, 10% 90%, 200% 100%, 0px 100%)",
+                // }}
             >
                 <div style={{ zIndex: "10px" }}>
                     <BottomNavigationVendor />

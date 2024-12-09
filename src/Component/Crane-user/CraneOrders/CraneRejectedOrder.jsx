@@ -35,6 +35,8 @@ function haversine(lat1, lon1, lat2, lon2) {
 
 const CraneRejectedOrder = ({ data }) => {
     const [totalRejectedCases, setTotalRejectedCase] = useState([]);
+    const [isRejectedCasesReady, setIsRejectedCasesReady] = useState(false);
+    console.log("ISREJECTEDCAESE", isRejectedCasesReady)
     const [spareUseData, setSpareUseData] = useState([]);
     console.log('totalRejectedCases', totalRejectedCases)
 
@@ -62,6 +64,7 @@ const CraneRejectedOrder = ({ data }) => {
     useEffect(() => {
         setTotalRejectedCase(data)
         setSpareUseData(data)
+        setIsRejectedCasesReady(true);
     }, [data])
 
     const handleChoosenCase = (item) => {
@@ -166,7 +169,7 @@ const CraneRejectedOrder = ({ data }) => {
     }
     useEffect(() => {
 
-        if (totalRejectedCases.length > 0 && totalRejectedCases.length) {
+        if (totalRejectedCases.length > 0 && totalRejectedCases.length && isRejectedCasesReady) {
             totalRejectedCases.map((item) => {
                 avg.push(0)
             })
@@ -179,7 +182,7 @@ const CraneRejectedOrder = ({ data }) => {
                 getCustomerRating(item.CustomerCode)
             });
         }
-    }, [totalRejectedCases]);
+    }, [ isRejectedCasesReady,totalRejectedCases]);
 
 
     const getVendorLocation = async (crane, accidentLatitude, accidentLongitude, index) => {
@@ -244,7 +247,7 @@ const CraneRejectedOrder = ({ data }) => {
                     paddingTop: "30px",
                     maxWidth: "500px",
                     height: "30px",
-                    marginBottom: "30px",
+                    marginBottom: "80px",
                     // filter: isImageContainerVisible ? "blur(4px)" : "none", // Apply blur effect
                     // opacity: isImageContainerVisible ? 0.5 : 1, // Reduce opacity if blurred
                     // pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
@@ -266,7 +269,7 @@ const CraneRejectedOrder = ({ data }) => {
                 </div>
                 {totalRejectedCases.length > 0 && (
                     totalRejectedCases.map((item, dataIndex) => (
-                        <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea" }}>
+                        <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea", marginTop:"20px" }}>
 
                             <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
                                 {stages.map((stage, index) => (
@@ -287,7 +290,7 @@ const CraneRejectedOrder = ({ data }) => {
                                                 width: "30px",
                                                 height: "30px",
                                                 borderRadius: "50%",
-                                                backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
+                                                backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "rgb(251 161 161)" : "#ccc",
                                                 display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "center",
@@ -355,9 +358,9 @@ const CraneRejectedOrder = ({ data }) => {
 
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Assigned Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn.split("|")[0]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.details[0].firstResponseOn.split("|")[0]}</span>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Time:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn.split("|")[1]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.details[0].firstResponseOn.split("|")[1]}</span>
                                 </div>
 
 
@@ -367,14 +370,14 @@ const CraneRejectedOrder = ({ data }) => {
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                                     <div style={{ display: "flex", alignItems: "center", margin: '0px 0px 20px 5px' }}>
-                                        {item.details[0]?.acceptedByAdmin == null && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin permission pending </span>
+                                        {item.details[0]?.vendorDecision == 'reject' && (
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Vendor Rejected </span>
                                         )}
-                                        {item.details[0]?.acceptedByAdmin !== null && item.details[0]?.customerAcceptedVendor == false && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer permission pending</span>
+                                        {item.details[0]?.acceptedByAdmin == 'reject' && (
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin Rejected</span>
                                         )}
-                                        {item.details[0]?.customerAcceptedVendor == true && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>You may move</span>
+                                        {item.details[0]?.acceptedByAdmin == 'accept' && item.details[0]?.customerAcceptedVendor == false && item.details[0]?.closeCraneOrder==true && (
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer Rejected</span>
                                         )}
 
                                         <div style={{
@@ -397,7 +400,7 @@ const CraneRejectedOrder = ({ data }) => {
                                             margin: '0px 0px 0px 5px',
                                             height: "30px"
                                         }}
-                                            onClick={() => handleChoosenCase(item)}>View Case  <img src={viewcase} style={{
+                                            onClick={() => handleChoosenCase(item)}>View Reason  <img src={viewcase} style={{
                                                 position: "absolute",
                                                 left: '23px', height: "20px", width: "20px"
                                             }} /></div>
@@ -406,27 +409,6 @@ const CraneRejectedOrder = ({ data }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{
-                                fontSize: '11px',
-                                marginTop: "2px",
-                                background: "white",
-                                padding: "10px",
-                                border: '2px solid #000000',
-                                textAlign: 'center',
-                                borderRadius: '30px',
-                                fontWeight: "bold",
-                                color: "blue",
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: "center",
-                                position: "relative",
-                                cursor: "pointer",
-                                maxWidth: "400px",
-                                minWidth: "280px",
-                                margin: '5px 0px 0px 5px',
-                                height: "30px"
-                            }}
-                                onClick={() => handleChoosenCase(item)}>View Case</div>
                         </div>
                     ))
                 )}
@@ -439,7 +421,7 @@ const CraneRejectedOrder = ({ data }) => {
                         width: "100%",
                         height: "100%",
                         backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                        zIndex: 1000,
+                        zIndex: 1001,
                         display: "flex",
                         alignItems: "flex-end", // positions the container at the bottom
                         justifyContent: "center",
@@ -483,15 +465,7 @@ const CraneRejectedOrder = ({ data }) => {
                     )}
                 </Modal>
             </div>
-            <div style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "linear-gradient(45deg, #ffffff69, transparent)",
-                clipPath: "polygon(0px 20%, 10% 90%, 200% 100%, 0px 100%)",
-            }}
+            <div  
             >
 
                 <div>

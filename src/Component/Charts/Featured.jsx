@@ -213,8 +213,7 @@ const Featured = () => {
   return (
     <div className="featured" style={{ maxWidth: "300px" }}>
       <div className="top" style={{ marginBottom: "20px" }}>
-        {/* <h1 style={{ fontSize: "12px" }}>Earnings </h1> */}
-        {/* <MoreVertIcon fontSize="small" /> */}
+
       </div>
       <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-around" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -233,9 +232,7 @@ const Featured = () => {
         </div>
       </div>
       <div className="bottom">
-        {/* <div className="featuredChart"> */}
-        {/* <CircularProgressbar value={30} text={"30%"} strokeWidth={5} /> */}
-        {/* </div> */}
+
 
         <p className="desc" style={{ color: "green" }}>
           *   Previous transactions processing. Last payments may not be included.

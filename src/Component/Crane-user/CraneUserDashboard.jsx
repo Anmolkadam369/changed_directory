@@ -328,7 +328,7 @@ const CraneUserDashboard = () => {
     }
 
     return (
-        <div>
+        <div style={{height:"100%"}}>
             {/* Red Top Section */}
             <div
                 style={{
@@ -473,7 +473,7 @@ const CraneUserDashboard = () => {
                     }}>
                     <PendingActionsOutlinedIcon className="small-image" />
                     <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
-                    <p>{workingCases - adminRejected}</p>
+                    <p>{workingCases > adminRejected ? workingCases - adminRejected: workingCases}</p>
                 </div>
 
 
@@ -494,28 +494,7 @@ const CraneUserDashboard = () => {
 
             </div>
 
-            <center>
-                <div className="container">
-
-                    <h1 style={{textAlign:"center",color:"green"}}>
-                        GeeksforGeeks
-                    </h1>
-                    <h3>
-                        To make horizontal scrollable in a bootstrap row?
-                    </h3>
-                    <div className="container horizontal-scrollable">
-                        <div className="row text-center">
-                            <div className="col-xs-4">1</div>
-                            <div className="col-xs-4">2</div>
-                            <div className="col-xs-4">3</div>
-                            <div className="col-xs-4">4</div>
-                            <div className="col-xs-4">5</div>
-                            <div className="col-xs-4">6</div>
-                            <div className="col-xs-4">7</div>
-                        </div>
-                    </div>
-                </div>
-            </center>
+        
 
             <div className="statistics">
                 <div className="charts">
@@ -532,8 +511,6 @@ const CraneUserDashboard = () => {
                     <Featured />
                     <VendorViewRating />
 
-
-
                 </div>
             </div>
 
@@ -547,7 +524,7 @@ const CraneUserDashboard = () => {
 
             {/* Black Bottom Section */}
 
-            <div>
+            <div style={{ zIndex: 1 }}>
                 <BottomNavigationVendor />
             </div>
         </div>

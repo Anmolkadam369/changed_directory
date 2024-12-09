@@ -247,7 +247,7 @@ const QuotationUpdate = ({ number }) => {
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                 info.filedCaseFully && !info.customerAcceptedVendor
+                info.filedCaseFully && !info.customerAcceptedVendor && !info.closeCraneOrder
             );
 
             let filteredImportant = filteredData.filter((info) =>
@@ -463,7 +463,7 @@ const QuotationUpdate = ({ number }) => {
 
 
     return (
-        <div style={{marginBottom:"60px"}}>
+        <div style={{ marginBottom: "60px" }}>
 
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
 
@@ -494,7 +494,7 @@ const QuotationUpdate = ({ number }) => {
                         filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
                         opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
                         pointerEvents: isImageContainerVisible ? "none" : "auto",
-                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background:"#00e1ff36"
+                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#00e1ff36"
                     }}>
 
                         <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
@@ -567,7 +567,7 @@ const QuotationUpdate = ({ number }) => {
                         </div>
 
                         {item.connectedVendorFully == true && (
-                            <div >
+                            <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px", padding: "2px 2px" }}>
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
 
@@ -631,7 +631,7 @@ const QuotationUpdate = ({ number }) => {
                         )}
 
                         {item.filedCaseFully && item.connectedVendorFully == false && (
-                            <div style={{background:"white",marginTop:"30px", borderRadius:"20px 20px 0px 0px", boxShadow:"#808080 1px -4px 0px 0px"}}>
+                            <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
@@ -773,7 +773,10 @@ const QuotationUpdate = ({ number }) => {
                             </p>
 
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <p style={{ textAlign: "center", marginLeft: "120px", marginTop: "10px", fontSize: "14px" }}>Vendor Fare</p>
+                                <div>
+                                <p style={{ textAlign: "center", marginLeft: "30px", marginTop: "10px", fontSize: "13px", fontWeight:"bold" }}>Vendor Fare : ₹{currentItem.charges}</p>
+                            <p style={{ textAlign: "center", marginLeft: "30px", marginTop: "5px", fontSize: "13px", fontWeight:"bold" }}>Platform Fees : ₹{currentItem.budget-currentItem.charges}</p>
+                                </div>
                                 <div style={{
                                     marginTop: "5px",
                                     width: "30px",
@@ -783,23 +786,27 @@ const QuotationUpdate = ({ number }) => {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: 'center',
-                                    color: 'black'
+                                    color: 'black',
+                                    height:"20px"
                                 }}>{average}</div> {/*${backendUrl}/api/customersRating/${userId}*/}
                             </div>
-                            <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>₹ {currentItem.charges}</h1>
+                           <hr/>
+                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                            <h1 style={{ marginLeft:"10px", fontSize: "14px", fontWeight: "bold" }}>Total Amount : ₹{currentItem.budget}</h1>
 
                             <div style={{ display: "flex", justifyContent: 'center', alignItems: "center" }}>
                                 <p style={{
                                     textAlign: "center",
-                                    marginTop: "7px",
-                                    fontSize: '14px',
+                                    fontSize: '12px',
                                     paddingRight: '10px',
                                     fontWeight: 'bold'
-                                }}>Vendor Distance :</p>
-                                <p style={{ color: 'Green', marginTop: "6px", fontSize: "12px" }}>{distance.toFixed(2)} km</p> {/* take vendor current location by api and use harvesine formula */}
+                                }}> Vendor Distance :</p>
+                                <p style={{ color: 'Green', fontSize: "12px" }}>{distance.toFixed(2)} km</p> {/* take vendor current location by api and use harvesine formula */}
+                            </div>
                             </div>
 
-                            <div className="text-overlay text-overlay2">
+                            <div className="text-overlay text-overlay2" style={{height:"50%"}}>
                                 {/* <h4 style={{ marginBottom: '5px', fontSize: "11px", marginTop: "10px" }}>Location:</h4>
                                 <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
 

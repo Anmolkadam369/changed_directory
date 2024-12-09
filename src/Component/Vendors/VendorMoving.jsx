@@ -6,6 +6,7 @@ import crossUser from '../../Assets/crossUser.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import telephonecall from '../../Assets/telephonecall.png'
+import AddedDataByCrane from "./AddedDataByCrane";
 
 const VendorMoving = ({ item }) => {
     const navigate = useNavigate()
@@ -17,6 +18,12 @@ const VendorMoving = ({ item }) => {
     const [alertMessage, setAlertMessage] = useState(null);
     const [alertType, setAlertType] = useState(null);
     const [distance, setDistance] = useState('')
+
+    const [selectedId, setSelectedId] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [showAddedDataByVendor, setShowAddedDataByVendor] = useState(false);
+    
+
     console.log("distacne", distance)
 
     function haversine(lat1, lon1, lat2, lon2) {
@@ -126,7 +133,23 @@ const VendorMoving = ({ item }) => {
         })
     }
 
+    const viewData = (id, item) => {
+        setSelectedId(id);
+        setSelectedItem(item)
+        setShowAddedDataByVendor(true)
+    }
 
+    const navigation = (selectedId, selectedItem) => {
+        navigate('/crane-vehicle-information', { state: { id: selectedId, item: selectedItem } });
+      };
+
+      useEffect(() => {
+        if (showAddedDataByVendor && selectedId != null) {
+          navigation(selectedId, selectedItem); // Now navigation is defined above this
+        }
+      }, [showAddedDataByVendor, selectedId, selectedItem]); // Ensure navigation is called only when these values change
+      
+    
 
 
 
@@ -139,7 +162,7 @@ const VendorMoving = ({ item }) => {
 
                 <div className="text-overlay">
                     <p style={{ fontSize: '14px', padding: "5px", border: '3px solid blue', borderImage: 'linear-gradient(to top, white 10% , black 90%) 1', textAlign: 'center', borderRadius: '30px', fontWeight: "bold" }}>
-                        Approved Completely!
+                        Rejected Orders!
                     </p>
 
                     <p style={{ textAlign: "center", marginTop: "10px", fontSize: "14px" }}>Vehicle No </p>
@@ -152,7 +175,7 @@ const VendorMoving = ({ item }) => {
                     </div>
                     <div className="text-overlay text-overlay2">
                         {/* <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
-                        {item.details[0]?.vendorMoved == false && item.details[0].customerAcceptedVendor == true && (<p style={{
+                        {item.details[0]?.vendorMoved == false && item.details[0].customerAcceptedVendor == true && item.details[0].closeCraneOrder == false && (<p style={{
                             fontSize: '11px',
                             marginTop: "5px",
                             background: "green",
@@ -174,7 +197,7 @@ const VendorMoving = ({ item }) => {
                             }} />
                             Ready To Go
                         </p>)}
-                        { item.details[0]?.vendorMoved == true && (<p style={{
+                        {item.details[0]?.vendorMoved == true && (<p style={{
                             fontSize: '12px',
                             marginTop: "10px",
                             background: "white",
@@ -199,6 +222,40 @@ const VendorMoving = ({ item }) => {
                             }} />
                         </p>)}
 
+                        {item.details[0]?.vendorDecision == 'reject' && (
+                            <div>
+                                <textarea
+                                    className="Registrationdetails-elem-9"
+                                    style={{ textAlign: 'left', margin: "30px 5px 20px 10px", width: '95%', background: "lightgray" }}
+                                    value={item.details[0]?.rejectionReason}
+                                    readOnly
+                                />
+                            </div>
+                        )}
+
+                        {item.details[0]?.acceptedByAdmin == 'reject' && (
+                            <div>
+                                <textarea
+                                    className="Registrationdetails-elem-9"
+                                    style={{ textAlign: 'left', margin: "30px 5px 20px 10px", width: '95%', background: "lightgray" }}
+                                    value={item.details[0]?.reasonforRejection}
+                                    readOnly
+                                />
+                            </div>
+                        )}
+
+                        {item.details[0]?.acceptedByAdmin == 'accept' && item.details[0]?.cancelOrder == true && (
+                            <div>
+                                <textarea
+                                    className="Registrationdetails-elem-9"
+                                    style={{ textAlign: 'left', margin: "30px 5px 20px 10px", width: '95%', background: "lightgray" }}
+                                    value={item.details[0]?.cancelOrderReason}
+                                    readOnly
+                                />
+                            </div>
+                        )}
+
+
                         <p style={{
                             fontSize: '11px',
                             marginTop: "5px",
@@ -222,7 +279,7 @@ const VendorMoving = ({ item }) => {
                             Call For Help
                         </p>
 
-                        { item.details[0]?.vendorMoved == true && (<p style={{
+                        {item.details[0]?.vendorMoved == true && item.details[0]?.approvedReaching == false && (<p style={{
                             fontSize: '11px',
                             marginTop: "5px",
                             background: "#8f4325",
@@ -243,6 +300,31 @@ const VendorMoving = ({ item }) => {
                                 right: "10px"
                             }} />
                         </p>)}
+
+                        {item.details[0]?.approvedReaching == true && (
+                            <p style={{
+                                fontSize: '11px',
+                                marginTop: "5px",
+                                background: "#8f4325",
+                                padding: "10px",
+                                border: '1px solid blue',
+                                textAlign: 'center',
+                                borderRadius: '30px',
+                                fontWeight: "bold",
+                                color: "white",
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: "center",
+                                position: "relative",
+                                cursor: "pointer"
+                            }} onClick={() => viewData(item.AccidentVehicleCode, item.details[0])}>
+                                Updation of work<KeyboardDoubleArrowLeftIcon style={{
+                                    position: 'absolute',
+                                    right: "10px"
+                                }} />
+                            </p>
+                        )}
+
                         {alertMessage && (
                             <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
                                 {alertMessage}
@@ -253,6 +335,7 @@ const VendorMoving = ({ item }) => {
                 </div>
 
             )}
+           
         </div>
     )
 }

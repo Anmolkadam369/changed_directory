@@ -635,7 +635,7 @@ const CraneDashboard = ({ getData }) => {
                         width: "100%",
                         height: "100%",
                         backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                        zIndex: 1000,
+                        zIndex: 1001,
                         display: "flex",
                         alignItems: "flex-end", // positions the container at the bottom
                         justifyContent: "center",

@@ -444,7 +444,7 @@ const CraneCompletedOrders = ({ data }) => {
                         width: "100%",
                         height: "100%",
                         backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                        zIndex: 1000,
+                        zIndex: 1001,
                         display: "flex",
                         alignItems: "flex-end", // positions the container at the bottom
                         justifyContent: "center",
@@ -492,15 +492,7 @@ const CraneCompletedOrders = ({ data }) => {
 
             </div>
 
-            <div style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "linear-gradient(45deg, #ffffff69, transparent)",
-                clipPath: "polygon(0px 20%, 10% 90%, 200% 100%, 0px 100%)",
-            }}
+            <div  
             >
 
                 <div>

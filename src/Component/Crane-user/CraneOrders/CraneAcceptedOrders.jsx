@@ -378,7 +378,7 @@ const CraneAcceptedOrders = ({ data }) => {
                                             <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin permission pending </span>
                                         )}
                                         {item.details[0]?.acceptedByAdmin !== null && item.details[0]?.customerAcceptedVendor == false && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer permission pending</span>
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 10px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer permission pending</span>
                                         )}
                                         {item.details[0]?.customerAcceptedVendor == true && (
                                             <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>You may move</span>
@@ -425,7 +425,7 @@ const CraneAcceptedOrders = ({ data }) => {
                         width: "100%",
                         height: "100%",
                         backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                        zIndex: 1000,
+                        zIndex: 1001,
                         display: "flex",
                         alignItems: "flex-end", // positions the container at the bottom
                         justifyContent: "center",
@@ -470,15 +470,7 @@ const CraneAcceptedOrders = ({ data }) => {
                     )}
                 </Modal>
             </div>
-            <div style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "linear-gradient(45deg, #ffffff69, transparent)",
-                clipPath: "polygon(0px 20%, 10% 90%, 200% 100%, 0px 100%)",
-            }}
+            <div  
             >
 
                 <div>

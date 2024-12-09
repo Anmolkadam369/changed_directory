@@ -139,6 +139,7 @@ const HistoryReceipts = () => {
 
     useEffect(() => {
         getData();
+        getVendorRating(        )
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
@@ -198,7 +199,7 @@ const HistoryReceipts = () => {
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info.selectedOptions === 'crane' && info.approvedReaching
+                info.confirmDoneWorking == true
             );
             setData(filteredData)
             setFiltering(filteredData)

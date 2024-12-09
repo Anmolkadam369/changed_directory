@@ -26,16 +26,17 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
     console.log("itemshere", item)
-    if(item == null){
+    if (item == null) {
         console.log("iteminside", item)
     }
-    const [regNo, setRegNo] = useState('' || item?.regNo);
+    const [regNo, setRegNo] = useState(item?.reg ||'' );
 
     const [vehicleInfo, setVehicleInfo] = useState([]);
     const [comingVehicleInfo, setComingVehicleInfo] = useState([]);
     const [comingVehicle, setComingVehicle] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
     const [getData, setGetData] = useState({});
+    console.log("GETDATA", getData)
     const [showPopup, setShowPopup] = useState(true);
     const [isVerified, setIsVerified] = useState(false);
 
@@ -45,7 +46,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     console.log("frompageHere123", fromPageHere)
     const [comingFrom, setComingFrom] = useState('')
 
-    
+
     console.log("comingData", comingFrom)
 
     useEffect(() => {
@@ -54,13 +55,6 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
     }, [vehicleInfo]);
 
-    // useEffect(() => {
-    //     if(first == true){
-    //     setRegNo(vehicleNo)
-    //     localStorage.setItem('regNo', vehicleNo);
-    //         setFirst(false)
-    // }
-    // }, [vehicleNo, first]);
 
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -73,6 +67,15 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         findUserById(userId)
         if (item !== undefined && item !== null) setIsVerified(true)
         // if (item !== null) setIsVerified(true)
+        loadStates();
+        const storedRegNo = localStorage.getItem('regNo');
+        if (storedRegNo) {
+            setRegNo(storedRegNo);
+        }
+        if (localStorage.getItem('isVerified') == 'true') {
+            setIsVerified(true)
+        }
+
     }, [token, userId, navigate]);
 
 
@@ -113,15 +116,15 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         localStorage.setItem('regNo', event.target.value);
     };
 
-    useEffect(() => {
-        const storedRegNo = localStorage.getItem('regNo');
-        if (storedRegNo) {
-            setRegNo(storedRegNo);
-        }
-        if (localStorage.getItem('isVerified') == 'true') {
-            setIsVerified(true)
-        }
-    }, []);
+    // useEffect(() => {
+    //     const storedRegNo = localStorage.getItem('regNo');
+    //     if (storedRegNo) {
+    //         setRegNo(storedRegNo);
+    //     }
+    //     if (localStorage.getItem('isVerified') == 'true') {
+    //         setIsVerified(true)
+    //     }
+    // }, []);
 
     const handleNext = () => {
         // onVehicleData(comingVehicle);
@@ -178,38 +181,38 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     };
 
     const [showImageDiv, setShowImageDiv] = useState(false)
-    const [isMaterialLoaded, setIsMaterialLoaded] = useState(false)
-    const [quantity, setQuantity] = useState('')
-    const [budget, setBudget] = useState('')
-    const [latitude, setLatitude] = useState('')
+    const [isMaterialLoaded, setIsMaterialLoaded] = useState(item?.isMaterialLoaded || false)
+    const [quantity, setQuantity] = useState(item?.quantity || '')
+    const [budget, setBudget] = useState(item?.budget || '')
+    const [latitude, setLatitude] = useState(item?.latitude || '')
     console.log('latitude', latitude)
-    const [longitude, setLongitude] = useState('')
+    const [longitude, setLongitude] = useState(item?.longitude || '')
     console.log('longitude1231231', longitude)
 
     const [location, setLocation] = useState('')
-    const [onSpotName, setOnSpotName] = useState('')
-    const [onSpotContact, setOnSpotContact] = useState('')
+    const [onSpotName, setOnSpotName] = useState(item?.onSpotName || '')
+    const [onSpotContact, setOnSpotContact] = useState(item?.onSpotContact || '')
 
 
 
-    const [fullAddress, setFullAddress] = useState("");
-    const [pincode, setPincode] = useState("");
-    const [district, setDistrict] = useState("");
+    const [fullAddress, setFullAddress] = useState(item?.fullAddress || "");
+    const [pincode, setPincode] = useState(item?.pincode || "");
+    const [district, setDistrict] = useState(item?.district || "");
     const [states, setStates] = useState([]); // Correctly define states to hold the list of states
-    const [selectedState, setSelectedState] = useState(""); // State to track the selected state
+    const [selectedState, setSelectedState] = useState(item?.states || ""); // State to track the selected state
     const [pin, setPin] = useState("");
     const [cities, setCities] = useState([]); // State to hold the list of cities
     const [isLoadingCities, setIsLoadingCities] = useState(true);
     const [isLoadingStates, setIsLoadingStates] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isRecoveryVan, setIsRecoveryVan] = useState(false);
+    const [isRecoveryVan, setIsRecoveryVan] = useState(item?.isRecoveryVan || false);
     const [successDone, setSuccessDone] = useState(false);
 
     const { state } = useLocation();
     useEffect(() => {
         // Log the 'center' from the passed state
-       
+
 
         if (state?.center) {
             console.log("Center in Previous Page:", state.center);
@@ -218,7 +221,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
             setIsVerified(true)
         }
-        if(state?.fromPageHere){
+        if (state?.fromPageHere) {
             console.log("state Data123", state.fromPageHere)
             setComingFrom(state.fromPageHere)
         }
@@ -241,9 +244,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
 
 
-    useEffect(() => {
-        loadStates();
-    }, []); // Assuming 'token' and 'userId' are not needed here or should be replaced
+    // useEffect(() => {
+    //     loadStates();
+    // }, []); // Assuming 'token' and 'userId' are not needed here or should be replaced
 
     const loadStates = () => {
         setIsLoadingStates(true);
@@ -337,46 +340,45 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
     };
 
-    const services = ["Advocate", "Crane", "Mechanic", "Workshop"];
-    const [selectedServices, setSelectedServices] = useState([]);
+    const services = ["Crane", "Mechanic", "Advocate", "Workshop"];
+    const [selectedServices, setSelectedServices] = useState(
+        item?.selectedOptions ? [item.selectedOptions] : []
+    );
+    const[existingServices, setExistingServices] = useState(item?.selectedOptions ? [item.selectedOptions] : [])
+    let [finalSelectedService, setFinalSelectedService]= useState([])
+    console.log("total service", selectedServices)
+    console.log("existingServices service", existingServices)
+    console.log("finalSelectedService service", finalSelectedService)
 
+
+    console.log("item?.selectedOptions ",item?.selectedOptions )
+    const [newlySelectedServices, setNewlySelectedServices] = useState([]);
+    
     const toggleSelection = (service) => {
-        setSelectedServices((prev) =>
-            prev.includes(service)
-                ? prev.filter((item) => item !== service)
-                : [...prev, service]
-        );
+        
+        console.log("SERVICE", service)
+        console.log("item?.selectedOptions?.includes(service.toLowerCase())", item?.selectedOptions?.includes(service.toLowerCase()))
+        setSelectedServices((prev)=>{
+            if(prev.includes(service)) return prev.filter((selectedServices)=>selectedServices != service)
+            else return [...prev, service]
+        })
+
+        let finalServices = existingServices.map((existingService)=>{
+            return existingService !== service ? service:null
+         })
+         setFinalSelectedService((prev) => {
+            if (service?.toLowerCase && prev.includes(service.toLowerCase())) {
+                return prev.filter((selectedService) => selectedService !== service.toLowerCase());
+            }
+            return [...prev, service?.toLowerCase()];
+        });
     };
-    console.log("selectestaeraefdasfasdfasdfasd", selectedServices)
+
 
     let accidentDataObject
-    if (item != null) {
-        console.log("item is not null")
-        console.log("GETDATA123", getData)
-        accidentDataObject = {
-            regNo: item.reg,
-            fullAddress: item.fullAddress,
-            states: item.states,
-            district: item.district,
-            pincode: item.pincode,
-            onSpotContact: item.onSpotContact,
-            onSpotName: item.onSpotName,
-            isRecoveryVan: item.isRecoveryVan,
-            isMaterialLoaded: item.isMaterialLoaded,
-            quantity: item.quantity,
-            budget: item.budget,
-            ...photos,               // Assuming 'photos' is an object
-            ...comingVehicle,        // Assuming 'comingVehicle' is an object
-            ...getData,              // Assuming 'getData' is an object
-            selectedOptions: item.selectedOption,
-            latitude: item.accidentLatitude,
-            longitude: item.accidentLongitude,
-        };
-    }
-    else {
+   
         console.log("elserafsdfasd")
-        accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, ...getData, latitude, longitude, selectedOptions: selectedServices };
-    }
+        accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, ...getData, latitude, longitude, selectedOptions: finalSelectedService };
     console.log("accidentDataObject123445", accidentDataObject)
 
 
@@ -390,6 +392,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         e.preventDefault();
 
         const formDataObj = new FormData();
+        console.log("accidentDataO123bject", accidentDataObject)
         for (const key in accidentDataObject) {
             if (accidentDataObject[key]) {  // Check if the data is not undefined or null
                 if (accidentDataObject[key] instanceof File) {
@@ -445,7 +448,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
             console.log("item", "item is ehrere")
             navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025], fromPage: "firstPage" } })
         }
-        if(comingFrom == "allVehicles"){
+        if (comingFrom == "allVehicles") {
             navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025], fromPage: "allVehicles" } })
         }
         else {
@@ -455,7 +458,11 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     const [byManualLocation, setByManualLocation] = useState(false)
 
-
+    const [nowReadOnly, setNowReadOnly] = useState(true)
+    console.log("nowRead", nowReadOnly)
+    useEffect(()=>{
+        if(fromPageHere !== "allvehicles") setNowReadOnly(false)
+    },[fromPageHere])
 
     return (
         <div>
@@ -503,7 +510,10 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                         <div className="Registrationdetails-elem-13">
                             <div className="Registrationdetails-elem-11">
                                 <div className="Registrationdetails-elem-10">
-                                    <p style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}><em> Accident Vehicle Details</em></p>
+                                    <div style={{ display: 'flex', justifyContent: "space-between" }}>
+                                        <p style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}><em> Accident Vehicle Details</em></p>
+                                        {fromPageHere == "allvehicles" && (<button style={{ padding: "5px 10px", background: nowReadOnly ? "lightblue" : 'green', color: nowReadOnly ? "black" : "white", width: "60px", fontSize: "15px", fontWeight: "bold", marginBottom: "20px", borderRadius: "10px" }} onClick={() => setNowReadOnly(!nowReadOnly)}>Edit</button>)}
+                                    </div>
                                     {/* <span className="cd-paragraph-clean Registrationdetails-elem-8"> */}
 
                                     <p style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No</p>
@@ -514,9 +524,10 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                             type="text"
                                             className="Registrationdetails-elem-9"
                                             style={{ textAlign: 'left', margin: '10px 10px 10px 0px', width: '80%' }}
-                                            value={item?.reg ? item.reg : regNo}
+                                            value={regNo}
+                                            // readOnly
                                             placeholder='RJ 03 ED 2343'
-                                            onChange={!item ? handleChange : ""}
+                                            onChange={!item?.reg ? handleChange : ""}
                                             disabled={getData.isActive === "false"}
                                         />
 
@@ -720,7 +731,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                             type="text"
                                                             className="Registrationdetails-elem-9"
                                                             style={{ textAlign: 'center', width: '90%', marginRight: "10px" }}
-                                                            value={item?.accidentLatitude ? item.accidentLatitude : latitude}
+                                                            value={latitude}
                                                             placeholder='Latitude'
                                                             onChange={(e) => {
                                                                 // Only update the value if it is numeric
@@ -735,7 +746,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                             type="text"
                                                             className="Registrationdetails-elem-9"
                                                             style={{ textAlign: 'center', width: '90%' }}
-                                                            value={item?.accidentLongitude ? item.accidentLongitude : longitude}
+                                                            value={longitude}
                                                             placeholder='Longitude'
                                                             onChange={(e) => {
                                                                 const newValue = e.target.value;
@@ -763,11 +774,11 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                                     type="text"
                                                                     className="Registrationdetails-elem-9"
                                                                     style={{ textAlign: 'center', width: '90%' }}
-                                                                    value={item?.onSpotName ? item.onSpotName : onSpotName}
+                                                                    value={onSpotName}
                                                                     placeholder='Spot Person Name'
-                                                                    readOnly={item?.onSpotName ? true : false}
+                                                                    readOnly={nowReadOnly ? true : false}
                                                                     onChange={(e) => setOnSpotName(e.target.value)}
-                                                                    disabled={getData.isActive === "false"}
+                                                                // disabled={getData.isActive === "false"}
                                                                 />
                                                             </div>
                                                             <div>
@@ -776,9 +787,11 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                                     type="text"
                                                                     className="Registrationdetails-elem-9"
                                                                     style={{ textAlign: 'center', width: '90%' }}
-                                                                    value={item?.onSpotContact ? item.onSpotContact : onSpotContact}
+                                                                    value={onSpotContact}
                                                                     placeholder='Contact No'
-                                                                    readOnly={item?.onSpotContact ? true : false}
+                                                                    // readOnly={item?.onSpotContact ? true : false}
+                                                                    readOnly={nowReadOnly ? true : false}
+
                                                                     onChange={(e) => {
                                                                         const newValue = e.target.value;
                                                                         if (/^\d{0,10}$/.test(newValue)) {
@@ -893,19 +906,20 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
                                             <div style={{ display: 'flex' }}>
                                                 <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}> Is Material Loaded ? </p>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" disabled={item?.isMaterialLoaded ? true : false} onClick={(e) => setIsMaterialLoaded(true)}>Yes</button>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" disabled={item?.isMaterialLoaded ? true : false} onClick={(e) => setIsMaterialLoaded(false)}>No</button>
+                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => setIsMaterialLoaded(true)}>Yes</button>
+                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => {setIsMaterialLoaded(false); setQuantity('')}}>No</button>
                                             </div>
 
-                                            {(isMaterialLoaded || item?.isMaterialLoaded) && (
+                                            {(isMaterialLoaded == true || item?.isMaterialLoaded == true) && (
                                                 <div style={{ display: 'flex' }}>
                                                     <span style={{ fontSize: '12px', marginRight: "5px", marginTop: "15px", marginBottom: "15px" }}>Quantity In Tons:</span>
                                                     <input
                                                         type="number"
                                                         name="quantity"
                                                         style={{ width: '50%', textAlign: 'center', marginTop: "10px", marginBottom: "15px" }}
-                                                        value={item?.quantity ? item.quantity : quantity}
-                                                        readOnly={item?.quantity ? true : false}
+                                                        value={quantity}
+                                                        readOnly={nowReadOnly ? true : false}
+                                                        // readOnly={item?.quantity ? true : false}
                                                         onChange={(e) => {
                                                             const newValue = e.target.value;
                                                             if (/^\d*$/.test(newValue)) {
@@ -934,7 +948,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     }}
                                                     type="button"
                                                     className="btn btn-dark"
-                                                    disabled={item?.isRecoveryVan != null ? true : false}
+                                                    // disabled={item?.isRecoveryVan != null ? true : false}
+                                                    disabled={nowReadOnly ? true : false}
                                                     onClick={() => setIsRecoveryVan(true)}
                                                 >
                                                     Required
@@ -953,7 +968,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     }}
                                                     type="button"
                                                     className="btn btn-dark"
-                                                    disabled={item?.isRecoveryVan != null ? true : false}
+                                                    disabled={nowReadOnly ? true : false}
+                                                    // disabled={item?.isRecoveryVan != null ? true : false}
                                                     onClick={() => setIsRecoveryVan(false)}
                                                 >
                                                     Not Required
@@ -966,8 +982,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                 <input
                                                     type="number"
                                                     name="vendorPhone"
-                                                    value={item?.budget ? item.budget : budget}
-                                                    readOnly={item?.budget ? true : false}
+                                                    value={budget}
+                                                    readOnly={nowReadOnly ? true : false}
+                                                    // readOnly={item?.budget ? true : false}
                                                     onChange={(e) => setBudget(e.target.value)}
                                                     placeholder="Budget"
                                                     style={{ width: "100px", textAlign: 'center' }}
@@ -975,8 +992,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                 />
                                             </div>
 
-                                            {item == null && (
-                                                <div
+
+                                            <div
                                                 style={{
                                                     background: "#f0f0f0",
                                                     marginTop: "20px",
@@ -987,50 +1004,67 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     marginTop: "20px"
                                                 }}
                                             >
-                                                <h3 style={{ marginBottom: "15px", fontWeight:"bold", textAlign: "center", color:"green" }}>Select Services</h3>
-                                                <ul style={{ listStyle: "none", padding: 0,   marginTop:"20px", }}>
-                                                    {services.map((service) => (
-                                                        <li
-                                                            key={service}
-                                                            onClick={() => toggleSelection(service)}
-                                                            style={{
-                                                                fontSize:"15px",
-                                                                padding: "10px 50px",
-                                                                margin: "5px 0",
-                                                                borderRadius: "5px",
-                                                                background: selectedServices.includes(service)
-                                                                    ? "rgb(249 255 86)"
-                                                                    : "#f5f5f5",
-                                                                color: selectedServices.includes(service) ? "black" : "black",
-                                                                cursor: "pointer",
-                                                                textAlign: "center",
-                                                                boxShadow: selectedServices.includes(service)
-                                                                    ? "2px 2px 8px #2e7d32"
-                                                                    : "2px 2px 4px #ccc",
-                                                                transition: "all 0.3s ease",
-                                                                maxWidth: "90%",
-                                                                display: "flex",
-                                                                alignItems: "center",
-                                                              
-                                                                justifyContent: "space-between",
-                                                            }}
-                                                        >
-                                                            <span>{service}</span>
-                                                            {selectedServices.includes(service) && (
-                                                                <img
-                                                                    src={checksuccess}
-                                                                    alt="Selected"
-                                                                    style={{
-                                                                        height: "20px",
-                                                                        width: "20px",
-                                                                        marginLeft: "auto",
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </li>
-                                                    ))}
+                                                <ul style={{ listStyle: "none", padding: 0, marginTop: "20px", }}>
+                                                    {/* console.log("item?.selectedOptions", item.selectedOptions) */}
+                                                    {services.map((service) => {
+                                                        const isPreSelected = item?.selectedOptions?.includes(service.toLowerCase());
+                                                        // console.log("ISPRESELECED",isPreSelected)
+                                                        // console.log("item?.selectedOptions", item.selectedOptions, service.toLowerCase())
+
+                                                        return (
+                                                            <li
+                                                                key={service}
+                                                                onClick={() => (nowReadOnly || isPreSelected ? null : toggleSelection(service))}
+                                                                style={{
+                                                                    fontSize: "15px",
+                                                                    padding: "10px 50px",
+                                                                    margin: "5px 0",
+                                                                    borderRadius: "5px",
+                                                                    background: nowReadOnly || isPreSelected ? "lightred" : selectedServices.includes(service)
+                                                                        ? "rgb(249 255 86)"
+                                                                        : "#f5f5f5",
+                                                                    color: nowReadOnly || isPreSelected ? "red" : selectedServices.includes(service) ? "black" : "black",
+                                                                    cursor: nowReadOnly || isPreSelected ? "not-allowed" : "pointer",
+                                                                    textAlign: "center",
+                                                                    boxShadow: selectedServices.includes(service)
+                                                                        ? "rgb(0 0 0) -2px -5px 0px"
+                                                                        : "2px 2px 4px #ccc",
+                                                                    transition: "all 0.3s ease",
+                                                                    maxWidth: "90%",
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "space-between",
+                                                                    opacity: nowReadOnly || isPreSelected ? 0.6 : 1,
+                                                                }}
+                                                            >
+                                                                <span>{service}</span>
+                                                                {selectedServices.includes(service) && (
+                                                                    <img
+                                                                        src={checksuccess}
+                                                                        alt="Selected"
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            marginLeft: "auto",
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                                {isPreSelected && (
+                                                                    <img
+                                                                        src={checksuccess}
+                                                                        alt="Selected"
+                                                                        style={{
+                                                                            height: "20px",
+                                                                            width: "20px",
+                                                                            marginLeft: "auto",
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                            </li>
+                                                        );
+                                                    })}
                                                 </ul>
-                                            </div>)}
+                                            </div>
 
 
 
@@ -1166,7 +1200,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
             </div >
             <div>
-                <BottomNavigationBar/>
+                <BottomNavigationBar />
             </div>
         </div >
     );

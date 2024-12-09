@@ -183,7 +183,7 @@ const UserDashboard = () => {
                         <div className="stat-container">
                             <div className="stat-item">
                                 <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
-                                <h3>Number Of Vehicles</h3>
+                                <h3>Number Vehicles</h3>
                                 <p>{vendorData.length}</p>
                             </div>
 

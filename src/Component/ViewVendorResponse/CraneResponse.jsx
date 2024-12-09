@@ -256,7 +256,7 @@ function CraneResponse({ data, onUpdate }) {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
-            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}/${formData.commisionAmount}`);
+            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}/${formData.commisionAmount}/crane`);
             if (response.data.message === "send successfully !!!.") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setTimeout(() => {

@@ -149,7 +149,7 @@ const StatusTracking = () => {
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info.selectedOptions === 'crane' && info.customerAcceptedVendor
+                 info.customerAcceptedVendor
             );
 
             let filteredImportant = filteredData.filter((info) =>
@@ -521,13 +521,13 @@ const StatusTracking = () => {
                                         <p style={{
                                         fontSize: '11px',
                                         marginTop: "2px",
-                                        background: "white",
+                                        background: "#8f8f8f",
                                         padding: "10px",
                                         border: '2px solid #000000',
                                         textAlign: 'center',
                                         borderRadius: '30px',
                                         fontWeight: "bold",
-                                        color: "blue",
+                                        color: "white",
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: "center",
@@ -546,7 +546,10 @@ const StatusTracking = () => {
                                     </p>
                                 </div>)}
 
-                                <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
+                               {item.vendorReached == true && item.approvedReaching == null &&(
+                                 <div>
+                                    <hr />
+                                <div style={{  justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
                                     {item.vendorReached == true && item.approvedReaching == null && (<p style={{
                                         fontSize: '11px',
                                         marginTop: "2px",
@@ -594,11 +597,12 @@ const StatusTracking = () => {
                                         }} onClick={(e) => vendorReached(item, false)} >
                                             <KeyboardDoubleArrowLeftIcon style={{
                                                 position: "absolute",
-                                                right: '10px'
+                                                right: '10px',
                                             }} />
                                             Not Reached
                                         </p>)}
                                 </div>
+                                </div>)}
 
                                 <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
                                     {item.doneWorking == true && item.confirmDoneWorking == false && (<p style={{
@@ -655,7 +659,7 @@ const StatusTracking = () => {
                                 </div>
 
                                 {selectedAction !== null && (
-                                    <p style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
+                                    <p style={{ marginTop: "5px", fontSize: "12px", padding: "10px", background:"lightgoldenrodyellow" }} className={`alert alert-${alertType} text-center`} role="alert">
                                         {selectedAction ? "Vendor Reached Successfully" : "Vendor Doesn't Reached investigating..."}
                                         <KeyboardDoubleArrowRightIcon style={{
                                             position: "absolute",
