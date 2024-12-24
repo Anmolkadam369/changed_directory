@@ -1,0 +1,121 @@
+/* Container Style */
+.firstpage-small-container {
+    align-items: stretch;
+    background-color: rgba(0, 0, 0, 0.00);
+    border: 0 solid black;
+    box-sizing: border-box;
+    display: flex;
+    flex-basis: auto;
+    flex-direction: column;
+    flex-shrink: 0;
+    list-style: none;
+    margin: 0px;
+    min-height: 0px;
+    min-width: 0px;
+    padding: 0px;
+    position: relative;
+    text-decoration: none;
+    z-index: 0;
+    background-color: rgb(240, 249, 255);
+    border-radius: 10px;
+    padding-top: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Content Style */
+  .firstpage-small-content {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  
+  /* Feature Card Style */
+  .feature-card {
+    background-color: rgb(255, 230, 188);
+    border-radius: 10px;
+    padding: 20px;
+    flex-basis: 30%;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feature-card h2 {
+    color: #444;
+    font-size: 1.5rem;
+  }
+  
+  .feature-card p {
+    color: #666;
+    font-size: 1rem;
+  }
+  
+  /* Features Wrapper for Horizontal Scrolling */
+  .features-wrapper {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    gap: 20px;
+    padding-bottom: 10px; /* To provide space when scrolling */
+  }
+  
+  .firstpage-small-feature-card {
+    background-color: rgb(255, 230, 188);
+    border-radius: 10px;
+    padding: 20px;
+    flex-basis: 30%;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Prevent shrinking of cards */
+    min-width: 250px; /* Ensure a minimum width for each feature card */
+  }
+  
+  /* Button Container Style */
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .feature-button {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 12px;
+    border: none;
+    padding: 4px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .feature-button:hover {
+    background-color: #45a049;
+  }
+  
+  .feature-button svg {
+    margin-right: 5px;
+  }
+  
+  /* Responsive Layout */
+  @media (max-width: 768px) {
+    .firstpage-small-content {
+      flex-direction: column;
+    }
+  
+    .feature-card,
+    .firstpage-small-feature-card {
+      flex-basis: 100%;
+    }
+  
+    /* Keep the feature cards side-by-side on smaller screens */
+    .features-wrapper {
+      flex-direction: row;
+      gap: 20px;
+    }
+  }
+  

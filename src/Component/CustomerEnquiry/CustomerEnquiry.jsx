@@ -302,7 +302,7 @@ const CustomerEnquiry = () => {
 
     const getCustomerEnquiry = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getCustomerEnquiry`);
+            const response = await axios.get(`${backendUrl}/api/getCustomerEnquiry/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             const fetchedData = response.data.data;
             const formattedData = fetchedData.map(item => ({
                 ...item,
@@ -349,7 +349,7 @@ const CustomerEnquiry = () => {
     const view = async (id) => {
         console.log("VIEW", id)
         setCustomerEnquiryId(id);
-        const response = await axios.get(`${backendUrl}/api/getCustomerEnquiryById/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getCustomerEnquiryById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -496,7 +496,7 @@ const CustomerEnquiry = () => {
                 url: `${backendUrl}/api/customerEnquiry/${userId}`,
                 data: formData,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);
@@ -543,7 +543,7 @@ const CustomerEnquiry = () => {
                 url: `${backendUrl}/api/updateCustomerEnquiry/${userId}/${customerEnquiryId}`,
                 data: editedFormData,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);

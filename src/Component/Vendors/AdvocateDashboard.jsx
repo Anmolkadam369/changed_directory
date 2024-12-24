@@ -158,7 +158,7 @@ const AdvocateDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedCasesAdvocate", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {

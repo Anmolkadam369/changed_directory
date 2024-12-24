@@ -22,13 +22,14 @@ const VendorIndPerf = () => {
     const [showVendorTable, setShowVendorTable] = useState(true);
     const [selectedVendorCode, setSelectedVendorCode] = useState(null);
     const [selectedVendorType, setSelectedVendorType] = useState(null);
-
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     useEffect(() => {
        getData();
       }, []);
 
     const getData = async () => {
-        const response = await axios.get(`${backendUrl}/api/getVendor`);
+        const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setData(response.data.data);
         setCurrentItems(response.data.data)
     };

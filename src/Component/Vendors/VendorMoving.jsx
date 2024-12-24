@@ -52,7 +52,7 @@ const VendorMoving = ({ item }) => {
 
     const getCurrentLocation = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -162,7 +162,7 @@ const VendorMoving = ({ item }) => {
 
                 <div className="text-overlay">
                     <p style={{ fontSize: '14px', padding: "5px", border: '3px solid blue', borderImage: 'linear-gradient(to top, white 10% , black 90%) 1', textAlign: 'center', borderRadius: '30px', fontWeight: "bold" }}>
-                        Rejected Orders!
+                         View Orders!
                     </p>
 
                     <p style={{ textAlign: "center", marginTop: "10px", fontSize: "14px" }}>Vehicle No </p>

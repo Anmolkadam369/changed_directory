@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../FirstPage.css'
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
@@ -32,15 +32,17 @@ import Modal from '../../Location1/Modal.jsx';
 
 
 import NoDataFound from '../Cards/NoDataFound';
+import Loading from '../Cards/Loading.jsx';
 
 
 
 
 
-const HistoryReceipts = () => {
-
+const HistoryReceipts = ({ vehicleNumber }) => {
+    console.log("vehilceCode", vehicleNumber)
     const navigate = useNavigate()
     const { state } = useLocation();
+    const currentService = localStorage.getItem("currentService");
 
     const [currentStage, setCurrentStage] = useState([]); // Example stage
     console.log("currentStage112", currentStage)
@@ -49,7 +51,11 @@ const HistoryReceipts = () => {
     const [avg, setAvg] = useState([])
     const [data, setData] = useState([]);
     const [filtering, setFiltering] = useState([]);
+    const [notCompleted, setNotCompleted] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [openFilterModal, setOpenFilterModal] = useState(false)
+    const [doneFetching, setDoneFetching] = useState(false)
+
     const [filter, setFilter] = useState('')
 
     console.log("DATA HERE", data)
@@ -91,7 +97,8 @@ const HistoryReceipts = () => {
 
 
         for (let i = 0; i < filtering.length; i++) {
-            let getTime = filtering[i].filedCaseFullyTime.split('|');
+            
+            let getTime = filtering[i]?.[`${currentService}Details`]?.filedCaseFullyTime.split('|');
             let assignedDate = getTime[0];
             let assignedTime = getTime[1];
             let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
@@ -119,9 +126,37 @@ const HistoryReceipts = () => {
                     filteredData.push(filtering[i]);
                 }
             }
+            else if (filter === 'year') {
+                const yearBefore = new Date(now.getTime() - (oneDay * 365)); // Calculate date one year ago
+                if (assignedDateTime >= yearBefore && assignedDateTime <= now) {
+                    console.log("Match found within last year:", filtering[i]);
+                    filteredData.push(filtering[i]);
+                }
+            }
 
         }
+        if (filter === 'newest') {
+            console.log("Sorting by newest to oldest");
+            console.log("filtering", filtering[0])
+            filtering.sort((a, b) => {
+                console.log("a?.[`${currentService}Details`]?.filedCaseFullyTime",a?.[`${currentService}Details`]?.filedCaseFullyTime)
+                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                return dateB - dateA; // Descending order
+            });
+            setData([...filtering]);
+        } else if (filter === 'oldest') {
+            console.log("Sorting by oldest to newest");
+            filtering.sort((a, b) => {
+                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                return dateA - dateB; // Ascending order
+            });
+            setData([...filtering]);
+        }
+        else{
         setData(filteredData)
+        }
     };
 
     const settingFilter = (filter) => {
@@ -139,31 +174,31 @@ const HistoryReceipts = () => {
 
     useEffect(() => {
         getData();
-        getVendorRating(        )
+        getVendorRating()
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
         }
     }, [token, userId, navigate]);
 
-    const getStage = (filedCaseFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime) => {
-        return [filedCaseFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime]
-    }
-
+    
     useEffect(() => {
         if (data.length > 0 && data.length != currentStage.length) {
             data.map((item) => {
                 avg.push(0)
             })
-
+            
         }
-
+        
     }, [data])
-
+    
+    const getStage = (filedCaseFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime) => {
+        return [filedCaseFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime]
+    }
     const getStageAndHistory = (item, index) => {
         setCurrentItemIndex(index)
         // setCurrentStage([])
-        let gotStage = getStage(item.filedCaseFullyTime, item.customerAcceptedVendorTime, item.vendorMovedTime, item.vendorReachedTime, item.doneWorkingTime)
+        let gotStage = getStage(item?.[`${currentService}Details`]?.filedCaseFullyTime, item?.[`${currentService}Details`]?.customerAcceptedVendorTime, item?.[`${currentService}Details`]?.vendorMovedTime, item?.[`${currentService}Details`]?.vendorReachedTime, item?.[`${currentService}Details`]?.doneWorkingTime)
         currentStage.unshift(gotStage)
         setIsHistoryPage(true)
     }
@@ -186,24 +221,31 @@ const HistoryReceipts = () => {
         }
     }, [currentStage[0]]); // Dependency array
 
-    useEffect(() => {
-        console.log("stages updated:", stages);
-    }, [stages]);
+    // useEffect(() => {
+    //     console.log("stages updated:", stages);
+    // }, [stages]);
 
     const getData = async (e) => {
         console.log("userid", userId);
         const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
-        if (response.data.message == "No accident vehicle data found.") setData([])
+        if (response.data.message == "No accident vehicle data found.") {
+            setDoneFetching(true)
+            setData([])}
         else {
             console.log("response123421", response.data.data);
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info.confirmDoneWorking == true
+                info?.[`${currentService}Details`]?.confirmDoneWorking == true
             );
-            setData(filteredData)
+            let notCompleted = response.data.data.filter((info) =>
+                info?.[`${currentService}Details`]?.confirmDoneWorking == false
+            )
             setFiltering(filteredData)
-            console.log("seTDATIOATN", filteredData);
+            setFilteredData(filteredData);
+            setData(filteredData)
+            setNotCompleted(notCompleted)
+            setDoneFetching(true)
 
         }
     };
@@ -230,39 +272,74 @@ const HistoryReceipts = () => {
         }
     }
 
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState ('');
+    useEffect(() => {
+        if (vehicleNumber && filtering.length > 0) {
+            setSearchValue(vehicleNumber);
+            handleSearch(vehicleNumber);
+        }
+    }, [vehicleNumber, filtering]);
 
-    const handleSearch = (e) => {
-        console.log("serachvaue", e.target.value)
-        const value = e.target.value.toLowerCase();
+    useEffect(() => {
+        return () => setSearchValue('');
+    }, []);
+    const handleSearch = (inputValue) => {
+        const value = inputValue?.toLowerCase() ?? searchValue.toLowerCase()
         setSearchValue(value);
+        console.log("VALUE123", value)
+        
         const newRows = filtering.filter((row) => {
-            const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
-            const searchLower = value; // Use the updated search value directly
-
-            const idValue = formattedId.includes(searchLower);
-            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchLower);
-            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(searchLower);
-
-            return vehicleNoValue || chassisNoValue;
+            const formattedId = String(row.id).padStart(4, '0').toLowerCase();
+            const idValue = formattedId.includes(value);
+            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(value);
+            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(value);
+            return idValue || vehicleNoValue || chassisNoValue;
         });
-
         setData(newRows);
     };
 
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const handleSelect = (index) => {
+        setSelectedIndex(index);
+        console.log("SELECTEDINDOEX", index)
+        console.log("filtering", filtering)
+        
+        if (index === 0) {
+            setFiltering([...filteredData]);
+            setData([...filteredData]);
+        } else {
+            setData([...notCompleted]);
+        }
+        console.log("d", notCompleted.length)
+        console.log("notCompleted", data.length)
+    };
 
     return (
-        <div>
+        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))'  }}>
+           {doneFetching == true && (
+             <div>
+            <div style={{ position: "sticky", top: "14px", zIndex: "999", margin: "20px 20px" }}>
+                <div className="imageContainer" style={{ height: "0px" }}>
+                    {["Complete Proecess", "Processing"].map((text, index) => (
+                        <div
+                            key={index}
+                            style={{ cursor: 'pointer' }}
+                            className={`imageWrapper ${selectedIndex === index ? "selected" : ""}`}
+                            onClick={() => handleSelect(index)}
+                        >
+                            <div className="top-scrolling">
+                                <p>{text}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
                 <div className="container h-100">
                     <div className="d-flex justify-content-center h-100">
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
-                            {/* <a href="#" className="search_icon">
-                            <i className="fas fa-search"></i>
-                        </a> */}
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}   onChange={(e)=>{handleSearch(e.target.value)}} />
                             <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-
                         </div>
                         <div style={{ margin: "23px 20px 0px" }}>
                             <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
@@ -273,17 +350,23 @@ const HistoryReceipts = () => {
 
 
             {data.length > 0 && (
-                data.map((item, dataIndex) => (
-                    <div style={{
-                        // filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                        // opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                        // pointerEvents: isImageContainerVisible ? "none" : "auto",
-                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px"
-                    }}>
-
-
-                        {item.customerAcceptedVendor && (
-                            <div>
+                 <div
+                 style={{
+                     display: "grid",
+                     gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                     
+                 }}
+             >
+               { data.map((item, dataIndex) => (
+                    <div>
+                        {(
+                           <div style={{
+                            // filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
+                            // opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
+                            // pointerEvents: isImageContainerVisible ? "none" : "auto",
+                             background: "linear-gradient(233deg, rgb(89 88 88 / 67%), transparent)", border: "1px solid teal", maxWidth: "410px", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', padding: "10px"
+                        }}>
+                           <div style={{ background: "20px" }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
@@ -295,24 +378,26 @@ const HistoryReceipts = () => {
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item.filedCaseFullyTime.split("|")[0]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}</span>
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vendor  : </p>
-                                    <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>Crane Work</span>
+                                    <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>{currentService.charAt(0).toUpperCase() + currentService.slice(1).toLowerCase()} Work</span>
                                 </div>
-                                <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
-                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold" }}>Current Status:</p>
-                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', border: "1px solid green", background: 'white' }}>Completed</span>
-                                </div>
+                                <div style={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
+                                    <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
+                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold" }}>Current Status:</p>
+                                        {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (<span style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', fontWeight: "bold" }}>Completed</span>)}
+                                        {item?.[`${currentService}Details`]?.customerAcceptedVendor == false && (<span style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', fontWeight: "bold" }}>Processing</span>)}
 
-                                <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
+                                    </div>
+
 
                                     <p style={{
                                         fontSize: '11px',
                                         marginTop: "5px",
                                         background: "white",
-                                        padding: "10px",
+                                        // padding: "10px",
                                         border: '2px solid #000000',
                                         textAlign: 'center',
                                         borderRadius: '30px',
@@ -324,8 +409,8 @@ const HistoryReceipts = () => {
                                         position: "relative",
                                         cursor: "pointer",
                                         maxWidth: "400px",
-                                        minWidth: "220px",
-                                        margin: '5px 5px 5px 5px',
+                                        minWidth: "150px",
+                                        margin: '-8px 5px 5px 5px',
                                         height: "30px"
                                     }} onClick={(e) => getStageAndHistory(item, dataIndex)}>
                                         See History
@@ -340,12 +425,12 @@ const HistoryReceipts = () => {
 
 
                             </div>
+                        </div>
                         )}
 
-
-
                     </div>
-                ))
+                ))}
+                </div>
             )}
 
             {isHistoryPage && (
@@ -491,16 +576,22 @@ const HistoryReceipts = () => {
             <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
                 {openFilterModal && (
                     <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Year</p>
+                       <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('newest') }}>newest to oldest</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('oldest') }}>oldest to newest</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('year') }}>Year</p>
                     </div>
                 )}
             </Modal>
 
             {data.length == 0 && (
                 <NoDataFound />
+            )}
+            </div>)}
+            {doneFetching == false && (
+                <Loading/>
             )}
         </div>
     )

@@ -40,6 +40,8 @@ const CraneRejectedOrder = ({ data }) => {
     const [spareUseData, setSpareUseData] = useState([]);
     console.log('totalRejectedCases', totalRejectedCases)
 
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     const [openDetails, setOpenDetails] = useState(false);
     const [choosenCase, setChoosenCase] = useState([])
 
@@ -190,7 +192,7 @@ const CraneRejectedOrder = ({ data }) => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -209,7 +211,7 @@ const CraneRejectedOrder = ({ data }) => {
 
     const getCustomerRating = async (customerCode) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}`);
+            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")
@@ -241,7 +243,7 @@ const CraneRejectedOrder = ({ data }) => {
     return (
         <div>
             <div style={{
-                marginBottom: "100px"
+                marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))'
             }}>
                 <div className="container" style={{
                     paddingTop: "30px",
@@ -255,8 +257,8 @@ const CraneRejectedOrder = ({ data }) => {
 
                 }}>
                     <div className="d-flex justify-content-center h-100"  >
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}  onChange={handleSearch} />
                             {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                         </a> */}
@@ -268,7 +270,13 @@ const CraneRejectedOrder = ({ data }) => {
                     </div>
                 </div>
                 {totalRejectedCases.length > 0 && (
-                    totalRejectedCases.map((item, dataIndex) => (
+                    <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                        
+                    }}>
+                    {totalRejectedCases.map((item, dataIndex) => (
                         <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea", marginTop:"20px" }}>
 
                             <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
@@ -371,13 +379,13 @@ const CraneRejectedOrder = ({ data }) => {
 
                                     <div style={{ display: "flex", alignItems: "center", margin: '0px 0px 20px 5px' }}>
                                         {item.details[0]?.vendorDecision == 'reject' && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Vendor Rejected </span>
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Vendor Rejected </span>
                                         )}
                                         {item.details[0]?.acceptedByAdmin == 'reject' && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin Rejected</span>
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin Rejected</span>
                                         )}
                                         {item.details[0]?.acceptedByAdmin == 'accept' && item.details[0]?.customerAcceptedVendor == false && item.details[0]?.closeCraneOrder==true && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer Rejected</span>
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer Rejected</span>
                                         )}
 
                                         <div style={{
@@ -396,7 +404,7 @@ const CraneRejectedOrder = ({ data }) => {
                                             position: "relative",
                                             cursor: "pointer",
                                             maxWidth: "400px",
-                                            minWidth: "162px",
+                                            minWidth: "150px",
                                             margin: '0px 0px 0px 5px',
                                             height: "30px"
                                         }}
@@ -410,7 +418,8 @@ const CraneRejectedOrder = ({ data }) => {
                                 </div>
                             </div>
                         </div>
-                    ))
+                    ))}
+                    </div>
                 )}
 
                 {openDetails && (

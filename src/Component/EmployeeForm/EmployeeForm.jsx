@@ -349,7 +349,7 @@ const EmployeeForm = () => {
                 url: `${backendUrl}/api/createNewEmployee/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);

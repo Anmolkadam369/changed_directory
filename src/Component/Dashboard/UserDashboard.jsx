@@ -46,7 +46,7 @@ const UserDashboard = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
 
                 } catch (error) {
                     console.error('Error sending login notification:', error);

@@ -70,7 +70,7 @@ const UserProfileDetails = () => {
     }, [userId, token])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getCustomerById/${userId}`,{ headers:{'Authorization': `Bearer ${token}`}});
         console.log("daa", response.data.data)
         console.log("response123", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -95,7 +95,7 @@ const UserProfileDetails = () => {
               url: `${backendUrl}/api/customerUpdate/${userId}/${userId}`,
               data: formDataObj,
               headers: {
-                'Authorization': token
+                'Authorization': `Bearer ${token}`
               }
             });
             console.log("response", response.data);

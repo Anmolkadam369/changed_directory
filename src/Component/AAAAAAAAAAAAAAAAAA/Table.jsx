@@ -4,6 +4,8 @@ import axios from 'axios';
 import backendUrl from '../../environment';
 
 const Table = () => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [newAccidentData, setData] = useState([]);
   console.log("NEWSD,", newAccidentData)
   const [newCases, setNewCases] = useState(false)
@@ -46,7 +48,7 @@ const Table = () => {
   }, [])
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo`);
+    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
   };

@@ -183,7 +183,7 @@ const CraneDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'

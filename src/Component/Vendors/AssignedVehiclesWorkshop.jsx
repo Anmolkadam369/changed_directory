@@ -94,7 +94,7 @@ const AssignedVehicleWorkshop = () => {
 
   const fetchAssignedCases = async (vendorCode) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${vendorCode}`);
+      const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("accident vehicle table", response.data.data);
       setData(response.data.data);
     } catch (error) {
@@ -116,7 +116,7 @@ const AssignedVehicleWorkshop = () => {
   const findUserById = async (id) => {
     try {
       console.log("HEY", id)
-      const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
+      const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       console.log("daa", response.data)
       console.log("data", response.data.data[0]);
       setGetDataOfUser(response.data.data[0])

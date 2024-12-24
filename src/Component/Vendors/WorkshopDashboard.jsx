@@ -157,7 +157,7 @@ const WorkshopDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {

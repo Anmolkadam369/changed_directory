@@ -12,6 +12,8 @@ import {
 } from "recharts";
 
 const ComplaintsCharts = ({ aspect, title }) => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
     const [vendorData, setVendorData] = useState([]);
     const [lineData, setLineData] = useState([]);
 
@@ -37,7 +39,7 @@ const ComplaintsCharts = ({ aspect, title }) => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAllAccidentVehicleInfo`);
+            const response = await axios.get(`${backendUrl}/api/getAllAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);

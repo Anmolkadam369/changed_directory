@@ -124,7 +124,7 @@ const SurveyorMasterEdit = ({ id, onUpdate }) => {
     }, [id])
     const getDataById = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getSurveyById/${id}`)
+            const response = await axios.get(`${backendUrl}/api/getSurveyById/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
             console.log("daa", response.data.data)
             console.log("response", response.data.data[0]);
             setComingData(response.data.data[0])
@@ -472,7 +472,7 @@ const SurveyorMasterEdit = ({ id, onUpdate }) => {
                 url: `${backendUrl}/api/surveyorDataUpdate/${userId}/${formData.surveyorCode}`,
                 data: formData,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setIsLoading(false);

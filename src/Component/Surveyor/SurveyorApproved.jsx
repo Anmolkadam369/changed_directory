@@ -137,7 +137,7 @@ const SurveyorApproved = () => {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`);
+      const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       setGeneratedExcel(response.data.data);
       console.log("resoponse", response.data.data)
       setIsLoading(false);
@@ -177,7 +177,7 @@ const SurveyorApproved = () => {
       method: 'PUT',
       url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();
@@ -189,7 +189,7 @@ const SurveyorApproved = () => {
       method: 'DELETE',
       url: `${backendUrl}/api/deleteVendor/${userId}/${id}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();
@@ -199,7 +199,7 @@ const SurveyorApproved = () => {
 
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/getSurveyor`);
+    const response = await axios.get(`${backendUrl}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
 
     const formattedData = fetchedData.map(item => ({

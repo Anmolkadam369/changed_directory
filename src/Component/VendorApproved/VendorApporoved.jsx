@@ -134,7 +134,7 @@ const VendorApproved = () => {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`);
+      const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       setGeneratedExcel(response.data.data);
       console.log("resoponse", response.data.data)
       setIsLoading(false);
@@ -174,7 +174,7 @@ const VendorApproved = () => {
       method: 'PUT',
       url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();
@@ -186,7 +186,7 @@ const VendorApproved = () => {
       method: 'DELETE',
       url: `${backendUrl}/api/deleteVendor/${userId}/${id}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();
@@ -196,7 +196,7 @@ const VendorApproved = () => {
 
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/getVendor`);
+    const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
 
     const formattedData = fetchedData.map(item => ({

@@ -111,7 +111,7 @@ const tableCustomStyles = {
       method: 'PUT',
       url: `${backendUrl}/api/changeActivationEmployee/${userId}/${id}/${isActivate}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();
@@ -130,7 +130,7 @@ const tableCustomStyles = {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/employeeDBToExcel/${userId}`);
+      const response = await axios.get(`${backendUrl}/api/employeeDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       console.log("daa", response.data.data)
       console.log("response", response.data.data);
       setGeneratedExcel(response.data.data)
@@ -152,7 +152,7 @@ const tableCustomStyles = {
     setShowEmployeeMasterEdit(false); // Hide VendorMasterEdit
   };
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/getEmployee`);
+    const response = await axios.get(`${backendUrl}/api/getEmployee/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
     const formattedData = fetchedData.map(item => ({
       ...item,
@@ -168,7 +168,7 @@ const tableCustomStyles = {
       method: 'DELETE',
       url: `${backendUrl}/api/deleteEmployee/${userId}/${id}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();

@@ -131,6 +131,19 @@
   border: 1px solid greenyellow;
 }
 
+
+.stat-item-empty {
+  background-color: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+  text-align: center;
+  width: 200px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: slideInFromTop 1.0s ease-out; /* Add this line */
+}
 /* .gradient-background {
    background: linear-gradient(to right , #292727, #938d84);
   padding: 10px; 

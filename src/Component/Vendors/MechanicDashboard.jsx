@@ -159,7 +159,7 @@ const MechanicDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {

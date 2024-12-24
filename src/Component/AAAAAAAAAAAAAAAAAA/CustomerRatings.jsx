@@ -7,12 +7,16 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 const CustomerRatings = () => {
   const [newAccidentData, setData] = useState([]);
   const [expandTable, setExpandTable] = useState(false);
+  
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+  
   useEffect(() => {
     getData()
   }, [])
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/customerRating`);
+    const response = await axios.get(`${backendUrl}/api/customerRating/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
   };

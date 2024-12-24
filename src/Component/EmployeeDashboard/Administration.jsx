@@ -257,7 +257,7 @@ const Administration = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
                     await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
 
                     // alert('Login notification sent successfully');
@@ -273,7 +273,9 @@ const Administration = () => {
 
 
     const findUserById = async (id) => {
-        console.log("HEY", `${backendUrl}/api/findById/${id}`)
+        console.log("HEY", `${backendUrl}/api/findById/${id}`,{
+            headers:{ 'Authorization': `Bearer ${token}`}
+        })
         const response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);

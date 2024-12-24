@@ -1156,7 +1156,7 @@
 //         e.preventDefault();
 //         const response = await axios.put(`http://localhost:3001/api/updateVehicleClaim/${id}/${userId}`, JSON.stringify(accidentData),{
 //             headers: {
-//                 'authorization': token,
+//                 'Authorization': `Bearer ${token}`,
 //                 'Content-Type': 'application/json'
 //               }
 //         });
@@ -2096,7 +2096,7 @@ const VendorMasterViewOnly = () => {
 
     // const getData= async ()=>{
     //     try {
-    //         const rawData = await axios.get(`${backendUrl}/api/getVendor`)
+    //         const rawData = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
     //         let fetchedData = rawData.data.data;
     //         fetchedData = fetchedData.map((dataStrip)=>({
     //             ...dataStrip,
@@ -2110,7 +2110,7 @@ const VendorMasterViewOnly = () => {
 
     const getData = async () => {
         try {
-            // const response = await axios.get(`${backendUrl}/api/getVendor`)
+            // const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
             // let fetchedData = response.data.data
             // fetchedData = fetchedData.map((datastrip) => ({
             //     ...datastrip,

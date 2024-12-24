@@ -132,7 +132,7 @@ function DailyWorkshop() {
 
     const getPreviousImages = async (accidentFileNo) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getImagesByAccidentFile/${accidentFileNo}`);
+            const response = await axios.get(`${backendUrl}/api/getImagesByAccidentFile/${accidentFileNo}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("getImagesByAccidentFile", response)
             // setComingData(response.data.data[0])
 
@@ -143,7 +143,7 @@ function DailyWorkshop() {
 
     const getDataById = async (id) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
+            const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("getAccidentVehicleInfo", response)
             console.log("getAccidentVehicleInfo", response.data.data[0]);
             setComingData(response.data.data[0])
@@ -238,7 +238,7 @@ function DailyWorkshop() {
                 url: `${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("RESPONSE", response)

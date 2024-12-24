@@ -29,7 +29,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     if (item == null) {
         console.log("iteminside", item)
     }
-    const [regNo, setRegNo] = useState(item?.reg ||'' );
+    const [regNo, setRegNo] = useState(item?.reg || '');
 
     const [vehicleInfo, setVehicleInfo] = useState([]);
     const [comingVehicleInfo, setComingVehicleInfo] = useState([]);
@@ -81,7 +81,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data)
         response.data.data = response.data.data.filter((individualResponse) => {
             if (individualResponse.latitude !== null && individualResponse.longitude !== null) {
@@ -98,7 +98,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     async function getVehicleData() {
         try {
-            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`);
+            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` }});
             if (getData.data.message === 'Vehicle found') {
                 setVehicleInfo([getData.data]);
                 setComingVehicle(getData.data);
@@ -184,12 +184,21 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const [isMaterialLoaded, setIsMaterialLoaded] = useState(item?.isMaterialLoaded || false)
     const [quantity, setQuantity] = useState(item?.quantity || '')
     const [budget, setBudget] = useState(item?.budget || '')
-    const [latitude, setLatitude] = useState(item?.latitude || '')
-    console.log('latitude', latitude)
+
     const [longitude, setLongitude] = useState(item?.longitude || '')
+    const [latitude, setLatitude] = useState(item?.latitude || '')
+
+    const [dropLatitude, setDropLatitude] = useState('')
+    const [dropLongitude, setDropLongitude] = useState('')
+    const [dropLocation, setDropLocation] = useState('')
+
+
+    console.log('latitude', latitude)
     console.log('longitude1231231', longitude)
 
     const [location, setLocation] = useState('')
+    const [pickupLocation, setPickupLocation] = useState('')
+
     const [onSpotName, setOnSpotName] = useState(item?.onSpotName || '')
     const [onSpotContact, setOnSpotContact] = useState(item?.onSpotContact || '')
 
@@ -216,8 +225,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
         if (state?.center) {
             console.log("Center in Previous Page:", state.center);
-            setLatitude(state.center[0])
-            setLongitude(state.center[1])
+            setDropLatitude(state.center[0])
+            setDropLongitude(state.center[1])
+            setDropLocation(state.placeName)
 
             setIsVerified(true)
         }
@@ -226,19 +236,65 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
             setComingFrom(state.fromPageHere)
         }
 
+        if (latitude && longitude && dropLatitude && dropLongitude) {
+            const getNearByVendor = async () => {
+                try {
+                    const response = await axios.post(`${backendUrl}/api/findNearbyLocation/${userId}`, {
+                        pickuplatitude: latitude,
+                        pickuplongitude: longitude,
+                        dropLatitude: dropLatitude,
+                        dropLongitude: dropLongitude,
+                        selectedVendor : 'crane'
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    if (response.status === 200) {
+                        setAlertInfo({ show: true, message: "get vendor!!!", severity: 'success' });
+
+
+                    } else {
+                        setAlertInfo({ show: true, message: "failed to get Vendor", severity: 'error' });
+
+                    }
+                }
+                catch (error) {
+                    console.error("Error uploading photos:", error);
+                    const errorMessage = error.response?.data?.message || 'An error occurred';
+                    if (errorMessage === "jwt expired") {
+                        setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
+
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 2000);
+                    } else {
+                        setAlertInfo({ show: true, message: "An error occurred while uploading photos.", severity: 'error' });
+
+                    }
+                }
+            }
+            getNearByVendor()
+        }
+
+
+
     }, [state]);
+
     useEffect(() => {
         // Log the 'center' from the passed state
         console.log("state Data", state)
         if (centerHere) {
-            console.log("Center in Previous Page:", centerHere);
-            setLatitude(centerHere[0])
-            setLongitude(centerHere[1])
+            console.log("Center in Previous Page here:", centerHere);
+            setDropLatitude(centerHere[0])
+            setDropLongitude(centerHere[1])
 
             setIsVerified(true)
         }
 
     }, [centerHere]);
+
 
 
 
@@ -304,81 +360,100 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         getLonLat()
     }, [fullAddress1])
 
-    const getLocation = () => {
-        setLatitude('')
-        setLongitude('')
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            setLocation("Geolocation is not supported by this browser.");
+    useEffect(() => {
+        const getLocation = () => {
+            setLatitude('');
+            setLongitude('');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                setLocation('Geolocation is not supported by this browser.');
+            }
+        };
+        getLocation()
+    }, [])
+
+
+    const showPosition = async (position) => {
+        const { latitude, longitude } = position.coords;
+        setLatitude(latitude);
+        setLongitude(longitude);
+
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await response.json();
+            if (data && data.address) {
+                const { road, city, state, country } = data.address;
+                setPickupLocation(`${road || ''}, ${city || ''}, ${state || ''}, ${country || ''}`);
+            } else {
+                setPickupLocation('Location details not found.');
+            }
+        } catch (error) {
+            setLocation('Error fetching location details.');
         }
-    };
-
-
-    const showPosition = (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
-        setLatitude(lat);
-        setLongitude(lon);
     };
 
     const showError = (error) => {
         switch (error.code) {
             case error.PERMISSION_DENIED:
-                setLocation("User denied the request for Geolocation.");
+                setLocation('User denied the request for Geolocation.');
                 break;
             case error.POSITION_UNAVAILABLE:
-                setLocation("Location information is unavailable.");
+                setLocation('Location information is unavailable.');
                 break;
             case error.TIMEOUT:
-                setLocation("The request to get user location timed out.");
+                setLocation('The request to get user location timed out.');
                 break;
             case error.UNKNOWN_ERROR:
-                setLocation("An unknown error occurred.");
+                setLocation('An unknown error occurred.');
                 break;
+            default:
+                setLocation('An error occurred while fetching location.');
         }
     };
 
-    const services = ["Crane", "Mechanic", "Advocate", "Workshop"];
-    const [selectedServices, setSelectedServices] = useState(
-        item?.selectedOptions ? [item.selectedOptions] : []
-    );
-    const[existingServices, setExistingServices] = useState(item?.selectedOptions ? [item.selectedOptions] : [])
-    let [finalSelectedService, setFinalSelectedService]= useState([])
-    console.log("total service", selectedServices)
-    console.log("existingServices service", existingServices)
-    console.log("finalSelectedService service", finalSelectedService)
+
+    // const services = ["Crane", "Mechanic", "Advocate", "Workshop"];
+    // const [selectedServices, setSelectedServices] = useState(
+    //     item?.selectedOptions ? [item.selectedOptions] : []
+    // );
+    // const[existingServices, setExistingServices] = useState(item?.selectedOptions ? [item.selectedOptions] : [])
+    // let [finalSelectedService, setFinalSelectedService]= useState([])
+    // console.log("total service", selectedServices)
+    // console.log("existingServices service", existingServices)
+    // console.log("finalSelectedService service", finalSelectedService)
 
 
-    console.log("item?.selectedOptions ",item?.selectedOptions )
-    const [newlySelectedServices, setNewlySelectedServices] = useState([]);
-    
-    const toggleSelection = (service) => {
-        
-        console.log("SERVICE", service)
-        console.log("item?.selectedOptions?.includes(service.toLowerCase())", item?.selectedOptions?.includes(service.toLowerCase()))
-        setSelectedServices((prev)=>{
-            if(prev.includes(service)) return prev.filter((selectedServices)=>selectedServices != service)
-            else return [...prev, service]
-        })
+    // console.log("item?.selectedOptions ",item?.selectedOptions )
+    // const [newlySelectedServices, setNewlySelectedServices] = useState([]);
 
-        let finalServices = existingServices.map((existingService)=>{
-            return existingService !== service ? service:null
-         })
-         setFinalSelectedService((prev) => {
-            if (service?.toLowerCase && prev.includes(service.toLowerCase())) {
-                return prev.filter((selectedService) => selectedService !== service.toLowerCase());
-            }
-            return [...prev, service?.toLowerCase()];
-        });
-    };
+    // const toggleSelection = (service) => {
 
+    //     console.log("SERVICE", service)
+    //     console.log("item?.selectedOptions?.includes(service.toLowerCase())", item?.selectedOptions?.includes(service.toLowerCase()))
+    //     setSelectedServices((prev)=>{
+    //         if(prev.includes(service)) return prev.filter((selectedServices)=>selectedServices != service)
+    //         else return [...prev, service]
+    //     })
 
+    //     let finalServices = existingServices.map((existingService)=>{
+    //         return existingService !== service ? service:null
+    //      })
+    //      setFinalSelectedService((prev) => {
+    //         if (service?.toLowerCase && prev.includes(service.toLowerCase())) {
+    //             return prev.filter((selectedService) => selectedService !== service.toLowerCase());
+    //         }
+    //         return [...prev, service?.toLowerCase()];
+    //     });
+    // };
+
+    let finalSelectedService = 'crane';
     let accidentDataObject
-   
-        console.log("elserafsdfasd")
-        accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, ...getData, latitude, longitude, selectedOptions: finalSelectedService };
+
+    console.log("elserafsdfasd")
+    accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, ...getData, latitude, longitude, pickupLocation, dropLocation, dropLatitude, dropLongitude, selectedOptions: finalSelectedService };
     console.log("accidentDataObject123445", accidentDataObject)
 
 
@@ -409,7 +484,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 url: `${backendUrl}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response.data.message", response.data.message)
@@ -442,8 +517,10 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
 
 
+    console.log("comingFrom", comingFrom)
     const goToMap = () => {
         console.log("fromPageHere", fromPageHere)
+
         if (item != null) {
             console.log("item", "item is ehrere")
             navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025], fromPage: "firstPage" } })
@@ -460,9 +537,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     const [nowReadOnly, setNowReadOnly] = useState(true)
     console.log("nowRead", nowReadOnly)
-    useEffect(()=>{
-        if(fromPageHere !== "allvehicles") setNowReadOnly(false)
-    },[fromPageHere])
+    useEffect(() => {
+        if (fromPageHere !== "allvehicles") setNowReadOnly(false)
+    }, [fromPageHere])
 
     return (
         <div>
@@ -523,7 +600,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                         <input
                                             type="text"
                                             className="Registrationdetails-elem-9"
-                                            style={{ textAlign: 'left', margin: '10px 10px 10px 0px', width: '80%' }}
+                                            style={{ textAlign: 'left', margin: '10px 10px 10px 10px', width: '80%' }}
                                             value={regNo}
                                             // readOnly
                                             placeholder='RJ 03 ED 2343'
@@ -566,11 +643,13 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     height: "35px",
                                                     cursor: item?.accidentLatitude ? 'not-allowed' : 'pointer',
                                                     opacity: item?.accidentLatitude ? 0.5 : 1,
-                                                }} onClick={(e) => {
-                                                    if (!item?.accidentLatitude) {
-                                                        getLocation()
-                                                    }
-                                                }} >
+                                                }}
+                                                // onClick={(e) => {
+                                                //     if (!item?.accidentLatitude) {
+                                                //         getLocation()
+                                                //     }
+                                                // }} 
+                                                >
                                                     SEND LOCATION
                                                     <KeyboardDoubleArrowRightIcon style={{
                                                         position: "absolute",
@@ -723,10 +802,10 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
                                             <div class="card" style={{ background: "#e8e7e7", marginBottom: "20px", maxWidth: "400px", minWidth: "300px" }}>
                                                 <div class="card-body">
-                                                    <h5 class="card-title" style={{ fontSize: "13px", fontWeight: "bold", color: 'purple' }}>Location :  </h5>
+                                                    <h5 class="card-title" style={{ fontSize: "13px", fontWeight: "bold", color: 'purple' }}>Pickup And Drop Location :  </h5>
 
                                                     <div style={{ display: "flex", maxWidth: "400px" }}>
-
+                                                        {/* 
                                                         <input
                                                             type="text"
                                                             className="Registrationdetails-elem-9"
@@ -755,7 +834,58 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                                 }
                                                             }}
                                                             disabled={getData.isActive === "false"}
+                                                        /> */}
+                                                        <input
+                                                            type="text"
+                                                            className="Registrationdetails-elem-9"
+                                                            style={{ textAlign: 'center', width: '90%' }}
+                                                            value={pickupLocation}
+                                                            placeholder='location'
+
+                                                            disabled={getData.isActive === "false"}
                                                         />
+                                                    </div>
+                                                    <div style={{ display: "flex", maxWidth: "400px" }}>
+
+                                                        {/* <input
+                                                                type="text"
+                                                                className="Registrationdetails-elem-9"
+                                                                style={{ textAlign: 'center', width: '90%', marginRight: "10px" }}
+                                                                value={dropLatitude}
+                                                                placeholder='Latitude'
+                                                                onChange={(e) => {
+                                                                    // Only update the value if it is numeric
+                                                                    const newValue = e.target.value;
+                                                                    if (/^\d*$/.test(newValue)) {
+                                                                        setLatitude(newValue);
+                                                                    }
+                                                                }}
+                                                                disabled={getData.isActive === "false"}
+                                                            />
+                                                            <input
+                                                                type="text"
+                                                                className="Registrationdetails-elem-9"
+                                                                style={{ textAlign: 'center', width: '90%' }}
+                                                                value={dropLongitude}
+                                                                placeholder='Longitude'
+                                                                onChange={(e) => {
+                                                                    const newValue = e.target.value;
+                                                                    if (/^\d*$/.test(newValue)) {
+                                                                        setLongitude(newValue);
+                                                                    }
+                                                                }}
+                                                                disabled={getData.isActive === "false"}
+                                                            /> */}
+                                                        <input
+                                                            type="text"
+                                                            className="Registrationdetails-elem-9"
+                                                            style={{ textAlign: 'center', width: '90%' }}
+                                                            value={dropLocation}
+                                                            placeholder='location'
+
+                                                            disabled={getData.isActive === "false"}
+                                                        />
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -907,7 +1037,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                             <div style={{ display: 'flex' }}>
                                                 <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}> Is Material Loaded ? </p>
                                                 <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => setIsMaterialLoaded(true)}>Yes</button>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => {setIsMaterialLoaded(false); setQuantity('')}}>No</button>
+                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => { setIsMaterialLoaded(false); setQuantity('') }}>No</button>
                                             </div>
 
                                             {(isMaterialLoaded == true || item?.isMaterialLoaded == true) && (
@@ -991,82 +1121,6 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     className="form-control"
                                                 />
                                             </div>
-
-
-                                            <div
-                                                style={{
-                                                    background: "#f0f0f0",
-                                                    marginTop: "20px",
-                                                    padding: "20px",
-                                                    borderRadius: "10px 10px 0px 0px",
-                                                    boxShadow: "rgba(0, 0, 0, 0.23) -6px 6px 20px 0px inset",
-                                                    minWidth: "300px",
-                                                    marginTop: "20px"
-                                                }}
-                                            >
-                                                <ul style={{ listStyle: "none", padding: 0, marginTop: "20px", }}>
-                                                    {/* console.log("item?.selectedOptions", item.selectedOptions) */}
-                                                    {services.map((service) => {
-                                                        const isPreSelected = item?.selectedOptions?.includes(service.toLowerCase());
-                                                        // console.log("ISPRESELECED",isPreSelected)
-                                                        // console.log("item?.selectedOptions", item.selectedOptions, service.toLowerCase())
-
-                                                        return (
-                                                            <li
-                                                                key={service}
-                                                                onClick={() => (nowReadOnly || isPreSelected ? null : toggleSelection(service))}
-                                                                style={{
-                                                                    fontSize: "15px",
-                                                                    padding: "10px 50px",
-                                                                    margin: "5px 0",
-                                                                    borderRadius: "5px",
-                                                                    background: nowReadOnly || isPreSelected ? "lightred" : selectedServices.includes(service)
-                                                                        ? "rgb(249 255 86)"
-                                                                        : "#f5f5f5",
-                                                                    color: nowReadOnly || isPreSelected ? "red" : selectedServices.includes(service) ? "black" : "black",
-                                                                    cursor: nowReadOnly || isPreSelected ? "not-allowed" : "pointer",
-                                                                    textAlign: "center",
-                                                                    boxShadow: selectedServices.includes(service)
-                                                                        ? "rgb(0 0 0) -2px -5px 0px"
-                                                                        : "2px 2px 4px #ccc",
-                                                                    transition: "all 0.3s ease",
-                                                                    maxWidth: "90%",
-                                                                    display: "flex",
-                                                                    alignItems: "center",
-                                                                    justifyContent: "space-between",
-                                                                    opacity: nowReadOnly || isPreSelected ? 0.6 : 1,
-                                                                }}
-                                                            >
-                                                                <span>{service}</span>
-                                                                {selectedServices.includes(service) && (
-                                                                    <img
-                                                                        src={checksuccess}
-                                                                        alt="Selected"
-                                                                        style={{
-                                                                            height: "20px",
-                                                                            width: "20px",
-                                                                            marginLeft: "auto",
-                                                                        }}
-                                                                    />
-                                                                )}
-                                                                {isPreSelected && (
-                                                                    <img
-                                                                        src={checksuccess}
-                                                                        alt="Selected"
-                                                                        style={{
-                                                                            height: "20px",
-                                                                            width: "20px",
-                                                                            marginLeft: "auto",
-                                                                        }}
-                                                                    />
-                                                                )}
-                                                            </li>
-                                                        );
-                                                    })}
-                                                </ul>
-                                            </div>
-
-
 
                                             {fromPageHere != "quotationUpdate" && (
                                                 <p style={{

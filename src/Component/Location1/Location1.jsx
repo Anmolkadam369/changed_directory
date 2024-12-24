@@ -122,7 +122,7 @@ function Location1({ vehicleData }) {
     }, [token, userId, navigate]);
 
     const findUserById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}`);
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setGetData(response.data.data[0]);
         console.log(getData);
     };
@@ -244,7 +244,7 @@ function Location1({ vehicleData }) {
                 url: `${backendUrl}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setIsLoading(false);

@@ -134,7 +134,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
     }
 
     const getDataSurveyor = async () => {
-        const response = await axios.get(`${backendUrl}/api/getSurveyor`);
+        const response = await axios.get(`${backendUrl}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         setSurveyorData(fetchedData);
       };
@@ -523,7 +523,7 @@ console.log("accidentdata123456789", accidentData)
                 url: `${backendUrl}/api/addVehicleClaim/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);

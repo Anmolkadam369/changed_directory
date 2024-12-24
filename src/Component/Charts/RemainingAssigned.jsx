@@ -14,7 +14,9 @@ import {
 const RemainingAssigned = ({ aspect, title }) => {
     const [vendorData, setVendorData] = useState([]);
     const [lineData, setLineData] = useState([]);
-
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    
     useEffect(() => {
         getVendorData();
     }, []);
@@ -38,7 +40,7 @@ const RemainingAssigned = ({ aspect, title }) => {
     const getVendorData = async () => {
         try {
           const getFilteredData = "partiallyAssigned"
-            const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}`);
+            const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);

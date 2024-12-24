@@ -194,7 +194,7 @@ const Featured = () => {
   }, [userId])
 
   const getVendorWholeDetails = async () => {
-    const response = await axios.get(`${backendUrl}/api/getVendorWholeDetails/${userId}`);
+    const response = await axios.get(`${backendUrl}/api/getVendorWholeDetails/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     setData(response.data.data);
     console.log("VENDORDETAILSFEATURES", response.data.data)
   };

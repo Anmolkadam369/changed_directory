@@ -574,7 +574,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
     console.log("setAccidentData", accidentData)
 
     const getDataSurveyor = async () => {
-        const response = await axios.get(`${backendUrl}/api/getSurveyor`);
+        const response = await axios.get(`${backendUrl}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         setSurveyorData(fetchedData);
       };
@@ -716,7 +716,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 url: `${backendUrl}/api/updateVehicleClaim/${id}/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (response) {

@@ -4,6 +4,8 @@ import { Doughnut } from "react-chartjs-2";
 import backendUrl from '../../environment';
 
 const VendorAccpetedDoughnut = () => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const [doughnutData, setDoughnutData] = useState({
     labels: [],
     datasets: [
@@ -38,7 +40,7 @@ const VendorAccpetedDoughnut = () => {
   }, [newResponseData, selectedType]);
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/allVendorDataWithCustomerName`);
+    const response = await axios.get(`${backendUrl}/api/allVendorDataWithCustomerName/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     if (response && response.data.message !== "No accident vehicle data found.") {
       setNewResponseData(response.data.data);
     }

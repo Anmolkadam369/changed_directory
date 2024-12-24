@@ -121,6 +121,25 @@ const Admin = () => {
         setShowInitialReg(false)
     };
 
+    // if(startingPage) navigate('/admin-dashboard-vendor-customer')
+    // if(showAddVendor) navigate('/vendor-form')
+    // if(showViewVendor) navigate('/vendor-view-form')
+    // if(showAddCustomer) navigate('/customer-form')
+    // if(visitorForm) navigate('/visitors-form')
+    // if(customerEnquiryForm) navigate('/visitors-form')
+    // if(showPotentialVendor) navigate('/signup-form-submissions')
+    // if(showInitialReg) navigate('/signup-form-view')
+    // if(showAddEmployee) navigate('/employee-form')
+    // if(showViewCustomer) navigate('/customer-view-form')
+    // if(showVehicleClaim) navigate('/accident-vehicle-register-update')
+    // if(showVehicleClaimView) navigate('/view-accident-vehicle-register-details')
+    // if(showEmployeeView) navigate('/view-employee')
+    // if(accidendVehicle) navigate('/accident-vehicle')
+    // if(addImages) navigate('/daily-image-upload')
+    // if(vendorResponsing) navigate('/vendor-response')
+    // if(addSurveyor) navigate('/add-surveyor')
+    // if(viewSurveyor) navigate('/add-surveyor')
+
     const vendorData = [10, 5, 15, 20];
     const vendorLabels = ['Advocate', 'Crane', 'Mechanic', 'Workshops'];
 
@@ -172,8 +191,8 @@ const Admin = () => {
     }, []);
 
     const handleConfirmSignOut = async () => {
-        const response = await axios.put(`${backendUrl}/api/logout`, {
-            loginId
+        const response = await axios.put(`${backendUrl}/api/logout/${userId}`, {loginId},{
+            headers:{ 'Authorization': `Bearer ${token}`}
         });
         if (response.status === 200) {
             localStorage.setItem("token", "");
@@ -289,7 +308,7 @@ const Admin = () => {
     //             new Notification(notificationTitle, notificationOptions);
     //         }
     //     });
-    // }, [lastMessageId]);
+    // }, [lastMessageId]); 
 
     const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
     const effectRan = useRef(false);
@@ -306,8 +325,9 @@ const Admin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                
                 const response = await axios.get(`${backendUrl}/api/rightPerson/${userId}`, {
-                    headers: { 'Authorization': token }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 console.log("responseing", response.data);
 
@@ -322,7 +342,7 @@ const Admin = () => {
             }
         };
 
-        fetchData();
+        if(userId != "") fetchData();
     }, [userId, token])
 
     console.log("isfirscalling", isFirstCallComplete)
@@ -342,7 +362,7 @@ const Admin = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
                     await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
 
                 } catch (error) {
@@ -360,7 +380,9 @@ const Admin = () => {
         if (isFirstCallComplete) {
             const findUserById = async (userId) => {
                 try {
-                    let response = await axios.get(`${backendUrl}/api/findById/${userId}`);
+                    let response = await axios.get(`${backendUrl}/api/findById/${userId}`,{
+                        headers:{ 'Authorization': `Bearer ${token}`}
+                    });
                     console.log("daa", response.data)
                     if (response.data.message == "No user found") {
                         response = await axios.get(`${backendUrl}/api/findByIdEmployee/${userId}`);
@@ -374,7 +396,10 @@ const Admin = () => {
                     console.log("error", error.message)
                 }
             }
-            findUserById(userId)
+            if(userId != ""){
+                findUserById(userId)
+
+            }
         }
     }, [isFirstCallComplete, userId]);
 

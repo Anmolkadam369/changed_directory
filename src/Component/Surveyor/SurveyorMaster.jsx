@@ -504,7 +504,7 @@ const SurveyorMaster = () => {
                 url: `${backendUrl}/api/surveyorDataIndividual/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setIsLoading(false);
@@ -545,7 +545,7 @@ const SurveyorMaster = () => {
                 url: `${backendUrl}/api/surveyorData/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setIsLoading(false);

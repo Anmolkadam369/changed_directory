@@ -30,6 +30,17 @@ const UserProfileFirst = () => {
        navigate('/user-profile-details')
       }
 
+      const logoutUser=()=>{
+        localStorage.removeItem('userId');
+        localStorage.removeItem('token');
+        localStorage.removeItem('loginTime');
+        localStorage.removeItem('loginId');
+        localStorage.removeItem('userRole');
+        document.cookie = 'token=; path=/; max-age=0; secure; samesite=strict';
+        console.log('Logged out user.');
+        window.location.href = '/loginPage';
+      }
+
  
     return (
         <div className="gradient-background">
@@ -81,7 +92,7 @@ const UserProfileFirst = () => {
                 {openLogoutModal && (
                     <div style={{ textAlign: "center", marginTop: "80px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                      <p style={{textAlign:'center', color:'white', marginBottom:"20px"}}> Are you sure Logout ?</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Logout</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={logoutUser}>Logout</p>
                     </div>
                 )}
             </Modal>

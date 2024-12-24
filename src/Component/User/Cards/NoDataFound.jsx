@@ -6,7 +6,7 @@ const NoDataFound = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '70vh',
+            height: '76vh',
             textAlign: 'center'
         }}>
             <img src={noDataFound} alt="No Data To Show" style={{ height: "150px", width: "150px" }} />

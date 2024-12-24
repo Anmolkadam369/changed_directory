@@ -306,7 +306,7 @@ function CraneResponse({ data, onUpdate }) {
                 url: `${backendUrl}/api/adminOnAssignedVehicle/${firstlyCameData[0].AccidentVehicleCode}/${userId}/${firstlyCameData[0].VendorCode}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
 

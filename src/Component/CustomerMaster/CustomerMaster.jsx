@@ -486,7 +486,7 @@ const CustomerMaster = () => {
         url: `${backendUrl}/api/customerInfo/${userId}`,
         data: formDataObj,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       })
       console.log("response", response.data);
@@ -524,7 +524,7 @@ const CustomerMaster = () => {
         url: `${backendUrl}/api/customerInfoExcel/${userId}`,
         data: formDataObj,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       setIsLoading(false);

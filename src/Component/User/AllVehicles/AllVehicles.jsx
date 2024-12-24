@@ -9,6 +9,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import trucksImage2 from '../../../Assets/trucksImage3.jpg';
 import trucksImage4 from '../../../Assets/trucksImage6.png';
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
+import allAccidentVehicleImg from '../../../Assets/allAccidentVehicle.jpg'
+import fleetvehicles from '../../../Assets/fleetvehicles.jpg'
+
 import repairingOnStand from '../../../Assets/repairingonstand.jpg'
 import advocateprotest from '../../../Assets/advocateprotest.png'
 import mechanicuser from '../../../Assets/mechanicuser.png'
@@ -23,11 +26,17 @@ import nearbyRestaurant from '../../../Assets/nearbyRestaurant.png'
 import nearbyhospital from '../../../Assets/nearbyhospital.png'
 import nearbyPetrolPump from '../../../Assets/nearbyPetrolPump.png'
 import nearbyParking from '../../../Assets/nearbyParking.png'
+import checksuccess from '../../../Assets/checksuccess.png'
+import processImgUser from '../../../Assets/processImgUser.png'
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+
 import truckrepairingUser from '../../../Assets/truckrepairingUser.png'
 import repairUser from '../../../Assets/repairUser.png'
 import BottomNavigationBar from '../BottomNavigationBar.jsx';
 import NoDataFound from '../Cards/NoDataFound.jsx';
 import Registration from '../../Registration/Registration.jsx';
+import Modal from '../../Location1/Modal.jsx';
+import Loading from '../Cards/Loading.jsx';
 
 
 
@@ -45,16 +54,113 @@ export default function AllVehicles() {
     const [currentItem, setCurrentItem] = useState([]);
     const [viewDetails, setViewDetails] = useState(false);
     const [caseDetailsHere, setCaseDetailsHere] = useState(false);
+    const [viewAllVendors, setViewAllVendors] = useState(false);
+
+    const [doneFetching, setDoneFetching] = useState(false)
+    const [doneFetching2, setDoneFetching2] = useState(false)
+    const [openFilterModal, setOpenFilterModal] = useState(false)
+    const [filter, setFilter] = useState('')
+    const currentService = 'crane'
+
 
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     const navigate = useNavigate()
 
+    const getFilteredData = (filter) => {
+        console.log("data is here");
+        const filteredData = [];
+
+        const now = new Date();  // Current date and time
+        const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
+        const yesterday = new Date(now.getTime() - oneDay); // Yesterday's date and time
+        const weekBefore = new Date(now.getTime() - (oneDay * 7));
+        const monthBefore = new Date(now.getTime() - (oneDay * 30));
+
+
+
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const todayDate = formatDate(now);
+        const yesterdayDate = formatDate(yesterday);
+        const weekBeforeDate = formatDate(weekBefore)
+        const monthBeforeDate = formatDate(monthBefore)
+
+        console.log("todayDate", todayDate)
+        console.log("yesterdayDate", yesterdayDate)
+
+
+        for (let i = 0; i < accidentData.length; i++) {
+            let getTime = accidentData[i]?.systemDate.split('|');
+            let assignedDate = getTime[0];
+            let assignedTime = getTime[1];
+            let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
+
+            if (filter === 'daily') {
+                console.log("here i am daily")
+                if (assignedDate === todayDate || assignedDate === yesterdayDate) {
+                    const timeDifference = now - assignedDateTime;
+                    if (timeDifference <= oneDay) {
+                        console.log("Match found within last 24 hours:", data[i]);
+                        filteredData.push(accidentData[i]);
+                    }
+                }
+            }
+            else if (filter === 'weekly') {
+                console.log("here i am weekly")
+                if (assignedDateTime >= weekBefore && assignedDateTime <= now) {
+                    console.log("Match found within last 7 days:", data[i]);
+                    filteredData.push(accidentData[i]);
+                }
+            }
+            else if (filter === 'monthly') {
+                if (assignedDateTime >= monthBefore && assignedDateTime <= now) {
+                    console.log("Match found within last 30 days:", data[i]);
+                    filteredData.push(accidentData[i]);
+                }
+            }
+            else if (filter === 'year') {
+                const yearBefore = new Date(now.getTime() - (oneDay * 365)); // Calculate date one year ago
+                if (assignedDateTime >= yearBefore && assignedDateTime <= now) {
+                    console.log("Match found within last year:", accidentData[i]);
+                    filteredData.push(accidentData[i]);
+                }
+            }
+        }
+        if (filter === 'newest') {
+            console.log("Sorting by newest to oldest");
+            accidentData.sort((a, b) => {
+                const dateA = new Date(a?.systemDate.split('|').join(' '));
+                const dateB = new Date(b?.systemDate.split('|').join(' '));
+                return dateB - dateA; // Descending order
+            });
+            setData([...accidentData]);
+        } else if (filter === 'oldest') {
+            console.log("Sorting by oldest to newest");
+            accidentData.sort((a, b) => {
+                const dateA = new Date(a?.systemDate.split('|').join(' '));
+                const dateB = new Date(b?.systemDate.split('|').join(' '));
+                return dateA - dateB; // Ascending order
+            });
+            setData([...accidentData]);
+        }
+        else {
+            setData(filteredData)
+        }
+    };
 
     useEffect(() => {
         getData();
         getAccidentData()
+        getSomeInfo();
+
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
@@ -62,14 +168,22 @@ export default function AllVehicles() {
     }, [token, userId, navigate]);
 
     const goToNewCase = () => {
-        navigate("/register-new-accidentvehicle", { state: { fromPageHere: "allVehicles" } })
+        navigate("/register-new-accidentvehicle", { state: { fromPageHere: "allVehicles", vehicleNo: currentItem.vehicleNo } })
+    }
+
+    const getSomeInfo = async () => {
+        const response = await axios.get(`${backendUrl}/api/testing-websocket`);
+        console.log("responsefrom", response.data)
     }
 
     const getData = async (e) => {
         console.log("userid", userId);
         let accidentVehicles = [], notAccidentVehicles = []
         const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${userId}`);
-        if (response.data.message == "No accident vehicle data found.") setData([])
+        if (response.data.message == "No accident vehicle data found.") {
+            setData([])
+            setDoneFetching(true)
+        }
         else {
             console.log("response123421", response.data.data);
             response.data.data.map((item) => {
@@ -82,35 +196,83 @@ export default function AllVehicles() {
             setData(accidentVehicles)
             setNotAccidentVehicleData(notAccidentVehicles)
             setAccidentVehicleData(accidentVehicles)
+            setDoneFetching(true)
         }
     };
 
     const getAccidentData = async (e) => {
         console.log("userid", userId);
         const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
-        if (response.data.message == "No accident vehicle data found.") setAccidentData([])
+        if (response.data.message == "No accident vehicle data found.") {
+            setAccidentData([])
+            setDoneFetching2(true)
+        }
         else {
             setAccidentData(response.data.data)
+
+            setDoneFetching2(true)
+            console.log("ACcidenData", accidentData)
         }
     };
 
+    // const getAccidentData = async (e) => {
+    //     console.log("userid", userId);
+    //     const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+    //     if (response.data.message == "No accident vehicle data found.") {
+    //         setAccidentData([])
+    //         setDoneFetching2(true)
+    //     }
+    //     else {
+    //         let fileredAccidentData = []
+    //         response.data.data.forEach((item)=>{
+    //             let count = 0;
+    //             const selectedOptionIndividually  = item.selectedOptions.split(',');
+    //             selectedOptionIndividually.forEach((option)=>{
+    //                 if (
+    //                     (option === 'crane' && (item?.craneStatus === 'completed' || item?.craneStatus === 'cancelled')) ||
+    //                     (option === 'advocate' && (item?.advocateStatus === 'completed' || item?.advocateStatus === 'cancelled')) ||
+    //                     (option === 'mechanic' && (item?.mechanicStatus === 'completed' || item?.mechanicStatus === 'cancelled')) ||
+    //                     (option === 'workshop' && (item?.workshopStatus === 'completed' || item?.workshopStatus === 'cancelled'))
+    //                 ) {
+    //                     count += 1;
+    //                 }
+    //             })
+    //             if(count !== selectedOptionIndividually.length) fileredAccidentData.push(item);
+    //         })
+    //     setAccidentData(fileredAccidentData)
+    //         setDoneFetching2(true)
+    //     }
+    // };
     const setDetails = (item) => {
         setViewDetails(true)
         setCurrentItem(item)
     }
 
-    const setUpdateAccidentData = (item)=>{
+    const setUpdateAccidentData = (item) => {
         setCaseDetailsHere(true)
-       const gotItem =  accidentData.find((accidentItem)=>{
-           return (accidentItem.reg == item.vehicleNo)
+        console.log(item.vehicleNo)
+        const gotItem = accidentData.find((accidentItem) => {
+            console.log(item.vehicleNo, accidentItem.reg)
+
+            return (accidentItem.reg == item.vehicleNo)
         })
+        console.log("GOTITEM", gotItem)
+        setCurrentItem(gotItem)
+    }
+
+    const setViewVendors = (item) => {
+        setViewAllVendors(true)
+        const gotItem = accidentData.find((accidentItem) => {
+            return (accidentItem.reg == item.vehicleNo)
+        })
+        console.log("hey", gotItem)
         setCurrentItem(gotItem)
     }
 
     const handleUpdate = () => {
         setCaseDetailsHere(false)
     };
-    
+
     const [searchValue, setSearchValue] = useState('');
 
     const handleSearch = (e) => {
@@ -135,85 +297,169 @@ export default function AllVehicles() {
         index == 0 ? setFiltering(accidentVehicleData) : setFiltering(notAccidentVehicleData)
         index == 0 ? setData(accidentVehicleData) : setData(notAccidentVehicleData)
     };
+
+    const getOnPage = (service) => {
+        console.log("SOME", service)
+        if (currentItem?.[`${service}Details`]?.customerAcceptedVendor == true && currentItem?.[`${service}Details`].confirmDoneWorking == false) navigate("/Crane-dashboard", { state: { indexFor: 0, service: service, vehicleNumber: currentItem.reg } })
+        else if (currentItem?.[`${service}Details`]?.customerAcceptedVendor == false) navigate("/Crane-dashboard", { state: { indexFor: 1, service: service, vehicleNumber: currentItem.reg } })
+        else if (currentItem?.[`${service}Details`]?.customerAcceptedVendor == true && currentItem?.[`${service}Details`].confirmDoneWorking == true) navigate("/Crane-dashboard", { state: { indexFor: 2, service: service, vehicleNumber: currentItem.reg } })
+    }
+
+    const settingFilter = (filter) => {
+        console.log("filter", filter)
+        setFilter(filter)
+        getFilteredData(filter)
+        setOpenFilterModal(false)
+    }
+
     return (
-        <div>
-            <div style={{ position: "sticky", top: "14px", zIndex: "1000" }}>
-                <div className="imageContainer" style={{ height: "0px" }}>
-                    {["Accident Vehicles", "Other Vehicles"].map((text, index) => (
-                        <div
-                            key={index}
-                            style={{ cursor: 'pointer' }}
-                            className={`imageWrapper ${selectedIndex === index ? "selected" : ""}`}
-                            onClick={() => handleSelect(index)}
-                        >
-                            <div className="top-scrolling">
-                                <p>{text}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div style={{
-                marginBottom: "100px", background: 'linear-gradient(rgb(181 235 178), rgb(255 255 255), rgb(255, 255, 255))',
-            }}>
-                <div className="container" style={{
-                    // paddingTop:"30px",
-                    maxWidth: "500px",
-                    height: "30px",
-                    marginBottom: "30px",
-                    paddingTop: "30px"
-                    // filter: isImageContainerVisible ? "blur(4px)" : "none", // Apply blur effect
-                    // opacity: isImageContainerVisible ? 0.5 : 1, // Reduce opacity if blurred
-                    // pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
-
-
-                }}>
-                    <div className="d-flex justify-content-center h-100">
-                        <div className="searchbar">
-                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
-
-                            <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-
-                        </div>
-                    </div>
-                </div>
-                <p style={{ fontWeight: "bold", margin: "70px 20px 20px 30px" }}><em> All Registered Vehicles</em></p>
-
-
-                <div style={{ marginBottom: "30px" }}>
-                    {data.length > 0 && (
-                        data.map((item, index) => (
-                            <div key={index} style={{
-                                // filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                                // opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                                // pointerEvents: isImageContainerVisible ? "none" : "auto",
-                                border: "1px solid teal",
-                                minWidth: "280px",
-                                margin: '10px',
-                                boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
-                                borderRadius: "20px 20px 0 0",
-                                padding: "10px",
-                                maxWidth: "410px",
-                                background: "white"
-                            }}>
-
-                                <div>
-                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                        <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Chassis No:</p>
-                                        <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.chassisNo}</span>
+        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgb(223 255 222 / 0%), rgb(255, 255, 255), rgb(242, 242, 242))' }}>
+            {doneFetching2 && doneFetching && (
+                <div style={{ marginBottom: "40px" }}>
+                    <div style={{ position: "sticky", top: "14px", zIndex: "1000" }}>
+                        <div className="imageContainer" style={{ height: "0px" }}>
+                            {["Current Accident Vehicles", "Fleet List"].map((text, index) => (
+                                <div
+                                    key={index}
+                                    style={{ cursor: 'pointer' }}
+                                    className={`imageWrapper ${selectedIndex === index ? "selected" : ""}`}
+                                    onClick={() => handleSelect(index)}
+                                >
+                                    <div className="top-scrolling">
+                                        <p>{text}</p>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{
+                        marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
+                    }}>
+                        <div className="container" style={{
+                            // paddingTop:"30px",
+                            maxWidth: "500px",
+                            height: "30px",
+                            marginBottom: "-30px",
+                            paddingTop: "30px"
+                            // filter: isImageContainerVisible ? "blur(4px)" : "none", // Apply blur effect
+                            // opacity: isImageContainerVisible ? 0.5 : 1, // Reduce opacity if blurred
+                            // pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
+                        }}>
+                            <div className="d-flex justify-content-center h-100">
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px", zIndex:"1" }}>
+                                    <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={handleSearch} />
+                                    <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
+
+                                </div>
+                                {selectedIndex == 0 && (
+                                    <div style={{ margin: "23px 20px 0px", zIndex:"1" }}>
+                                         <FilterAltIcon style={{ height: '20px', width: "20px", color:"#ffffff" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        {selectedIndex == 0 && (
+                            <div style={{ position: "relative", textAlign: "center" }}>
+                                <img
+                                    src={allAccidentVehicleImg}
+                                    alt="All Accident Vehicles"
+                                    style={{
+                                        maxHeight: "500px",
+                                        width: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "10px"
+                                    }}
+                                />
+                                <p
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "20px",
+                                        left: "30px",
+                                        fontWeight: "bold",
+                                        color: "white",
+                                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                        padding: "5px 10px",
+                                        borderRadius: "5px",
+                                        fontStyle: "italic"
+                                    }}
+                                >
+                                    All Accident Vehicles
+                                </p>
+                            </div>
+
+                        )}
+                        {selectedIndex == 1 && (
+                            <div style={{ position: "relative", textAlign: "center" }}>
+                            <img
+                                src={fleetvehicles}
+                                alt="All Accident Vehicles"
+                                style={{
+                                    maxHeight: "500px",
+                                    width: "100%",
+                                    objectFit: "cover",
+                                    borderRadius: "10px"
+                                }}
+                            />
+                            <p
+                                style={{
+                                    position: "absolute",
+                                    bottom: "20px",
+                                    left: "30px",
+                                    fontWeight: "bold",
+                                    color: "white",
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                    padding: "5px 10px",
+                                    borderRadius: "5px",
+                                    fontStyle: "italic"
+                                }}
+                            >
+                               All Registered Vehicles
+                            </p>
+                        </div>
+                        )}
 
 
 
-                                <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
-                                    {/* <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Current Status:</p> */}
-                                    {/* <span style={{
+                        <div style={{ marginBottom: "30px" }}>
+                            {data.length > 0 && (
+                                <div
+                                    style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+
+                                    }}
+                                >
+                                    {data.map((item, index) => (
+                                        <div key={index} style={{
+                                            border: "1px solid teal",
+                                            minWidth: "230px",
+                                            margin: '15px 15px 0px 15px',
+                                            boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                            borderRadius: "20px 20px 0 0",
+                                            padding: "10px",
+                                            maxWidth: "410px",
+                                            background: "white"
+                                        }}>
+
+                                            <div>
+                                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
+                                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
+                                                    <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
+                                                </div>
+                                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
+                                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Chassis No:</p>
+                                                    <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.chassisNo}</span>
+                                                </div>
+
+
+                                            </div>
+
+
+
+                                            <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
+                                                {/* <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Current Status:</p> */}
+                                                {/* <span style={{
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -225,244 +471,347 @@ export default function AllVehicles() {
                                     border: "1px solid green",
                                     background: 'white'
                                 }}>In Repair</span> */}
+                                            </div>
+
+                                            {selectedIndex == 1 && (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
+                                                <p style={{
+                                                    fontSize: '11px',
+                                                    marginTop: "5px",
+                                                    background: "#62ff00a6",
+                                                    padding: "10px",
+                                                    border: '1px solid blue',
+                                                    textAlign: 'center',
+                                                    borderRadius: '30px',
+                                                    fontWeight: "bold",
+                                                    color: "black",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: "center",
+                                                    position: "relative",
+                                                    cursor: "pointer",
+                                                    margin: '5px 5px 5px 5px',
+                                                    maxWidth: "400px",
+                                                    minWidth: "200px",
+                                                }} onClick={() => setDetails(item)}>
+                                                    <KeyboardDoubleArrowRightIcon style={{
+                                                        position: "absolute",
+                                                        left: '10px'
+                                                    }} />
+                                                    View More Details
+                                                </p>
+                                            </div>)}
+                                            {selectedIndex == 0 && (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
+                                                <p style={{
+                                                    fontSize: '11px',
+                                                    marginTop: "5px",
+                                                    background: "#62ff00a6",
+                                                    padding: "10px",
+                                                    border: '1px solid blue',
+                                                    textAlign: 'center',
+                                                    borderRadius: '30px',
+                                                    fontWeight: "bold",
+                                                    color: "black",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: "center",
+                                                    position: "relative",
+                                                    cursor: "pointer",
+                                                    margin: '5px 5px 5px 5px',
+                                                    maxWidth: "400px",
+                                                    minWidth: "135px",
+                                                }} onClick={() => setUpdateAccidentData(item)}>
+                                                    <KeyboardDoubleArrowRightIcon style={{
+                                                        position: "absolute",
+                                                        left: '5px'
+                                                    }} />
+                                                    Accident Detail
+                                                </p>
+                                                <p style={{
+                                                    fontSize: '11px',
+                                                    marginTop: "5px",
+                                                    padding: "10px",
+                                                    border: '1px solid blue',
+                                                    textAlign: 'center',
+                                                    borderRadius: '30px',
+                                                    fontWeight: "bold",
+                                                    color: "black",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: "center",
+                                                    position: "relative",
+                                                    cursor: "pointer",
+                                                    margin: '5px 5px 5px 5px',
+                                                    maxWidth: "400px",
+                                                    minWidth: "128px",
+
+                                                }} onClick={() => setViewVendors(item)}>
+                                                    <KeyboardDoubleArrowRightIcon style={{
+                                                        position: "absolute",
+                                                        left: '5px'
+                                                    }} />
+                                                    View Vendors
+                                                </p>
+                                            </div>)}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {data.length == 0 && (
+                                <NoDataFound />
+                            )}
+                        </div>
+                        {viewDetails && (
+                            <div
+                                style={{
+                                    position: "fixed",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                                    zIndex: 1000,
+                                    display: "flex",
+                                    alignItems: "flex-end", // positions the container at the bottom
+                                    justifyContent: "center",
+                                    animation: "slideUp 0.5s ease-out",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        position: "relative",
+                                        width: "97%",
+                                        maxWidth: "600px",
+                                        backgroundColor: "#fff", // white background for the content
+                                        borderRadius: "15px 15px 0px 0px",
+                                        maxHeight: "80%", // limit the height for scrollability
+                                        overflowY: "auto", // enables vertical scrolling
+                                        padding: "20px 5px",
+                                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                                    }}
+                                >
+                                    <img
+                                        src={crossUser}
+                                        onClick={() => setViewDetails(false)}
+                                        style={{
+                                            position: "fixed",
+                                            left: "calc(100% - 35px)",
+                                            width: "25px",
+                                            height: "25px",
+                                            cursor: "pointer",
+                                            zIndex: 1001,
+                                            filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+                                        }}
+                                    />
+                                    <div style={{
+                                        backgroundColor: "rgb(255 255 255)",
+                                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                        margin: "30px 5px 30px 5px",
+                                        boxShadow: "rgba(0, 0, 0, 0.1) -20px -18px 10px 0px",
+                                        borderRadius: "10px"
+                                    }}>
+
+                                        {[
+                                            { label: "Vehicle No", value: currentItem.vehicleNo, icon: "fa-car", color: "green" },
+                                            { label: "Chassis No", value: currentItem.chassisNo, icon: "fa-id-card", color: "green" },
+                                            { label: "Engine No", value: currentItem.engineNo, icon: "fa-cogs", color: "green" },
+                                            { label: "Make Of Vehicle", value: currentItem.make, icon: "fa-industry", color: "green" },
+                                            { label: "Model Of Vehicle", value: currentItem.model, icon: "fa-tasks", color: "green" },
+                                            { label: "Year Of Vehicle", value: currentItem.year, icon: "fa-calendar-alt", color: "green" },
+                                            { label: "Type Of Vehicle", value: currentItem.type, icon: "fa-truck", color: "green" },
+                                            { label: "Application Of Vehicle", value: currentItem.application, icon: "fa-wrench", color: "green" },
+                                            { label: "Insurance Of Vehicle", value: currentItem.InsuranceName, icon: "fa-shield-alt", color: "green" },
+                                        ].map((item, index) => (
+                                            <div>
+                                                <div
+                                                    key={index}
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        margin: "10px 0",
+                                                        padding: "10px 10px 0px 15px",
+                                                        // backgroundColor: "#f9f9f9",
+                                                        borderRadius: "8px",
+                                                        // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                                    }}
+                                                >
+                                                    <i
+                                                        className={`fas ${item.icon}`}
+                                                        style={{
+                                                            fontSize: "20px",
+                                                            color: item.color,
+                                                            marginRight: "10px",
+                                                        }}
+                                                    ></i>
+                                                    <p style={{ fontSize: "14px", fontWeight: "bold", margin: 0 }}>{item.label}:</p>
+                                                    <span style={{ color: item.color, marginLeft: "8px", fontSize: "14px" }}>{item.value}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div style={{ marginBottom: "50px", display: 'flex', alignItems: "center", justifyContent: "center" }}>
+                                        <p style={{
+                                            fontSize: '13px',
+                                            marginTop: "10px",
+                                            background: "green",
+                                            padding: "10px",
+                                            border: '1px solid blue',
+                                            textAlign: 'center',
+                                            borderRadius: '30px',
+                                            fontWeight: "bold",
+                                            color: "white",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: "center",
+                                            position: "relative",
+                                            minWidth: "70%",
+                                            cursor: "pointer"
+                                        }} onClick={goToNewCase} >
+                                            Register as accident vehicle
+                                            <KeyboardDoubleArrowLeftIcon style={{
+                                                position: 'absolute',
+                                                right: "10px"
+                                            }} />
+                                            <KeyboardDoubleArrowRightIcon style={{
+                                                position: 'absolute',
+                                                left: "10px"
+                                            }} />
+                                        </p>
+                                    </div>
                                 </div>
 
-                                {selectedIndex == 1 && (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
-                                    <p style={{
-                                        fontSize: '11px',
-                                        marginTop: "5px",
-                                        background: "#62ff00a6",
-                                        padding: "10px",
-                                        border: '1px solid blue',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "black",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        margin: '5px 5px 5px 5px',
-                                        maxWidth: "400px",
-                                        minWidth: "280px",
-                                    }} onClick={() => setDetails(item)}>
-                                        <KeyboardDoubleArrowRightIcon style={{
-                                            position: "absolute",
-                                            left: '10px'
-                                        }} />
-                                        View More Details
-                                    </p>
-                                </div>)}
-                                {selectedIndex == 0 && (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
-                                    <p style={{
-                                        fontSize: '11px',
-                                        marginTop: "5px",
-                                        background: "#62ff00a6",
-                                        padding: "10px",
-                                        border: '1px solid blue',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "black",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        margin: '5px 5px 5px 5px',
-                                        maxWidth: "400px",
-                                        minWidth: "280px",
-                                    }} onClick={() => setUpdateAccidentData(item)}>
-                                        <KeyboardDoubleArrowRightIcon style={{
-                                            position: "absolute",
-                                            left: '10px'
-                                        }} />
-                                        Accident Details
-                                    </p>
-                                </div>)}
+
                             </div>
-                        ))
-                    )}
-                    {data.length == 0 && (
-                        <NoDataFound />
-                    )}
-                </div>
-                {viewDetails && (
-                    <div
-                        style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                            zIndex: 1000,
-                            display: "flex",
-                            alignItems: "flex-end", // positions the container at the bottom
-                            justifyContent: "center",
-                            animation: "slideUp 0.5s ease-out",
-                        }}
-                    >
-                        <div
-                            style={{
-                                position: "relative",
-                                width: "97%",
-                                maxWidth: "600px",
-                                backgroundColor: "#fff", // white background for the content
-                                borderRadius: "15px 15px 0px 0px",
-                                maxHeight: "80%", // limit the height for scrollability
-                                overflowY: "auto", // enables vertical scrolling
-                                padding: "20px 5px",
-                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                            }}
-                        >
-                            <img
-                                src={crossUser}
-                                onClick={() => setViewDetails(false)}
+                        )}
+
+                        {caseDetailsHere && (
+                            <div
                                 style={{
                                     position: "fixed",
-                                    left: "calc(100% - 35px)",
-                                    width: "25px",
-                                    height: "25px",
-                                    cursor: "pointer",
-                                    zIndex: 1001,
-                                    filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
-                                }}
-                            />
-                            <div style={{
-                                backgroundColor: "rgb(255 255 255)",
-                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                margin: "30px 5px 30px 5px",
-                                boxShadow: "rgba(0, 0, 0, 0.1) -20px -18px 10px 0px",
-                                borderRadius: "10px"
-                            }}>
-
-                                {[
-                                    { label: "Vehicle No", value: currentItem.vehicleNo, icon: "fa-car", color: "green" },
-                                    { label: "Chassis No", value: currentItem.chassisNo, icon: "fa-id-card", color: "blue" },
-                                    { label: "Engine No", value: currentItem.engineNo, icon: "fa-cogs", color: "orange" },
-                                    { label: "Make Of Vehicle", value: currentItem.make, icon: "fa-industry", color: "purple" },
-                                    { label: "Model Of Vehicle", value: currentItem.model, icon: "fa-tasks", color: "red" },
-                                    { label: "Year Of Vehicle", value: currentItem.year, icon: "fa-calendar-alt", color: "brown" },
-                                    { label: "Type Of Vehicle", value: currentItem.type, icon: "fa-truck", color: "teal" },
-                                    { label: "Application Of Vehicle", value: currentItem.application, icon: "fa-wrench", color: "darkblue" },
-                                    { label: "Insurance Of Vehicle", value: currentItem.InsuranceName, icon: "fa-shield-alt", color: "gold" },
-                                ].map((item, index) => (
-                                    <div>
-                                        <div
-                                            key={index}
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                margin: "10px 0",
-                                                padding: "10px 10px 0px 15px",
-                                                // backgroundColor: "#f9f9f9",
-                                                borderRadius: "8px",
-                                                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                            }}
-                                        >
-                                            <i
-                                                className={`fas ${item.icon}`}
-                                                style={{
-                                                    fontSize: "20px",
-                                                    color: item.color,
-                                                    marginRight: "10px",
-                                                }}
-                                            ></i>
-                                            <p style={{ fontSize: "14px", fontWeight: "bold", margin: 0 }}>{item.label}:</p>
-                                            <span style={{ color: item.color, marginLeft: "8px", fontSize: "14px" }}>{item.value}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div style={{ marginBottom: "50px", display: 'flex', alignItems: "center", justifyContent: "center" }}>
-                                <p style={{
-                                    fontSize: '13px',
-                                    marginTop: "10px",
-                                    background: "green",
-                                    padding: "10px",
-                                    border: '1px solid blue',
-                                    textAlign: 'center',
-                                    borderRadius: '30px',
-                                    fontWeight: "bold",
-                                    color: "white",
-                                    display: 'flex',
-                                    alignItems: 'center',
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                                    zIndex: 1000,
+                                    display: "flex",
+                                    alignItems: "flex-end", // positions the container at the bottom
                                     justifyContent: "center",
-                                    position: "relative",
-                                    minWidth: "70%",
-                                    cursor: "pointer"
-                                }} onClick={goToNewCase} >
-                                    Register as accident vehicle
-                                    <KeyboardDoubleArrowLeftIcon style={{
-                                        position: 'absolute',
-                                        right: "10px"
-                                    }} />
-                                    <KeyboardDoubleArrowRightIcon style={{
-                                        position: 'absolute',
-                                        left: "10px"
-                                    }} />
-                                </p>
-                            </div>
-                        </div>
-
-
-                    </div>
-                )}
-
-                {caseDetailsHere && (
-                    <div
-                        style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                            zIndex: 1000,
-                            display: "flex",
-                            alignItems: "flex-end", // positions the container at the bottom
-                            justifyContent: "center",
-                            animation: "slideUp 0.5s ease-out",
-                        }}
-                    >
-                        <div
-                            style={{
-                                position: "relative",
-                                width: "97%",
-                                maxWidth: "600px",
-                                backgroundColor: "#fff", // white background for the content
-                                borderRadius: "15px 15px 0px 0px",
-                                // marginBottom: "30px",
-                                maxHeight: "90%", // limit the height for scrollability
-                                overflowY: "auto", // enables vertical scrolling
-                                padding: "20px",
-                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                            }}
-                        >
-                            <img
-                                src={crossUser}
-                                onClick={() => {
-                                    setCaseDetailsHere(false)
+                                    animation: "slideUp 0.5s ease-out",
                                 }}
+                            >
+                                <div
+                                    style={{
+                                        position: "relative",
+                                        width: "97%",
+                                        maxWidth: "600px",
+                                        backgroundColor: "#fff", // white background for the content
+                                        borderRadius: "15px 15px 0px 0px",
+                                        // marginBottom: "30px",
+                                        maxHeight: "90%", // limit the height for scrollability
+                                        overflowY: "auto", // enables vertical scrolling
+                                        padding: "20px",
+                                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                                    }}
+                                >
+                                    <img
+                                        src={crossUser}
+                                        onClick={() => {
+                                            setCaseDetailsHere(false)
+                                        }}
+                                        style={{
+                                            position: "fixed",
+                                            left: "calc(100% - 35px)",
+                                            width: "25px",
+                                            height: "25px",
+                                            cursor: "pointer",
+                                            zIndex: 1001,
+                                            filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+                                        }}
+                                    />
+
+                                    <Registration item={currentItem} fromPageHere={"allvehicles"} onUpdated={handleUpdate} />
+                                </div>
+                            </div>
+                        )}
+                        {viewAllVendors && (
+                            <div
                                 style={{
                                     position: "fixed",
-                                    left: "calc(100% - 35px)",
-                                    width: "25px",
-                                    height: "25px",
-                                    cursor: "pointer",
-                                    zIndex: 1001,
-                                    filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                                    zIndex: 1000,
+                                    display: "flex",
+                                    alignItems: "flex-end", // positions the container at the bottom
+                                    justifyContent: "center",
+                                    animation: "slideUp 0.5s ease-out",
                                 }}
-                            />
+                            >
+                                <div
+                                    style={{
+                                        position: "relative",
+                                        width: "97%",
+                                        maxWidth: "600px",
+                                        backgroundColor: "#fff", // white background for the content
+                                        borderRadius: "15px 15px 0px 0px",
+                                        // marginBottom: "30px",
+                                        maxHeight: "90%", // limit the height for scrollability
+                                        overflowY: "auto", // enables vertical scrolling
+                                        padding: "20px",
+                                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                                    }}
+                                >
+                                    <img
+                                        src={crossUser}
+                                        onClick={() => {
+                                            setViewAllVendors(false)
+                                        }}
+                                        style={{
+                                            position: "fixed",
+                                            left: "calc(100% - 35px)",
+                                            width: "25px",
+                                            height: "25px",
+                                            cursor: "pointer",
+                                            zIndex: 1001,
+                                            filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+                                        }}
+                                    />
+                                    <div style={{ textAlign: "center", margin: "30px 0", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                                        {currentItem.selectedOptions.split(",").map((item) => {
+                                            return (
+                                                <div key={item} onClick={() => { getOnPage(item) }} style={{ display: 'flex', justifyContent: 'space-between', color: "darkgreen", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>
+                                                    <p style={{ marginTop: "3px" }}> {item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()}</p>
+                                                    {currentItem?.[`${item}Details`]?.confirmDoneWorking == true ? (<img src={checksuccess} style={{ height: "20px", width: "20px" }} />) : (<img src={processImgUser} style={{ height: "20px", width: "20px" }} />)}
+                                                </div>
+                                            )
+                                        })}
 
-                            <Registration item={currentItem} fromPageHere={"allvehicles"} onUpdated={handleUpdate} />
-                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
+                            {openFilterModal && (
+                                <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                                    <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('newest') }}>newest to oldest</p>
+                                    <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('oldest') }}>oldest to newest</p>
+                                    <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
+                                    <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
+                                    <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
+                                    <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('year') }}>Year</p>
+                                </div>
+                            )}
+                        </Modal>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
+            {doneFetching2 == false && doneFetching && (
+                <Loading />
+            )}
             <div>
                 <BottomNavigationBar />
             </div>

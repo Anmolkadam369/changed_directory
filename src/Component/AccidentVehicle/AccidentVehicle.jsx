@@ -102,7 +102,7 @@ const AccidentVehicle = () => {
   }, [token, userId, navigate, showEditAccidentVehicle]);
 
   const getData = async (getFilteredData) => {
-    const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}`);
+    const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
     const formattedData = fetchedData.map(item => ({
       ...item,

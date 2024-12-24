@@ -156,13 +156,13 @@ function EditAccidentVehicle({ id, onUpdate }) {
 
     const getDataById = async (id) => {
         console.log("getdatabyid", id)
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getDataByID123", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
     const getVendorInfo = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getActiveVendor`);
+        const response = await axios.get(`${backendUrl}/api/getActiveVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("vendorInfo123", response)
         console.log("response", response.data);
         setVendorData(response.data)
@@ -266,7 +266,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
         try {
             const response = await axios.put(`${backendUrl}/editVehicleInfo/${formData.accidentFileNo}/${userId}`, JSON.stringify(formData), {
                 headers: {
-                    'authorization': token,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });

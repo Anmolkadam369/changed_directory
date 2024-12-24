@@ -23,12 +23,17 @@ import NoDataFound from '../Cards/NoDataFound';
 import SuccessIcon from '../../CaseFirstCard/SuccessIcon';
 import filterUser from '../../../Assets/filterUser.png'
 import Modal from '../../Location1/Modal.jsx';
+import Loading from '../Cards/Loading.jsx';
+import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
 
 
 
-const QuotationUpdate = ({ number }) => {
+const QuotationUpdate = ({ vehicleNumber }) => {
     const [currentStage, setCurrentStage] = useState([]); // Example stage
-    console.log("currentStage123", currentStage)
+    const currentService = localStorage.getItem("currentService")
+    const {messages} = useWebSocket();
+
+    console.log("currentStage123", `${currentService}Details`)
     const [currentStage1, setCurrentStage1] = useState(2); // Example stage
     const [isImageContainerVisible, setIsImageContainerVisible] = useState(false);
     const [isCancelContainerVisible, setIsCancelContainerVisible] = useState(false);
@@ -49,33 +54,32 @@ const QuotationUpdate = ({ number }) => {
 
 
     const [data, setData] = useState([]);
+    console.log("DATAishere", data)
     const [dummyData, setDummyData] = useState([]);
     const [filter, setFilter] = useState('')
     const [openFilterModal, setOpenFilterModal] = useState(false)
-
-
+    const [doneFetching, setDoneFetching] = useState(false)
     console.log("DATA HERE", data)
     const [currentItems, setCurrentItems] = useState(data);
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
-    console.log("numberHere", number)
+    // console.log("numberHere", number)
 
-    useEffect(() => {
-        if (number && data.length > 0) {
-            console.log("NUMBER", number)
-            console.log("data", data)
-            const gotItem = data.filter((item) => {
-                console.log(item.vehicleNo, number)
-                return item.vehicleNo == number;
-            })
-            console.log("gotItem", gotItem[0])
-            setCurrentItem(gotItem[0]);
-            getVendorRating(gotItem[0].crane)
-            getVendorLocation(gotItem[0].crane, gotItem[0].accidentLatitude, gotItem[0].accidentLongitude)
-            setIsImageContainerVisible(true)
-        }
-    }, [number, data])
+    // useEffect(() => {
+    //     if (number && data.length > 0) {
+    //         console.log("data", data)
+    //         const gotItem = data.filter((item) => {
+    //             console.log(item.vehicleNo, number)
+    //             return item.vehicleNo == number;
+    //         })
+    //         console.log("gotItem", gotItem[0])
+    //         setCurrentItem(gotItem[0]);
+    //         getVendorRating(gotItem[0].crane)
+    //         getVendorLocation(gotItem[0].crane, gotItem[0].accidentLatitude, gotItem[0].accidentLongitude)
+    //         setIsImageContainerVisible(true)
+    //     }
+    // }, [number, data])
 
     const [selectedReasons, setSelectedReasons] = useState([]);
     const [otherReason, setOtherReason] = useState("");
@@ -113,7 +117,7 @@ const QuotationUpdate = ({ number }) => {
 
 
         for (let i = 0; i < dummyData.length; i++) {
-            let getTime = dummyData[i].filedCaseFullyTime.split('|');
+            let getTime = dummyData[i]?.[`${currentService}Details`]?.filedCaseFullyTime.split('|');
             let assignedDate = getTime[0];
             let assignedTime = getTime[1];
             let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
@@ -141,9 +145,35 @@ const QuotationUpdate = ({ number }) => {
                     filteredData.push(dummyData[i]);
                 }
             }
+            else if (filter === 'year') {
+                const yearBefore = new Date(now.getTime() - (oneDay * 365)); // Calculate date one year ago
+                if (assignedDateTime >= yearBefore && assignedDateTime <= now) {
+                    console.log("Match found within last year:", dummyData[i]);
+                    filteredData.push(dummyData[i]);
+                }
+            }
 
         }
-        setData(filteredData)
+        if (filter === 'newest') {
+            console.log("Sorting by newest to oldest");
+            dummyData.sort((a, b) => {
+                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                return dateB - dateA; // Descending order
+            });
+            setData([...dummyData]);
+        } else if (filter === 'oldest') {
+            console.log("Sorting by oldest to newest");
+            dummyData.sort((a, b) => {
+                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                return dateA - dateB; // Ascending order
+            });
+            setData([...dummyData]);
+        }
+        else{
+            setData(filteredData)
+        }
     };
 
     const settingFilter = (filter) => {
@@ -196,9 +226,9 @@ const QuotationUpdate = ({ number }) => {
         try {
             const response = await axios({
                 method: "PUT",
-                url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}/${currentItem.VendorCode}`,
+                url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem.AccidentVehicleCode}/${currentService}/${userId}/${currentItem.crane}`,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 },
                 data: {
                     cancleOrderReason: [...selectedSecReasons, otherSecReason]
@@ -231,31 +261,43 @@ const QuotationUpdate = ({ number }) => {
     ];
 
     useEffect(() => {
+        setDoneFetching(false)
         getData();
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
         }
-    }, [token, userId, navigate]);
+    }, [token, userId, navigate, currentService]);
+
+    useEffect(()=>{
+        messages.forEach((message)=>{
+            console.log("messages123", message)
+            if(message.forPage == 'quotation-updates-crane'){
+                getData();
+            }
+    })
+    },[messages])
 
     const getData = async (e) => {
         console.log("userid", userId);
         const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
-        if (response.data.message == "No accident vehicle data found.") setData([])
+        if (response.data.message == "No accident vehicle data found.") {
+            setDoneFetching(true)
+            setData([])}
         else {
             console.log("response123421", response.data.data);
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info.filedCaseFully && !info.customerAcceptedVendor && !info.closeCraneOrder
+                info?.[`${currentService}Details`]?.filedCaseFully && !info?.[`${currentService}Details`]?.customerAcceptedVendor && !info?.[`${currentService}Details`]?.closeCraneOrder
             );
 
             let filteredImportant = filteredData.filter((info) =>
-                info.connectedVendorFully == true
+                info?.[`${currentService}Details`]?.connectedVendorFully == true
             )
 
             let filteredLessImportant = filteredData.filter((info) =>
-                info.connectedVendorFully == false
+                info?.[`${currentService}Details`]?.connectedVendorFully == false
             )
             filteredData = [...filteredImportant, ...filteredLessImportant]
             setData(filteredData)
@@ -264,6 +306,7 @@ const QuotationUpdate = ({ number }) => {
             console.log("seTDATIOATN", filteredData);
 
             setCurrentItems(response.data.data);
+            setDoneFetching(true)
         }
     };
 
@@ -285,10 +328,15 @@ const QuotationUpdate = ({ number }) => {
         return connectedVendorFully ? 2 : 1;
     }
     useEffect(() => {
-        if (data.length > 0 && data.length != currentStage.length) {
+            console.log("I GOT TRIGGERED2 ", currentService)
+
+        if (data.length > 0 && data.length != currentStage.length ) {
+            console.log("I GOT TRIGGERED2 ", currentService)
             const setUpdatedData = data.map((item) => {
-                let gotStage = getStage(item.connectedVendorFully)
+                let gotStage = getStage(item?.[`${currentService}Details`]?.connectedVendorFully)
+                console.log(gotStage)
                 currentStage.push(gotStage)
+                getData()
             })
         }
     }, [data])
@@ -322,9 +370,9 @@ const QuotationUpdate = ({ number }) => {
         try {
             const response = await axios({
                 method: "PUT",
-                url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}`,
+                url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/${currentService}/${userId}`,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 },
                 data: {
                     cancleOrderReason: [...selectedReasons, otherReason]
@@ -424,7 +472,7 @@ const QuotationUpdate = ({ number }) => {
 
     const getVendorLocation = async (crane, accidentLatitude, accidentLongitude) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -442,9 +490,19 @@ const QuotationUpdate = ({ number }) => {
     }
 
     const [searchValue, setSearchValue] = useState('');
-    const handleSearch = (e) => {
-        console.log("serachvaue", e.target.value)
-        const value = e.target.value.toLowerCase();
+    useEffect(() => {
+        if (vehicleNumber && dummyData.length > 0) {
+            setSearchValue(vehicleNumber);
+            handleSearch(vehicleNumber);
+        }
+    }, [vehicleNumber, dummyData]);
+
+    useEffect(() => {
+        return () => setSearchValue('');
+    }, []);
+    const handleSearch = (inputValue) => {
+        // console.log("serachvaue", e.target.value)
+        const value = inputValue?.toLowerCase() ?? searchValue.toLowerCase()
         setSearchValue(value);
         const newRows = dummyData.filter((row) => {
             const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
@@ -463,8 +521,9 @@ const QuotationUpdate = ({ number }) => {
 
 
     return (
-        <div style={{ marginBottom: "60px" }}>
+        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))' }}>
 
+      {doneFetching && (  <div>
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
 
                 <div className="container " style={{
@@ -473,28 +532,43 @@ const QuotationUpdate = ({ number }) => {
                     opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
                     pointerEvents: isImageContainerVisible ? "none" : "auto" // Disable clicking
                 }}>
-                    <div className="d-flex justify-content-center h-100"  >
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
+                    <div className="d-flex justify-content-center h-100" style={{marginTop:'-113px',marginLeft:"34px", position:'sticky', top:"25px"}} >
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}  value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
                             {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                         </a> */}
                             <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
                         </div>
-                        <div style={{ margin: "23px 20px 0px" }}>
-                            <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                        <div style={{ margin: "23px 20px 0px",zIndex: "1000",width:"70px", background: 'linear-gradient(45deg, white, transparent)', borderRadius: "10px",paddingTop: "4px",paddingLeft: "3px",paddingRight: "3px",}}>
+                            <img src={filterUser} style={{  height:"20px", width:'20px' }} onClick={() => setOpenFilterModal(!openFilterModal)} />
                         </div>
                     </div>
                 </div>
             </div>
 
             {data.length > 0 && (
-                data.map((item, dataIndex) => (
+                 <div
+                 style={{
+                     display: "grid",
+                     gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                    
+                 }}
+             >
+               { data.map((item, dataIndex) => (
                     <div style={{
                         filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
                         opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
                         pointerEvents: isImageContainerVisible ? "none" : "auto",
-                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#00e1ff36"
+                        border: "1px solid teal",
+                        minWidth: "280px", 
+                        margin: '-20px 10px 10px 10px',
+                        boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', 
+                        borderRadius: "5px", 
+                        padding: "10px", 
+                        maxWidth: "410px",
+                        background: "white",
+                        zIndex:'1'
                     }}>
 
                         <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
@@ -526,6 +600,7 @@ const QuotationUpdate = ({ number }) => {
                                             zIndex: 1,
                                         }}
                                     >
+                                        
                                         <img
                                             src={stage.img}
                                             alt={stage.label}
@@ -566,8 +641,8 @@ const QuotationUpdate = ({ number }) => {
                             ))}
                         </div>
 
-                        {item.connectedVendorFully == true && (
-                            <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px", padding: "2px 2px" }}>
+                        {item?.[`${currentService}Details`]?.connectedVendorFully == true && (
+                            <div style={{ background: "#e8e8e8", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px", padding: "2px 2px" }}>
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
 
@@ -581,21 +656,21 @@ const QuotationUpdate = ({ number }) => {
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item.filedCaseFullyTime.split("|")[0]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}</span>
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>File No : </p>
-                                    <span style={{ marginLeft: "5px", fontSize: "10px", color: 'darkblue', fontWeight: "bold" }}>{item.accidentFileNo.toUpperCase()}</span>
+                                    <span style={{ marginLeft: "5px", fontSize: "10px", color: 'darkblue', fontWeight: "bold" }}>{item?.[`${currentService}Details`]?.accidentFileNo.toUpperCase()}</span>
                                 </div>
 
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}> Vendor Fare: </p>
-                                    <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>₹ {item.charges}</span>
+                                    <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>₹ {item?.[`${currentService}Details`]?.[`${currentService}WorkerOnVehicle`]?.charges}</span>
                                 </div>
 
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold" }}>Current Status:</p>
-                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 10px 5px 10px", fontSize: "12px", borderRadius: "10px", color: 'green', border: "1px solid green", background: 'white' }}>{item.connectedVendorFully ? "Assigned" : "Connecting..."}</span>
+                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 10px 5px 10px", fontSize: "12px", borderRadius: "10px", color: 'green', border: "1px solid green", background: 'white' }}>{item?.[`${currentService}Details`]?.connectedVendorFully ? "Assigned" : "Connecting..."}</span>
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
@@ -630,8 +705,8 @@ const QuotationUpdate = ({ number }) => {
                             </div>
                         )}
 
-                        {item.filedCaseFully && item.connectedVendorFully == false && (
-                            <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
+                        {item?.[`${currentService}Details`]?.filedCaseFully && item?.[`${currentService}Details`]?.connectedVendorFully == false && (
+                            <div style={{ background: "#e8e8e8", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
@@ -642,7 +717,7 @@ const QuotationUpdate = ({ number }) => {
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item.filedCaseFullyTime.split("|")[0]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}</span>
                                 </div>
 
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
@@ -651,7 +726,7 @@ const QuotationUpdate = ({ number }) => {
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold" }}>Current Status:</p>
-                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 10px 5px 10px", fontSize: "12px", borderRadius: "10px", color: 'blue', border: "1px solid green", background: 'white' }}>{item.connectedVendorFully ? "Assigned" : "Connecting..."}</span>
+                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 10px 5px 10px", fontSize: "12px", borderRadius: "10px", color: 'blue', border: "1px solid green", background: 'white' }}>{item?.[`${currentService}Details`]?.connectedVendorFully ? "Assigned" : "Connecting..."}</span>
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
@@ -672,7 +747,7 @@ const QuotationUpdate = ({ number }) => {
                                         cursor: "pointer",
                                         margin: '5px 5px 5px 5px',
                                         maxWidth: "400px",
-                                        minWidth: "150px",
+                                        minWidth: "130px",
                                     }} onClick={(e) => connectCaseDetailsOnly(item)}>
                                         <KeyboardDoubleArrowRightIcon style={{
                                             position: "absolute",
@@ -696,11 +771,11 @@ const QuotationUpdate = ({ number }) => {
                                         position: "relative",
                                         cursor: "pointer",
                                         maxWidth: "400px",
-                                        minWidth: "150px",
+                                        minWidth: "140px",
                                         margin: '5px 5px 5px 5px',
                                         height: "30px"
                                     }} onClick={() => { cancleCaseProcedureFunc(item) }}>
-                                        Cancel Process
+                                        Cancel
                                         <img src={crossUser} style={{
                                             position: "absolute",
                                             right: '10px', width: '20px', height: '20px'
@@ -710,7 +785,8 @@ const QuotationUpdate = ({ number }) => {
                                 </div>
                             </div>)}
                     </div>
-                ))
+                ))}
+                </div>
             )}
 
             {isImageContainerVisible && (
@@ -774,8 +850,8 @@ const QuotationUpdate = ({ number }) => {
 
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <div>
-                                <p style={{ textAlign: "center", marginLeft: "30px", marginTop: "10px", fontSize: "13px", fontWeight:"bold" }}>Vendor Fare : ₹{currentItem.charges}</p>
-                            <p style={{ textAlign: "center", marginLeft: "30px", marginTop: "5px", fontSize: "13px", fontWeight:"bold" }}>Platform Fees : ₹{currentItem.budget-currentItem.charges}</p>
+                                    <p style={{ textAlign: "center", marginLeft: "30px", marginTop: "10px", fontSize: "13px", fontWeight: "bold" }}>Vendor Fare : ₹{currentItem?.[`${currentService}Details`]?.[`${currentService}WorkerOnVehicle`].charges}</p>
+                                    <p style={{ textAlign: "center", marginLeft: "30px", marginTop: "5px", fontSize: "13px", fontWeight: "bold" }}>Platform Fees : ₹{currentItem?.[`${currentService}Details`]?.budget - currentItem?.[`${currentService}Details`]?.[`${currentService}WorkerOnVehicle`]?.charges}</p>
                                 </div>
                                 <div style={{
                                     marginTop: "5px",
@@ -787,26 +863,26 @@ const QuotationUpdate = ({ number }) => {
                                     alignItems: "center",
                                     justifyContent: 'center',
                                     color: 'black',
-                                    height:"20px"
+                                    height: "20px"
                                 }}>{average}</div> {/*${backendUrl}/api/customersRating/${userId}*/}
                             </div>
-                           <hr/>
-                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <hr />
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-                            <h1 style={{ marginLeft:"10px", fontSize: "14px", fontWeight: "bold" }}>Total Amount : ₹{currentItem.budget}</h1>
+                                <h1 style={{ marginLeft: "10px", fontSize: "14px", fontWeight: "bold" }}>Total Amount : ₹{currentItem?.[`${currentService}Details`]?.budget}</h1>
 
-                            <div style={{ display: "flex", justifyContent: 'center', alignItems: "center" }}>
-                                <p style={{
-                                    textAlign: "center",
-                                    fontSize: '12px',
-                                    paddingRight: '10px',
-                                    fontWeight: 'bold'
-                                }}> Vendor Distance :</p>
-                                <p style={{ color: 'Green', fontSize: "12px" }}>{distance.toFixed(2)} km</p> {/* take vendor current location by api and use harvesine formula */}
+                                <div style={{ display: "flex", justifyContent: 'center', alignItems: "center" }}>
+                                    <p style={{
+                                        textAlign: "center",
+                                        fontSize: '12px',
+                                        paddingRight: '10px',
+                                        fontWeight: 'bold'
+                                    }}> Vendor Distance :</p>
+                                    <p style={{ color: 'Green', fontSize: "12px" }}>{distance.toFixed(2)} km</p> {/* take vendor current location by api and use harvesine formula */}
+                                </div>
                             </div>
-                            </div>
 
-                            <div className="text-overlay text-overlay2" style={{height:"50%"}}>
+                            <div className="text-overlay text-overlay2" style={{ height: "55%" }}>
                                 {/* <h4 style={{ marginBottom: '5px', fontSize: "11px", marginTop: "10px" }}>Location:</h4>
                                 <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
 
@@ -825,7 +901,7 @@ const QuotationUpdate = ({ number }) => {
                                     justifyContent: "center",
                                     position: "relative",
                                     cursor: "pointer",
-                                    maxWidth: "400px",
+                                    // maxWidth: "400px",
                                     minWidth: "150px"
                                 }} onClick={(e) => goToMap(currentItem)}>  {/* same harvesine formula and with a line from vendor to accident location */}
                                     Vendor Current Location
@@ -1439,18 +1515,25 @@ const QuotationUpdate = ({ number }) => {
             }
 
             {
-                data.length == 0 && (
+                data.length == 0  && (
                     <NoDataFound />
                 )
             }
+            </div>)}
+
+            {doneFetching == false && (
+                <Loading />
+            )}
 
             <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
                 {openFilterModal && (
                     <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Year</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('newest') }}>newest to oldest</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('oldest') }}>oldest to newest</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('year') }}>Year</p>
                     </div>
                 )}
             </Modal>

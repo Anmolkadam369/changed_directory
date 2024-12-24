@@ -115,7 +115,7 @@ const ViewVehicleInfo = () => {
     try {
       setIsLoading(true);
       console.log(userId)
-      const response = await axios.get(`${backendUrl}/api/registerDBToExcel/${userId}`);
+      const response = await axios.get(`${backendUrl}/api/registerDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       console.log("daa", response.data.data)
       console.log("response", response.data.data);
       setGeneratedExcel(response.data.data)

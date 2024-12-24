@@ -51,6 +51,7 @@ const HistoryPageUser = () => {
     console.log("DATA HERE", data)
     const [currentItemIndex, setCurrentItemIndex] = useState(null);
     const [dataIndex, setDataIndex] = useState(0);
+    
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -180,13 +181,13 @@ const HistoryPageUser = () => {
 
     return (
         <div style={{
-            marginBottom: "100px", background: 'linear-gradient(rgb(181 235 178), rgb(255 255 255), rgb(255, 255, 255))',
+            marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
         }}>
             <div>
             <div className="container h-100">
                 <div className="d-flex justify-content-center h-100">
-                    <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                        <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch}/>
+                    <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                        <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}  onChange={handleSearch}/>
                         {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                         </a> */}

@@ -15,10 +15,12 @@ import CaseFirstCard from '../../CaseFirstCard/CaseFirstCard';
 import CraneAcceptedOrders from './CraneAcceptedOrders';
 import CraneRejectedOrder from './CraneRejectedOrder';
 import CraneCompletedOrders from './CraneCompletedOrders';
+import { useWebSocket } from '../../ContexAPIS/WebSocketContext';
 
 const CraneOrders = () => {
 
     const navigate = useNavigate()
+    const {messages} = useWebSocket()
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [approvedCaseByYou, setApprovedCaseByYou] = useState([])
     const [rejectedByYou, setRejectedByYou] = useState([])
@@ -46,13 +48,21 @@ const CraneOrders = () => {
         }
         fetchAssignedCases();
     }, [token, userId, navigate]);
-
+    
     const choosenCase = (item) => {
         setApprovedCaseByYou([])
         setApprovedCaseByYou([item])
         setCaseDetails(true)
     }
 
+    useEffect(()=>{
+        messages.forEach((message)=>{
+            console.log("form crane USER-all cases")
+            if(message.forPage == "crane-user-all-cases"){
+                fetchAssignedCases()
+            }
+        })
+    },[messages])
 
 
 
@@ -60,7 +70,7 @@ const CraneOrders = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
     
@@ -74,7 +84,7 @@ const CraneOrders = () => {
             response.data.data.forEach((item) => {
                 if (item.details[0]?.firstResponseOn != null && item.details[0]?.vendorDecision == 'accept' &&
                     (item.details[0]?.acceptedByAdmin == null || item.details[0]?.acceptedByAdmin == 'accept') &&
-                    item.details[0]?.cancelOrderReason == null ) {
+                    item.details[0]?.cancelOrderReason == null && item.details[0]?.closeCraneWorker == false) {
                     tempApprovedCaseByYou.push(item);
                 }
                 if (item.details[0]?.vendorDecision == 'reject') {
@@ -142,11 +152,11 @@ const CraneOrders = () => {
             </div>
 
             {selectedIndex == 1 && (
-                <div className="imageContainer" style={{ marginTop: "10px", height: "0px" }}>
-                    {["By you", 'By admin', 'By Customer'].map((text, index) => (
+                <div className="imageContainer" style={{ height: "0px" }}>
+                    {["By You", 'By Admin', 'By Customer'].map((text, index) => (
                         <div
                             key={index}
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', marginTop:"10px" }}
                             className={`imageWrapper ${selectedRejectedIndex === index ? "selected" : ""}`}
                             onClick={() => handleSelectRejectedIndex(index)}
                         >

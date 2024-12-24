@@ -389,7 +389,7 @@ const EditScrapProduct = ({ code, onUpdate }) => {
     console.log("FORMDATA123456789", formData)
 
     const getDataById = async () => {
-        const response = await axios.get(`${backendUrl}/api/scrapProductByIdUser/${userId}/${code}`);
+        const response = await axios.get(`${backendUrl}/api/scrapProductByIdUser/${userId}/${code}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         console.log("fetchedData", fetchedData)
         setData(fetchedData[0]);
@@ -477,7 +477,7 @@ const EditScrapProduct = ({ code, onUpdate }) => {
                 url: `${backendUrl}/api/scrapProductEdit/${userId}/${data.scrapCode}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setIsLoading(false);

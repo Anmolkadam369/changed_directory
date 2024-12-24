@@ -68,7 +68,7 @@ function InitialRegistration() {
 
     async function getVehicleData() {
         try {
-            const getData = await axios.get(`${backendUrl}/api/VehicleDetails/${regNo}/crane`);
+            const getData = await axios.get(`${backendUrl}/api/VehicleDetails/${regNo}/crane/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             if (getData.data.message === 'Vehicle found') {
                 setVehicleInfo([getData.data]);
                 setComingVehicle(getData.data);
@@ -292,7 +292,7 @@ function InitialRegistration() {
                 url: `${backendUrl}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setAlertInfo({ show: true, message: "Data Successfully Inserted.", severity: 'success' });

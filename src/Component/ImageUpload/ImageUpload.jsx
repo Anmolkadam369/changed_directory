@@ -129,7 +129,7 @@ function ImageUpload({ id, onUpdate }) {
         try {
             const response = await axios.post(`${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${id}`, formData, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 },
             });

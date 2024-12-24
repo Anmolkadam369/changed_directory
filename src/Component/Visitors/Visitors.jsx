@@ -273,7 +273,7 @@ const Visitors = () => {
 
     const getVisitor = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/visitors`);
+            const response = await axios.get(`${backendUrl}/api/visitors/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             const fetchedData = response.data.data;
 
             const formattedData = fetchedData.map(item => ({
@@ -346,7 +346,7 @@ const Visitors = () => {
             const response = await axios.post(`${backendUrl}/api/visitors/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);
@@ -400,7 +400,7 @@ const Visitors = () => {
             const response = await axios.put(`${backendUrl}/api/visitors/${userId}/${editedFormData.visitorId}`, editedFormData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);
@@ -452,8 +452,7 @@ const Visitors = () => {
 
     const view = async (id) => {
         console.log("id", id);
-        console.log(`${backendUrl}/api/visitors/${id}`)
-        const response = await axios.get(`${backendUrl}/api/visitors/${id}`);
+        const response = await axios.get(`${backendUrl}/api/visitors/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])

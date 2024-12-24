@@ -47,7 +47,7 @@
 
 //     const vendorsData = async (vendorType) => {
 //         try {
-//             const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}`);
+//             const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
 //             console.log("response1234567890", response.data);
 //             setVendorLocationData(response.data.data);
 //         } catch (error) {

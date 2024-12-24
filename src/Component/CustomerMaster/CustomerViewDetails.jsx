@@ -177,13 +177,13 @@ function CustomerViewDetails({ id, onUpdate }) {
 
     const getDataById = async (id) => {
         console.log("getdatabyid", id)
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getDataByID", response)
         console.log("response2", response.data.data[0]);
         setComingData(response.data.data[0])
     }
     const getVendorInfo = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getActiveVendor`);
+        const response = await axios.get(`${backendUrl}/api/getActiveVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("vendorInfo2", response)
         console.log("response3", response.data);
         setVendorData(response.data)
@@ -299,7 +299,7 @@ function CustomerViewDetails({ id, onUpdate }) {
         try {
             const response = await axios.put(`${backendUrl}/api/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "Not_added"}/${selectedWorkshopId != "" ? selectedWorkshopId : "Not_added"}/${selectedCraneId != "" ? selectedCraneId : "Not_added"}/${selectedAdvocateId != "" ? selectedAdvocateId : "Not_added"}`, JSON.stringify(formData), {
                 headers: {
-                    'authorization': token,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });

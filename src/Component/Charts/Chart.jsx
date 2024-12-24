@@ -14,7 +14,8 @@ import {
 const Chart = ({ aspect, title }) => {
     const [vendorData, setVendorData] = useState([]);
     const [lineData, setLineData] = useState([]);
-
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     useEffect(() => {
         getVendorData();
     }, []);
@@ -37,7 +38,7 @@ const Chart = ({ aspect, title }) => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendor`);
+            const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);

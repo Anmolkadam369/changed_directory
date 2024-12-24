@@ -1,12 +1,13 @@
-import React, { useState, useEffect , useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { useMap } from 'react-leaflet/hooks';
-import { useNavigate , useLocation} from 'react-router-dom'; // To navigate back to the previous page
+import { useNavigate, useLocation } from 'react-router-dom'; // To navigate back to the previous page
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import L from 'leaflet';
 import './FirstPage.css'
+import axios from 'axios';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 
@@ -63,7 +64,7 @@ function SearchControl() {
                     draggable: true, // Allow the marker to be draggable
                 },
             });
-            
+
 
             searchControlRef.current = searchControl;
             map.addControl(searchControl);
@@ -84,6 +85,7 @@ function SearchControl() {
 export default function SelectLocationMap({ onLocationChange }) {
     const { state } = useLocation();
     let [center, setCenter] = useState(state?.center || DEFAULT_POSITION);
+    let [placeName, setPlaceName] = useState("")
     let [fromPage, setFromPage] = useState(state?.fromPage);
     console.log("fromPage", fromPage)
 
@@ -112,13 +114,33 @@ export default function SelectLocationMap({ onLocationChange }) {
         }
     }, []); // Empty dependency array means this runs once when the component mounts
 
-    const handleLocationSelect = (location) => {
-        console.log('Selected Location:', location);
-        setCenter([location.lat, location.lng])
 
-        // Call the onLocationChange function passed as a prop from the parent component
-        if (onLocationChange) {
-            onLocationChange(location);
+    const handleLocationSelect = async (location) => {
+        console.log('Selected Location:', location);
+        setCenter([location.lat, location.lng]);
+
+        // Call reverse geocoding API
+        try {
+            const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+                params: {
+                    lat: location.lat,
+                    lon: location.lng,
+                    format: 'json',
+                },
+            });
+
+            const placeDetail = response.data.display_name; // Get the human-readable address
+            console.log('Place Name:', placeDetail);
+            setPlaceName(placeDetail)
+
+            // Call the onLocationChange function passed as a prop from the parent component
+            if (onLocationChange) {
+                onLocationChange({ center: location, placeName });
+            }
+
+            // You can also store the placeName in state if needed
+        } catch (error) {
+            console.error('Error during reverse geocoding:', error);
         }
     };
 
@@ -129,31 +151,31 @@ export default function SelectLocationMap({ onLocationChange }) {
 
         console.log("navigating to admin", fromPage)
 
-        if(fromPage == "Admin"){
-        console.log("navigating to admin1", fromPage)
+        if (fromPage == "Admin") {
+            console.log("navigating to admin1", fromPage)
 
             setTimeout(() => {
-                navigate('/Admin', {state :{ center }}); // Use navigate(-1) to go back
+                navigate('/Admin', { state: { center } }); // Use navigate(-1) to go back
             }, 2000);
         }
 
-        if(fromPage == "allVehicles"){
-            setTimeout(()=>{
-                navigate("/register-new-accidentvehicle", {state:{center}})
+        if (fromPage == "allVehicles" && placeName != "") {
+            setTimeout(() => {
+                navigate("/register-new-accidentvehicle", { state: { center, placeName } })
             })
         }
-        
-        if(fromPage == "firstPage"){
-    
-                setTimeout(() => {
-                    navigate('/user-landing-page', {state :{ center }}); // Use navigate(-1) to go back
-                }, 2000);
-            }
-        else if(fromPage == "Crane-dashboard"){
-            navigate("/Crane-dashboard", { state: { indexFor: 2 , center:center} });
+
+        if (fromPage == "firstPage") {
+
+            setTimeout(() => {
+                navigate('/user-landing-page', { state: { center } }); // Use navigate(-1) to go back
+            }, 2000);
         }
-        else{
-            navigate('/VehicleDetails', {state :{ center }}); // Use navigate(-1) to go back
+        else if (fromPage == "Crane-dashboard") {
+            navigate("/Crane-dashboard", { state: { indexFor: 2, center: center } });
+        }
+        else {
+            navigate('/VehicleDetails', { state: { center } }); // Use navigate(-1) to go back
         }
 
     };
@@ -198,7 +220,7 @@ export default function SelectLocationMap({ onLocationChange }) {
                 }} />
                 Confirm Location
             </button>
-           
+
 
         </div>
     );

@@ -11,6 +11,7 @@ const store = configureStore({
       isAuthenticated: !!localStorage.getItem('token'),
       userId: localStorage.getItem('userId') || null,
       token: localStorage.getItem('token') || null,
+      role: localStorage.getItem('userRole')||null
     },
   },
 });

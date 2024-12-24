@@ -367,7 +367,7 @@ const ProductRegister = ({ onUpdate }) => {
                 url: `${backendUrl}/api/scrapProductAdd/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             setIsLoading(false);

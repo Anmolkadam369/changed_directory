@@ -168,7 +168,7 @@ const SeeUpdatedPics = ({ id, onUpdate }) => {
         setComingData([]);
         console.log("ID", id)
         console.log("Fetching data for date:", date);
-        const response = await axios.get(`${backendUrl}/api/getDataByDate/${id}/${date}`);
+        const response = await axios.get(`${backendUrl}/api/getDataByDate/${id}/${date}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data.data)
         console.log("length", response.data.data.length)
         if (response.data.data.length === 0) {

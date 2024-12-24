@@ -161,7 +161,7 @@ const AllAccidentVehiclesUser = () => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -260,7 +260,7 @@ const AllAccidentVehiclesUser = () => {
         try {
             const response = await axios.put(`${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`, JSON.stringify(formData), {
                 headers: {
-                    'authorization': token,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -308,7 +308,7 @@ const AllAccidentVehiclesUser = () => {
     return (
 
         <div style={{
-            background: 'linear-gradient(rgb(181 235 178), rgb(255 255 255), rgb(255, 255, 255))',
+            background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
         }}>
 
             
@@ -318,7 +318,7 @@ const AllAccidentVehiclesUser = () => {
 
                 <div className="container h-100">
                     <div className="d-flex justify-content-center h-100">
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
                             <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
 
                             <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />

@@ -105,19 +105,19 @@ const Registrations = () => {
 
     const [formData, setFormData] = useState({
         FullName: '',
+        phone: '',
         joinInType: "Customer",
         vendorType: '',
         customerType: '',
-        phone: '',
         email: '',
-        country: 'India',
-        state: '',
-        district: "",
-        address: '',
-        pincode: '',
         password: "",
-        latitude: "",
-        longitude: ""
+        // country: 'India',
+        // state: '',
+        // district: "",
+        // address: '',
+        // pincode: '',
+        // latitude: "",
+        // longitude: ""
     });
 
     console.log("formdata", formData)
@@ -200,17 +200,17 @@ const Registrations = () => {
 
         // Process specific fields differently
         if (name === "phone") {
-            console.log("phonenois",value)
+            console.log("phonenois", value)
             updatedValue = value.replace(/\D/g, ''); // Remove non-digit characters
             if (updatedValue && updatedValue[0].match(/[6-9]/)) {
-              updatedValue = updatedValue.slice(0, 10); // Only keep up to 10 digits if it starts with 6-9
+                updatedValue = updatedValue.slice(0, 10); // Only keep up to 10 digits if it starts with 6-9
             } else {
-              updatedValue = ''; // Return an empty string if the first digit isn't between 6-9
+                updatedValue = ''; // Return an empty string if the first digit isn't between 6-9
             }
             setFormData({
                 ...formData,
                 [name]: updatedValue,
-              });
+            });
         }
 
         else if (name === "password") {
@@ -347,20 +347,20 @@ const Registrations = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validatePassword(formData.password) || !validatePassword(formData.confirmPassword)) {
-            setAlertInfo({ show: true, message: 'Password and Confirm Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol.', severity: 'error' });
-            return;
-        }
+        // if (!validatePassword(formData.password) || !validatePassword(formData.confirmPassword)) {
+        //     setAlertInfo({ show: true, message: 'Password and Confirm Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol.', severity: 'error' });
+        //     return;
+        // }
 
         if (!validateEmail(formData.email)) {
             setAlertInfo({ show: true, message: 'Please Enter Valid Email', severity: 'error' });
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
-            setAlertInfo({ show: true, message: 'Passwords does not match.', severity: 'error' });
-            return;
-        }
+        // if (formData.password !== formData.confirmPassword) {
+        //     setAlertInfo({ show: true, message: 'Passwords does not match.', severity: 'error' });
+        //     return;
+        // }
 
 
         setIsLoading(true);
@@ -465,7 +465,7 @@ const Registrations = () => {
                                                         <p style={{ alignItems: "center", justifyContent: "center" }}>BVC CLAIM PRO</p>
                                                     </div>
                                                     <hr className="border-primary-subtle mb-4" />
-                                                    <h4 className="h3 mb-4 gradient-background" style={{ color: "white", textAlign: "center" }}>BVC ClaimPro Assist is providing services for you in toughest time.</h4>
+                                                    <h4 className="h3 mb-4 " style={{ color: "white", textAlign: "center" }}>BVC ClaimPro Assist is providing services for you in toughest time.</h4>
                                                     <p className="lead m-0" style={{ color: "yellow", textAlign: "center" }}>Ensuring smooth business continuity post accidents . Come and join your business with us and be relaxed.</p>
                                                     <img src={signup1} style={{ marginTop: "20px", height: 'auto', borderRadius: "20px", boxShadow: "rgb(0 0 0) 20px 20px 60px, rgba(255, 255, 255, 0.28) -13px 20px 60px 20px inset" }} alt="company logo" />
                                                 </div>
@@ -519,10 +519,24 @@ const Registrations = () => {
                                                     </div>
                                                     <div className=" col-md-6 mb-4">
                                                         <div className="form-outline form-white">
+                                                            <input
+                                                                type="tel"
+                                                                name="phone"
+                                                                id="form3Examplea8"
+                                                                className="form-control form-control-lg"
+                                                                onChange={handleChange}
+                                                                value={formData.phone}
+                                                                style={{ border: "1px solid black" }}
+                                                                maxLength="10" />
+                                                            <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
+                                                        </div>
+                                                    </div>
+                                                    {/* <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
                                                             <input type="text" id="form3Examplea6" className="form-control form-control-lg" name='country' value={"India"} readOnly style={{ border: "1px solid black" }} />
                                                             <label className="form-label" htmlFor="form3Examplea6">Country</label>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
 
                                                 {/* <div className="row">
@@ -626,29 +640,41 @@ const Registrations = () => {
                                                 <div className='row'>
                                                     <div className=" col-md-6 mb-4">
                                                         <div className="form-outline form-white">
-                                                            <input 
-                                                             type="tel" 
-                                                             name="phone" 
-                                                             id="form3Examplea8" 
-                                                             className="form-control form-control-lg" 
-                                                             onChange={handleChange} 
-                                                             value={formData.phone} 
-                                                             style={{ border: "1px solid black" }} 
-                                                             maxLength="10"/>
-                                                            <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className=" col-md-6 mb-4">
-                                                        <div className="form-outline form-white">
-                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black" }} />
+                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black",marginTop:"0px" }} />
                                                             <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
                                                             {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
                                                         </div>
                                                     </div>
+                                                    <div className=" col-md-6 mb-4">
+                                                        <div className="form-outline form-white">
+                                                            <input
+                                                                type={showPassword ? 'text' : 'password'}
+                                                                id="form3Examplea9"
+                                                                className="form-control form-control-lg"
+                                                                name="password"
+                                                                onChange={handleChange}
+                                                                value={formData.password}
+                                                                style={{ border: "1px solid black" }}
+                                                            />
+                                                            <label className="form-label" htmlFor="form3Examplea9">Password</label>
+
+                                                            <div style={{ position: "absolute", top: "5px", right: "10px" }}>
+                                                                <IconButton
+                                                                    aria-label="toggle password visibility"
+                                                                    onClick={togglePasswordVisibility}
+                                                                >
+                                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                                </IconButton>
+                                                            </div>
+
+                                                            {passwordError && (
+                                                                <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div className="row">
+                                                {/* <div className="row">
                                                     <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
                                                         <div className="form-outline form-white">
                                                             <div className="dropdown green-dropdown form-field col-md-6 mb-4">
@@ -738,21 +764,46 @@ const Registrations = () => {
                                                             <label className="form-label" htmlFor="form3Examplea4">Pin Code</label>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> */}
 
                                                 {alertInfo.show && (
                                                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
                                                         {typeof alertInfo.message === 'string' ? alertInfo.message : JSON.stringify(alertInfo.message)}
                                                     </Alert>
                                                 )}
+      
+                                                    <div className="d-flex justify-content-center" style={{ marginTop: "20px" }}>
+                                                        <button type="button" style={{ marginRight: '10px' }} className="btn btn-dark btn-lg" data-mdb-ripple-color="dark" onClick={handleSubmit} >
+                                                            Register
+                                                        </button>
 
-                                                <div className="d-flex justify-content-center mt-2" >
+                                                    </div>
+                                                    <div className='linkStyle'
+                                                        onClick={loginFunc}
+                                                        onMouseEnter={() => setIsHovered(true)}
+                                                        onMouseLeave={() => setIsHovered(false)} style={{
+                                                            display: 'flex',
+                                                            justifyContent: "flex-end",
+                                                            fontSize: "15px",
+                                                            padding: "10px",
+                                                            marginRight: "20px",
+                                                            textAlign: "right",
+                                                            color: isHovered ? 'darkblue' : 'blue', // Change color on hover
+                                                            textDecoration: "underline",
+                                                            // boxShadow: isHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none', // Add shadow on hover
+                                                            transition: 'color 0.3s', // Smooth transition
+                                                            cursor: 'pointer'
+                                                        }}>
+                                                        Account Already Created ? Sign In
+                                                    </div>
+
+                                                {/* <div className="d-flex justify-content-center mt-2" >
                                                     <button type="button" className={`btn btn-dark btn-lg ${isClicked ? 'clicked' : ''}`} data-mdb-ripple-color="dark" onClick={goToNext} style={{ borderRadius: "30px", background: "none", color: "green", fontSize: "15px", paddingRight: "0px", paddingLeft: "10px" }} >
                                                         <div style={{ alignItems: 'center', display: "flex", flexDirection: "column" }}>
                                                             <Button startIcon={<ArrowForwardIcon />} style={{ background: "none", color: "#077ede" }} onClick={goToNext} />
                                                         </div>
                                                     </button>
-                                                </div>
+                                                </div> */}
 
                                             </div>
                                         </div>)}

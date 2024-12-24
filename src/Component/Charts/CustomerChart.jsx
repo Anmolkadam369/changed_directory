@@ -14,6 +14,8 @@ import {
 const CustomerChart = ({ aspect, title }) => {
     const [customerData, setCustomerData] = useState([]);
     const [lineData, setLineData] = useState([]);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         getCustomerData();
@@ -37,7 +39,7 @@ const CustomerChart = ({ aspect, title }) => {
 
     const getCustomerData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getCustomer`);
+            const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             setCustomerData(response.data.data);
         } catch (error) {
             console.error("Error fetching customer data", error);

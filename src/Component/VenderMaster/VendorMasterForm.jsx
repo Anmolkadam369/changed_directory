@@ -182,7 +182,7 @@ const VendorMasterForm = () => {
     adharNo: '',
     adharCard: "",
     rate: "" || "0",
-    perHR : "" || '0',
+    perHR: "" || '0',
     GSTNo: "",
     GST: "info",
     remark: ""
@@ -313,7 +313,7 @@ const VendorMasterForm = () => {
       } else {
         validValue = ''; // Return an empty string if the first digit isn't between 6-9
       }
-      
+
       setFormData({
         ...formData,
         [name]: validValue,
@@ -336,7 +336,19 @@ const VendorMasterForm = () => {
         [name]: value,
       });
     }
-    else if (name === "district" || name === "vendorType") {
+    else if (name === "district") {
+      console.log("vauel", value)
+      const changedValue = value
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+
+  setFormData({
+      ...formData,
+      [name]: changedValue
+  });
+    }
+    else if (name === "vendorType") {
       setFormData({
         ...formData,
         [name]: value,
@@ -364,17 +376,17 @@ const VendorMasterForm = () => {
           return `Field '${key}' is required.`;
         }
       }
-      if ((key !== "remark" && key !=='email' && key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
+      if ((key !== "remark" && key !== 'email' && key !== "GSTNo" && key !== "GST" && key !== "adharNo" && key !== "adharCard" && key !== "panNo" && key !== "panCard" && key !== "contactPersonNum2") && value === '') {
         return `Field '${key}' is required.`;
       }
     }
 
-    if(formData.email !== ""){
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(formData.email)) {
-      return 'Please enter a valid email address.';
+    if (formData.email !== "") {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(formData.email)) {
+        return 'Please enter a valid email address.';
+      }
     }
-  }
 
     const phoneRegex = /^[0-9]{10}$/
     if (!phoneRegex.test(formData.vendorPhone)) {
@@ -526,7 +538,7 @@ const VendorMasterForm = () => {
         url: `${backendUrl}/api/venderInfo/${userId}`,
         data: formDataObj,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       setIsLoading(false);
@@ -567,7 +579,7 @@ const VendorMasterForm = () => {
         url: `${backendUrl}/api/venderInfoExcel/${userId}`,
         data: formDataObj,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       setIsLoading(false);
@@ -628,14 +640,14 @@ const VendorMasterForm = () => {
         [name]: files[0]
       }));
     }
-  };    
+  };
   console.log("Rendering Form 1");
 
 
   return (
     <div>
       {/* <Sidebar/> */}
-     
+{/* <Admin/> */}
       <Helmet>
         <title>Vendor Details - Claimpro</title>
         <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />
@@ -819,43 +831,40 @@ const VendorMasterForm = () => {
                   disabled={isLoadingCities || !formData.state}
                 >
                   <option value="">Select City</option>
-                  {!cities.error && cities.map(city => {
-                    console.log('Rendering city:', city.iso2, city.name); // Debug: Check city values
-                    return (
-                      <option key={city.iso2} value={city.iso2}>
-                        {city.name}
-                      </option>
-                    );
-                  })}
+                  {!cities.error && cities.map(city => (
+                    <option key={city.iso2} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
                 </select>
               </label>)}
 
               {toInputBox && (
-                 <label className="form-field input-group mb-3">
-                  
-                 {/* Vendor Place - City: */}
-                 <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
-                  <span style={{ marginRight: '10px' }}>Vendor Place - City:</span>
-                  <div className="switch-container">
-                    <FormControlLabel
-                      control={<Android12Switch defaultChecked />}
-                      checked={singleVendor}
-                      onChange={handleSwitchInputBox}
-                      label="" // You can add a label here if needed
-                    />
+                <label className="form-field input-group mb-3">
+
+                  {/* Vendor Place - City: */}
+                  <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                    <span style={{ marginRight: '10px' }}>Vendor Place - City:</span>
+                    <div className="switch-container">
+                      <FormControlLabel
+                        control={<Android12Switch defaultChecked />}
+                        checked={singleVendor}
+                        onChange={handleSwitchInputBox}
+                        label="" // You can add a label here if needed
+                      />
+                    </div>
                   </div>
-                </div>
-                 <input
-                   type="text"
-                   name="district"
-                   placeholder='District'
-                   value={formData.district}
-                   onChange={handleChange}
-                   className="form-control"
-                   readOnly={formData.state  === ""}
-                   required
-                 />
-               </label>
+                  <input
+                    type="text"
+                    name="district"
+                    placeholder='District'
+                    value={formData.district}
+                    onChange={handleChange}
+                    className="form-control"
+                    readOnly={formData.state === ""}
+                    required
+                  />
+                </label>
               )}
 
             </div>
@@ -1113,7 +1122,7 @@ const VendorMasterForm = () => {
                         title="Aadhaar number must be exactly 12 digits."
                         required />
                     </label>
-                    
+
                     <label className="form-field">
                       per HR:
                       <input

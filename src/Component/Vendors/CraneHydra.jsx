@@ -119,7 +119,7 @@ const CraneHydra = () => {
 
     const isLocationAvailable = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/isvendor-added/${userId}`)
+            const response = await axios.get(`${backendUrl}/api/isvendor-added/${userId}`,{ headers: { Authorization: `Bearer ${token}` }})
             if (response.data.status == true) {
                 setTriggeredIt(false);
                 setComingValue(true)
@@ -150,7 +150,7 @@ const CraneHydra = () => {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
+        const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data)
         console.log("data12345", response.data.data[0]);
         setGetData(response.data.data[0]);
@@ -192,7 +192,7 @@ const CraneHydra = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
                     await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
 
                     // alert('Login notification sent successfully');

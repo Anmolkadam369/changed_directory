@@ -13,7 +13,8 @@ const MapComponent = ({ accidentLocation1, additionalInfo }) => {
   const [map, setMap] = useState(null);
   const [vendorLocationData, setVendorLocationData] = useState([]);
   console.log("vendorlocatin", vendorLocationData)
-
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   const accidentIcon = new L.Icon({
     iconUrl: require('../../Assets/markerIcon1.png'),
@@ -80,7 +81,7 @@ const MapComponent = ({ accidentLocation1, additionalInfo }) => {
   }, [map, additionalInfo.vendorType]);
 
   const vendorsData = async (vendorType) => {
-    const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}`);
+    const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response.data);
     setVendorLocationData(response.data.data)
   }

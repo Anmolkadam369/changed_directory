@@ -304,7 +304,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
 
   const getDataById = async (id) => {
-    const response = await axios.get(`${backendUrl}/api/getCustomer/${id}`);
+    const response = await axios.get(`${backendUrl}/api/getCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("daa", response.data.data)
     console.log("response123", response.data.data[0]);
     setComingData(response.data.data[0])
@@ -579,7 +579,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
         url: `${backendUrl}/api/customerUpdate/${id}/${userId}`,
         data: formDataObj,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       console.log("response", response.data);

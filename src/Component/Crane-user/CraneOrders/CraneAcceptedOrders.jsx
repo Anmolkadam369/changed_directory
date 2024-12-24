@@ -14,6 +14,7 @@ import filterUser from '../../../Assets/filterUser.png'
 import viewcase from '../../../Assets/viewcase.png'
 
 import Modal from "../../Location1/Modal";
+import { useWebSocket } from "../../ContexAPIS/WebSocketContext";
 
 
 
@@ -39,7 +40,10 @@ function haversine(lat1, lon1, lat2, lon2) {
 const CraneAcceptedOrders = ({ data }) => {
     const [totalAcceptedCases, setTotalAcceptedCase] = useState([]);
     const [spareUseData, setSpareUseData] = useState([]);
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     console.log('totalAcceptedCases', totalAcceptedCases)
+    const {messages} = useWebSocket()
     console.log('spareUseData', spareUseData)
 
 
@@ -96,6 +100,8 @@ const CraneAcceptedOrders = ({ data }) => {
             });
         }
     }, [totalAcceptedCases]);
+
+
 
     const getFilteredData = (filter) => {
         console.log("data is here");
@@ -192,7 +198,7 @@ const CraneAcceptedOrders = ({ data }) => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -211,7 +217,7 @@ const CraneAcceptedOrders = ({ data }) => {
 
     const getCustomerRating = async (customerCode) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}`);
+            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")
@@ -244,7 +250,7 @@ const CraneAcceptedOrders = ({ data }) => {
     return (
         <div>
             <div style={{
-                marginBottom: "100px", background: 'linear-gradient(rgb(181 235 178), rgb(255 255 255), rgb(255, 255, 255))',
+                marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
             }}>
                 <div className="container" style={{
                     // paddingTop:"30px",
@@ -259,8 +265,8 @@ const CraneAcceptedOrders = ({ data }) => {
 
                 }}>
                     <div className="d-flex justify-content-center h-100"  >
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}} onChange={handleSearch} />
                             {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                         </a> */}
@@ -272,7 +278,13 @@ const CraneAcceptedOrders = ({ data }) => {
                     </div>
                 </div>
                 {totalAcceptedCases.length > 0 && (
-                    totalAcceptedCases.map((item, dataIndex) => (
+                    <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                        
+                    }}>
+                   { totalAcceptedCases.map((item, dataIndex) => (
                         <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea" }}>
 
                             <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
@@ -362,9 +374,9 @@ const CraneAcceptedOrders = ({ data }) => {
 
                                 <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Assigned Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn.split("|")[0]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn?.split("|")[0]}</span>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Time:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn.split("|")[1]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn?.split("|")[1]}</span>
                                 </div>
 
 
@@ -375,13 +387,13 @@ const CraneAcceptedOrders = ({ data }) => {
 
                                     <div style={{ display: "flex", alignItems: "center", margin: '0px 0px 20px 5px' }}>
                                         {item.details[0]?.acceptedByAdmin == null && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin permission pending </span>
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 3px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin permission pending </span>
                                         )}
                                         {item.details[0]?.acceptedByAdmin !== null && item.details[0]?.customerAcceptedVendor == false && (
                                             <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 10px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer permission pending</span>
                                         )}
                                         {item.details[0]?.customerAcceptedVendor == true && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>You may move</span>
+                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 3px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>You may move</span>
                                         )}
 
                                         <div style={{
@@ -414,7 +426,8 @@ const CraneAcceptedOrders = ({ data }) => {
                             </div>
 
                         </div>
-                    ))
+                    ))}
+                    </div>
                 )}
 
                 {openDetails && (
@@ -473,9 +486,9 @@ const CraneAcceptedOrders = ({ data }) => {
             <div  
             >
 
-                <div>
+                {/* <div>
                     <BottomNavigationVendor />
-                </div>
+                </div> */}
 
             </div>
         </div>

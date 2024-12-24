@@ -6,6 +6,12 @@ import backendUrl from '../../environment';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+
+
+
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -13,7 +19,43 @@ const config = {
 };
 
 
+
+const Android12Switch = styled(Switch)(({ theme }) => ({
+    padding: 8,
+    '& .MuiSwitch-track': {
+        borderRadius: 22 / 2,
+        '&::before, &::after': {
+            content: '""',
+            position: 'absolute',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: 16,
+            height: 16,
+        },
+        '&::before': {
+            backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+                theme.palette.getContrastText(theme.palette.primary.main),
+            )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+            left: 12,
+        },
+        '&::after': {
+            backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+                theme.palette.getContrastText(theme.palette.primary.main),
+            )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+            right: 12,
+        },
+    },
+    '& .MuiSwitch-thumb': {
+        boxShadow: 'none',
+        width: 15,
+        height: 15,
+        margin: 1.7,
+    },
+}));
+
 const VendorByMap = ({ onUpdate }) => {
+    const [singleVendor, setSingleVendor] = useState(true)
+
     const [showDropdown, setShowDropdown] = useState(false);
     const [vendorLocationData, setVendorLocationData] = useState([]);
     const [foundVendors, setFoundVendors] = useState([]);
@@ -22,12 +64,19 @@ const VendorByMap = ({ onUpdate }) => {
     const [city, setCity] = useState('');
     console.log("STATES_Info", state)
     console.log("CITYS_Info", city)
+    const [toInputBox, setToInputBox] = useState(false)
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     const [vendorId, setVendorId] = useState('');
     const [isLoadingStates, setIsLoadingStates] = useState(true);
     const [isLoadingCities, setIsLoadingCities] = useState(true);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+
+    const handleSwitchInputBox = (event) => {
+        setToInputBox(!toInputBox)
+    };
 
     useEffect(() => {
         loadStates();
@@ -99,7 +148,7 @@ const VendorByMap = ({ onUpdate }) => {
 
     const vendorsData = async (vendorType) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}`);
+            const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             console.log("response1234567890", response.data);
             setVendorLocationData(response.data.data);
         } catch (error) {
@@ -166,7 +215,8 @@ const VendorByMap = ({ onUpdate }) => {
             setState(tempState)
         }
         if (e.target.name === "city") {
-            const tempCity = e.target.value;
+            let tempCity = e.target.value;
+            tempCity = tempCity.charAt(0).toUpperCase()+tempCity.slice(1).toLowerCase()
             setCity(tempCity)
         }
     };
@@ -273,8 +323,22 @@ const VendorByMap = ({ onUpdate }) => {
                                     ))}
                                 </select>
                             </label>
-                            <label className="form-field input-group mb-3" style={{ borderRadius: "30px" }}>
-                                <p style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px" }}>Select City:</p>
+                            
+
+                            {!toInputBox && (<label className="form-field input-group mb-3">
+                                <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                                    <span style={{ marginRight: '10px' }}>Vendor Place - City:</span>
+                                    <div className="switch-container">
+                                        <FormControlLabel
+                                            control={<Android12Switch defaultChecked />}
+                                            checked={singleVendor}
+                                            onChange={handleSwitchInputBox}
+                                            label="" // You can add a label here if needed
+                                        />
+                                    </div>
+                                </div>
+
+
                                 <select
                                     name="city"
                                     value={city} // This should match city.iso2
@@ -283,6 +347,7 @@ const VendorByMap = ({ onUpdate }) => {
                                 >
                                     <option value="">Select City</option>
                                     {!cities.error && cities.map(city => {
+                                        console.log('Rendering city:', city.iso2, city.name); // Debug: Check city values
                                         return (
                                             <option key={city.iso2} value={city.iso2}>
                                                 {city.name}
@@ -290,8 +355,35 @@ const VendorByMap = ({ onUpdate }) => {
                                         );
                                     })}
                                 </select>
-                            </label>
-                        </div>
+                            </label>)}
+
+                            {toInputBox && (
+                                <label className="form-field input-group mb-3">
+
+                                    <div className='switchparent-container' style={{ display: 'flex', alignItems: 'center', height: "18px" }}>
+                                        <span style={{ marginRight: '10px' }}>Vendor Place - City:</span>
+                                        <div className="switch-container">
+                                            <FormControlLabel
+                                                control={<Android12Switch defaultChecked />}
+                                                checked={singleVendor}
+                                                onChange={handleSwitchInputBox}
+                                                label="" // You can add a label here if needed
+                                            />
+                                        </div>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        placeholder='city'
+                                        value={city}
+                                        onChange={handleChanges}
+                                        className="form-control"
+                                        readOnly={state === ""}
+                                        required
+                                    />
+                                </label>
+                            )}
+                        </div> 
 
                     </div>
 
@@ -301,7 +393,7 @@ const VendorByMap = ({ onUpdate }) => {
                     </div>
                     <div
                         style={{
-                            overflowX: 'hidden',
+                          overflowX: 'hidden',
                             height: "110px",
                             marginBottom: "100px",
                             display: 'grid',

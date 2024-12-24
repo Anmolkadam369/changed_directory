@@ -94,7 +94,7 @@ const AssignedVehicleMechanic = () => {
 
   const fetchAssignedCases = async (vendorCode) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${vendorCode}`);
+      const response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("assignedTasksMechanic", response.data.data);
       setData(response.data.data);
       setCurrentItems(response.data.data)
@@ -116,7 +116,7 @@ const AssignedVehicleMechanic = () => {
 
   const findUserById = async (id) => {
     console.log("HEY", id)
-    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
+    const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("daa", response.data)
     console.log("data", response.data.data[0]);
     setGetDataOfUser(response.data.data[0])

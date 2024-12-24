@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../FirstPage.css'
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import changeServicesUser from '../../../Assets/changeServicesUser.png'
@@ -20,6 +20,13 @@ import StatusTracking from './StatusTracking';
 import HistoryReceipts from './HistoryReceipts';
 import BottomNavigationBar from '../BottomNavigationBar.jsx';
 import Modal from '../../Location1/Modal.jsx';
+import AllCancelledOrders from './AllCancelledOrders.jsx';
+import craneworkdoing from "../../../Assets/crane-work-doing.jpeg"
+import advocatecurrentservice from "../../../Assets/advocatecurrentservice.jpg"
+import mechaniccurrentservice from "../../../Assets/mechaniccurrentservice.jpg"
+import workshopcurrentservice from "../../../Assets/workshopcurrentservice.jpg"
+
+
 
 
 
@@ -27,10 +34,13 @@ import Modal from '../../Location1/Modal.jsx';
 const CraneFirstPage = () => {
     const { state } = useLocation();
     console.log("Statehere", state?.indexFor)
-    console.log("Statehere", state?.vehicleNo)
+    console.log("Statehere", state?.vehicleNumber)
 
     const [selectedIndex, setSelectedIndex] = useState(state?.indexFor || 0);
+    const [vehicleNumber, setVehicleNumber] = useState(state?.vehicleNumber || 0);
     const [vehicleNo, setVehicleNo] = useState(state?.vehicleNo || 0);
+    const [goToNextPage, setGoToNextPage] = useState(false)
+    console.log("goToNextPage", goToNextPage)
     const [center, setCenter] = useState(state?.center || 0);
     const [openServiceModal, setOpenServiceModal] = useState(false)
 
@@ -41,6 +51,32 @@ const CraneFirstPage = () => {
         setSelectedIndex(index);
     };
 
+    useEffect(() => {
+        if (selectedIndex !== state?.indexFor) {
+            setVehicleNumber("");
+        }
+    }, [selectedIndex, state?.indexFor]);
+
+    const [choosenService, setChoosenService] = useState(() => localStorage.getItem("currentService") || 'crane')
+
+    useEffect(() => {
+        if (state?.service) {
+            console.log('stat?.service', state?.service)
+            localStorage.setItem('currentService', state?.service)
+            if (localStorage.getItem("currentService") == state?.service) {
+                setGoToNextPage(true)
+                setChoosenService(state?.service)
+            }
+        }
+        else {
+            if (localStorage.getItem("currentService") === null) localStorage.setItem('currentService', 'crane')
+        }
+    }, [])
+    const chooseCurrentService = (service) => {
+        setChoosenService(service);
+        localStorage.setItem("currentService", service)
+        setOpenServiceModal(!openServiceModal)
+    }
 
 
 
@@ -55,9 +91,9 @@ const CraneFirstPage = () => {
 
     return (
         <div>
-            <div className="start-container" style={{ background: "#166937", height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px" }}>
+            <div className="start-container" style={{ height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px" }}>
                 <div className="imageContainer" style={{ marginTop: "10px", height: "0px" }}>
-                    {["Status tracking", "Quotation & Updates", 'History & Receipts', "Summary & Reviews",].map((text, index) => (
+                    {["Status tracking", "Quotation & Updates", 'History & Receipts', 'Cancelled Orders', "Summary & Reviews",].map((text, index) => (
                         <div
                             key={index}
                             style={{ cursor: 'pointer' }}
@@ -77,11 +113,44 @@ const CraneFirstPage = () => {
 
             {/* <div style={{ display: 'flex', justifyContent: "space-between" }}> */}
 
-            <div style={{ position: "sticky", top: '50px', zIndex: "1000", margin: "20px 20px 0px 20px" }}>
+            <div style={{
+                position: "sticky", top: '50px', zIndex: "1000", margin: "-180px 20px 0px",width:"70px", background: 'linear-gradient(45deg, white, transparent)', borderRadius: "10px",
+                paddingTop: "3px",
+                paddingLeft: "3px",
+                paddingRight: "3px",
+            }}>
                 <img src={changeServicesUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenServiceModal(!openServiceModal)} />
             </div>
 
-                    <div style={{fontWeight:"bold", fontSize:"20px", textAlign:"center"}}>  Crane Services</div>
+
+            <div style={{ position: "relative", textAlign: "center" }}>
+                <img
+                    src={choosenService == "crane" ? craneworkdoing : choosenService == 'advocate' ? advocatecurrentservice : choosenService === 'mechanic' ? mechaniccurrentservice : workshopcurrentservice}
+                    alt="All Accident Vehicles"
+                    style={{
+                        maxHeight: "500px",
+                        width: "100%",
+                        objectFit: "cover",
+                        borderRadius: "10px"
+                    }}
+                />
+                <p
+                    style={{
+                        position: "absolute",
+                        bottom: "20px",
+                        left: "30px",
+                        fontWeight: "bold",
+                        color: "white",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        padding: "5px 10px",
+                        borderRadius: "5px",
+                        fontStyle: "italic",
+                        marginBottom: "70px"
+                    }}
+                >
+                    {choosenService.charAt(0).toUpperCase() + choosenService.slice(1)} Services
+                </p>
+            </div>
 
             {/* </div> */}
 
@@ -89,28 +158,40 @@ const CraneFirstPage = () => {
             <Modal isOpen={openServiceModal} onClose={() => setOpenServiceModal(!openServiceModal)}>
                 {openServiceModal && (
                     <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Advocate</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Crane</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Mechanic</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Workshop</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('advocate')}>Advocate</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('crane')}>Crane</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('mechanic')}>Mechanic</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('workshop')}>Workshop</p>
                     </div>
                 )}
             </Modal>
 
 
             {selectedIndex == 0 && (
-                <StatusTracking />
+                state?.service ? (
+                    goToNextPage && <StatusTracking vehicleNumber={vehicleNumber} />) :
+                    <StatusTracking vehicleNumber={vehicleNumber} />
             )}
 
             {selectedIndex == 1 && (
-                <QuotationUpdate number={vehicleNo} />
+                state?.service ? (
+                    goToNextPage && <QuotationUpdate vehicleNumber={vehicleNumber} />) :
+                    <QuotationUpdate vehicleNumber={vehicleNumber} />
             )}
-            {/* {selectedIndex == 2 && (
-                <Registration vehicleNo={vehicleNo} centerHere={center} />
-            )} */}
+
             {selectedIndex == 2 && (
-                <HistoryReceipts />
+                state?.service ? (
+                    goToNextPage && <HistoryReceipts vehicleNumber={vehicleNumber} />)
+                    : <HistoryReceipts vehicleNumber={vehicleNumber} />
             )}
+
+
+            {selectedIndex == 3 && (
+                state?.service ? (
+                    goToNextPage && <AllCancelledOrders vehicleNumber={vehicleNumber} />)
+                    : <AllCancelledOrders vehicleNumber={vehicleNumber} />
+            )}
+
 
             <div >
                 <BottomNavigationBar />

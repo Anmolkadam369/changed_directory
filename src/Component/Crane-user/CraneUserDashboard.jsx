@@ -24,12 +24,13 @@ import craneadvocatemechanic from '../../Assets/camw.webp';
 
 import Featured from '../Charts/Featured';
 import VendorViewRating from '../VendorViewRating/VendorViewRating';
-
+import { useWebSocket } from '../ContexAPIS/WebSocketContext';
 
 
 const CraneUserDashboard = () => {
 
     const navigate = useNavigate()
+    const { messages } = useWebSocket()
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [approvedCase, setApprovedCase] = useState([])
     const [gotResponse, setGotResponse] = useState([]);
@@ -65,6 +66,26 @@ const CraneUserDashboard = () => {
         fetchAssignedCases();
         getGotResponseVehicle()
     }, [token, userId, navigate]);
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            const getSomeInfo=async()=>{
+                const response = await axios.get(`${backendUrl}/api/testing-websocket`);
+                console.log("responsefrom",response.data)
+            }     
+            getSomeInfo()   
+        },5000)
+    },[])
+
+    useEffect(() => {
+        messages.forEach((message) => {
+            console.log("messages123", message)
+            if (message.forPage == "crane-user-dashboard") {
+                fetchAssignedCases();
+                getGotResponseVehicle()
+            }
+        })
+    }, [messages])
 
     const choosenCase = (item) => {
         setApprovedCase([])
@@ -172,9 +193,9 @@ const CraneUserDashboard = () => {
 
 
             for (let i = 0; i < totalAssignedCases.length; i++) {
-                console.log("totalAssignedCases[i].details[0].vendorDecision", i, totalAssignedCases[i].details[0].vendorDecision)
-                if (totalAssignedCases[i].details[0].vendorDecision != 'reject' && (totalAssignedCases[i].details.length === 0 || totalAssignedCases[i].details[0].acceptedByAdmin === null)) {
-                    pendingCount++;
+                console.log("totalAssignedCases[i].details[0].vendorDecision", i, totalAssignedCases[i].details[0])
+                if (totalAssignedCases[i].details[0]?.vendorDecision != 'reject' && (totalAssignedCases[i].details?.length === 0 || totalAssignedCases[i].details[0]?.acceptedByAdmin === null)) {
+                    pendingCount++; 
                 } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "accept") {
                     acceptedCount++;
                 } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "reject") {
@@ -233,7 +254,7 @@ const CraneUserDashboard = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'
@@ -300,7 +321,7 @@ const CraneUserDashboard = () => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -328,29 +349,18 @@ const CraneUserDashboard = () => {
     }
 
     return (
-        <div style={{height:"100%"}}>
+        <div style={{ height: "100%" }}>
             {/* Red Top Section */}
-            <div
-                style={{
-                    color: "white",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%", // Set a specific height for scrollability
-                    overflow: "auto", // Enable scrolling
-                    background: "#ffbfbf",
-                    clipPath: "polygon(0px 0px, 200% 0px, 0% 12%, 0px 60%)",
-                }}
-            >
+            {/* <div>
                 <p style={{ marginTop: "30px", marginLeft: "20px", fontWeight: "bolder", fontSize: "15px" }}>PAPPU TRUCK BODY REPAIRING WORKS</p>
                 <div style={{ display: 'flex' }}>
                     <p style={{ marginTop: "10px", marginLeft: "20px", fontWeight: "bolder", fontSize: "17px" }}>Service: </p>
                     <p style={{ marginTop: "10px", marginLeft: "10px", fontWeight: "bolder", fontSize: "17px" }}>Crane</p>
                 </div>
-            </div>
-            <div style={{ margin: "30% 10px 10px 20px", background: "white", boxShadow: "black 2px 14px 24px", borderRadius: "30px" }}>
-                <div className='imageContainer' style={{ gap: "25px", padding: '20px', alignItems: 'center' }}>
+            </div> */}
+
+            <div style={{ margin: '10px' }}>
+                <div className='imageContainer' style={{ display: 'flex', gap: "25px", padding: '20px', alignItems: 'center' }}>
                     <div>
                         <img src={nearbyhospital} style={{ height: "35px", width: "35px", textAlign: 'center' }} />
                         <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Hospital</p>
@@ -473,7 +483,7 @@ const CraneUserDashboard = () => {
                     }}>
                     <PendingActionsOutlinedIcon className="small-image" />
                     <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
-                    <p>{workingCases > adminRejected ? workingCases - adminRejected: workingCases}</p>
+                    <p>{workingCases > adminRejected ? workingCases - adminRejected : workingCases}</p>
                 </div>
 
 
@@ -494,7 +504,7 @@ const CraneUserDashboard = () => {
 
             </div>
 
-        
+
 
             <div className="statistics">
                 <div className="charts">

@@ -436,7 +436,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     const cancelledChequeRef = useRef(null);
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getEmployee/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daaemployee", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -571,7 +571,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
                 url: `${backendUrl}/api/employeeUpdate/${id}/${userId}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
             console.log("response", response.data);

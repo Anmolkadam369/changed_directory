@@ -85,7 +85,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     const getAccidentDataById = async (AccidentVehicleCode) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVehicleAccidentById/${AccidentVehicleCode}`);
+            const response = await axios.get(`${backendUrl}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`);
             console.log("getAccidentDataById", response.data.data)
 
             setAccidentDataById(response.data.data);
@@ -297,7 +297,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
             for (const key in formData) {
                 if (formData[key] !== undefined && formData[key] !== null && formData[key] !== "") {
                     if (formData[key] instanceof File) {
-                        formDataObj.append(key, formData[key], formData[key].name);
+                        formDataObj.apcpend(key, formData[key], formData[key].name);
                     } else {
                         formDataObj.append(key, formData[key]);
                     }
@@ -315,7 +315,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                 url: `${backendUrl}/api/vendorOnAssignedVehicle/${data[0].AccidentVehicleCode}/${userId}/${accidentDataById[0].assignedBy}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
@@ -377,7 +377,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                             </p>
 
                             <p style={{ textAlign: "center", marginTop: "10px", fontSize: "14px" }}>Estimated earnings </p>
-                            <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>₹ {accidentDataById[0].budget}</h1>
+                            <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>₹ {accidentDataById[0].charges}</h1>
 
 
 

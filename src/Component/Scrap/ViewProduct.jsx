@@ -141,7 +141,7 @@ const parseDate = (dateString) => {
 //     const generateFile = async () => {
 //         try {
 //             setIsLoading(true);
-//             const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`);
+//             const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
 //             setGeneratedExcel(response.data.data);
 //             console.log("resoponse", response.data.data)
 //             setIsLoading(false);
@@ -181,7 +181,7 @@ const parseDate = (dateString) => {
 //     //       method: 'PUT',
 //     //       url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
 //     //       headers: {
-//     //         'Authorization': token
+//     //         'Authorization': `Bearer ${token}`
 //     //       }
 //     //     });
 //     //     getData();
@@ -193,7 +193,7 @@ const parseDate = (dateString) => {
 //             method: 'DELETE',
 //             url: `${backendUrl}/api/deleteVendor/${userId}/${id}`,
 //             headers: {
-//                 'Authorization': token
+//                 'Authorization': `Bearer ${token}`
 //             }
 //         });
 //         getData();
@@ -549,7 +549,7 @@ const ViewProduct = ({onUpdate}) => {
     }, [])
 
     const getData = async () => {
-        const response = await axios.get(`${backendUrl}/api/scrapProductByUser/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/scrapProductByUser/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         console.log("fetchedData", fetchedData)
 

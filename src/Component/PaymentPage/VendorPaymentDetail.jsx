@@ -109,7 +109,7 @@ const VendorPaymentDetail = () => {
                 const response = await axios.post(`${backendUrl}/api/VendorPaymentDetails`, sendData, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': token
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 console.log("response", response.data.vendorPaymentDetailsId);

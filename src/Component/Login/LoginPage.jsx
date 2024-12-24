@@ -135,6 +135,8 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
         localStorage.setItem("loginId", response.data.loginId);
+        localStorage.setItem('loginTime', Date.now());
+        document.cookie = `token=${response.data.token}; path=/; max-age=${48 * 60 * 60}; secure; samesite=strict`;
 
         if (response.data?.data.department) {
           localStorage.setItem("department", response.data.data.department);
@@ -145,15 +147,19 @@ const Login = () => {
         dispatch(login({ userId, token }));
         console.log("I AM TOKEN MASTER222222")
 
+  
+          // Save in cookies (accessible from the backend)
 
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
           localStorage.setItem("rememberedPassword", password);
+          
           localStorage.setItem("rememberMe", true);
         } else {
           localStorage.removeItem("rememberedaEmail");
           localStorage.removeItem("rememberedPassword");
           localStorage.removeItem("rememberMe");
+
         }
 
         setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
@@ -161,26 +167,38 @@ const Login = () => {
         console.log("RESPONSEONDSTS", response.data.data)
         if (response.data.data?.userType === "admin" ||
           response.data.data.department?.trim() === "Management") {
-          navigate("../Admin");
+          localStorage.setItem("userRole", "Management");
+            navigate("../Admin");
         } else if (response.data.data.department?.trim() === "IT") {
           console.log("trim department", response.data.data.department)
+          localStorage.setItem("userRole", "IT");
           navigate("../Admin");
         }
         else if (response.data.data.vendorType === "advocate") {
+          localStorage.setItem("userRole", "advocate");
           navigate("../advocateDashboard");
         } else if (response.data.data.vendorType === "mechanic") {
+          localStorage.setItem("userRole", "mechanic");
           navigate("../MechanicDashboard");
         } else if (response.data.data.vendorType === "crane") {
-          navigate("../CraneDashboard");
+          localStorage.setItem("userRole", "crane");
+          setTimeout(()=>{
+            navigate("../crane-user-dashboard");
+          },2000)
         } else if (response.data.data.vendorType === "workshop") {
+          localStorage.setItem("userRole", "workshop");
           navigate("../WorkshopDashboard");
         } else if (response.data.data.department === "Administration") {
+          localStorage.setItem("userRole", "Administration");
           navigate("../Admin");
         } else if (response.data.data.department === "Sales") {
+          localStorage.setItem("userRole", "sales");
           navigate("../Salesteam");
         }
         else {
-          navigate('../UserDashboard');
+          localStorage.setItem("userRole", "customer");
+          localStorage.setItem("fromLogin", true)
+          navigate('../user-landing-page');
         }
 
       }

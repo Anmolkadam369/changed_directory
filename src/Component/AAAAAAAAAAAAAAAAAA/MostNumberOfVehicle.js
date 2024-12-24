@@ -12,6 +12,9 @@ const MostNumberOfVehicle = () => {
   const [newAccidentData, setData] = useState([]);
   const [expandTable, setExpandTable] = useState(false);
   const [height, setHeight] = useState('400px');
+  
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
 
   useEffect(() => {
@@ -19,7 +22,7 @@ const MostNumberOfVehicle = () => {
   }, [])
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/mostNumberOfVehicle`);
+    const response = await axios.get(`${backendUrl}/api/mostNumberOfVehicle/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     const sortedData = response.data.data.sort((a,b) => b.NumberOfVehicles - a.NumberOfVehicles);
     if (response && response.message !== "No accident vehicle data found.") setData(sortedData);

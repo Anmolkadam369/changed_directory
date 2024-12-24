@@ -37,6 +37,8 @@ import { height } from '@mui/system';
 import RotatingBoard from '../AAAAAAAAAAAAAAAAAA/RotatingBoard';
 import Header from './Header';
 import Footer from './Footer';
+import axios from 'axios';
+
 
 function Home() {
     const navigate = useNavigate();
@@ -47,6 +49,95 @@ function Home() {
     function navigateToVehiclePage() {
         navigate('./LoginPage');
     }
+
+    const getCookie = (name) => {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    };
+
+    const checkTokenValidity = async (token) => {
+        try {
+            const response = await axios.post(`${backendUrl}/api/verifyToken/isValid`, {}
+                , { headers: { Authorization: `Bearer ${token}` }});
+            return response.status === 200; // Backend will return 200 if valid
+        } catch (error) {
+            console.error('Token validation failed:', error);
+            return false;
+        }
+    };
+    useEffect(() => {
+        const isValidUser = async () => {
+            const token = getCookie('token') || localStorage.getItem('token');
+            const userId = localStorage.getItem('userId')
+            if (token) {
+                // Optionally verify token validity
+                const isValid = checkTokenValidity(token); // Implement this function
+                if (isValid) {
+                    // User remains logged in
+                    const response = await axios.get(`${backendUrl}/api/typeofUser/${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    if (response.status !== 200) {
+                        navigate('/LoginPage')
+                    }
+                    console.log("esponse.data.userType", response.data.data.userType)
+                    if (response.data.data.userType === "admin" ||
+                        response.data.data.userType === "Management") {
+                        navigate("../Admin");
+                    } else if (response.data.data.userType === "IT") {
+                        navigate("../Admin");
+                    }
+                    else if (response.data.data.userType === "advocate") {
+                        navigate("../advocateDashboard");
+                    } else if (response.data.data.userType === "mechanic") {
+                        navigate("../MechanicDashboard");
+                    } else if (response.data.data.userType === "crane") {
+                        navigate("../crane-user-dashboard");
+                    } else if (response.data.data.userType === "workshop") {
+                        navigate("../WorkshopDashboard");
+                    } else if (response.data.data.userType === "Administration") {
+                        navigate("../Admin");
+                    } else if (response.data.data.userType === "Sales") {
+                        navigate("../Salesteam");
+                    }
+                    else {
+                        localStorage.setItem("fromLogin", true)
+                        navigate('../user-landing-page');
+                    }
+
+                    console.log('Auto-login successful');
+                }
+            }
+            console.log('Token expired or missing, redirecting to login.');
+        }
+
+        isValidUser()
+    }, [])
+
+    useEffect(() => {
+        const expiryTime = 12 * 60 * 60 * 1000;
+        const delay = expiryTime - (Date.now() - localStorage.getItem('loginTime'));
+
+        if (delay > 0) {
+            setTimeout(() => {
+                logoutUser();
+            }, delay);
+        } else {
+            logoutUser(); // Immediately log out if expiry time is in the past
+        }
+    }, [])
+
+    const logoutUser = () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('token');
+        document.cookie = 'token=; path=/; max-age=0; secure; samesite=strict';
+        console.log('Logged out due to token expiry.');
+        window.location.href = '/loginPage'; // Redirect to login page
+    };
+
+
 
     function navigateToContactUs() {
         navigate('./ContactUs');
@@ -384,7 +475,7 @@ function Home() {
                                     <div className="home-elem-58">
                                         <span className="home-elem-57">
                                             <p style={{ fontSize: "15px", fontWeight: "bold", color: "orange", textAlign: "center" }}> 1000+ </p>
-                                            <p  style={{ fontSize: "15px", fontWeight: "bold" }}>On-spot Repairs </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>On-spot Repairs </p>
                                         </span>
                                         <span className="home-elem-56">
                                             <p><br /></p>
@@ -393,7 +484,7 @@ function Home() {
                                     <div className="home-elem-55">
                                         <span className="home-elem-54">
                                             <p style={{ fontSize: "15px", fontWeight: "bold", color: "lightblue", textAlign: "center" }}> 500+ </p>
-                                            <p  style={{ fontSize: "15px", fontWeight: "bold" }}>Workshop</p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>Workshop</p>
                                         </span>
                                         <span className="home-elem-53">
                                             <p><br /></p>
@@ -402,7 +493,7 @@ function Home() {
                                     <div className="home-elem-55">
                                         <span className="home-elem-54">
                                             <p style={{ fontSize: "15px", fontWeight: "bold", color: "lightgreen", textAlign: "center" }}> 1500+ </p>
-                                            <p  style={{ fontSize: "15px", fontWeight: "bold" }}>Crane / Hydra </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>Crane / Hydra </p>
                                         </span>
                                         <span className="home-elem-53">
                                             <p><br /></p>

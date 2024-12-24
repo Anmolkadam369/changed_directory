@@ -168,7 +168,7 @@ const AssignedVendorsTable = () => {
       method : "GET",
       url : `${backendUrl}/api/vendorResponse/${userId}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     if (response && response.data.message !== "No accident vehicle data found.") {

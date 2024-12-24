@@ -165,7 +165,7 @@ const AccidentVehicleRegUpdate = () => {
   };
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo`);
+    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
     const fetchedData = response.data.data;
@@ -223,7 +223,7 @@ const AccidentVehicleRegUpdate = () => {
         url: `${backendUrl}/api/updateSelectedOptions/${selectedItem.AccidentVehicleCode}/${userId}`,
         data: selectedOptions,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       })
       console.log("response", response.data);

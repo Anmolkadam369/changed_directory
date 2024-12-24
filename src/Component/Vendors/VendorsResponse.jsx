@@ -117,7 +117,7 @@ const VendorResponse = () => {
         method : "GET",
         url : `${backendUrl}/api/vendorResponse/${userId}`,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       console.log("console dataMydata", response.data)

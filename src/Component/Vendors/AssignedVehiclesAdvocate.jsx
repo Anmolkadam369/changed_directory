@@ -87,7 +87,7 @@ const AssignedVehicleAdvocate = () => {
 
   const fetchAssignedCases = async (vendorCode) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${vendorCode}`);
+      const response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("DATA RESPONESSSS", response.data.data)
       setData(response.data.data);
       setCurrentItems(response.data.data);
@@ -97,7 +97,7 @@ const AssignedVehicleAdvocate = () => {
   };
 
   const findUserById = async (id) => {
-    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
+    const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     setGetDataOfUser(response.data.data[0]);
   };
 

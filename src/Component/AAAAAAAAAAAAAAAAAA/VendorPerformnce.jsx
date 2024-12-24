@@ -226,10 +226,10 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
     const fetchAssignedCases = async () => {
         try {
             let response;
-            if (type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${id}`);
-            if (type == "mechanic") response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${id}`);
-            if (type == "advocate") response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${id}`);
-            if (type == "workshop") response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${id}`);
+            if (type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (type == "mechanic") response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (type == "advocate") response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (type == "workshop") response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
 
             console.log("Total", response.data.data);
             setTotalAssignedCases(response.data.data);

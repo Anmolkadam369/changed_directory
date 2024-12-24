@@ -13,13 +13,15 @@ const VendorResponseTable = () => {
   const [selectedType, setSelectedType] = useState("mechanic");
   const [showDropdown, setShowDropdown] = useState(false);
   const [expandTable, setExpandTable] = useState(false);
-
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+  
   useEffect(() => {
     getData();
   }, []);
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/allVendorDataWithCustomerName`);
+    const response = await axios.get(`${backendUrl}/api/allVendorDataWithCustomerName/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     if (response && response.message !== "No accident vehicle data found.") {
       setData(response.data.data);
     }

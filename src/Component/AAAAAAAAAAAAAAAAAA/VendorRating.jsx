@@ -11,6 +11,9 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
 const VendorRating = () => {
   const [newResponseData, setData] = useState([]);
+  
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   console.log("NEWRESPONSDARA", newResponseData)
   const [expandTable, setExpandTable] = useState(false);
   const [selectedType, setSelectedType] = useState('mechanic');
@@ -21,7 +24,7 @@ const VendorRating = () => {
 
   const getData = async (e) => {
     try {
-        const response = await axios.get(`${backendUrl}/api/getVendorRating`);
+        const response = await axios.get(`${backendUrl}/api/getVendorRating/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("responsevendorRating", response);
         if (response && response.data) {
             const filteredData = response.data.data.

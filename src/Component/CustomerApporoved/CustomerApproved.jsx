@@ -142,7 +142,7 @@ const CustomerApproved = () => {
       method: 'DELETE',
       url: `${backendUrl}/api/deleteCustomer/${userId}/${id}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     getData();
@@ -152,7 +152,7 @@ const CustomerApproved = () => {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/customerDBToExcel/${userId}`);
+      const response = await axios.get(`${backendUrl}/api/customerDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       setGeneratedExcel(response.data.data);
       setIsLoading(false);
       setIsGenerated(true);
@@ -205,7 +205,7 @@ const CustomerApproved = () => {
         method: 'PUT',
         url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       getData();
@@ -246,7 +246,7 @@ const CustomerApproved = () => {
   };
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/getCustomer`);
+    const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
 
     const formattedData = fetchedData.map(item => ({

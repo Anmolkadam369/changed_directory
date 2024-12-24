@@ -247,7 +247,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -255,7 +255,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
 
     const getExistingData = async (id, userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             setExistingData(response.data.data[0]);
             console.log("getExistingData success", response);
         } catch (error) {
@@ -379,7 +379,7 @@ function UploadDocAdvocate({ id, item, onUpdate }) {
                 url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
 

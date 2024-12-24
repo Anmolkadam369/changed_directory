@@ -281,7 +281,9 @@ const Dashboard = () => {
 
     const findUserById = async (id) => {
         try{console.log("HEY", `${backendUrl}/api/findById/${id}`)
-        let response = await axios.get(`${backendUrl}/api/findById/${id}`);
+        let response = await axios.get(`${backendUrl}/api/findById/${id}`,{
+            headers:{ 'Authorization': `Bearer ${token}`}
+        });
         console.log("daa", response.data)
         if (response.data.message == "No user found") {
             response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
@@ -296,22 +298,22 @@ const Dashboard = () => {
     }
 
     const getVendorData = async () => {
-        const response = await axios.get(`${backendUrl}/api/getVendor`);
+        const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setVendorData(response.data.data);
     };
 
     const getCustomerData = async () => {
-        const response = await axios.get(`${backendUrl}/api/getCustomer`);
+        const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setCustomerData(response.data.data)
     };
 
     const getAccidentVehicleData = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         if (response && response.message !== "No accident vehicle data found.") setAccidentVehicleData(response.data.data)
     };
 
     const getAllAccidentVehicleData = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getAllAccidentVehicleInfo`);
+        const response = await axios.get(`${backendUrl}/api/getAllAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         setAllAccidentVehicleData(response.data.data)
     };
 
@@ -322,7 +324,7 @@ const Dashboard = () => {
 
     const AssignedVendorsRemaining = async (e) => {
         const getFilteredData = "partiallyAssigned"
-        const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}`);
+        const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         setRemainingAssignedVendors(response.data.data)
     };
 
@@ -331,14 +333,14 @@ const Dashboard = () => {
             method : "GET",
             url : `${backendUrl}/api/vendorResponse/${userId}`,
             headers: {
-              'Authorization': token
+              'Authorization': `Bearer ${token}`
             }
           });
         setVendorResponse(response.data.data)
     };
 
     const allVisitors = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/visitors`);
+        const response = await axios.get(`${backendUrl}/api/visitors/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         setVisitors(response.data.data)
     };
 
@@ -346,7 +348,7 @@ const Dashboard = () => {
     const generateFile = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`${backendUrl}/api/getWeeklyReports/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getWeeklyReports/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             setGeneratedExcel(response.data.data);
             setIsLoading(false);
             setIsGenerated(true);

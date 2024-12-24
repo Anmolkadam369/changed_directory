@@ -231,7 +231,18 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         remark: comingData.remark || "",
         perHR: comingData.perHR || "",
         first_approval: comingData.first_approval || "",
-        second_approval: comingData.second_approval || ""
+        second_approval: comingData.second_approval || "",
+
+        recipientName : comingData.recipientName || "",
+        bankAccount : comingData.bankAccount || "",
+        ifscCode : comingData.ifscCode || "",
+        bankName : comingData.bankName || "",
+        branchName : comingData.branchName || "",
+        mobileNumber : comingData.mobileNumber || "",
+        upiId : comingData.upiId || "",
+
+
+
 
       }));
     }
@@ -272,6 +283,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         setIsLoadingCities(false);
       });
   };
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   const [formData, setFormData] = useState({
     systemDate: today,
@@ -301,7 +313,15 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
     remark: "",
     perHR: "",
     first_approval: "",
-    second_approval: ""
+    second_approval: "",
+    recipientName :  "",
+    bankAccount : "",
+    ifscCode : "",
+    bankName :  "",
+    branchName :  "",
+    mobileNumber :  "",
+    upiId : "",
+    
   });
 
   console.log("setformda ta", formData)
@@ -335,7 +355,6 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
                 longitude: location.lon,
               }));
             } else {
-              console.error(" ANMOL Latitude No location data found.");
               setCoordinates("No location data found.");
             }
           } catch (error) {
@@ -356,10 +375,10 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
   const getDataById = async (id) => {
     let response;
     if (pageFrom == "VendorSignUp") {
-      response = await axios.get(`${backendUrl}/api/getPotentialVendorById/${id}`);
+      response = await axios.get(`${backendUrl}/api/getPotentialVendorById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     }
     else {
-      response = await axios.get(`${backendUrl}/api/getVendor/${id}`);
+      response = await axios.get(`${backendUrl}/api/getVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     }
     console.log("daa", response.data.data)
     console.log("response", response.data.data[0]);
@@ -377,7 +396,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         method: 'PUT',
         url: `${backendUrl}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -421,7 +440,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         method: 'PUT',
         url: `${backendUrl}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -545,7 +564,21 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         [name]: value,
       });
     }
-    else if (name === "district" || name === "vendorType") {
+    else if (name === "district"){
+      let changedValue = value.charAt(0).toUpperCase()+value.slice(1).toLowerCase();
+      setFormData({
+        ...formData,
+        [name]:changedValue
+      })
+    }
+    else if (name === "vendorType") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      })
+    }
+
+    else if(name=='bankName'|| name=='recipientName'|| name=='bankAccount' || name =='ifscCode' || name == 'branchName' || name == "mobileNumber" || name=='upiId'){
       setFormData({
         ...formData,
         [name]: value,
@@ -650,7 +683,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
         data: formDataObj,
         headers: {
-          'Authorization': token
+          'Authorization': `Bearer ${token}`
         }
       });
       console.log("response", response.data);
@@ -1553,13 +1586,6 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
           <label className="form-field"></label>
         </div>
 
-
-
-
-
-
-
-
         <label className='form-field'>
           {IsReadOnly ? (
             formData.longitude == "" ? (
@@ -1619,6 +1645,120 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
             </>
           )}
         </label>
+
+        <form className="Customer-master-form" style={{ background: "#c4c4ff3d", marginBottom: "30px", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2)", borderRadius: "30px" }}>
+            <div class="header-container">
+              <h3 class="bigtitle">Bank Information</h3>
+            </div>
+            <div className="form-row">
+              <label className="form-field input-group mb-3">
+                Recipient's Name:
+                <input
+                  type="text"
+                  name="recipientName"
+                  value={formData.recipientName}
+                  readOnly={IsReadOnly}
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </label>
+            </div>
+
+            <div className="form-row" style={{ display: 'flex', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('bank')}
+                style={{ flex: 1 }}
+              >
+                Bank Transfer
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('upi')}
+                style={{ flex: 1 }}
+              >
+                UPI
+              </button>
+            </div>
+
+            {paymentMethod === 'bank' && (
+              <div className="Customer-master-form" style={{ marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
+                <label className="form-field input-group mb-3">
+                  Bank Name:
+                  <input
+                    type="text"
+                    name="bankName"
+                  readOnly={IsReadOnly}
+                    value={formData.bankName}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </label>
+                <label className="form-field input-group mb-3">
+                  Bank Account:
+                  <input
+                    type="text"
+                    name="bankAccount"
+                  readOnly={IsReadOnly}
+                    value={formData.bankAccount}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </label>
+                <label className="form-field input-group mb-3">
+                  IFSC Code:
+                  <input
+                    type="text"
+                    name="ifscCode"
+                  readOnly={IsReadOnly}
+                    value={formData.ifscCode}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </label>
+                <label className="form-field input-group mb-3">
+                  Branch Name:
+                  <input
+                    type="text"
+                    name="branchName"
+                  readOnly={IsReadOnly}
+                    value={formData.branchName}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </label>
+              </div>
+            )}
+
+            {paymentMethod === 'upi' && (
+              <div className="Customer-master-form" style={{ marginLeft: "0px", marginRight: "0px", paddingLeft: '15px', paddingRight: "25px" }}>
+                <label className="form-field input-group mb-3">
+                  Registered Mobile Number:
+                  <input
+                    type="text"
+                    name="mobileNumber"
+                  readOnly={IsReadOnly}
+                    value={formData.mobileNumber}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </label>
+                <label className="form-field input-group mb-3">
+                  UPI ID:
+                  <input
+                    type="text"
+                    name="upiId"
+                  readOnly={IsReadOnly}
+                    value={formData.upiId}
+                    onChange={handleChange}
+                    className="form-control"
+                  />
+                </label>
+              </div>
+            )}
+          </form>
+
+
 
 
 

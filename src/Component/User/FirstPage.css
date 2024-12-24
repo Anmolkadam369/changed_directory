@@ -59,6 +59,7 @@
   flex-direction: column;
   align-items: center;
   margin: 0 5px;
+  text-align: center;
 }
 
 .image {
@@ -70,7 +71,7 @@
 }
 
 .imageWrapper .description {
-  background: radial-gradient(#fff8f8, #4800ff57);
+  background: radial-gradient(#fff8f8, #25601b57);
   width: 91%;
   border: 1px solid;
   border-top: none;
@@ -81,7 +82,7 @@
 
 .imageWrapper .description p {
   font-size: 12px;
-  color: rgb(0, 49, 255);
+  color: rgb(53, 105, 32);
   margin: 0;
 }
 
@@ -127,14 +128,16 @@
 }
 
 .imageWrapper .top-scrolling {
-  background: lavender;
-  width: 91%;
+  background: white;
   border: 1px solid;
   /* border-top: none; */
-  padding: 5px 0px 5px 0px;
+  padding: 5px 10px;
   border-radius: 5px 5px 5px 5px;
   text-align: center;
   min-width: 90px;
+  display: inline-block;
+  white-space: nowrap;
+  
 }
 
 .imageWrapper .top-scrolling p {
@@ -144,13 +147,39 @@
 }
 
 .imageWrapper.selected .top-scrolling{
-  background-color: #9a9393;
+  background-color: black;
 }
 
 .imageWrapper.selected .top-scrolling p {
-  color: darkblue; /* Change to your preferred color */
+  color: white; /* Change to your preferred color */
 }
 
 .imageWrapper.selected {
   background-color: rgba(142, 162, 244, 0.1); /* Optional background change */
+}
+
+.allservices-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+.allservices-info {
+  padding: 20px;
+}
+
+.allservices-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.allservices-details {
+  margin-bottom: 15px;
+}
+
+.allservices-price {
+  font-size: 18px;
+  font-weight: bold;
 }

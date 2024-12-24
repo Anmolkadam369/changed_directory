@@ -191,7 +191,7 @@
 
 //   const findUserById = async (id) => {
 //     console.log("HEY", id)
-//     const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
+//     const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
 //     console.log("findByIdForVendor", response.data)
 //     console.log("findByIdForVendor", response.data.data[0]);
 //     setGetDataOfUser(response.data.data[0])
@@ -743,7 +743,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
   const fetchAssignedCases = async (vendorCode) => {
     console.log("randomId", GetDataOfUser.randomId);
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${vendorCode}`);
+      const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("accident vehicle table", response.data.data);
       setData(response.data.data);
       setCurrentItems(response.data.data)
@@ -754,7 +754,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
 
   const findUserById = async (id) => {
     console.log("HEY", id)
-    const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${id}`);
+    const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("findByIdForVendor", response.data)
     console.log("findByIdForVendor", response.data.data[0]);
     setGetDataOfUser(response.data.data[0])

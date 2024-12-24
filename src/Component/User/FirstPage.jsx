@@ -1,9 +1,10 @@
 
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import backendUrl from '../../environment';
+import { Container, Row, Col, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './FirstPage.css'
@@ -34,9 +35,11 @@ import truckrepairingUser from '../../Assets/truckrepairingUser.png'
 import repairUser from '../../Assets/repairUser.png'
 import speechbubble from '../../Assets/speechbubble.png'
 import { useMediaQuery } from '@mui/material';
-
-
-
+import { useWebSocket } from '../ContexAPIS/WebSocketContext.jsx';
+import craneworkdoing from "../../Assets/crane-work-doing.jpeg"
+import advocatecurrentservice from "../../Assets/advocatecurrentservice.jpg"
+import mechaniccurrentservice from "../../Assets/mechaniccurrentservice.jpg"
+import workshopcurrentservice from "../../Assets/workshopcurrentservice.jpg"
 
 
 
@@ -48,6 +51,7 @@ import SplashScreen from './SplashScreen.jsx';
 import BottomNavigationBar from './BottomNavigationBar.jsx';
 import { ClipLoader } from 'react-spinners';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import FirstPageDesigns from './FirstPageDesigns/FIrstPageDesigns.jsx';
 
 
 
@@ -79,6 +83,46 @@ const FirstPage = () => {
 
     const [errorMessage, setErrorMessage] = useState("");
 
+    //-------------------------------------------------------------------
+    const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
+    const effectRan = useRef(false);
+    const urlBase64ToUint8Array = base64String => {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    };
+
+    useEffect(() => {
+        if (effectRan.current === false) {
+            const sendLoginNotification = async () => {
+                try {
+                    console.log('Registering service worker...');
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('Service worker registered:', registration);
+
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                    });
+                    console.log('Push Manager subscription:', subscription);
+
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription, { headers: { Authorization: `Bearer ${token}` } });
+
+                } catch (error) {
+                    console.error('Error sending login notification:', error);
+                }
+            };
+
+            sendLoginNotification();
+            effectRan.current = true;
+        }
+    }, []);
+
+
+
+    //-------------------------------------------------------------------
+
     const reasons = [
         "Too much time taking",
         "Got other services",
@@ -107,24 +151,27 @@ const FirstPage = () => {
         }
     }, [token, userId, navigate]);
 
+
     const getData = async (e) => {
-        console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
-        if (response.data.message == "No accident vehicle data found.") setData([])
-        else {
-            console.log("response123421", response.data.data);
-            console.log("data2", response.data.data2);
+        // console.log("userid", userId);
+        // const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        // if (response.data.message == "No accident vehicle data found.") setData([])
+        // else {
+        //     console.log("response123421", response.data.data);
+        //     console.log("data2", response.data.data2);
 
-            const filteredData = response.data.data.filter((info) =>
-                info.selectedOptions === 'crane' && info.filedCaseFully == false
-            );
+        //     const filteredData = response.data.data.filter((info) =>
+        //         info.selectedOptions === 'crane' && info.filedCaseFully == false
+        //     );
 
-            setData(filteredData)
-            console.log("seTDATIOATN", filteredData);
+        //     setData(filteredData)
+        //     console.log("seTDATIOATN", filteredData);
 
-            setCurrentItems(response.data.data);
-        }
+        //     setCurrentItems(response.data.data);
+        // }
     };
+
+
 
     const getCrane = () => {
         navigate('/Crane-dashboard')
@@ -169,7 +216,7 @@ const FirstPage = () => {
                 method: "PUT",
                 url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}`,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 },
                 data: {
                     cancleOrderReason: [...selectedReasons, otherReason]
@@ -215,6 +262,64 @@ const FirstPage = () => {
 
     }
 
+    const newAccidentVehicle = () => {
+        navigate('/add-new-vehicle-driver')
+    }
+
+    const [locations, setLocation] = useState('')
+    const [pickupLocation, setPickupLocation] = useState('')
+
+     useEffect(() => {
+            const getLocation = () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition, showError);
+                } else {
+                    setLocation('Geolocation is not supported by this browser.');
+                }
+            };
+            getLocation()
+        }, [])
+    
+    
+        const showPosition = async (position) => {
+            const { latitude, longitude } = position.coords;
+
+    
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+                );
+                const data = await response.json();
+                if (data && data.address) {
+                    const { road, city, state, country } = data.address;
+                    setPickupLocation(`${road || ''}, ${city || ''}, ${state || ''}, ${country || ''}`);
+                } else {
+                    setPickupLocation('Location details not found.');
+                }
+            } catch (error) {
+                setLocation('Error fetching location details.');
+            }
+        };
+    
+        const showError = (error) => {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    setLocation('User denied the request for Geolocation.');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    setLocation('Location information is unavailable.');
+                    break;
+                case error.TIMEOUT:
+                    setLocation('The request to get user location timed out.');
+                    break;
+                case error.UNKNOWN_ERROR:
+                    setLocation('An unknown error occurred.');
+                    break;
+                default:
+                    setLocation('An error occurred while fetching location.');
+            }
+        };
+    
 
     return (
 
@@ -227,15 +332,23 @@ const FirstPage = () => {
                 </div>)}
             {!showSplash && (
                 <div style={{
-                    background: 'linear-gradient(rgb(181 235 178), rgb(255 255 255), rgb(255, 255, 255))'
+                    // background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))'
                 }}>
                     <div>
-                        <div style={{ height: "100vh" }}>
+                        <div    >
+                            <div style={{ background: "transperant", padding: '8px', marginBottom: "8px", borderRadius: "5px" }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <i class="fa fa-location-arrow" style={{ fontSize: "20px", color: "rgb(0 0 0)", marginRight: "10px" }}></i>
+                                    <p style={{ color: 'red', fontSize: "13px", margin: "5px 5px", color: "#555" }}>
+                                        {pickupLocation}
+                                    </p>
+                                </div>
+                            </div>
                             <div className="container" style={{
-                                paddingTop: "30px",
+                                // paddingTop: "10px",
                                 maxWidth: "500px",
-                                height: "30px",
-                                marginBottom: "30px",
+                                // height: "30px",
+                                // marginBottom: "30px",
                                 filter: isImageContainerVisible ? "blur(4px)" : "none", // Apply blur effect
                                 opacity: isImageContainerVisible ? 0.5 : 1, // Reduce opacity if blurred
                                 pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
@@ -287,37 +400,12 @@ const FirstPage = () => {
                             </div>
 
                             <div style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                filter: isImageContainerVisible ? "blur(4px)" : "none", // Apply blur effect
-                                opacity: isImageContainerVisible ? 0.5 : 1, // Reduce opacity if blurred
-                                pointerEvents: isImageContainerVisible ? "none" : "auto" // Disable clicking
+                                margin: "0px 10px 10px 10px", marginBottom: '35px'
                             }}>
-                                <button
-                                    onClick={() => (window.location.href = 'tel:9867756819')}
-                                    type="button"
-                                    style={{ width: "100%", margin: "10px", maxWidth: "150px", height: "35px", borderRadius: "10px", background: "rgb(229, 104, 104)", boxShadow: "rgb(0 0 0 / 91%) 4px 4px 12px" }}
-                                // className="btn btn-primary"
-                                >
-                                    <div style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}>
-                                        <img src={emergencycall} style={{ height: "20px", width: "20px" }} alt="emergencycall" />
-                                        <p style={{ textAlign: "center", fontSize: "15px", marginLeft: "15px", fontWeight: "bold" }}>SOS</p>
-                                    </div>
-                                </button>
-                            </div>
-
-                           
-                                <div style={{
-                                    margin: "10px",
-                                    background: "white",
-                                    boxShadow: "4px 4px 4px lightgreen",
-                                    borderRadius: "30px"
-                                }}>
+                                <div style={{ overflowX: 'auto',overflowY:'hidden', alignItems: 'center' ,scrollbarWith:'none', msOverflowStyle:"none"}}>
                                     <div className='imageContainer' style={{
                                         display: 'flex',
                                         gap: "25px",
-                                        padding: '20px',
                                         alignItems: 'center'
                                     }}>
                                         <div>
@@ -333,16 +421,192 @@ const FirstPage = () => {
                                             <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Restaurant</p>
                                         </div>
                                         <div>
-                                            <img src={nearbyPetrolPump} style={{ height: "30px", width: "35px", textAlign: 'center' }} />
+                                            <img src={nearbyPetrolPump} style={{ height: "25px", width: "40px", textAlign: 'center' }} />
                                             <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Pump</p>
                                         </div>
                                         <div>
                                             <img src={nearbyParking} style={{ height: "40px", width: "40px", textAlign: 'center', marginLeft: "5px", marginBottom: "8px" }} />
                                             <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Parking</p>
                                         </div>
+                                        <div>
+                                            <i className="fa fa-shopping-cart" style={{ fontSize: "25px", width: "40px", textAlign: "center", marginBottom: "8px" }}></i>
+                                            <p style={{ fontSize: "10px", textAlign: "center" }}>Near By Mall</p>
+                                        </div>
+                                        <div>
+                                            <i className="fa fa-train" style={{ fontSize: "25px", width: "40px", textAlign: "center", marginBottom: "8px" }}></i>
+                                            <p style={{ fontSize: "10px", textAlign: "center" }}>Near By Train Station</p>
+                                        </div>
+                                        <div>
+                                            <i className="fa fa-university" style={{ fontSize: "25px", width: "40px", textAlign: "center", marginBottom: "8px" }}></i>
+                                            <p style={{ fontSize: "10px", textAlign: "center" }}>Near By School</p>
+                                        </div>
+                                        <div>
+                                            <i className="fa fa-bed" style={{ fontSize: "25px", width: "40px", textAlign: "center", marginBottom: "8px" }}></i>
+                                            <p style={{ fontSize: "10px", textAlign: "center" }}>Near By Hotel</p>
+                                        </div>
+                                        <div>
+                                            <i className="fa fa-bus" style={{ fontSize: "25px", width: "40px", textAlign: "center", marginBottom: "8px" }}></i>
+                                            <p style={{ fontSize: "10px", textAlign: "center" }}>Near By Bus Stop</p>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-map-marker" style={{ fontSize: "25px", width: "40px", textAlign: 'center', marginLeft: "5px", marginBottom: "8px" }}></i>
+                                            <p style={{ fontSize: "10px", textAlign: 'center' }}>Other Services</p>
+                                        </div>
+
                                     </div>
                                 </div>
+                            </div>
 
+
+                            <div style={{ position: "relative", height: "300px" }}>
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        top: "-30px",
+                                        width: "100%",
+                                        background: "rgb(255 255 255 / 48%)",
+                                        padding: "8px",
+                                        borderRadius: "5px",
+                                        zIndex: 10,
+                                    }}
+                                >
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <i
+                                            className="fa fa-truck"
+                                            style={{ fontSize: "20px", color: "rgb(0 0 0)", marginRight: "10px" }}
+                                        ></i>
+                                        <h4
+                                            style={{
+                                                fontSize: "15px",
+                                                margin: "0",
+                                                fontWeight: "bold",
+                                                color: "#333",
+                                            }}
+                                        >
+                                            All Accident Services
+                                        </h4>
+                                    </div>
+                                    <p
+                                        style={{
+                                            fontSize: "12px",
+                                            margin: "5px 0 0 34px",
+                                            color: "red",
+                                        }}
+                                    >
+                                        From on-spot to workshop, everything will be handled.
+                                    </p>
+                                </div>
+
+
+                                {/* Carousel Section */}
+                                <div id="imageCarousel" className="carousel slide" data-bs-ride="carousel" style={{ marginTop: "10px" }}>
+                                    <div className="carousel-inner">
+                                        <div className="carousel-item active">
+                                            <img
+                                                src={workshopcurrentservice}
+                                                style={{
+                                                    maxHeight: "500px",
+                                                    width: "100%",
+                                                    objectFit: "cover",
+                                                    borderRadius: "10px"
+                                                }}
+                                                className="d-block w-100"
+                                                alt="Slide 1"
+                                            />
+                                        </div>
+                                        <div className="carousel-item">
+                                            <img
+                                                src={advocatecurrentservice}
+                                                style={{
+                                                    maxHeight: "500px",
+                                                    width: "100%",
+                                                    objectFit: "cover",
+                                                    borderRadius: "10px"
+                                                }}
+                                                className="d-block w-100"
+                                                alt="Slide 2"
+                                            />
+                                        </div>
+                                        <div className="carousel-item">
+                                            <img
+                                                src={mechaniccurrentservice}
+                                                style={{ maxHeight:"500px", width:"100%", objectFit:"cover", borderRadius:"10px"}}
+                                                className="d-block w-100"
+                                                alt="Slide 3"
+                                            />
+                                        </div>
+                                        <div className="carousel-item">
+                                            <img
+                                                src={craneworkdoing}
+                                                style={{ maxHeight:"500px", width:"100%", objectFit:"cover", borderRadius:"10px"}}
+                                                className="d-block w-100"
+                                                alt="Slide 3"
+                                            />
+                                        </div>
+                                    </div>
+                                    <button
+                                        className="carousel-control-prev"
+                                        type="button"
+                                        data-bs-target="#imageCarousel"
+                                        data-bs-slide="prev"
+                                    >
+                                        <span
+                                            className="carousel-control-prev-icon"
+                                            aria-hidden="true"
+                                        ></span>
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button
+                                        className="carousel-control-next"
+                                        type="button"
+                                        data-bs-target="#imageCarousel"
+                                        data-bs-slide="next"
+                                    >
+                                        <span
+                                            className="carousel-control-next-icon"
+                                            aria-hidden="true"
+                                        ></span>
+                                        <span className="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* <div className="start-container" style={{
+                                filter: isImageContainerVisible ? "blur(4px)" : "none", // Apply blur effect
+                                opacity: isImageContainerVisible ? 0.5 : 1, // Reduce opacity if blurred
+                                pointerEvents: isImageContainerVisible ? "none" : "auto" // Disable clicking
+                            }}>
+                                <div className="imageContainer">
+                                    <div className="imageWrapper" onClick={(e) => { getCrane() }}>
+                                        <img src={cranetruckuser} className="image" alt="truckimag2" />
+                                        <div className="description">
+                                            <p>Crane Services - Heavy Vehicles</p>
+                                        </div>
+                                    </div>
+                                    <div className="imageWrapper">
+                                        <img src={advocateprotest} style={{ background: "radial-gradient(#000000, #00000024)" }} className="image" alt="truckimag2" />
+                                        <div className="description">
+                                            <p>Advocate services-legal issues</p>
+                                        </div>
+                                    </div>
+                                    <div className="imageWrapper">
+                                        <img src={mechanicuser} style={{ background: "radial-gradient(#6cd961, #00000024)" }} className="image" alt="truckimage" />
+                                        <div className="description">
+                                            <p>On-spot-repair - mechanic</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="imageWrapper">
+                                        <img src={garageuser} style={{ background: "radial-gradient(rgb(254 0 0), rgba(0, 0, 0, 0.14))" }} className="image" alt="truckimage" />
+                                        <div className="description">
+                                            <p>Workshop Services - All at one palce</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> */}
+                            <div>
+                                <FirstPageDesigns/> 
+                            </div>
 
                             {isImageContainerVisible && (
                                 <div className="image-container">

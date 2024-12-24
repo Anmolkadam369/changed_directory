@@ -68,7 +68,7 @@ const AssignVendorsDoughnut = () => {
       method : "GET",
       url : `${backendUrl}/api/vendorResponse/${userId}`,
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     });
     if (response && response.message !== "No accident vehicle data found.") {

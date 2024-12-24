@@ -20,13 +20,14 @@ import filterUser from '../../../Assets/filterUser.png'
 import ratingStar from '../../../Assets/ratingStar.png'
 
 import Modal from '../../Location1/Modal.jsx';
+import Loading from '../Cards/Loading.jsx';
 
 
 
 
 
 
-const StatusTracking = () => {
+const StatusTracking = ({ vehicleNumber }) => {
 
     const navigate = useNavigate()
     const { state } = useLocation();
@@ -41,9 +42,12 @@ const StatusTracking = () => {
     const [alertMessage, setAlertMessage] = useState(null);
     const [alertType, setAlertType] = useState(null);
     const [distance, setDistances] = useState([])
+    console.log("distacneeerwerw", distance)
     const [avg, setAvg] = useState([])
     const [openFilterModal, setOpenFilterModal] = useState(false)
     const [filter, setFilter] = useState('')
+    const [doneFetching, setDoneFetching] = useState(false)
+
 
 
 
@@ -51,6 +55,7 @@ const StatusTracking = () => {
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const currentService = localStorage.getItem("currentService")
 
     const stages = [
         { label: "assigned", img: assignedTask },
@@ -100,7 +105,7 @@ const StatusTracking = () => {
 
 
         for (let i = 0; i < dummyData.length; i++) {
-            let getTime = dummyData[i].filedCaseFullyTime.split('|');
+            let getTime = dummyData[i]?.[`${currentService}Details`]?.filedCaseFullyTime.split('|');
             let assignedDate = getTime[0];
             let assignedTime = getTime[1];
             let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
@@ -128,9 +133,34 @@ const StatusTracking = () => {
                     filteredData.push(dummyData[i]);
                 }
             }
-
+            else if (filter === 'year') {
+                const yearBefore = new Date(now.getTime() - (oneDay * 365)); // Calculate date one year ago
+                if (assignedDateTime >= yearBefore && assignedDateTime <= now) {
+                    console.log("Match found within last year:", dummyData[i]);
+                    filteredData.push(dummyData[i]);
+                }
+            }
         }
-        setData(filteredData)
+        if (filter === 'newest') {
+            console.log("Sorting by newest to oldest");
+            dummyData.sort((a, b) => {
+                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                return dateB - dateA; // Descending order
+            });
+            setData([...dummyData]);
+        } else if (filter === 'oldest') {
+            console.log("Sorting by oldest to newest");
+            dummyData.sort((a, b) => {
+                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                return dateA - dateB; // Ascending order
+            });
+            setData([...dummyData]);
+        }
+        else {
+            setData(filteredData)
+        }
     };
 
     const settingFilter = (filter) => {
@@ -143,27 +173,31 @@ const StatusTracking = () => {
     const getData = async (e) => {
         console.log("userid", userId);
         const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
-        if (response.data.message == "No accident vehicle data found.") setData([])
+        if (response.data.message == "No accident vehicle data found.") {
+            setData([])
+            setDoneFetching(true)
+        }
         else {
             console.log("response123421", response.data.data);
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                 info.customerAcceptedVendor
+                info?.[`${currentService}Details`]?.customerAcceptedVendor && info?.[`${currentService}Details`]?.confirmDoneWorking == false
             );
 
             let filteredImportant = filteredData.filter((info) =>
-                info.vendorMoved == false
+                info?.[`${currentService}Details`]?.vendorMoved == false
             )
 
             let filteredLessImportant = filteredData.filter((info) =>
-                info.vendorMoved == true
+                info?.[`${currentService}Details`]?.vendorMoved == true
             )
             filteredData = [...filteredImportant, ...filteredLessImportant]
             setData(filteredData)
-            
+
             setDummyData(filteredData)
             console.log("seTDATIOATN", filteredData);
+            setDoneFetching(true)
 
             setCurrentItems(response.data.data);
         }
@@ -194,12 +228,14 @@ const StatusTracking = () => {
                 avg.push(0)
             })
             data.map((item) => {
-                let gotStage = getStage(item.vendorMoved, item.approvedReaching)
+                let gotStage = getStage(item?.[`${currentService}Details`]?.vendorMoved, item?.[`${currentService}Details`]?.approvedReaching)
                 currentStage.push(gotStage)
+                getData()
             })
             data.forEach((item, index) => {
-                getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude, index);
-                getVendorRating(item.crane)
+                console.log("${item.currentService", `${currentService}`)
+                getVendorLocation(`${item?.[currentService]}`, item.accidentLatitude, item.accidentLongitude, index);
+                getVendorRating(`${item?.[currentService]}`)
             });
         }
 
@@ -225,18 +261,18 @@ const StatusTracking = () => {
         return distance;
     }
 
-    const getVendorLocation = async (crane, accidentLatitude, accidentLongitude, index) => {
+    const getVendorLocation = async (currentServiceId, accidentLatitude, accidentLongitude, index) => {
         try {
             console.log("disntaceadfafdaf", distance)
-            console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
+            console.log("craninging", currentServiceId, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${currentServiceId}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
                 setVendorCurrentLatitude(vendorCurrentLatitude)
                 setVendorCurrentLongitude(vendorCurrentLongitude)
-
+                console.log("accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitud", accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude)
                 const calculatedDistance = haversine(accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude).toFixed(2);
 
                 distance.push(calculatedDistance)
@@ -301,7 +337,7 @@ const StatusTracking = () => {
     const workDoneConfirmation = async (item, action) => {
         try {
             setCurrentltem(item)
-            let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item.AccidentVehicleCode}/${action}`, {
+            let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${currentService}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,
@@ -311,6 +347,7 @@ const StatusTracking = () => {
             if (response.data.status) {
                 setAlertMessage("Updated successfully!");
                 setAlertType("success"); // Bootstrap alert type for success
+                getData()
             } else {
                 setAlertMessage("There is some issue.");
                 setAlertType("danger"); // Bootstrap alert type for error
@@ -327,9 +364,9 @@ const StatusTracking = () => {
         event.preventDefault();
         console.log("asdadfasdfasdf", `${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`)
         try {
-            const response = await axios.put(`${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`, JSON.stringify(formData), {
+            const response = await axios.put(`${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem?.[`${currentService}`]}`, JSON.stringify(formData), {
                 headers: {
-                    'authorization': token,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -353,9 +390,19 @@ const StatusTracking = () => {
     };
 
     const [searchValue, setSearchValue] = useState('');
-    const handleSearch = (e) => {
-        console.log("serachvaue", e.target.value)
-        const value = e.target.value.toLowerCase();
+    useEffect(() => {
+        if (vehicleNumber && dummyData.length) {
+            setSearchValue(vehicleNumber)
+            handleSearch(vehicleNumber)
+
+        }
+    }, [vehicleNumber, dummyData])
+
+    useEffect(() => {
+        return () => setSearchValue("")
+    }, [])
+    const handleSearch = (inputValue) => {
+        const value = inputValue?.toLowerCase() ?? searchValue.toLowerCase();
         setSearchValue(value);
         const newRows = dummyData.filter((row) => {
             const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
@@ -373,324 +420,343 @@ const StatusTracking = () => {
 
 
 
-
-
+    console.log("{item?.[`${currentService}Details`]?.customerAcceptedVendor", data[0]?.[`${currentService}Details`]?.customerAcceptedVendor)
+    console.log("disptan", distance.length, avg.length)
     return (
-        <div style={{marginBottom:"60px"}}>
+        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))' }}>
 
-            <div style={{ display: 'flex', justifyContent: "space-between" }}>
+            {doneFetching == false && (
+                <Loading />
+            )}
+            {doneFetching && (
+                <div>
+                    <div style={{ display: 'flex', justifyContent: "space-between" }}>
 
-                <div className="container h-100">
-                    <div className="d-flex justify-content-center h-100">
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "300px" }}>
-                            <input className="search_input" type="text" placeholder="Search..." onChange={handleSearch} />
-                            {/* <a href="#" className="search_icon">
+                        <div className="container h-100">
+                            <div className="d-flex justify-content-center h-100">
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                                    <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}  value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
+                                    {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                             </a> */}
-                            <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-
-                        </div>
-                        <div style={{ margin: "23px 20px 0px" }}>
-                            <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {data.length > 0 && distance.length > 0 && avg.length > 0 && (
-                data.map((item, dataIndex) => (
-                    <div style={{
-                        filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                        opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                        pointerEvents: isImageContainerVisible ? "none" : "auto",
-                        border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background:"#d0e3ea"
-                    }}>
-                        <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
-                            {stages.map((stage, index) => (
-                                <div
-                                    key={index}
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        alignItems: "center",
-                                        textAlign: "center",
-                                        position: "relative",
-                                        flex: 1,
-                                    }}
-                                >
-                                    {/* Icon/Image for each stage */}
-                                    <div
-                                        style={{
-                                            width: "30px",
-                                            height: "30px",
-                                            borderRadius: "50%",
-                                            backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
-                                            transition: "background-color 0.3s ease",
-                                            zIndex: 1,
-                                        }}
-                                    >
-                                        <img
-                                            src={stage.img}
-                                            alt={stage.label}
-                                            style={{
-                                                width: "20px",
-                                                height: "20px",
-                                                opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
-                                            }}
-                                        />
-                                    </div>
-
-                                    {/* Stage Label */}
-                                    <p
-                                        style={{
-                                            marginTop: "5px",
-                                            color: index <= currentStage[dataIndex] ? "black" : "#aaa",
-                                            fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
-                                            fontSize: "12px",
-                                        }}
-                                    >
-                                        {stage.label}
-                                    </p>
-
-                                    {/* Connecting Line */}
-                                    {index < stages.length - 1 && (
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                top: "15px", // Aligns with the center of the icon
-                                                left: "50%",
-                                                right: "-50%",
-                                                width: "100%",
-                                                height: "2px",
-                                                backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
-                                                zIndex: 0,
-                                            }}
-                                        ></div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-
-                        {item.customerAcceptedVendor && (
-                            <div style={{background:"white",marginTop:"30px", borderRadius:"20px 20px 0px 0px", boxShadow:"#808080 1px -4px 0px 0px"}}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '25px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                        <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
-                                    </div>
-                                    <div style={{ marginTop: "10px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' }}>{avg[dataIndex]} <img src={ratingStar} style={{height:"10px",width:"10px",  marginLeft:'3px'}}/></div>
+                                    <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
 
                                 </div>
-
-                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
-                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item.filedCaseFullyTime.split("|")[0]}</span>
+                                <div style={{ margin: "23px 20px 0px" }}>
+                                    <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
                                 </div>
-
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vendor Currently  : </p>
-                                        <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }} >{distance[dataIndex]} Km away</span>
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
-                                        {/* <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold", marginTop: '5px' }}>Current Status:</p> */}
-                                        {!item.vendorMoved && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px",  padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Ready to move </span>
-                                        )}
-                                        {item.vendorMoved == true && item.vendorReached == false && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px",  padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>On the way</span>
-                                        )}
-                                        {item.vendorReached == true && !item.approvedReaching && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px",  padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Confirm</span>
-                                        )}
-                                        {item.vendorReached == true && item.approvedReaching == true && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px",  padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Reached</span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                { item.confirmDoneWorking == false && (
-                                    <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
-                                  
-                                        <p style={{
-                                        fontSize: '11px',
-                                        marginTop: "2px",
-                                        background: "#8f8f8f",
-                                        padding: "10px",
-                                        border: '2px solid #000000',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "white",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        maxWidth: "400px",
-                                        minWidth: "280px",
-                                        margin: '5px 0px 0px 5px',
-                                        height: "30px"
-                                    }} onClick={() => { goToMap(item) }}>
-                                        Track Location
-                                        <KeyboardDoubleArrowRightIcon style={{
-                                            position: "absolute",
-                                            left: '10px'
-                                        }} />
-                                    </p>
-                                </div>)}
-
-                               {item.vendorReached == true && item.approvedReaching == null &&(
-                                 <div>
-                                    <hr />
-                                <div style={{  justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
-                                    {item.vendorReached == true && item.approvedReaching == null && (<p style={{
-                                        fontSize: '11px',
-                                        marginTop: "2px",
-                                        background: "green",
-                                        padding: "10px",
-                                        border: '1px solid blue',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "white",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        margin: '5px 5px 5px 5px',
-                                        maxWidth: "400px",
-                                        minWidth: "140px",
-                                    }} onClick={(e) => vendorReached(item, true)} >
-                                        <KeyboardDoubleArrowRightIcon style={{
-                                            position: "absolute",
-                                            left: '5px'
-                                        }} />
-                                        Vendor Reached
-                                    </p>)}
-                                    {item.vendorReached == true && item.approvedReaching == null && (
-                                        <p style={{
-                                            fontSize: '11px',
-                                            marginTop: "2px",
-                                            background: "#ec5a5a",
-                                            padding: "10px",
-                                            border: '1px solid blue',
-                                            textAlign: 'center',
-                                            borderRadius: '30px',
-                                            fontWeight: "bold",
-                                            color: "white",
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: "center",
-                                            position: "relative",
-                                            cursor: "pointer",
-                                            margin: '5px 5px 5px 5px',
-                                            maxWidth: "400px",
-                                            minWidth: "140px",
-                                        }} onClick={(e) => vendorReached(item, false)} >
-                                            <KeyboardDoubleArrowLeftIcon style={{
-                                                position: "absolute",
-                                                right: '10px',
-                                            }} />
-                                            Not Reached
-                                        </p>)}
-                                </div>
-                                </div>)}
-
-                                <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
-                                    {item.doneWorking == true && item.confirmDoneWorking == false && (<p style={{
-                                        fontSize: '11px',
-                                        marginTop: "2px",
-                                        background: "green",
-                                        padding: "10px",
-                                        border: '1px solid blue',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "white",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        margin: '5px 5px 5px 5px',
-                                        maxWidth: "400px",
-                                        minWidth: "140px",
-                                    }} onClick={(e) => workDoneConfirmation(item, true)} >
-                                        <KeyboardDoubleArrowRightIcon style={{
-                                            position: "absolute",
-                                            left: '5px'
-                                        }} />
-                                        Done Working
-                                    </p>)}
-                                    {item.doneWorking == true && item.confirmDoneWorking == false && (
-                                        <p style={{
-                                            fontSize: '11px',
-                                            marginTop: "2px",
-                                            background: "#ec5a5a",
-                                            padding: "10px",
-                                            border: '1px solid blue',
-                                            textAlign: 'center',
-                                            borderRadius: '30px',
-                                            fontWeight: "bold",
-                                            color: "white",
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: "center",
-                                            position: "relative",
-                                            cursor: "pointer",
-                                            margin: '5px 5px 5px 5px',
-                                            maxWidth: "400px",
-                                            minWidth: "140px",
-                                        }} onClick={(e) => workDoneConfirmation(item, false)} >
-                                            <KeyboardDoubleArrowLeftIcon style={{
-                                                position: "absolute",
-                                                right: '10px'
-                                            }} />
-                                            Not Done Yet
-                                        </p>)}
-                                </div>
-
-                                {selectedAction !== null && (
-                                    <p style={{ marginTop: "5px", fontSize: "12px", padding: "10px", background:"lightgoldenrodyellow" }} className={`alert alert-${alertType} text-center`} role="alert">
-                                        {selectedAction ? "Vendor Reached Successfully" : "Vendor Doesn't Reached investigating..."}
-                                        <KeyboardDoubleArrowRightIcon style={{
-                                            position: "absolute",
-                                            left: '10px'
-                                        }} />
-                                    </p>
-                                )}
-                                {alertMessage && (
-                                    <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
-                                        {alertMessage}
-                                    </div>
-                                )}
                             </div>
-                        )}
-
-
-
+                        </div>
                     </div>
-                ))
-            )}
-            {data.length == 0 && (
-                <NoDataFound />
-            )}
+
+                    {data.length > 0 && doneFetching && distance.length > 0 && avg.length > 0 && (
+                       <div
+                       style={{
+                           display: "grid",
+                           gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                           
+                       }}
+                   >
+                      {  data.map((item, dataIndex) => (
+                            <div style={{
+                                filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
+                                opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
+                                pointerEvents: isImageContainerVisible ? "none" : "auto",
+                                border: "1px solid teal",maxWidth: "410px", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea"
+                            }}>
+                                {item?.[`${currentService}Details`]?.customerAcceptedVendor == true}
+                                <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
+                                    {stages.map((stage, index) => (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                textAlign: "center",
+                                                position: "relative",
+                                                flex: 1,
+                                            }}
+                                        >
+                                            {/* Icon/Image for each stage */}
+                                            <div
+                                                style={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    borderRadius: "50%",
+                                                    backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
+                                                    transition: "background-color 0.3s ease",
+                                                    zIndex: 1,
+                                                }}
+                                            >
+                                                <img
+                                                    src={stage.img}
+                                                    alt={stage.label}
+                                                    style={{
+                                                        width: "20px",
+                                                        height: "20px",
+                                                        opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
+                                                    }}
+                                                />
+                                            </div>
+
+                                            {/* Stage Label */}
+                                            <p
+                                                style={{
+                                                    marginTop: "5px",
+                                                    color: index <= currentStage[dataIndex] ? "black" : "#aaa",
+                                                    fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
+                                                    fontSize: "12px",
+                                                }}
+                                            >
+                                                {stage.label}
+                                            </p>
+
+                                            {/* Connecting Line */}
+                                            {index < stages.length - 1 && (
+                                                <div
+                                                    style={{
+                                                        position: "absolute",
+                                                        top: "15px", // Aligns with the center of the icon
+                                                        left: "50%",
+                                                        right: "-50%",
+                                                        width: "100%",
+                                                        height: "2px",
+                                                        backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
+                                                        zIndex: 0,
+                                                    }}
+                                                ></div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (
+
+                                    <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                                            <div style={{ display: "flex", alignItems: "center", margin: '25px 5px 0px 10px' }}>
+                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
+                                                <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
+                                            </div>
+                                            <div style={{ marginTop: "10px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
+
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
+                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
+                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}</span>
+                                        </div>
+
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                                            <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
+                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vendor Currently  : </p>
+                                                <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }} >{distance[dataIndex]} Km away</span>
+                                            </div>
+                                            <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
+                                                {/* <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold", marginTop: '5px' }}>Current Status:</p> */}
+                                                {!item?.[`${currentService}Details`]?.vendorMoved && (
+                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Ready to move </span>
+                                                )}
+                                                {item?.[`${currentService}Details`]?.vendorMoved == true && item?.[`${currentService}Details`]?.vendorReached == false && (
+                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>On the way</span>
+                                                )}
+                                                {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
+                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Confirm</span>
+                                                )}
+                                                {item?.[`${currentService}Details`]?.vendorReached == true && item?.[`${currentService}Details`]?.approvedReaching == true && (
+                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Reached</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
+                                            <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px", }}>
+
+                                                <p style={{
+                                                    fontSize: '11px',
+                                                    marginTop: "2px",
+                                                    background: "#8f8f8f",
+                                                    padding: "10px",
+                                                    border: '2px solid #000000',
+                                                    textAlign: 'center',
+                                                    borderRadius: '30px',
+                                                    fontWeight: "bold",
+                                                    color: "white",
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: "center",
+                                                    position: "relative",
+                                                    cursor: "pointer",
+                                                    maxWidth: "400px",
+                                                    minWidth: "280px",
+                                                    margin: '5px 0px 10px 5px',
+                                                    height: "30px"
+                                                }} onClick={() => { goToMap(item) }}>
+                                                    Track Location
+                                                    <KeyboardDoubleArrowRightIcon style={{
+                                                        position: "absolute",
+                                                        left: '10px'
+                                                    }} />
+                                                </p>
+                                            </div>)}
+
+                                        {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
+                                            <div>
+                                                <hr />
+                                                <div style={{ justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
+                                                    {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (<p style={{
+                                                        fontSize: '11px',
+                                                        marginTop: "2px",
+                                                        background: "green",
+                                                        padding: "10px",
+                                                        border: '1px solid blue',
+                                                        textAlign: 'center',
+                                                        borderRadius: '30px',
+                                                        fontWeight: "bold",
+                                                        color: "white",
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: "center",
+                                                        position: "relative",
+                                                        cursor: "pointer",
+                                                        margin: '5px 5px 5px 5px',
+                                                        maxWidth: "400px",
+                                                        minWidth: "140px",
+                                                    }} onClick={(e) => vendorReached(item, true)} >
+                                                        <KeyboardDoubleArrowRightIcon style={{
+                                                            position: "absolute",
+                                                            left: '5px'
+                                                        }} />
+                                                        Vendor Reached
+                                                    </p>)}
+                                                    {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
+                                                        <p style={{
+                                                            fontSize: '11px',
+                                                            marginTop: "2px",
+                                                            background: "#ec5a5a",
+                                                            padding: "10px",
+                                                            border: '1px solid blue',
+                                                            textAlign: 'center',
+                                                            borderRadius: '30px',
+                                                            fontWeight: "bold",
+                                                            color: "white",
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: "center",
+                                                            position: "relative",
+                                                            cursor: "pointer",
+                                                            margin: '5px 5px 5px 5px',
+                                                            maxWidth: "400px",
+                                                            minWidth: "140px",
+                                                        }} onClick={(e) => vendorReached(item, false)} >
+                                                            <KeyboardDoubleArrowLeftIcon style={{
+                                                                position: "absolute",
+                                                                right: '10px',
+                                                            }} />
+                                                            Not Reached
+                                                        </p>)}
+                                                </div>
+                                            </div>)}
+                                        {item?.[`${currentService}Details`]?.doneWorking == true && (
+                                            <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
+                                                {item?.[`${currentService}Details`]?.doneWorking == true && item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
+                                                    <p style={{
+                                                        fontSize: '11px',
+                                                        marginTop: "2px",
+                                                        background: "green",
+                                                        padding: "10px",
+                                                        border: '1px solid blue',
+                                                        textAlign: 'center',
+                                                        borderRadius: '30px',
+                                                        fontWeight: "bold",
+                                                        color: "white",
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: "center",
+                                                        position: "relative",
+                                                        cursor: "pointer",
+                                                        margin: '5px 5px 5px 5px',
+                                                        maxWidth: "400px",
+                                                        minWidth: "140px",
+                                                    }} onClick={(e) => workDoneConfirmation(item, true)} >
+                                                        <KeyboardDoubleArrowRightIcon style={{
+                                                            position: "absolute",
+                                                            left: '5px'
+                                                        }} />
+                                                        Done Working
+                                                    </p>)}
+                                                {item?.[`${currentService}Details`]?.doneWorking == true && item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
+                                                    <p style={{
+                                                        fontSize: '11px',
+                                                        marginTop: "2px",
+                                                        background: "#ec5a5a",
+                                                        padding: "10px",
+                                                        border: '1px solid blue',
+                                                        textAlign: 'center',
+                                                        borderRadius: '30px',
+                                                        fontWeight: "bold",
+                                                        color: "white",
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: "center",
+                                                        position: "relative",
+                                                        cursor: "pointer",
+                                                        margin: '5px 5px 5px 5px',
+                                                        maxWidth: "400px",
+                                                        minWidth: "140px",
+                                                    }} onClick={(e) => workDoneConfirmation(item, false)} >
+                                                        <KeyboardDoubleArrowLeftIcon style={{
+                                                            position: "absolute",
+                                                            right: '10px'
+                                                        }} />
+                                                        Not Done Yet
+                                                    </p>)}
+                                            </div>)}
+
+                                        {selectedAction !== null && (
+                                            <p style={{ marginTop: "5px", fontSize: "12px", padding: "10px", background: "lightgoldenrodyellow" }} className={`alert alert-${alertType} text-center`} role="alert">
+                                                {selectedAction ? "Vendor Reached Successfully" : "Vendor Doesn't Reached investigating..."}
+                                                <KeyboardDoubleArrowRightIcon style={{
+                                                    position: "absolute",
+                                                    left: '10px'
+                                                }} />
+                                            </p>
+                                        )}
+                                        {alertMessage && (
+                                            <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
+                                                {alertMessage}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+
+
+                            </div>
+                        ))}
+                    </div>
+                    )}
+                    {data.length == 0 && doneFetching && (
+                        <NoDataFound />
+                    )}
+                </div>)}
+
 
             <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
                 {openFilterModal && (
                     <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>Year</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('newest') }}>newest to oldest</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('oldest') }}>oldest to newest</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('year') }}>Year</p>
                     </div>
                 )}
             </Modal>

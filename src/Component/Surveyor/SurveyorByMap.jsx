@@ -28,6 +28,9 @@ const SurveyorByMap = ({ onUpdate }) => {
     const [isLoadingCities, setIsLoadingCities] = useState(true);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+    
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         loadStates();
@@ -99,7 +102,7 @@ const SurveyorByMap = ({ onUpdate }) => {
 
     const surveyorsData = async (surveyorType) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getSurveyorMap`);
+            const response = await axios.get(`${backendUrl}/api/getSurveyorMap/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("response1234567890", response.data);
             setSurveyorLocationData(response.data.data);
         } catch (error) {

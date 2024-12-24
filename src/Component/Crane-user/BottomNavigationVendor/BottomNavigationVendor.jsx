@@ -26,7 +26,7 @@ export default function BottomNavigationVendor() {
     };
     
     // Use `useMediaQuery` to adjust size or layout based on screen width
-    const isSmallScreen = useMediaQuery('(max-width:600px)');
+    const isSmallScreen = useMediaQuery('(max-width:3000px)');
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
@@ -36,8 +36,9 @@ export default function BottomNavigationVendor() {
         <BottomNavigation
             sx={{
                 width: isSmallScreen ? '100%' : 500, // Full width for small screens
-                position: isSmallScreen ? 'fixed' : 'relative', // Fixed at the bottom for small screens
+                position: 'fixed', 
                 bottom: isSmallScreen ? 0 : 'auto',
+                minWidth:"60px",
                 height:"45px",
                 left: 0,
                 right: 0,

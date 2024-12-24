@@ -200,7 +200,7 @@ const HandoverToWorkshop = () => {
         //         url: `${backendUrl}/api/addVehicleClaim/${userId}`,
         //         data: formDataObj,
         //         headers: {
-        //             'Authorization': token
+        //             'Authorization': `Bearer ${token}`
         //         }
         //     });
         //     console.log("response", response.data);

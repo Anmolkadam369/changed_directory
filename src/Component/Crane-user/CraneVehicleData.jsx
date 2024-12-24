@@ -25,8 +25,8 @@ import list from '../../Assets/list.png'
 import imageshowing from '../../Assets/imageshowing.png'
 import exploration from '../../Assets/exploration.png'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
-
-
+import { Rating } from "react-simple-star-rating";
+import checksuccess from '../../Assets/checksuccess.png'
 
 import { CancelOutlined } from '@mui/icons-material';
 const modalTitleFontSize = window.innerWidth < 576 ? '1rem' : window.innerWidth < 768 ? '0.9rem' : '1.0rem';
@@ -37,6 +37,13 @@ const modalBodyFontSize = window.innerWidth < 576 ? '0.9rem' : window.innerWidth
 function CraneVehicleData() {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const location = useLocation();
+
+    const handleRating = (rate) => {
+        setFormData(prev =>({
+            ...prev,
+            feedbackRating:rate
+        }))
+    };
     const { id, item } = location.state || {};
     useEffect(() => {
         console.log("Received ID:", id);
@@ -165,15 +172,12 @@ function CraneVehicleData() {
         balancePayment: "",
         feedback: "",
         feedbackRating: "",
-        transactionId: "",
-        onlinePaymentImg: "",
-        cheque: "",
-        paidByCash: false,
-        commisionAmount:""
+        commisionAmount: ""
     });
-    useEffect(()=>{
-        setIsWorkDone(Object.values(formData).every((value)=>value != ""));
-    },[formData])
+    useEffect(() => {
+        setIsWorkDone(Object.values(formData).every((value) => value != ""));
+    }, [formData])
+    console.log("formData",formData)
 
 
 
@@ -210,7 +214,7 @@ function CraneVehicleData() {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getAccidentVehicleInfo", response)
         console.log("getAccidentVehicleInfo", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -218,7 +222,7 @@ function CraneVehicleData() {
 
     const getExistingData = async (id, userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             console.log("getExistingData success", response.data.data);
             setExistingData(response.data.data[0]);
         } catch (error) {
@@ -246,11 +250,7 @@ function CraneVehicleData() {
                 balancePayment: existingData.balancePayment || "",
                 feedback: existingData.feedback || "",
                 feedbackRating: existingData.feedbackRating || "",
-                transactionId: existingData.transactionId || "",
-                onlinePaymentImg: existingData.onlinePaymentImg || "",
-                cheque: existingData.cheque || "",
-                paidByCash: existingData.paidByCash === "true",
-                commisionAmount : existingData.commisionAmount || ""
+                commisionAmount: existingData.commisionAmount || ""
             });
         }
     }, [existingData]);
@@ -323,13 +323,16 @@ function CraneVehicleData() {
                 url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
             console.log("response", response.data);
             if (response.data.status === true) {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
+                setTimeout(() => {
+                    navigate("/crane-user-all-cases")
+                }, (2000));
 
             } else {
                 const errorMessage = 'An error occurred';
@@ -454,6 +457,8 @@ function CraneVehicleData() {
         }
     }
     const [showSideImage, setShowSideImage] = useState(false)
+    const [workDoneResponse, setWorkDoneResponse] = useState(false)
+
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth <= 986) {
@@ -471,7 +476,7 @@ function CraneVehicleData() {
         };
     }, []);
 
-    const workDone = async()=>{
+    const workDone = async () => {
         try {
             let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
                 method: 'PUT',
@@ -483,6 +488,10 @@ function CraneVehicleData() {
             if (response.data.status) {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 console.log("updated successfully")
+                setWorkDoneResponse(true)
+                setTimeout(() => {
+                    navigate("/crane-user-all-cases")
+                }, (60000));
             }
             else console.log("there is some issue")
 
@@ -490,31 +499,31 @@ function CraneVehicleData() {
         catch (error) {
             console.log("the error occured", error.message)
         }
-}
+    }
 
 
     return (
         <div >
 
-        <div style={{display:"flex" , justifyContent:"right"}}>
-            <div style={{ backgroundColor: isSelected == "userDetails" ? '#00000074' : 'transparent',border:"1px solid black", color:"white",padding:"10px 20px",borderRadius:"20px", margin:"30px 20px 50px 30px"}}>
-                <p style={{color:'black',fontSize:"14px"}}
-                    onClick={() => { addBoxes('userDetails') }}
-                >
-                    User Details <img style={{ height: "15px", width: "15px" }} src={list} />
-                </p>
-            </div>
-            <div style={{ backgroundColor: isSelected == "Images" ? '#00000074' : 'transparent',border:"1px solid black", color:"white",padding:"10px 20px",borderRadius:"20px", margin:"30px 20px 50px 0px"}}>
-                <p style={{color:'black',fontSize:"14px"}}
-                    onClick={() => { addBoxes('Images') }}
-                >
-                    View Images <img style={{ height: "15px", width: "15px" }} src={imageshowing} />
-                </p>
-            </div>
-         
+            <div style={{ display: "flex", justifyContent: "right" }}>
+                <div class="btn btn-primary" style={{ backgroundColor: isSelected == "userDetails" ? '#00000074' : 'rgb(33 0 255)', border: "1px solid black", color: "white", padding: "10px 20px", margin: "30px 20px 50px 30px" }}>
+                    <p style={{ color: 'white', fontSize: "14px" }}
+                        onClick={() => { addBoxes('userDetails') }}
+                    >
+                        User Details <img style={{ height: "15px", width: "15px" }} src={list} />
+                    </p>
+                </div>
+                <div class="btn btn-primary" style={{ backgroundColor: isSelected == "Images" ? '#00000074' : 'rgb(33 0 255)', border: "1px solid black", color: "white", padding: "10px 20px", margin: "30px 20px 50px 0px" }}>
+                    <p style={{ color: 'white', fontSize: "14px" }}
+                        onClick={() => { addBoxes('Images') }}
+                    >
+                        View Images <img style={{ height: "15px", width: "15px" }} src={imageshowing} />
+                    </p>
+                </div>
+
             </div>
 
-            {showUserDetails && (<form style={{ boxShadow:"0px 0px 10px 0px black", margin:"10px",marginBottom:"50px", padding:"15px"}} className='Customer-master-form'>
+            {showUserDetails && (<form style={{ boxShadow: "0px 0px 10px 0px black", margin: "10px", marginBottom: "50px", padding: "15px" }} className='Customer-master-form'>
 
                 <Helmet>
                     <title>Accident Data Added By Crane - Claimpro</title>
@@ -640,7 +649,7 @@ function CraneVehicleData() {
             </form>)}
 
             {showImages && (
-                <form style={{ boxShadow:"0px 0px 10px 0px black", margin:"10px",marginBottom:"50px", padding:"15px"}} className='Customer-master-form'>
+                <form style={{ boxShadow: "0px 0px 10px 0px black", margin: "10px", marginBottom: "50px", padding: "15px" }} className='Customer-master-form'>
                     <div class='header-container'>
                         <h2 className='bigtitle'>Accident Images</h2><img style={{ height: "20px", width: "20px", margin: "20px" }} src={imageshowing} />
                     </div>
@@ -989,10 +998,10 @@ function CraneVehicleData() {
             {showOnlyDocumentUpload && (
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
-                    <form style={{ maxWidth: "600px", flexGrow: 1, boxShadow:"0px 0px 10px 0px black", margin:"10px",marginBottom:"100px", padding:"15px" }} className='Customer-master-form'>
+                    <form style={{ maxWidth: "600px", flexGrow: 1, boxShadow: "0px 0px 10px 0px black", margin: "10px", marginBottom: "100px", padding: "15px" }} className='Customer-master-form'>
 
                         <div class='header-container'>
-                            <h2 className='bigtitle' style={{marginBottom:"0px",marginLeft:"0px"}}>Document Upload - Crane</h2>
+                            <h2 className='bigtitle' style={{ marginBottom: "0px", marginLeft: "0px" }}>Document Upload - Crane</h2>
                         </div>
 
                         <div className='form-row' style={{ flexDirection: "column" }}>
@@ -1069,165 +1078,80 @@ function CraneVehicleData() {
                                     readOnly={!!existingData?.vehicleTakeOver}
                                 />
                             </label>
-
-                            <label className="form-field">
-                                Balance Payment:
-                                <input
-                                    type="text"
-                                    className='inputField form-control'
-                                    name="balancePayment"
-                                    value={formData.balancePayment}
-                                    onChange={handleChange}
-                                    readOnly={!!existingData?.balancePayment}
-                                />
-                            </label>
-                          {isWorkDone && (
-                              <p style={{
-                                        fontSize: '11px',
-                                        marginTop: "2px",
-                                        background: "lightgreen",
-                                        padding: "10px",
-                                        border: '1px solid blue',
-                                        textAlign: 'center',
-                                        borderRadius: '30px',
-                                        fontWeight: "bold",
-                                        color: "white",
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        margin: '5px 5px 5px 5px',
-                                        maxWidth: "400px",
-                                        minWidth: "140px",
-                                    }} onClick={workDone} >
-                                        <KeyboardDoubleArrowLeftIcon style={{
-                                            position: "absolute",
-                                            right: '10px' 
-                                        }} />
-                                        Work Done
-                                    </p>)}
-                        </div>
-
-                        {(adminResponse === "not requested yet" || adminResponse === null || adminResponse === undefined) && (
-                            <>
-                                <div style={{ display: "flex", gap: "10px", width: "100%" }}>
-                                    <label className="form-field" style={{ flex: "1" }}>
-                                        <button
-                                            style={{
-                                                fontSize: "14px",
-                                                fontWeight: "bold",
-                                                className: 'btn btn-light',
-                                                boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
-                                                width: "100%",
-                                                borderRadius: "4px",
-                                                cursor: "pointer",
-                                                backgroundColor: "white",
-                                                color: "black",
-                                                borderRadius:"25px",
-                                                padding:"9px 40px"
-                                            }}
-                                            disabled
-                                        >
-                                            <img
-                                                src={feedbackByVendor}
-                                                style={{ height: "20px", width: "20px" }}
-                                                alt="feedback"
-                                            />{" "}
-                                            <p> Give Feedback </p>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <label className="form-field" style={{ flex: 1, marginRight: "10px" }}>
+                                    Balance Payment:
+                                    <input
+                                        type="text"
+                                        className='inputField form-control'
+                                        name="balancePayment"
+                                        value={formData.balancePayment}
+                                        onChange={handleChange}
+                                        readOnly={!!existingData?.balancePayment}
+                                    />
+                                </label>
+                                {formData.advancedPayment != "" && formData.balancePayment != "" && (
+                                    <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                        <button onClick={openfeedbackRatingModal} style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            padding: "10px 20px",
+                                            fontWeight: "bold",
+                                            fontSize: "14px",
+                                            boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
+                                            borderRadius: "20px",
+                                            cursor: "pointer",
+                                            backgroundColor: "white",
+                                            color: "black",
+                                            border: "1px solid black",
+                                        }}>
+                                            <img src={feedbackByVendor} style={{ height: "20px", width: "20px", marginRight: "8px" }} alt="feedback" /> <p> Give Feedback </p>
                                         </button>
-                                    </label>
-                                    <label className="form-field" style={{ flex: "1" }}>
-                                        <button
-                                            style={{
-                                                fontSize: "14px",
-                                                fontWeight: "bold",
-                                                className: 'btn btn-light',
-                                                boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
-                                                width: "100%",
-                                                borderRadius: "4px",
-                                                cursor: "pointer",
-                                                backgroundColor: "white",
-                                                color: "black",
-                                                borderRadius:"25px",
-                                                padding:"9px 40px"
-                                            }}
-                                            disabled
-                                        >
-                                            <img
-                                                src={commissionbyvendor}
-                                                style={{ height: "20px", width: "20px" }}
-                                                alt="commission"
-                                            />{" "}
-                                            <p> Commission </p>
-                                        </button>
-                                    </label>
-                                </div>
-
-                                {showPopup && (
-                                    <div style={{
-                                        position: 'fixed',
-                                        top: '10px',
-                                        right: '10px',
-                                        background: 'lightgrey',
-                                        width: 'fit-content',
-                                        padding: '10px',
-                                        borderRadius: '10px',
-                                        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-                                        zIndex: 1000, // Ensure it stays above other elements
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginTop: '120px',
-                                        marginRight: "30px",
-                                    }}>
-                                        <button
-                                            onClick={() => setShowPopup(false)}
-                                            style={{
-                                                background: 'grey',
-                                                border: 'none',
-                                                fontSize: '16px',
-                                                cursor: 'pointer',
-                                                color: 'white',
-                                                borderRadius: '50%',
-                                                width: '24px',
-                                                height: '24px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                position: 'absolute',
-                                                top: '-30px',
-                                                right: '-12px',
-                                            }}
-                                        >
-                                            &times;
-                                        </button>
-                                        <h3 style={{ margin: '0 20px 0 0' }}>Your Information is not Accepted By the Admin that's why Feedback section is blocked </h3>
                                     </div>
                                 )}
-                            </>
-                        )}
-                        {formData.advancedPayment && formData.balancePayment && formData.paidOn == null && (
+                            </div>
+                            {isWorkDone && (
+                                <p style={{
+                                    fontSize: '11px',
+                                    marginTop: "2px",
+                                    background: "#ff0000",
+                                    padding: "10px",
+                                    border: '1px solid blue',
+                                    textAlign: 'center',
+                                    borderRadius: '30px',
+                                    fontWeight: "bold",
+                                    color: "white",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: "center",
+                                    position: "relative",
+                                    cursor: "pointer",
+                                    margin: '5px 5px 5px 5px',
+                                    maxWidth: "400px",
+                                    minWidth: "140px",
+                                }} onClick={workDone} >
+                                   {workDoneResponse && ( <img src={checksuccess} style={{
+                                        height:"23px", width:"23px",
+                                        position: "absolute",
+                                        right: '10px'
+                                    }} />)}
+                                    Work Done
+                                </p>)}
+                        </div>
+
+                        {/* {formData.advancedPayment && formData.balancePayment && formData.paidOn == null && (
                             <div style={{ color: 'green' }}>
                                 <p>
                                     * Calculated Commission For The Vendor is = ₹ {(parseFloat(formData.advancedPayment) + parseFloat(formData.balancePayment)) * 2 / 100}
                                 </p>
-                            </div>)}
-                            {formData.paidOn && (
+                            </div>
+                        )} */}
+                        {formData.paidOn && (
                             <div style={{ color: 'green' }}>Commission Paid On : {formData.paidOn}</div>
                         )}
 
-                        {adminResponse === 'accept' && (
-                            <div className='form-row'>
-                                <button className='btn btn-light' onClick={openfeedbackRatingModal} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", boxShadow: "0 4px 8px rgba(0,0,0,0.5)", borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
-                                    <img src={feedbackByVendor} style={{ height: "20px", width: "20px" }} alt="feedback" /> <p> Give Feedback </p>
-                                </button>
-                                <button className='btn btn-light' onClick={openCommissionModel} style={{ marginTop: "10px", fontWeight: "bold", fontSize: "14px", boxShadow: "0 4px 8px rgba(0,0,0,0.5)", borderRadius: '4px', cursor: 'pointer', backgroundColor: 'white', color: 'black' }}>
-                                    <img src={commissionbyvendor} style={{ height: "20px", width: "20px" }} alt="feedback" /> <p> Commission </p>
 
-                                </button>
-                            </div>
-                        )}
 
 
                         {isfeedbackRatingModalOpen && (
@@ -1266,37 +1190,33 @@ function CraneVehicleData() {
 
                             <div className="modal fade show" style={{ display: 'block', minWidth: "350px", maxWidth: "1000px", background: "#ffecec00", boxShadow: "none" }} id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" >
                                 <div className="modal-dialog modal-dialog-centered" role="document">
-                                    <div className="modal-content" style={{ backgroundSize: 'cover', backgroundPosition: "top" }}>
-                                        <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <h5 className="modal-title" id="exampleModalLongTitle" style={{ paddingLeft: "10px", borderRadius: "10px", color: 'black', fontWeight: 'bold', fontSize: modalTitleFontSize, animation: 'blinking 1.5s infinite' }}>
+                                    <div className="modal-content" style={{ backgroundSize: 'cover', backgroundPosition: "top", background: "white" }}>
+                                        <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0px' }}>
+                                            <h5 className="modal-title" id="exampleModalLongTitle" style={{ borderRadius: "10px", color: 'black', fontWeight: 'bold', fontSize: modalTitleFontSize, animation: 'blinking 1.5s infinite', padding: "0px", marginBottom:"20px" }}>
                                                 Rate Customer Behaviour
                                             </h5>
 
                                         </div>
 
-                                        <div className="modal-body" style={{ textAlign: 'center', color: "black", fontSize: modalBodyFontSize, padding: '20px', fontWeight: "bold" }}>
-                                            <div style={{ display: "flex" }}>
-                                                <input
-                                                    type="range"
-                                                    min="0"
-                                                    max="100"
-                                                    value={formData.feedbackRating || 0}
-                                                    onChange={onfeedbackRatingChange}
-                                                    className="slider"
-                                                    name="feedbackRating"
-                                                    disabled={alreadyRating}
-                                                    style={{ display: 'block', marginTop: '10px' }}
-                                                />
+                                        <div className="modal-body" style={{ textAlign: 'center', color: "black", fontSize: modalBodyFontSize, padding: '1px', fontWeight: "bold" }}>
+                                            <div style={{display:'flex', justifyContent:"space-between"}}>
+                                            <Rating
+                                                onClick={handleRating}
+                                                ratingValue={formData.feedbackRating} // Convert to scale of 0-100
+                                                size={25}
+                                                allowHalfIcon
+                                                fillColor="orange"
+                                                emptyColor="gray"
+                                                readonly={existingData.feedbackRating !== null}
+                                            />
                                                 <div style={{
-                                                    color: formData.feedbackRating < 30 ? 'red' :
-                                                        formData.feedbackRating < 70 ? 'blue' : 'green'
-
+                                                    marginTop:"7px",
+                                                    color: formData.feedbackRating < 1.00 ? 'red' :
+                                                        formData.feedbackRating < 3.00 ? 'blue' : 'green'
                                                 }}>
-                                                    {formData.feedbackRating < 30 ? `${formData.feedbackRating}% 😒` : formData.feedbackRating < 70 ? `${formData.feedbackRating}% 😊` : `${formData.feedbackRating}% 😃`}
+                                                    {formData.feedbackRating == 0.00 ?  ` 0 😒 `: formData.feedbackRating < 1.00 ? `${formData.feedbackRating} 😒` : formData.feedbackRating < 3.00 ? `${formData.feedbackRating} 😊` : `${formData.feedbackRating} 😃`}
                                                 </div>
-
-
-                                            </div>
+                                                </div>
 
                                             <label className="form-field">
                                                 Feedback:
@@ -1954,16 +1874,17 @@ function CraneVehicleData() {
                                     margin: '5px 5px 5px 5px',
                                     maxWidth: "400px",
                                     minWidth: "140px",
-                                }} 
-                              
+                                }}
+
                                 disabled={isLoading} // Disable button while loading
                                 onClick={onSubmit}
                             >
-                                  <KeyboardDoubleArrowLeftIcon style={{
+                                <KeyboardDoubleArrowLeftIcon style={{
                                     position: "absolute",
-                                    right: '10px' 
+                                    right: '10px',
+                                    color: "black"
                                 }} />
-                                {isLoading ? 'Submitting...' : 'Submit'}
+                                <p style={{ color: "bkack" }}>{isLoading ? 'Submitting...' : 'Submit'}</p>
                             </button>
                             {isLoading && (
                                 <div style={{ marginTop: '10px' }}>
