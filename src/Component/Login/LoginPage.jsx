@@ -23,6 +23,7 @@ import { useDispatch } from 'react-redux'
 import { login } from './authSlice';
 import Header from '../Home/Header';
 import Footer from '../Home/Footer';
+import encrypt from '../../Services/Encyption';
 
 
 const Login = () => {
@@ -87,33 +88,33 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const [selected, setSelected] = useState(0);
-  const handleClick = (value) => {
-    setSelected((prevSelected) => (prevSelected === value ? null : value));
-  };
+  // const [selected, setSelected] = useState(0);
+  // const handleClick = (value) => {
+  //   setSelected((prevSelected) => (prevSelected === value ? null : value));
+  // };
 
-  const getStyles = () => {
-    switch (selected) {
-      case 1:
-        return {
-          backgroundColor: "#ffffffa1",
-          border: '1px solid red',
-          boxShadow: 'rgba(0, 0, 0, 0.2) -10px -20px 14px 4px'
-        };
-      case 2:
-        return {
-          backgroundColor: "#ffffffa1",
-          border: '1px solid blue',
-          boxShadow: 'rgba(0, 0, 0, 0.8) 13px -20px 20px'
-        };
-      default:
-        return {
-          // backgroundColor:"#ffffffa1",
-          border: '1px solid green', // No border color
-          // boxShadow: 'inset rgba(0, 0, 0, 0.8) -3px -1px 20px 0px' // No box-shadow
-        };
-    }
-  };
+  // const getStyles = () => {
+  //   switch (selected) {
+  //     case 1:
+  //       return {
+  //         backgroundColor: "#ffffffa1",
+  //         border: '1px solid red',
+  //         boxShadow: 'rgba(0, 0, 0, 0.2) -10px -20px 14px 4px'
+  //       };
+  //     case 2:
+  //       return {
+  //         backgroundColor: "#ffffffa1",
+  //         border: '1px solid blue',
+  //         boxShadow: 'rgba(0, 0, 0, 0.8) 13px -20px 20px'
+  //       };
+  //     default:
+  //       return {
+  //         backgroundColor:"#ffffffa1",
+  //         border: '1px solid green', // No border color
+  //         // boxShadow: 'inset rgba(0, 0, 0, 0.8) -3px -1px 20px 0px' // No box-shadow
+  //       };
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,10 +127,20 @@ const Login = () => {
     }
 
     try {
+      const encryptedEmail = await encrypt(email);
+      const encryptedPassword = await encrypt(password);
+      console.log("email", encryptedEmail)
+      console.log("password", encryptedPassword)
+
+console.log({email :  encryptedEmail.encryptedData,
+  emailIv : encryptedEmail.iv,
+   password: encryptedPassword.encryptedData,
+  passwordIv : encryptedPassword.iv,})
       const response = await axios.post(`${backendUrl}/api/login`, {
-        email,
-        password,
-        selected,
+       email :  encryptedEmail.encryptedData,
+       emailIv : encryptedEmail.iv,
+        password: encryptedPassword.encryptedData,
+       passwordIv : encryptedPassword.iv,
       });
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
@@ -191,9 +202,22 @@ const Login = () => {
         } else if (response.data.data.department === "Administration") {
           localStorage.setItem("userRole", "Administration");
           navigate("../Admin");
-        } else if (response.data.data.department === "Sales") {
+        }
+        else if (response.data.data.department === "Sales") {
           localStorage.setItem("userRole", "sales");
           navigate("../Salesteam");
+        }
+        else if (response.data.data.customerDriverCode) {
+          console.log("userRole", "customerDriver");
+
+          localStorage.setItem("userRole", "customerDriver");
+          navigate("../register-new-accidentvehicle");
+        }
+        else if (response.data.data.vendorDriverCode) {
+          console.log("userRole", "vendorDriver");
+
+          localStorage.setItem("userRole", "vendorDriver");
+          navigate("../crane-driver-home");
         }
         else {
           localStorage.setItem("userRole", "customer");
@@ -294,7 +318,7 @@ const Login = () => {
   };
 
   const headerStyle = {
-    fontSize,
+    fontSize:"25px",
     color: "#0e4823ff",
     textAlign: "center",
     marginLeft: "5px"
@@ -340,11 +364,11 @@ const Login = () => {
         <div className="slide-in" style={loginContainerStyle}>
           <div style={headerContainerStyle}>
             <img src={claimproassist} style={imgStyle} alt="company logo" />
-            <h1 style={headerStyle}>BVC ClaimPro Assist</h1>
+            <h1 className='text-base'  style={headerStyle}>BVC ClaimPro Assist</h1>
           </div>
 
           <div className="selecting-container">
-            <div
+            {/* <div
               className={`selecting-box vendorselected ${selected === 1 ? 'selected' : ''}`}
               onClick={() => handleClick(1)}
             >
@@ -355,13 +379,14 @@ const Login = () => {
               onClick={() => handleClick(2)}
             >
               Customer
-            </div>
+            </div> */}
           </div>
           <form onSubmit={handleSubmit} style={{
             marginTop: "20px",
             padding: "5px",
             borderRadius: "10px",
-            ...getStyles()
+            // ...getStyles()
+          border: '1px solid green',
           }}>
             <div style={formGroupStyle}>
               <label htmlFor="email" style={labelStyle}>Email : </label>

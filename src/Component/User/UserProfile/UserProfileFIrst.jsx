@@ -88,11 +88,15 @@ const UserProfileFirst = () => {
           </div>
         </div>
 
-        <Modal isOpen={openLogoutModal} onClose={() => setOpenLogoutModal(!openLogoutModal)}>
+        <Modal  isOpen={openLogoutModal} onClose={() => setOpenLogoutModal(!openLogoutModal)}>
                 {openLogoutModal && (
-                    <div style={{ textAlign: "center", marginTop: "80px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                    <div style={{ textAlign: "center", marginTop: "40px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                      <p style={{textAlign:'center', color:'white', marginBottom:"20px"}}> Are you sure Logout ?</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={logoutUser}>Logout</p>
+                     <div className='flex gap-4' >
+                        <p style={{ color: "white", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "red", minWidth: "100px", borderRadius: "20px", padding: "10px" }} onClick={logoutUser}>Logout</p>
+                        <p style={{ color: "white", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "rgb(9 126 51)", minWidth: "100px", borderRadius: "20px", padding: "10px" }} onClick={() => setOpenLogoutModal(!openLogoutModal)}>Close</p>
+                     </div>
+
                     </div>
                 )}
             </Modal>

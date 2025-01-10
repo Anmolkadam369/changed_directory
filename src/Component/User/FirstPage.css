@@ -28,7 +28,7 @@
   top: 7px;
 }
 
-
+  
 .start-container {
   overflow: auto;
   margin: 20px 10px 20px 5px;
@@ -72,7 +72,7 @@
 
 .imageWrapper .description {
   background: radial-gradient(#fff8f8, #25601b57);
-  width: 91%;
+  /* width: 91%; */
   border: 1px solid;
   border-top: none;
   padding: 5px;
@@ -131,7 +131,7 @@
   background: white;
   border: 1px solid;
   /* border-top: none; */
-  padding: 5px 10px;
+  padding: 6px 15px;
   border-radius: 5px 5px 5px 5px;
   text-align: center;
   min-width: 90px;
@@ -141,7 +141,7 @@
 }
 
 .imageWrapper .top-scrolling p {
-  font-size: 10px;
+  font-size: 15px;
   color: black;
   margin: 0;
 }

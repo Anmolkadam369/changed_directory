@@ -1,17 +1,20 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const webSocketContext = createContext(null);
 
 export const WebSocketProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
-    const [socket, setSocket] = useState(null);
+    const isSocketOpenRef = useRef(false); // Ref to track the connection state
+    const socketRef = useRef(null); // Ref to store the WebSocket instance
 
     useEffect(() => {
         const ws = new WebSocket("ws://localhost:3001");
+        socketRef.current = ws; // Store the WebSocket instance in the ref
 
         ws.onopen = () => {
             console.log('Connected to WebSocket server');
-            const userId = localStorage.getItem("userId"); // Assuming userId is stored in localStorage
+            isSocketOpenRef.current = true; // Set the connection state to true
+            const userId = localStorage.getItem("userId");
             if (userId) {
                 ws.send(JSON.stringify({ userId }));
                 console.log(`User ID ${userId} sent to server`);
@@ -22,22 +25,28 @@ export const WebSocketProvider = ({ children }) => {
             const data = JSON.parse(event.data);
             console.log('Received WebSocket data:', data);
             setMessages((prevMessages) => [...prevMessages, data]);
-        };        
+        };
 
         ws.onclose = () => {
-            console.log("WebSocket connection closed");
+            console.log("WebSocket  Connected closed");
+            isSocketOpenRef.current = false; // Set the connection state to false
         };
-
-        setSocket(ws);
 
         return () => {
-            if (ws) ws.close();
+            if (socketRef.current) socketRef.current.close();
         };
-    }, []); 
+    }, []);
 
     const sendMessage = (message) => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify(message));
+        console.log("isReadysoc2", isSocketOpenRef.current);
+        console.log("socketRef.current:", socketRef.current?.readyState, WebSocket.OPEN);
+
+        // Use the WebSocket instance from the ref
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            console.log("Sending message:", JSON.stringify(message));
+            socketRef.current.send(JSON.stringify(message)); // Send the message
+        } else {
+            console.log("WebSocket is not open yet, unable to send message.");
         }
     };
 

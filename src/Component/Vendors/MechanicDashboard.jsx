@@ -221,7 +221,9 @@ const MechanicDashboard = ({ getData }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             console.log("responssesesesee", response)
             // if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
             // else setAllAccidentVehicleData(response.data.data);

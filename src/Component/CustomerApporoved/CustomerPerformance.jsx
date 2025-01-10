@@ -90,7 +90,9 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     const getAccidentData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${customerId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${customerId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
             else setAccidentVehData(response.data.data);
         } catch (error) {
@@ -109,7 +111,9 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${customerId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${customerId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             console.log("responssesesesee", response)
             if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
             else {

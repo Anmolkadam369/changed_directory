@@ -481,7 +481,7 @@ function CraneVehicleData() {
             let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
                 method: 'PUT',
                 headers: {
-                    Authorization: token,
+                    Authorization:  `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -1111,7 +1111,7 @@ function CraneVehicleData() {
                                     </div>
                                 )}
                             </div>
-                            {isWorkDone && (
+                           
                                 <p style={{
                                     fontSize: '11px',
                                     marginTop: "2px",
@@ -1137,7 +1137,7 @@ function CraneVehicleData() {
                                         right: '10px'
                                     }} />)}
                                     Work Done
-                                </p>)}
+                                </p>
                         </div>
 
                         {/* {formData.advancedPayment && formData.balancePayment && formData.paidOn == null && (

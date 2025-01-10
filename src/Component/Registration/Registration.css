@@ -383,7 +383,7 @@ span {
     min-width: 20px;
     position: relative;
     display: flex;
-    max-width: 1200px;
+    max-width: 2200px;
     margin-right: auto
 }
 
@@ -885,7 +885,4 @@ span {
     height: 0px !important;
     overflow: visible !important;
 }
-
-
-
-
+  

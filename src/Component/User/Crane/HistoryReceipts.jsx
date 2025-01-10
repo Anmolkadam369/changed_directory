@@ -227,7 +227,9 @@ const HistoryReceipts = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
         if (response.data.message == "No accident vehicle data found.") {
             setDoneFetching(true)
             setData([])}
@@ -315,7 +317,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
     };
 
     return (
-        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))'  }}>
+        <div style={{ marginBottom: "60px",overflowY:'auto', background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))'  }}>
            {doneFetching == true && (
              <div>
             <div style={{ position: "sticky", top: "14px", zIndex: "999", margin: "20px 20px" }}>
@@ -334,6 +336,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                     ))}
                 </div>
             </div>
+            <div  style={{ height: '100vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
                 <div className="container h-100">
                     <div className="d-flex justify-content-center h-100">
@@ -354,6 +357,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                  style={{
                      display: "grid",
                      gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                     
                      
                  }}
              >
@@ -432,6 +436,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                 ))}
                 </div>
             )}
+            </div>
 
             {isHistoryPage && (
                 <div

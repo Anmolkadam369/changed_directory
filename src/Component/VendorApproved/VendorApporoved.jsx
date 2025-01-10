@@ -522,7 +522,7 @@ const VendorApproved = () => {
         >
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p> */}
-          <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
+          <div className="container sm:max-w-[340px] d-flex justify-content-center " style={{ marginTop: "10px" }}>
             <div className="container my-5">
               <DataTable
                 columns={columns}

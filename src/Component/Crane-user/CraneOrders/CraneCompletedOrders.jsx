@@ -13,7 +13,17 @@ import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import filterUser from '../../../Assets/filterUser.png'
 import Modal from "../../Location1/Modal";
 import historyUser from '../../../Assets/historyUser.png'
-
+import workDoneUser from '../../../Assets/workDoneUser.png'
+import reachedUser from '../../../Assets/reachedUser.png'
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import ArticleIcon from '@mui/icons-material/Article';
+import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
+import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
 
 function haversine(lat1, lon1, lat2, lon2) {
     console.log("accident latitude", lat1)
@@ -37,10 +47,10 @@ function haversine(lat1, lon1, lat2, lon2) {
 const CraneCompletedOrders = ({ data }) => {
     const [totalCompletedCases, setTotalCompletedCase] = useState([]);
     const [spareUseData, setSpareUseData] = useState([]);
-    
+
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-    console.log('totalCompletedCases', totalCompletedCases)
+    console.log('totalCompletedCases', totalCompletedCases[0])
 
     const [openDetails, setOpenDetails] = useState(false);
     const [choosenCase, setChoosenCase] = useState([])
@@ -57,14 +67,23 @@ const CraneCompletedOrders = ({ data }) => {
 
     const stages = [
         { label: "Processing", img: comingCrane },
-        { label: "Admin Accepted", img: assignedTask },
-        { label: "Customer Accepted", img: checksuccess },
+        { label: "Customer Accepted", img: assignedTask },
+        { label: "Complete Order", img: checksuccess },
     ];
 
 
     useEffect(() => {
         setTotalCompletedCase(data)
         setSpareUseData(data)
+        if (choosenCase.length > 0) {
+            const updatedCase = data.find(item => item.details[0].accidentFileNo === choosenCase[0].accidentFileNo);
+            if (updatedCase) {
+                setChoosenCase([updatedCase]);
+            } else {
+                setChoosenCase([]);
+                setOpenDetails(false)
+            }
+        }
     }, [data])
 
     const handleChoosenCase = (item) => {
@@ -79,14 +98,15 @@ const CraneCompletedOrders = ({ data }) => {
 
     useEffect(() => {
 
-        if (totalCompletedCases.length > 0 && totalCompletedCases.length) {
-            totalCompletedCases.map((item) => {
-                avg.push(0)
-            })
-            totalCompletedCases.map((item) => {
+        if (totalCompletedCases.length > 0) {
+            const newAvg = Array(data.length).fill(0);
+            const newCurrentStage = totalCompletedCases.map((item) => {
                 let gotStage = getStage(item.details[0]?.customerAcceptedVendor, item.details[0]?.acceptedByAdmin)
-                currentStage.push(gotStage)
+                return gotStage;
             })
+            setAvg(newAvg);
+            setCurrentStage(newCurrentStage);
+
             totalCompletedCases.forEach((item, index) => {
                 getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude, index);
                 getCustomerRating(item.CustomerCode)
@@ -190,7 +210,7 @@ const CraneCompletedOrders = ({ data }) => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -209,7 +229,7 @@ const CraneCompletedOrders = ({ data }) => {
 
     const getCustomerRating = async (customerCode) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")
@@ -239,12 +259,40 @@ const CraneCompletedOrders = ({ data }) => {
         setTotalCompletedCase(newRows);
     };
 
+    const [historyStage, setHistoryStages] = useState([]);
+    const [currentHistoryStage, setCurrentHistoryStage] = useState([]);
+    const [isHistoryPage, setIsHistoryPage] = useState(false);
+    const [currentItemIndex, setCurrentItemIndex] = useState(null);
+    
+    const getHistoryStage = (connectedVendorFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime) => {
+        return [connectedVendorFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime]
+    }
+    const getStageAndHistory = (item, index) => {
+        setCurrentItemIndex(index)
+        console.log("item", item.details[0].connectedVendorFullyTime)
+        let gotStage = getHistoryStage(item?.details[0]?.connectedVendorFullyTime,item?.details[0]?.customerAcceptedVendorTime,  item?.details[0]?.vendorMovedTime, item?.details[0]?.vendorReachedTime, item?.details[0]?.doneWorkingTime)
+        currentHistoryStage.unshift(gotStage)
+        setIsHistoryPage(true)
+    }
+
+    useEffect(() => {
+        if (currentHistoryStage[0]) {
+            console.log("currenthistory", currentHistoryStage[0])
+            setHistoryStages([
+                { label: "Connected", img: assignedTask, date: currentHistoryStage[0][0] },
+                { label: "Customer Accepted", img: checksuccess, date: currentHistoryStage[0][1] },
+                { label: "Accepted & Moved", img: comingCrane, date: currentHistoryStage[0][2] },
+                { label: "Reached", img: reachedUser, date: currentHistoryStage[0][3] },
+                { label: "Work Done", img: workDoneUser, date: currentHistoryStage[0][4] },
+            ]);
+        }
+    }, [currentHistoryStage[0]]); 
 
 
     return (
         <div>
             <div style={{
-                marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
+                marginBottom: "100px"
             }}>
                 <div className="container" style={{
                     // paddingTop:"30px",
@@ -272,151 +320,140 @@ const CraneCompletedOrders = ({ data }) => {
                     </div>
                 </div>
                 {totalCompletedCases.length > 0 && (
-                    <div 
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-                        
-                    }}>
-                   { totalCompletedCases.map((item, dataIndex) => (
-                        <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea" }}>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
 
-                            <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
-                                {stages.map((stage, index) => (
-                                    <div
-                                        key={index}
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                            textAlign: "center",
-                                            position: "relative",
-                                            flex: 1,
-                                        }}
-                                    >
-                                        {/* Icon/Image for each stage */}
+                        }}>
+                        {totalCompletedCases.map((item, dataIndex) => (
+                            <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "20px", padding: "10px" }}>
+
+                                <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
+                                    {stages.map((stage, index) => (
                                         <div
+                                            key={index}
                                             style={{
-                                                width: "30px",
-                                                height: "30px",
-                                                borderRadius: "50%",
-                                                backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
                                                 display: "flex",
+                                                flexDirection: "column",
                                                 alignItems: "center",
-                                                justifyContent: "center",
-                                                border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
-                                                transition: "background-color 0.3s ease",
-                                                zIndex: 1,
+                                                textAlign: "center",
+                                                position: "relative",
+                                                flex: 1,
                                             }}
                                         >
-                                            <img
-                                                src={stage.img}
-                                                alt={stage.label}
-                                                style={{
-                                                    width: "20px",
-                                                    height: "20px",
-                                                    opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
-                                                }}
-                                            />
-                                        </div>
-
-                                        {/* Stage Label */}
-                                        <p
-                                            style={{
-                                                marginTop: "5px",
-                                                color: index <= currentStage[dataIndex] ? "black" : "#aaa",
-                                                fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
-                                                fontSize: "12px",
-                                            }}
-                                        >
-                                            {stage.label}
-                                        </p>
-
-                                        {/* Connecting Line */}
-                                        {index < stages.length - 1 && (
+                                            {/* Icon/Image for each stage */}
                                             <div
                                                 style={{
-                                                    position: "absolute",
-                                                    top: "15px", // Aligns with the center of the icon
-                                                    left: "50%",
-                                                    right: "-50%",
-                                                    width: "100%",
-                                                    height: "2px",
-                                                    backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
-                                                    zIndex: 0,
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    borderRadius: "50%",
+                                                    backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
+                                                    transition: "background-color 0.3s ease",
+                                                    zIndex: 1,
                                                 }}
-                                            ></div>
-                                        )}
+                                            >
+                                                <img
+                                                    src={stage.img}
+                                                    alt={stage.label}
+                                                    style={{
+                                                        width: "20px",
+                                                        height: "20px",
+                                                        opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
+                                                    }}
+                                                />
+                                            </div>
+
+                                            {/* Stage Label */}
+                                            <p
+                                                style={{
+                                                    marginTop: "5px",
+                                                    color: index <= currentStage[dataIndex] ? "black" : "#aaa",
+                                                    fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
+                                                    fontSize: "12px",
+                                                }}
+                                            >
+                                                {stage.label}
+                                            </p>
+
+                                            {/* Connecting Line */}
+                                            {index < stages.length - 1 && (
+                                                <div
+                                                    style={{
+                                                        position: "absolute",
+                                                        top: "15px", // Aligns with the center of the icon
+                                                        left: "50%",
+                                                        right: "-50%",
+                                                        width: "100%",
+                                                        height: "2px",
+                                                        backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
+                                                        zIndex: 0,
+                                                    }}
+                                                ></div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div style={{ marginTop: "20px" }}>
+
+                                    {/* <hr className="color-black m-0" /> */}
+                                    <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
+                                            <span className='text-md font-semibold' style={{ marginLeft: "5px" }}>{item.details[0].reg}</span>
+                                        </div>
+                                        <div
+                                            className="right-10  flex items-center mt-1"
+                                            style={{ margin: '0px 5px 0 5px' }}
+                                        >
+                                            <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
+                                            <span className="text-xs font-medium ml-2">
+                                                {item.details[0].systemDate?.split("|")[0]}
+                                            </span>
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
 
-                            <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", marginTop: "30px" }}>File No: </p>
-                                        <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', marginTop: "30px" }} >{item.accidentFileNo}</span>
+
+
+                                    <div style={{ borderTop: '1px solid gray', borderRadius: "10px 0px 0px 10px", borderBottom: "1px solid", padding: '4px 5px 9px 5px', display: 'inline-block', background: "linear-gradient(42deg, #e7fae8, transparent)", margin: '10px' }}>
+                                        <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 15px' }}>
+                                            <LibraryAddCheckIcon className='h-[30px] w-[30px] text-red-500' />
+                                            <span className="text-sm font-semibold" style={{ marginLeft: "5px" }}>Task Completed</span>
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 15px' }}>
+                                            <DateRangeOutlinedIcon className='h-[30px] w-[30px]  text-red-500' />
+                                            <p className="text-sm ml-2 text-green-700">Date</p>
+                                            <span className="text-sm" style={{ marginLeft: "5px" }}>{item.details[0].confirmDoneWorkingTime?.split("|")[0]}</span>
+
+                                            <AccessTimeOutlinedIcon className='h-[30px] w-[30px] text-red-500 ml-5' />
+                                            <span className="text-sm" style={{ marginLeft: "5px" }}>{item.details[0].confirmDoneWorkingTime?.split("|")[1]}</span>
+                                        </div>
                                     </div>
-                                    <div style={{ marginTop: "22px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
-                                </div>
-
-                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                    <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.reg}</span>
-                                </div>
 
 
-                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
-                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Assigned Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn.split("|")[0]}</span>
-                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Time:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn.split("|")[1]}</span>
-                                </div>
-
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '0px 0px 20px 5px' }}>
-                                        {item.details[0]?.acceptedByAdmin == null && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin permission pending </span>
-                                        )}
-                                        {item.details[0]?.acceptedByAdmin !== null && item.details[0]?.customerAcceptedVendor == false && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer permission pending</span>
-                                        )}
-
-                                        {item.details[0]?.approvedReaching == true && (
-                                            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Task completed</span>
-                                        )}
-
-                                        <p style={{
-                                            fontSize: '11px',
-                                            marginTop: "5px",
-                                            background: "white",
-                                            padding: "10px",
-                                            border: '2px solid #000000',
-                                            textAlign: 'center',
-                                            borderRadius: '30px',
-                                            fontWeight: "bold",
-                                            color: "blue",
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: "center",
-                                            position: "relative",
-                                            cursor: "pointer",
-                                            maxWidth: "400px",
-                                            minWidth: "150px",
-                                            margin: '5px 5px 5px 5px',
-                                            height: "30px"
-                                        }} >
+                                    <div className="mt-2 ml-auto flex justify-end">
+                                        <p
+                                            className="text-sm mt-1 font-semibold   text-center rounded-full  flex items-center justify-center relative cursor-pointer max-w-[200px] min-w-[150px] h-[30px]"
+                                        style={{border:'1px solid', paddingLeft:"10px", fontSize:"13px"}} 
+                                        onClick={(e) => getStageAndHistory(item, dataIndex)}
+                                        >
                                             See History
-                                            <img src={historyUser} style={{
-                                                position: "absolute",
-                                                left: '5px', height: "20px", width: "20px"
-                                            }} />
+                                            <img
+                                                src={historyUser}
+                                                className="absolute left-1 h-[20px] w-[20px]"
+                                                alt="history icon"
+                                            />
                                         </p>
                                     </div>
+
                                 </div>
-                            </div>
-                            {/* <div style={{
+                                {/* <div style={{
                             fontSize: '11px',
                             marginTop: "2px",
                             background: "white",
@@ -437,8 +474,8 @@ const CraneCompletedOrders = ({ data }) => {
                             height: "30px"
                         }}
                             onClick={() => handleChoosenCase(item)}>View Case</div> */}
-                        </div>
-                    ))}
+                            </div>
+                        ))}
                     </div>
                 )}
 
@@ -504,6 +541,141 @@ const CraneCompletedOrders = ({ data }) => {
                 <div>
                     <BottomNavigationVendor />
                 </div>
+
+                {isHistoryPage && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                        zIndex: 1000,
+                        display: "flex",
+                        alignItems: "flex-end", // positions the container at the bottom
+                        justifyContent: "center",
+                        animation: "slideUp 0.5s ease-out",
+                    }}
+                >
+                    {/* Modal Container */}
+                    <div
+                        style={{
+                            position: "relative",
+                            width: "97%",
+                            maxWidth: "600px",
+                            backgroundColor: "#fff", // white background for the content
+                            borderRadius: "15px 15px 0px 0px",
+                            // marginBottom: "30px",
+                            maxHeight: "80%", // limit the height for scrollability
+                            overflowY: "auto", // enables vertical scrolling
+                            padding: "20px",
+                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                    >
+                        {/* Cross Icon */}
+                        <img
+                            src={crossUser}
+                            onClick={() => setIsHistoryPage(false)}
+                            style={{
+                                position: "fixed",
+                                // top: "-10px",
+                                right: "30px",
+                                width: "25px",
+                                height: "25px",
+                                cursor: "pointer",
+                                zIndex: 1001,
+                                filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
+                            }}
+                        />
+
+
+                        <div style={{ display: "flex", flexDirection: "row", gap: '30px', alignItems: "center", justifyContent: 'center', margin: "20px 0px" }}>
+                            <div>
+                                {historyStage.map((stage, index) => (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column", // Stack vertically
+                                            alignItems: "center",
+                                            position: "relative", // Needed for absolute positioning of the line
+                                            marginBottom: "20px", // Space between stages
+                                            flex: 1,
+                                        }}
+                                    >
+                                        {/* Icon/Image for each stage */}
+                                        <div
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                borderRadius: "50%",
+                                                backgroundColor: "rgb(255 225 6)",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                border: "2px solid #4CAF50",
+                                                transition: "background-color 0.3s ease",
+                                                zIndex: 1, // **Changed: Make sure image is above the line**
+                                            }}
+                                        >
+                                            <img
+                                                src={stage.img}
+                                                alt={stage.label}
+                                                style={{
+                                                    width: "20px",
+                                                    height: "20px",
+                                                    opacity: 1,
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* Date next to the image */}
+                                        <div
+                                            style={{
+                                                marginTop: "5px", // Space between icon and date
+                                                color: "black",
+                                                fontSize: "12px",
+                                                fontWeight: "normal",
+                                            }}
+                                        >
+                                            {stage.date}
+                                        </div>
+
+                                        {/* Stage Label */}
+                                        <div
+                                            style={{
+                                                marginTop: "5px", // Space between date and label
+                                                color: "black",
+                                                fontWeight: "bold",
+                                                fontSize: "12px",
+                                            }}
+                                        >
+                                            {stage.label}
+                                        </div>
+
+                                        {index < historyStage.length - 1 && (
+                                            <div
+                                                style={{
+                                                    marginTop: '5px',
+                                                    position: "absolute",
+                                                    top: "100%", // **Changed: Position the line below the image and date**
+                                                    left: "50%",
+                                                    width: "2px",
+                                                    height: "20px", // **Changed: Adjust this value as needed for spacing**
+                                                    backgroundColor: "#4CAF50",
+                                                    transform: "translateX(-50%)", // **Changed: Center the line between images**
+                                                    zIndex: 0, // **Changed: Make sure the line is behind the content**
+                                                }}
+                                            ></div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             </div>
         </div>

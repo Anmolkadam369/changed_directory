@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Registration.css';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import PersonIcon from '@mui/icons-material/Person';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import { Alert } from '@mui/material';
+import { Alert, IconButton } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Close as CloseIcon, LocationSearchingSharp } from '@mui/icons-material';
 import backendUrl from '../../environment';
 import Modal from '../Location1/Modal'; // Import the modal component
 import { Helmet } from 'react-helmet-async';
@@ -16,6 +21,15 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import checksuccess from '../../Assets/checksuccess.png'
 import SuccessIcon from '../CaseFirstCard/SuccessIcon';
 import BottomNavigationBar from '../User/BottomNavigationBar';
+import MapComponent from '../AAAAAAAAAAAAAAAAAA/MapComponent';
+import LocationSearchPanel from '../Location1/LocationSearchPanel';
+import VehiclePanel from './VehiclePanel';
+import ConfirmedRide from './ConfirmedRide';
+import LookingForAccptance from './LookingForAcceptance';
+import WaitForVehicleCome from './WaitForVehicleCome';
+import MapForVendorDistance from '../User/MapForVendorDistance';
+import Loading from '../User/Cards/Loading';
+import AddNewData from '../User/Cards/AddNewData';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -24,6 +38,10 @@ const config = {
 
 function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
 
     console.log("itemshere", item)
     if (item == null) {
@@ -47,7 +65,62 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const [comingFrom, setComingFrom] = useState('')
 
 
-    console.log("comingData", comingFrom)
+    const [showImageDiv, setShowImageDiv] = useState(false)
+    const [isMaterialLoaded, setIsMaterialLoaded] = useState(item?.isMaterialLoaded || false)
+    const [quantity, setQuantity] = useState(item?.quantity || "")
+    const [budget, setBudget] = useState(item?.budget || '')
+
+    const [longitude, setLongitude] = useState(item?.longitude || '')
+    const [latitude, setLatitude] = useState(item?.latitude || '')
+
+    const [dropLatitude, setDropLatitude] = useState('')
+    const [dropLongitude, setDropLongitude] = useState('')
+
+    const [pickupLocation, setPickupLocation] = useState(null)
+    const [dropLocation, setDropLocation] = useState(null)
+
+    const [location, setLocation] = useState('')
+    const [destinationLocation, setDestinationLocation] = useState('')
+    const [activeField, setActiveField] = useState(null)
+
+    const [panelOpen, setPanelOpen] = useState(false)
+    const [vehiclePanel, setVehiclePanel] = useState(false)
+    const [confirmVehicle, setConfirmVehicle] = useState(false)
+
+    const [allVehicleNumbers, setAllVehicleNumbers] = useState([])
+    const [doneFetching, setDoneFetching] = useState(false)
+    console.log("allVehicleNumbers", allVehicleNumbers)
+    console.log("doneFetching", doneFetching)
+
+
+
+    const [vehicleFound, setVehicleFound] = useState(false)
+    const [vehicleType, setVehicleType] = useState(null)
+
+    const panelRef = useRef(null)
+    const vehiclePanelRef = useRef(null)
+    const confirmVehicleRef = useRef(null)
+    const vehicleFoundRef = useRef(null)
+
+
+
+
+    useEffect(() => {
+        if (getData?.contactPerson) {
+            setOnSpotName(getData?.contactPerson)
+        }
+        if (getData?.CustomerPhone) {
+            setOnSpotContact(getData?.CustomerPhone)
+        }
+    }, [getData])
+
+    console.log("vheichtype", vehicleType)
+
+    useEffect(() => {
+        vehicleType == 'craneandrecoveryvan' ? setIsRecoveryVan(true) : setIsRecoveryVan(false)
+        quantity != "" ? setIsMaterialLoaded(true) : setIsMaterialLoaded(false)
+    }, [vehicleType, quantity])
+
 
     useEffect(() => {
         if (vehicleInfo.length !== 0) {
@@ -55,18 +128,12 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
     }, [vehicleInfo]);
 
-
-    const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
     useEffect(() => {
-        // if (token === "" || userId === "") {
-        //     navigate("/");
-        // }c
-        findUserById(userId)
+        if (userId.startsWith('CUD-')) getCustomerDriver(userId)
+        else if (userId.startsWith('CC-')) findUserById(userId)
+        getVehicleNumbers()
+
         if (item !== undefined && item !== null) setIsVerified(true)
-        // if (item !== null) setIsVerified(true)
         loadStates();
         const storedRegNo = localStorage.getItem('regNo');
         if (storedRegNo) {
@@ -78,10 +145,42 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     }, [token, userId, navigate]);
 
+    const getCustomerDriver = async (id) => {
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomerDriver/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        console.log("daa", response.data)
+        if (response.data.message == "data found") {
+            setRegNo(response.data.data[0].vehicleNo)
+            setOnSpotName(response.data.data[0].driverName)
+            setOnSpotContact(response.data.data[0].driverNumber)
+        }
+
+    }
+
+    const getVehicleNumbers = async () => {
+        console.log("userid", userId);
+        let notAccidentVehicles = []
+        const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${userId}`);
+        if (response.data.message == "No accident vehicle data found.") {
+            setAllVehicleNumbers([])
+            setDoneFetching(true)
+        }
+        else {
+            console.log("response123421", response.data.data);
+            response.data.data.map((item) => {
+                if (item.alreadyAccidentVehicle == false) notAccidentVehicles.push(item)
+
+            })
+            console.log("seTDATIOATN", response.data.data);
+            setAllVehicleNumbers(notAccidentVehicles)
+            setDoneFetching(true)
+        }
+    }
+
+
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         console.log("daa", response.data)
         response.data.data = response.data.data.filter((individualResponse) => {
             if (individualResponse.latitude !== null && individualResponse.longitude !== null) {
@@ -98,7 +197,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     async function getVehicleData() {
         try {
-            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` }});
+            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` } });
             if (getData.data.message === 'Vehicle found') {
                 setVehicleInfo([getData.data]);
                 setComingVehicle(getData.data);
@@ -180,27 +279,19 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
     };
 
-    const [showImageDiv, setShowImageDiv] = useState(false)
-    const [isMaterialLoaded, setIsMaterialLoaded] = useState(item?.isMaterialLoaded || false)
-    const [quantity, setQuantity] = useState(item?.quantity || '')
-    const [budget, setBudget] = useState(item?.budget || '')
 
-    const [longitude, setLongitude] = useState(item?.longitude || '')
-    const [latitude, setLatitude] = useState(item?.latitude || '')
+    useEffect(() => {
+        if (vehicleFound) handleSubmit()
+    }, [vehicleFound])
 
-    const [dropLatitude, setDropLatitude] = useState('')
-    const [dropLongitude, setDropLongitude] = useState('')
-    const [dropLocation, setDropLocation] = useState('')
+    console.log("vehiclePanel123", vehicleType)
 
 
-    console.log('latitude', latitude)
-    console.log('longitude1231231', longitude)
 
-    const [location, setLocation] = useState('')
-    const [pickupLocation, setPickupLocation] = useState('')
 
-    const [onSpotName, setOnSpotName] = useState(item?.onSpotName || '')
-    const [onSpotContact, setOnSpotContact] = useState(item?.onSpotContact || '')
+
+    const [onSpotName, setOnSpotName] = useState(item?.onSpotName || getData?.contactPerson || '')
+    const [onSpotContact, setOnSpotContact] = useState(item?.onSpotContact || getData?.CustomerPhone || '')
 
 
 
@@ -217,6 +308,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const [isLoading, setIsLoading] = useState(false);
     const [isRecoveryVan, setIsRecoveryVan] = useState(item?.isRecoveryVan || false);
     const [successDone, setSuccessDone] = useState(false);
+    const [pickupSuggestions, setPickupSuggestions] = useState([])
+    const [destinationSuggestions, setDestinationSuggestions] = useState([])
+
 
     const { state } = useLocation();
     useEffect(() => {
@@ -244,7 +338,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                         pickuplongitude: longitude,
                         dropLatitude: dropLatitude,
                         dropLongitude: dropLongitude,
-                        selectedVendor : 'crane'
+                        selectedVendor: 'crane'
                     }, {
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -294,7 +388,6 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
 
     }, [centerHere]);
-
 
 
 
@@ -375,6 +468,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
 
     const showPosition = async (position) => {
+        console.log("altiudaf", position.coords)
         const { latitude, longitude } = position.coords;
         setLatitude(latitude);
         setLongitude(longitude);
@@ -414,57 +508,105 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
     };
 
-
-    // const services = ["Crane", "Mechanic", "Advocate", "Workshop"];
-    // const [selectedServices, setSelectedServices] = useState(
-    //     item?.selectedOptions ? [item.selectedOptions] : []
-    // );
-    // const[existingServices, setExistingServices] = useState(item?.selectedOptions ? [item.selectedOptions] : [])
-    // let [finalSelectedService, setFinalSelectedService]= useState([])
-    // console.log("total service", selectedServices)
-    // console.log("existingServices service", existingServices)
-    // console.log("finalSelectedService service", finalSelectedService)
-
-
-    // console.log("item?.selectedOptions ",item?.selectedOptions )
-    // const [newlySelectedServices, setNewlySelectedServices] = useState([]);
-
-    // const toggleSelection = (service) => {
-
-    //     console.log("SERVICE", service)
-    //     console.log("item?.selectedOptions?.includes(service.toLowerCase())", item?.selectedOptions?.includes(service.toLowerCase()))
-    //     setSelectedServices((prev)=>{
-    //         if(prev.includes(service)) return prev.filter((selectedServices)=>selectedServices != service)
-    //         else return [...prev, service]
-    //     })
-
-    //     let finalServices = existingServices.map((existingService)=>{
-    //         return existingService !== service ? service:null
-    //      })
-    //      setFinalSelectedService((prev) => {
-    //         if (service?.toLowerCase && prev.includes(service.toLowerCase())) {
-    //             return prev.filter((selectedService) => selectedService !== service.toLowerCase());
-    //         }
-    //         return [...prev, service?.toLowerCase()];
-    //     });
-    // };
-
     let finalSelectedService = 'crane';
     let accidentDataObject
 
-    console.log("elserafsdfasd")
+
     accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, ...getData, latitude, longitude, pickupLocation, dropLocation, dropLatitude, dropLongitude, selectedOptions: finalSelectedService };
     console.log("accidentDataObject123445", accidentDataObject)
 
+    useGSAP(function () {
+        if (panelOpen) {
+            gsap.to(panelRef.current, {
+                height: '100%',
+                opacity: 1,
+                duration: 1,
+                ease: 'power-3.inOut'
+            })
+        }
+        if (!panelOpen) {
+            gsap.to(panelRef.current, {
+                height: '0%',
+                opacity: 0,
+                // duration: 1,
+                // ease: 'power-3.inOut'
+            })
+        }
+    }, [panelOpen])
+
+    useGSAP(function () {
+        if (vehiclePanel) {
+            gsap.to(vehiclePanelRef.current, {
+                transform: 'translateY(0%)',
+                opacity: 1,
+                duration: 1,
+                ease: 'power-3.inOut',
+                zIndex: '1000',
+            });
+        } else {
+            gsap.to(vehiclePanelRef.current, {
+                transform: 'translateY(100%)',
+                opacity: 0,
+                duration: 0,
+                zIndex: '-1',
+            });
+        }
+    }, [vehiclePanel]);
+    
+    useGSAP(function () {
+        if (confirmVehicle) {
+            gsap.to(confirmVehicleRef.current, {
+                transform: 'translateY(0%)',
+                opacity: 1,
+                duration: 1,
+                ease: 'power-3.inOut',
+                width: '100%',
+                height: '95vh',
+                zIndex: '1001', // Higher zIndex to appear above vehiclePanel
+                overflowY:'auto'
+            });
+        } else {
+            gsap.to(confirmVehicleRef.current, {
+                transform: 'translateY(100%)',
+                opacity: 0, // Adjusted to 0 to hide it properly
+                duration: 1,
+                ease: 'power-3.inOut',
+                width: '100%',
+                zIndex: '-1', // Lower zIndex when closed
+            });
+        }
+    }, [confirmVehicle]);
+    
+
+    useGSAP(function () {
+        if (vehicleFound) {
+            gsap.to(vehicleFoundRef.current, {
+                transform: 'translateY(0%)',
+                opacity: 1,
+                duration: 1,
+                ease: 'power-3.inOut',
+                width: '100%',
+                height: "95vh",
+                zIndex: '1001',
+                overflowY:'auto'
+
+
+            })
+        }
+        else {
+            gsap.to(vehicleFoundRef.current, {
+                transform: 'translateY(100%)',
+                opacity: 1,
+                duration: 1,
+                ease: 'power-3.inOut',
+                padding: '0px',
+                height: "0vh",
+                padding: '20px'
+            })
+        }
+    }, [vehicleFound])
 
     const handleSubmit = async (e) => {
-
-        // setTimeout(() => {
-        //     navigate('/User-landing-page');
-        // }, 4000);
-
-
-        e.preventDefault();
 
         const formDataObj = new FormData();
         console.log("accidentDataO123bject", accidentDataObject)
@@ -481,7 +623,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addVehicleInfo`,
+                url: `${backendUrl}/addVehicleInfo/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -516,34 +658,92 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     };
 
 
-
-    console.log("comingFrom", comingFrom)
-    const goToMap = () => {
-        console.log("fromPageHere", fromPageHere)
-
-        if (item != null) {
-            console.log("item", "item is ehrere")
-            navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025], fromPage: "firstPage" } })
-        }
-        if (comingFrom == "allVehicles") {
-            navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025], fromPage: "allVehicles" } })
-        }
-        else {
-            navigate('/SelectLocationOnMap', { state: { center: [28.7041, 77.1025], fromPage: 'Crane-dashboard' } })
-        }
-    }
-
-    const [byManualLocation, setByManualLocation] = useState(false)
-
     const [nowReadOnly, setNowReadOnly] = useState(true)
-    console.log("nowRead", nowReadOnly)
     useEffect(() => {
         if (fromPageHere !== "allvehicles") setNowReadOnly(false)
     }, [fromPageHere])
 
+    const handlePickupChange = async (e) => {
+        setPickupLocation(e.target.value)
+        try {
+            const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(e.target.value)}`);
+            console.log("response latitude", response.data)
+            const location = response.data[0];
+            setLatitude(location.lat);
+            setLongitude(location.lon);
+            setLocation(` Latitude: ${location.lat}, Longitude: ${location.lon}`);
+        } catch (error) {
+        }
+        try {
+            console.log('latitudedsss', longitude, latitude)
+            const response = await axios.post(`${backendUrl}/api/get-nearby-places`, {
+                data: { lat: latitude, lon: longitude, radius: 1000 },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+
+            })
+            console.log("respose.data", response.data)
+            setPickupSuggestions(response.data)
+        } catch {
+        }
+    }
+
+    const handleDestinationChange = async (e) => {
+        setDropLocation(e.target.value)
+        console.log("resppnse dro ", e.target.value)
+        try {
+            const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(e.target.value)}`);
+            console.log("drop response latitude", response.data)
+            const location = response.data[0];
+            setDropLatitude(location.lat);
+            setDropLongitude(location.lon);
+            setLocation(` Latitude: ${location.lat}, Longitude: ${location.lon}`);
+        } catch (error) {
+            // setLocation("An error occurred while fetching the coordinates.");
+        }
+        console.log("droplatiti", dropLatitude, dropLongitude)
+        if (dropLatitude != "" && dropLongitude != '') {
+            try {
+                console.log('latitudedsss', longitude, latitude)
+                const response = await axios.post(`${backendUrl}/api/get-nearby-places`, {
+                    data: { lat: dropLatitude, lon: dropLongitude, radius: 1000 },
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+
+                })
+                console.log("respose.data", response.data)
+                setDestinationSuggestions(response.data)
+            } catch {
+            }
+        }
+    }
+
+    function findTrip() {
+        setPanelOpen(false)
+        setVehiclePanel(true)
+    }
+    const navigateTo = ()=>{
+        console.log("userId123", userId)
+        userId.startsWith('CUD-')? navigate('/all-accident-vehicles'):navigate('/add-new-vehicle-driver')
+    }
+    
+
     return (
         <div>
-            <div className="Registrationdetails-elem-16">
+
+            {doneFetching == false && (
+                <Loading />
+            )}
+            {doneFetching == true && allVehicleNumbers.length == 0 && (
+                <div>
+                    <div onClick={(navigateTo)}>
+                        <AddNewData  index={userId.startsWith('CUD-')?2:1} />
+                    </div>
+                </div>
+            )}
+            {doneFetching && allVehicleNumbers.length > 0 && (<div className="Registrationdetails-elem-16 bg-white h-full">
                 <Helmet>
                     <title>Customer Service Vehicle Number - Claimpro</title>
                     <meta name="description" content="Customer Service Vehicle for BVC ClaimPro Assist to register the vehicle and get data about vehicle." />
@@ -581,573 +781,223 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                     )}
                 </div>
                 <div className="Registrationdetails-elem-15">
-                    <div className="Registrationdetails-elem-14">
+                    <div className="Registrationdetails-elem-14" style={{ padding: "30px 1px 0px 1px", height: "100vh" }}>
                         <span className="cd-paragraph-clean Registrationdetails-elem-7">
                         </span>
                         <div className="Registrationdetails-elem-13">
                             <div className="Registrationdetails-elem-11">
                                 <div className="Registrationdetails-elem-10">
                                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
-                                        <p style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}><em> Accident Vehicle Details</em></p>
+                                        <p className='pl-3' style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}><em> Accident Vehicle Details</em></p>
                                         {fromPageHere == "allvehicles" && (<button style={{ padding: "5px 10px", background: nowReadOnly ? "lightblue" : 'green', color: nowReadOnly ? "black" : "white", width: "60px", fontSize: "15px", fontWeight: "bold", marginBottom: "20px", borderRadius: "10px" }} onClick={() => setNowReadOnly(!nowReadOnly)}>Edit</button>)}
                                     </div>
                                     {/* <span className="cd-paragraph-clean Registrationdetails-elem-8"> */}
 
-                                    <p style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No</p>
+                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No <span className='text-xs font-semibold text-red-500'>(select vehicle)</span></p>
+                                    
                                     {/* </span> */}
-                                    <div style={{ display: "flex" }}>
+                                    <div style={{ display: "flex", marginBottom: "20px" }}>
 
-                                        <input
-                                            type="text"
-                                            className="Registrationdetails-elem-9"
-                                            style={{ textAlign: 'left', margin: '10px 10px 10px 10px', width: '80%' }}
+
+
+                                        <select
+                                            name="regNo"
+                                            className={`w-full text-sm h-[30px] p-0 m-[10px] Registrationdetails-elem-9 
+                                                        border border-black rounded-md focus:outline-none focus:ring-2 
+                                                        focus:ring-blue-500 focus:border-blue-500 
+                                                    ${getData.isActive === "false" ? "bg-gray-500 cursor-not-allowed" : ""}`}
+                                            style={{ fontSize: "13px", height: "30px", padding: '0px', margin: "10px 10px 0px 10px" }}
                                             value={regNo}
-                                            // readOnly
-                                            placeholder='RJ 03 ED 2343'
-                                            onChange={!item?.reg ? handleChange : ""}
+                                            onChange={!item?.reg ? handleChange : undefined}
                                             disabled={getData.isActive === "false"}
-                                        />
+                                        >
+                                            <option className='text-sm font-semibold text-center' value="">Select Vehicle</option>
+                                            {!cities.error && allVehicleNumbers.map(vehicle => (
+                                                <option key={vehicle.vehicleNo} value={vehicle.vehicleNo}>
+                                                    {vehicle.vehicleNo}
+                                                </option>
+                                            ))}
+                                        </select>
 
                                         {/* <div style={{ border: "1px solid" }}> hey </div> */}
-                                        {!isVerified && (
-                                            <button type="button" onClick={getVehicleData} style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px", fontWeight: "bold" }} class="btn btn-success">Check</button>
-                                        )}
-                                        {isVerified && (
-                                            <img src={checksuccess} style={{ marginTop: '15px', height: "25px", width: '25px' }} />
+
+                                        {regNo != "" && (
+                                            <div className='w-[100px]'>
+                                                <img src={checksuccess} style={{ marginTop: '10px', height: "25px", width: '25px' }} />
+                                            </div>
                                         )}
                                     </div>
-
-                                    {isVerified && (
-
+                                    {regNo != "" && (
                                         <div>
+                                            <div className='flex'>
+                                                <div>
+                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Spot Person Name</p>
 
-                                            <div style={{ display: 'flex', marginTop: "30px" }}>
-                                                <p style={{ fontSize: "13px", marginTop: "10px", marginRight: '2px', fontWeight: "bold" }}>Click if you are on the Accident Location ?</p>
-                                                <p style={{
-                                                    fontSize: '11px',
-                                                    marginTop: "5px",
-                                                    background: "blue",
-                                                    padding: "5px",
-                                                    border: '1px solid blue',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "white",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    maxWidth: "400px",
-                                                    minWidth: "180px",
-                                                    height: "35px",
-                                                    cursor: item?.accidentLatitude ? 'not-allowed' : 'pointer',
-                                                    opacity: item?.accidentLatitude ? 0.5 : 1,
-                                                }}
-                                                // onClick={(e) => {
-                                                //     if (!item?.accidentLatitude) {
-                                                //         getLocation()
-                                                //     }
-                                                // }} 
-                                                >
-                                                    SEND LOCATION
-                                                    <KeyboardDoubleArrowRightIcon style={{
-                                                        position: "absolute",
-                                                        right: '10px'
-                                                    }} />
-                                                </p>
-                                            </div>
-                                            <p style={{ fontSize: "11px", marginTop: "10px", marginBottom: "10px", textAlign: 'center', color: "teal", fontWeight: 'bold' }}>__________________OR_______________</p>
-
-                                            <div style={{ display: 'flex' }}>
-                                                <p style={{ fontSize: "13px", marginTop: "10px", marginRight: '20px', fontWeight: "bold" }}>Select locatiion on map ?</p>
-                                                <p style={{
-                                                    fontSize: '12px',
-                                                    marginTop: "5px",
-                                                    background: "white",
-                                                    padding: "10px",
-                                                    border: '2px solid #000000',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "blue",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    maxWidth: "400px",
-                                                    minWidth: "150px",
-                                                    cursor: item?.accidentLatitude ? "not-allowed" : "pointer",
-                                                    opacity: item?.accidentLatitude ? 0.5 : 1,
-                                                }} onClick={(e) => {
-                                                    if (!item?.accidentLatitude) {
-                                                        goToMap()
-                                                    }
-                                                }}>
-
-                                                    Go to map
-                                                    <KeyboardDoubleArrowRightIcon style={{
-                                                        position: "absolute",
-                                                        left: '10px'
-                                                    }} />
-                                                </p>
-                                            </div>
-                                            <p style={{ fontSize: "11px", marginTop: "10px", textAlign: 'center', color: "teal", fontWeight: 'bold' }}>__________________OR_______________</p>
-
-                                            <div style={{ display: 'flex' }}>
-                                                <p style={{ fontSize: "13px", marginTop: "20px", marginRight: '20px', fontWeight: "bold" }}>Manual Accident Location ?</p>
-                                                <p style={{
-                                                    border: "1px solid blue",
-                                                    padding: "10px",
-                                                    textAlign: "center",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    borderRadius: "10px",
-                                                    background: "radial-gradient(rgb(129, 129, 129), transparent) rgb(115 26 223)",
-                                                    backgroundColor: '#4a4a4a',
-                                                    color: 'white',
-                                                    fontSize: "11px",
-                                                    minWidth: "100px",
-                                                    marginTop: '10px',
-                                                    marginBottom: "10px",
-                                                    cursor: item?.accidentLatitude ? "not-allowed" : "pointer",
-                                                    opacity: item?.accidentLatitude ? 0.5 : 1,
-                                                }} onClick={(e) => {
-                                                    if (!item?.accidentLatitude)
-                                                        setByManualLocation(!byManualLocation)
-                                                }
-                                                } >
-                                                    Manual Location
-
-                                                </p>
-                                            </div>
-
-                                            {byManualLocation && (
-                                                <div class="card" style={{ background: "#e8e7e7", marginBottom: "20px", maxWidth: "400px", minWidth: "300px" }}>
-                                                    <div class="card-body">
-                                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                            <span style={{ margin: "13px", textDecoration: 'underline' }}></span>
-                                                            <img src={crossUser} style={{ width: '20px', height: '20px', marginLeft: 'auto' }} onClick={(e) => { setByManualLocation(false) }} />
-                                                        </div>
-                                                        <div style={{ display: "flex", maxWidth: "400px", }}>
-
-
-                                                            <textarea
-                                                                type="text"
-                                                                className="Registrationdetails-elem-9"
-                                                                style={{ width: '89%', marginRight: "10px", height: "35px", marginTop: "5px", fontSize: "13px" }}
-                                                                value={fullAddress}
-                                                                placeholder='Full Address'
-                                                                onChange={(e) => setFullAddress(e.target.value)}
-                                                                disabled={getData.isActive === "false"}
-                                                            />
-
-                                                            <select
-                                                                name="state"
-                                                                className="Registrationdetails-elem-9"
-                                                                style={{ fontSize: "13px", textAlign: 'center', width: '90%', marginRight: "10px", height: "35px", padding: "0px", marginTop: "5px" }}
-                                                                placeholder='State'
-
-                                                                onChange={(e) => {
-                                                                    const value = e.target.value;
-                                                                    // setLatitude('');
-                                                                    // setLongitude('');
-                                                                    setSelectedState(value);
-                                                                    loadCities(value);
-                                                                }}
-                                                                disabled={isLoadingStates}
-                                                                value={selectedState}
-                                                            >
-                                                                < option value=""> State</option>
-                                                                {states.map((state) => (
-                                                                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                                                                ))}
-                                                            </select>
-
-                                                        </div>
-                                                        <div style={{ display: "flex", maxWidth: "400px", marginTop: "20px", marginBottom: "30px" }}>
-                                                            <select className="Registrationdetails-elem-9"
-                                                                name="district"
-                                                                style={{ fontSize: "13px", textAlign: 'center', width: '95%', marginRight: "10px", height: "35px", padding: "0px", marginTop: "5px" }}
-                                                                value={district}
-                                                                onChange={(e) => setDistrict(e.target.value)}
-                                                                disabled={isLoadingCities || !selectedState}
-                                                            >
-                                                                <option value="">District</option>
-                                                                {cities.map((city) => (
-                                                                    <option key={city.id} value={city.name}>{city.name}</option>
-                                                                ))}
-                                                            </select>
-
-                                                            <input
-                                                                type="text"
-                                                                className="Registrationdetails-elem-9"
-                                                                style={{ width: '83%', marginRight: "10px" }}
-                                                                value={pincode}
-                                                                placeholder="Pincode"
-                                                                onChange={(e) => {
-                                                                    // Only update the value if it is numeric
-                                                                    const newValue = e.target.value;
-                                                                    if (/^\d{0,6}$/.test(newValue)) {
-                                                                        setPincode(newValue);
-                                                                    }
-                                                                }}
-                                                                disabled={getData.isActive === "false"}
-                                                            />
-
-                                                        </div>
-                                                    </div></div>)}
-
-                                            <div class="card" style={{ background: "#e8e7e7", marginBottom: "20px", maxWidth: "400px", minWidth: "300px" }}>
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style={{ fontSize: "13px", fontWeight: "bold", color: 'purple' }}>Pickup And Drop Location :  </h5>
-
-                                                    <div style={{ display: "flex", maxWidth: "400px" }}>
-                                                        {/* 
-                                                        <input
-                                                            type="text"
-                                                            className="Registrationdetails-elem-9"
-                                                            style={{ textAlign: 'center', width: '90%', marginRight: "10px" }}
-                                                            value={latitude}
-                                                            placeholder='Latitude'
-                                                            onChange={(e) => {
-                                                                // Only update the value if it is numeric
-                                                                const newValue = e.target.value;
-                                                                if (/^\d*$/.test(newValue)) {
-                                                                    setLatitude(newValue);
-                                                                }
-                                                            }}
-                                                            disabled={getData.isActive === "false"}
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            className="Registrationdetails-elem-9"
-                                                            style={{ textAlign: 'center', width: '90%' }}
-                                                            value={longitude}
-                                                            placeholder='Longitude'
-                                                            onChange={(e) => {
-                                                                const newValue = e.target.value;
-                                                                if (/^\d*$/.test(newValue)) {
-                                                                    setLongitude(newValue);
-                                                                }
-                                                            }}
-                                                            disabled={getData.isActive === "false"}
-                                                        /> */}
-                                                        <input
-                                                            type="text"
-                                                            className="Registrationdetails-elem-9"
-                                                            style={{ textAlign: 'center', width: '90%' }}
-                                                            value={pickupLocation}
-                                                            placeholder='location'
-
-                                                            disabled={getData.isActive === "false"}
-                                                        />
-                                                    </div>
-                                                    <div style={{ display: "flex", maxWidth: "400px" }}>
-
-                                                        {/* <input
-                                                                type="text"
-                                                                className="Registrationdetails-elem-9"
-                                                                style={{ textAlign: 'center', width: '90%', marginRight: "10px" }}
-                                                                value={dropLatitude}
-                                                                placeholder='Latitude'
-                                                                onChange={(e) => {
-                                                                    // Only update the value if it is numeric
-                                                                    const newValue = e.target.value;
-                                                                    if (/^\d*$/.test(newValue)) {
-                                                                        setLatitude(newValue);
-                                                                    }
-                                                                }}
-                                                                disabled={getData.isActive === "false"}
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                className="Registrationdetails-elem-9"
-                                                                style={{ textAlign: 'center', width: '90%' }}
-                                                                value={dropLongitude}
-                                                                placeholder='Longitude'
-                                                                onChange={(e) => {
-                                                                    const newValue = e.target.value;
-                                                                    if (/^\d*$/.test(newValue)) {
-                                                                        setLongitude(newValue);
-                                                                    }
-                                                                }}
-                                                                disabled={getData.isActive === "false"}
-                                                            /> */}
-                                                        <input
-                                                            type="text"
-                                                            className="Registrationdetails-elem-9"
-                                                            style={{ textAlign: 'center', width: '90%' }}
-                                                            value={dropLocation}
-                                                            placeholder='location'
-
-                                                            disabled={getData.isActive === "false"}
-                                                        />
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-sm-6" >
-                                                <div class="card" style={{ marginBottom: "20px", maxWidth: "400px", minWidth: "300px" }}>
-                                                    <div class="card-body">
-                                                        <h5 class="card-title" style={{ textAlign: 'center', fontSize: "13px", fontWeight: "bold", color: 'blue' }}>Spot-On Person Details</h5>
-                                                        {/* <div style={{ content: '', position: 'absolute', top: '-10px', left: '20%', transform: 'translateX(-50%)', width: '0', height: '0', borderLeft: '10px solid transparent', borderRight: '10px solid transparent', borderBottom: '10px solid rgb(206 209 209)' }}></div> */}
-
-                                                        <div style={{ display: 'flex', marginTop: "20px" }}>
-                                                            <div>
-                                                                <p style={{ fontSize: '11px', marginBottom: "0px" }}> Full Name </p>
-                                                                <input
-                                                                    type="text"
-                                                                    className="Registrationdetails-elem-9"
-                                                                    style={{ textAlign: 'center', width: '90%' }}
-                                                                    value={onSpotName}
-                                                                    placeholder='Spot Person Name'
-                                                                    readOnly={nowReadOnly ? true : false}
-                                                                    onChange={(e) => setOnSpotName(e.target.value)}
-                                                                // disabled={getData.isActive === "false"}
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <p style={{ fontSize: '11px', marginBottom: "0px" }}> Contact No </p>
-                                                                <input
-                                                                    type="text"
-                                                                    className="Registrationdetails-elem-9"
-                                                                    style={{ textAlign: 'center', width: '90%' }}
-                                                                    value={onSpotContact}
-                                                                    placeholder='Contact No'
-                                                                    // readOnly={item?.onSpotContact ? true : false}
-                                                                    readOnly={nowReadOnly ? true : false}
-
-                                                                    onChange={(e) => {
-                                                                        const newValue = e.target.value;
-                                                                        if (/^\d{0,10}$/.test(newValue)) {
-                                                                            setOnSpotContact(newValue);
-                                                                        }
-                                                                    }}
-
-                                                                    disabled={getData.isActive === "false"}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* <br /> */}
-
-                                            {showImageDiv && (
-                                                <div style={{ padding: "10px" }}>
-
-
-                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <span style={{ margin: "13px", textDecoration: 'underline' }}>Vehicle Image (Optional)</span>
-                                                        <img src={crossUser} style={{ width: '20px', height: '20px', marginLeft: 'auto' }} onClick={(e) => { setShowImageDiv(false) }} />
-                                                    </div>
-
-
-
-                                                    {Object.keys(photos).map((type, index) => (
-                                                        <div key={type} style={{ display: 'flex' }} className="photo-input-section">
-                                                            <label>
-                                                                <h6 style={{ fontSize: "11px" }}>
-                                                                    {type.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}:
-                                                                </h6>
-                                                                <input
-                                                                    type="file"
-                                                                    style={{ fontSize: '0.7rem', marginBottom: "10px" }}
-                                                                    ref={photoRefs[type]}
-                                                                    accept="image/*"
-                                                                    capture="environment"
-                                                                    className="form-control"
-                                                                    onChange={(e) => handleFileChange(e, type)}
-                                                                />
-                                                            </label>
-                                                            {photoPreviews[type] && (
-                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '20px' }}>
-                                                                    <img
-                                                                        src={photoPreviews[type]}
-                                                                        alt={`Upload preview ${type}`}
-                                                                        style={{ width: 100, height: 100, cursor: 'pointer' }}
-                                                                        onClick={() => setExpandedImage(photoPreviews[type])}
-                                                                    />
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        onClick={() => {
-                                                                            setPhotos(prev => ({ ...prev, [type]: null }));
-                                                                            setPhotoPreviews(prev => ({ ...prev, [type]: null }));
-                                                                            if (photoRefs[type].current) {
-                                                                                photoRefs[type].current.value = ""; // Reset the file input
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        Remove
-                                                                    </Button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
-
-                                                    {/* Modal for expanded image view */}
-                                                    <Modal
-                                                        open={!!expandedImage}
-                                                        onClose={() => setExpandedImage(null)}
-                                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                    >
-                                                        <img
-                                                            src={expandedImage}
-                                                            alt="Expanded preview"
-                                                            style={{ maxWidth: '90%', maxHeight: '90%' }}
-                                                        />
-                                                    </Modal>
-                                                </div>)}
-                                            {!showImageDiv && (
-
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <span onClick={(e) => setShowImageDiv(true)} style={{ fontSize: "13px", marginRight: "20px" }}>Share Accident Images ?</span>
-                                                    <div style={{
-                                                        border: "1px solid blue",
-                                                        padding: "3px",
-                                                        textAlign: "center",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        borderRadius: "10px",
-                                                        background: "radial-gradient(#818181, transparent)",
-                                                        padding: '10px',
-                                                        backgroundColor: '#4a4a4a',
-                                                        color: 'white'
-
-                                                    }}>
-                                                        <span
-                                                            style={{ fontSize: '11px', cursor: 'pointer' }}
-                                                            onClick={(e) => { setShowImageDiv(true) }}
-                                                        >
-                                                            Accident Images
-                                                        </span>
-                                                    </div>
-
+                                                    <input
+                                                        type="text"
+                                                        className="Registrationdetails-elem-9"
+                                                        style={{ textAlign: 'left', margin: '10px', width: '80%' }}
+                                                        value={onSpotName}  // This is fine as long as both values are being correctly updated
+                                                        name="spotPerson"
+                                                        placeholder="Spot Person Name"
+                                                        onChange={(e) => setOnSpotName(e.target.value)}  // Make sure `setOnSpotName` is correctly updating state
+                                                        disabled={getData?.isActive === "false"}  // Ensure `getData.isActive` is the correct type (string vs boolean)
+                                                    />
 
                                                 </div>
-                                            )}
 
-                                            <div style={{ display: 'flex' }}>
-                                                <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}> Is Material Loaded ? </p>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => setIsMaterialLoaded(true)}>Yes</button>
-                                                <button style={{ fontSize: "10px", height: "30px", marginTop: "10px", marginRight: "10px" }} type="button" class="btn btn-info" onClick={(e) => { setIsMaterialLoaded(false); setQuantity('') }}>No</button>
-                                            </div>
+                                                <div>
 
-                                            {(isMaterialLoaded == true || item?.isMaterialLoaded == true) && (
-                                                <div style={{ display: 'flex' }}>
-                                                    <span style={{ fontSize: '12px', marginRight: "5px", marginTop: "15px", marginBottom: "15px" }}>Quantity In Tons:</span>
+                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Spot Person No</p>
+
+                                                    <input
+                                                        type="text"
+                                                        className="Registrationdetails-elem-9"
+                                                        style={{ textAlign: 'left', margin: '10px 10px 10px 10px', width: '80%' }}
+                                                        value={onSpotContact}
+                                                        placeholder='Spot Person Number'
+                                                        onChange={(e) => setOnSpotContact(e.target.value)}
+                                                        disabled={getData.isActive === "false"}
+                                                    />
+                                                </div>
+                                                <div>
+
+                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Quantity (tons)</p>
+
                                                     <input
                                                         type="number"
                                                         name="quantity"
-                                                        style={{ width: '50%', textAlign: 'center', marginTop: "10px", marginBottom: "15px" }}
+                                                        className="Registrationdetails-elem-9"
+                                                        style={{ textAlign: 'left', margin: '10px 10px 10px 10px', width: '80%' }}
                                                         value={quantity}
                                                         readOnly={nowReadOnly ? true : false}
-                                                        // readOnly={item?.quantity ? true : false}
                                                         onChange={(e) => {
                                                             const newValue = e.target.value;
                                                             if (/^\d*$/.test(newValue)) {
                                                                 setQuantity(newValue);
                                                             }
                                                         }}
-                                                        placeholder="Quantity"
-                                                        className="form-control"
+
+                                                        placeholder='Quantity'
+                                                        disabled={getData.isActive === "false"}
                                                     />
-
                                                 </div>
-                                            )}
 
-                                            <div style={{ display: 'flex' }}>
-                                                <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Recovery Van Needed?</p>
 
-                                                {/* Required Button */}
-                                                <button
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        height: "30px",
-                                                        marginTop: "10px",
-                                                        marginRight: "10px",
-                                                        backgroundColor: isRecoveryVan ? "green" : "black", // Green when selected
-                                                        color: isRecoveryVan ? "white" : "lightgray",
-                                                    }}
-                                                    type="button"
-                                                    className="btn btn-dark"
-                                                    // disabled={item?.isRecoveryVan != null ? true : false}
-                                                    disabled={nowReadOnly ? true : false}
-                                                    onClick={() => setIsRecoveryVan(true)}
-                                                >
-                                                    Required
-                                                </button>
-
-                                                {/* Not Required Button */}
-                                                <button
-                                                    style={{
-                                                        fontSize: "9px",
-                                                        height: "30px",
-                                                        marginTop: "10px",
-                                                        marginRight: "10px",
-                                                        minWidth: '80px',
-                                                        backgroundColor: !isRecoveryVan ? "#f35e5e" : "black", // Red when selected
-                                                        color: !isRecoveryVan ? "white" : "lightgray",
-                                                    }}
-                                                    type="button"
-                                                    className="btn btn-dark"
-                                                    disabled={nowReadOnly ? true : false}
-                                                    // disabled={item?.isRecoveryVan != null ? true : false}
-                                                    onClick={() => setIsRecoveryVan(false)}
-                                                >
-                                                    Not Required
-                                                </button>
                                             </div>
 
+                                            <div className="bg-white h-screen w-screen relative overflow-hidden">
+                                                {/* Map Image */}
+                                                {/* <img
+                                                className={`h-auto w-full object-cover transition-opacity duration-500 ${panelOpen ? 'opacity-0' : 'opacity-100'
+                                                    }`}
+                                                src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
+                                                alt="dummy map"
+                                            /> */}
+                                                <div className={`h-auto w-full object-cover transition-opacity duration-500 ${panelOpen ? 'opacity-0' : 'opacity-100'
+                                                    }`}>
+                                                    <MapForVendorDistance />
+                                                </div>
 
-                                            <div style={{ display: 'flex', marginTop: '5px' }}>
-                                                <p style={{ fontSize: "12px", marginTop: '15px', marginRight: "10px" }}>Estimated Budget : </p>
-                                                <input
-                                                    type="number"
-                                                    name="vendorPhone"
-                                                    value={budget}
-                                                    readOnly={nowReadOnly ? true : false}
-                                                    // readOnly={item?.budget ? true : false}
-                                                    onChange={(e) => setBudget(e.target.value)}
-                                                    placeholder="Budget"
-                                                    style={{ width: "100px", textAlign: 'center' }}
-                                                    className="form-control"
-                                                />
+                                                {/* Input Panel */}
+                                                <div
+                                                    className={`bg-white mt-5 p-4 rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
+                                                    style={{
+                                                        transform: panelOpen ? 'translateY(0)' : 'translateY(100%)',
+                                                        position: panelOpen ? 'fixed' : 'absolute',
+                                                        zIndex: panelOpen ? '100' : '1000',
+                                                        top: 0,
+                                                        left: 0,
+                                                        width: '100%',
+                                                        transition: panelOpen ? 'transform 0.3s ease-in-out, opacity 0s' : 'none', // Apply instant opacity change when not open
+                                                      }}
+                                                >
+                                                    <h5 className="text-sm text-black font-semibold mb-3 text-left">Book Vehicle Now</h5>
+                                                    <div
+                                                        className={`transition-all duration-500 ease-in-out`}
+                                                        style={{
+                                                            transform: panelOpen ? 'translateY(-1px)' : 'translateY(0px)',
+                                                        }}
+                                                    >
+                                                        <input
+                                                        
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setPanelOpen(true)
+                                                                setActiveField('pickup')
+                                                            }}
+                                                            className="text-black p-2 m-1 w-full mb-3 rounded-lg border border-black-300 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                                                            value={pickupLocation}
+                                                            name="pickup"
+                                                            onChange={handlePickupChange}
+                                                            placeholder="pickup location"
+
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            onClick={() => {
+                                                                setPanelOpen(true)
+                                                                setActiveField('destination')
+                                                            }}
+                                                            className="text-black p-2 m-1 w-full rounded-lg border border-black-300 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                                                            value={dropLocation}
+                                                            name="drop"
+                                                            onChange={handleDestinationChange}
+                                                            placeholder="drop location"
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        onClick={findTrip}
+                                                        disabled={!dropLocation || !pickupLocation}
+                                                        className={`px-4 py-2 rounded-lg mt-3 w-full text-sm ${!dropLocation || !pickupLocation ? 'bg-gray-500' : 'bg-black'} text-white`}>
+                                                        Done
+                                                    </button>
+                                                </div>
+                                                {/* Panel */}
+                                                <div
+                                                    ref={panelRef}
+                                                    className="bg-white w-full transition-all duration-500 ease-in-out absolute bottom-0 left-0"
+                                                    style={{
+                                                        height: panelOpen ? '100%' : '0%', 
+                                                        opacity: panelOpen ? 1 : 1,
+                                                        paddingTop: panelOpen ? '20px' : '0',
+                                                    }}
+                                                >
+                                                    {/* Close Icon */}
+                                                    <div className='text-center top-0 mb-1'>
+                                                        <IconButton
+                                                            onClick={() => setPanelOpen(false)}
+                                                            className="absolute"    
+                                                        >
+                                                            <ExpandMoreIcon  className='fixed'/>
+                                                        </IconButton>
+                                                    </div>
+
+                                                    {/* Panel content */}
+                                                    <LocationSearchPanel
+                                                        suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
+                                                        setPanelOpen={setPanelOpen}
+                                                        setVehiclePanel={setVehiclePanel}
+                                                        setPickupLocation={setPickupLocation}
+                                                        setDropLocation={setDropLocation}
+                                                        activeField={activeField}
+                                                    />
+                                                </div>
+                                                <div ref={vehiclePanelRef} style={{zIndex:"1001"}}  className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
+                                                    <VehiclePanel setVehicleType={setVehicleType} setConfirmVehicle={setConfirmVehicle} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
+                                                </div>
+                                                <div ref={confirmVehicleRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
+                                                    <ConfirmedRide vehicleType={vehicleType} accidentData={accidentDataObject} setConfirmVehicle={setConfirmVehicle} setVehiclePanel={setVehiclePanel} setVehicleFound={setVehicleFound} />
+                                                </div>
+                                                <div ref={vehicleFoundRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
+                                                    <LookingForAccptance vehicleType={vehicleType} accidentData={accidentDataObject} setVehicleFound={setVehicleFound} />
+                                                </div>
+                                                <div className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
+                                                    <WaitForVehicleCome />
+                                                </div>
                                             </div>
-
-                                            {fromPageHere != "quotationUpdate" && (
-                                                <p style={{
-                                                    fontSize: '11px',
-                                                    marginTop: "20px",
-                                                    background: "green",
-                                                    padding: "10px",
-                                                    border: '1px solid blue',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "white",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    maxWidth: "400px"
-                                                }} onClick={handleSubmit}>
-                                                    <KeyboardDoubleArrowRightIcon style={{
-                                                        position: "absolute",
-                                                        right: '10px'
-                                                    }} />
-                                                    Submit Details
-                                                </p>)}
-
-                                        </div>)}
+                                        </div>
+                                    )}
 
                                     {successDone && (
                                         <div style={{
@@ -1252,7 +1102,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                     )}
                 </Modal>
 
-            </div >
+            </div >)}
+
             <div>
                 <BottomNavigationBar />
             </div>

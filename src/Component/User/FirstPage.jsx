@@ -154,7 +154,9 @@ const FirstPage = () => {
 
     const getData = async (e) => {
         // console.log("userid", userId);
-        // const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        // const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+        //   'Authorization': `Bearer ${token}`
+        // }});
         // if (response.data.message == "No accident vehicle data found.") setData([])
         // else {
         //     console.log("response123421", response.data.data);
@@ -503,11 +505,11 @@ const FirstPage = () => {
                                     <div className="carousel-inner">
                                         <div className="carousel-item active">
                                             <img
-                                                src={workshopcurrentservice}
+                                                src={craneworkdoing}
                                                 style={{
                                                     maxHeight: "500px",
                                                     width: "100%",
-                                                    objectFit: "cover",
+                                                    objectFit: "scale-down",
                                                     borderRadius: "10px"
                                                 }}
                                                 className="d-block w-100"
@@ -516,7 +518,7 @@ const FirstPage = () => {
                                         </div>
                                         <div className="carousel-item">
                                             <img
-                                                src={advocatecurrentservice}
+                                                src={craneworkdoing}
                                                 style={{
                                                     maxHeight: "500px",
                                                     width: "100%",
@@ -529,7 +531,7 @@ const FirstPage = () => {
                                         </div>
                                         <div className="carousel-item">
                                             <img
-                                                src={mechaniccurrentservice}
+                                                src={craneworkdoing}
                                                 style={{ maxHeight:"500px", width:"100%", objectFit:"cover", borderRadius:"10px"}}
                                                 className="d-block w-100"
                                                 alt="Slide 3"

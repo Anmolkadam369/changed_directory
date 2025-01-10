@@ -119,7 +119,9 @@ const HistoryPageUser = () => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
         if (response.data.message == "No accident vehicle data found.") setData([])
         else {
             console.log("response123421", response.data.data);

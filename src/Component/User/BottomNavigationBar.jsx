@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -12,19 +12,32 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import backendUrl from '../../environment';
 
 
 export default function BottomNavigationBar() {
     const [value, setValue] = useState('recents');
+
+
+
+    let token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    console.log("uSer123", userId)
+
+
+    console.log("uSer123", userId.startsWith("CC-"))
+
     const navigate = useNavigate()
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     // Use `useMediaQuery` to adjust size or layout based on screen width
-    const isSmallScreen = useMediaQuery('(max-width:3000px)');
+    const isSmallScreen = useMediaQuery('(max-width:4000px)');
 
     return (
+        <div>
         <BottomNavigation
             sx={{
                 width: isSmallScreen ? '100%' : 500, // Full width for small screens
@@ -38,29 +51,29 @@ export default function BottomNavigationBar() {
                 zIndex: isSmallScreen ? 1000 : 'auto',
                 backgroundColor: 'white', // Optional for visibility on small screens
                 boxShadow: isSmallScreen ? 'inset 20px 17px 20px 0px rgba(0, 0, 0, 0.2)' : 'none',
-                borderRadius: '25px 25px 0 0', // Add a top curve to the entire navigation bar
                 // clipPath: 'path("M0,0 H200 Q250,30 300,0 H500 V50 H0 Z")',
             }}
             value={value}
             onChange={handleChange}
         >
-            <BottomNavigationAction
+            {userId.startsWith("CC-") && (<BottomNavigationAction
                 sx={{
                     '& .MuiBottomNavigationAction-label': {
                         fontSize: '0.75rem', // Adjust font size
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.1rem', // Adjust icon size
+                        marginLeft:'20px'
                     },
                 }}
                 label="Home"
                 value="home"
                 onClick={() => { navigate("/user-landing-page") }}
                 icon={<HomeIcon />}
-            />
+            />)}
 
 
-            <BottomNavigationAction
+          {userId.startsWith("CC-") && (  <BottomNavigationAction
                 sx={{
                     '& .MuiBottomNavigationAction-label': {
                         fontSize: '0.75rem', // Adjust font size
@@ -73,7 +86,7 @@ export default function BottomNavigationBar() {
                 value="all vehicles"
                 onClick={() => { navigate("/all-vehicles-registered") }}
                 icon={<FireTruckIcon />}
-            />
+            />)}
 
             <div
                 style={{
@@ -83,7 +96,8 @@ export default function BottomNavigationBar() {
                     justifyContent: 'space-between',
                     height: '100%', // Adjust as needed for your layout
                     position: "relative",
-                    marginTop: "-34px"
+                    marginTop: "-10px",
+                    marginLeft:userId.startsWith('CC-')?'0px':'50px'
                 }}
             >
                 <div
@@ -92,7 +106,7 @@ export default function BottomNavigationBar() {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                    }}
+                    }} 
                 >
                     <BottomNavigationAction
                         sx={{
@@ -103,12 +117,13 @@ export default function BottomNavigationBar() {
                             '& .MuiSvgIcon-root': {
                                 fontSize: '2.4rem', // Adjust icon size,
                                 boxShadow:"inset 1px 1px 20px 20px rgb(237 255 232)",
-                                borderRadius:"20px"
+                                borderRadius:"20px",
+                                color:"#443f3f"
                             },
                         }}
                         label="Add"
                         value="Add Vehicle"
-                        onClick={() => { navigate('/new-vehicle-registration') }}
+                        onClick={() => { navigate('/register-new-accidentvehicle') }}
                         icon={<AddCircleIcon />}
                     />
                 </div>
@@ -164,6 +179,7 @@ export default function BottomNavigationBar() {
                     },
                     '& .MuiSvgIcon-root': {
                         fontSize: '1.1rem', // Adjust icon size
+                         marginRight:'20px'
                     },
                 }}
                 label="Account"
@@ -173,5 +189,6 @@ export default function BottomNavigationBar() {
                 icon={<AccountCircleIcon />}
             />
         </BottomNavigation>
+        </div>
     );
 }

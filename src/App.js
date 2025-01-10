@@ -12,7 +12,6 @@ import Location from './Component/Location/Location';
 import Location1 from './Component/Location1/Location1';
 import UserIV from './Component/UserIV/UserIV';
 import UserIV1 from './Component/UserIV1/UserIV1';
-import CraneUser from './Component/CraneUser/CraneUser';
 import AdvocateUser from './Component/AdvocateUser/AdvocateUser';
 import AdvocateHistoryComponent from './Component/AdvocateHistoryComponent/AdvocateHistoryComponent';
 import AdminInfoPage from './Component/AdminInfoPage/AdminInfoPage';
@@ -133,166 +132,178 @@ import VendorSignUp from './Component/VendorApproved/VendorSignUp';
 import InitialRegistration from './Component/Admin/InitialRegistration';
 import SurveyorMaster from './Component/Surveyor/SurveyorMaster';
 import SurveyorApproved from './Component/Surveyor/SurveyorApproved';
+import MovingVehicles from './Component/Location1/MovingVehicles';
+import CraneDriverHome from './Component/Crane-user/CraneHome/CraneDriverHome';
+import RidePopUp from './Component/Crane-user/CraneHome/RidePopUp';
+import CraneUserProfile from './Component/Crane-user/Crane-user-profile/CraneUserProfile';
+import CraneAllVehicles from './Component/Crane-user/CraneAllVehicles';
 
 function App() {
   return (
     <Provider store={store}>
       <WebSocketProvider>
-      <Router>
-        <Routes>
-          <Route exact path='/' element={<Home />} />
-          {/* <Route path='/Dashboard' element={<Dashboard/>}/> */}
-          <Route path='/ContactUs' element={<ContactUs />} />
-          <Route path='/Blogs' element={<Blogs />} />
-          <Route path='/CaseFirstCard' element={<CaseFirstCard />} />
-          <Route path='/SuccessIcon' element={<SuccessIcon />} />
-          <Route path='/ErrorIcon' element={<ErrorIcon />} />
+        <Router>
+          <Routes>
+            <Route exact path='/' element={<Home />} />
+            {/* <Route paths='/Dashboard' element={<Dashboard/>}/> */}
+            <Route path='/ContactUs' element={<ContactUs />} />
+            <Route path='/Blogs' element={<Blogs />} />
+            <Route path='/CaseFirstCard' element={<CaseFirstCard />} />
+            <Route path='/SuccessIcon' element={<SuccessIcon />} />
+            <Route path='/ErrorIcon' element={<ErrorIcon />} />
 
-          <Route path='/Admin' element={<ProtectedRoute element={<Admin />} requiredRole={['Management',"IT"]} />} />
+            <Route path='/Admin' element={<ProtectedRoute element={<Admin />} requiredRole={['Management', "IT"]} />} />
 
-          <Route path='/CompletePayment' element={<CompletePayment />} requiredRole="customer" />
-          <Route path='/User-landing-page' element={<ProtectedRoute element={<FirstPage />} requiredRole="customer" />} />
-          <Route path='/all-vehicles-registered' element={<ProtectedRoute element={<AllVehicles />} requiredRole="customer"/>} />
-          <Route path='/all-accident-vehicles' element={<ProtectedRoute element={<AllAccidentVehiclesUser />} requiredRole="customer"/>} />
-          <Route path='/user-profile' element={<ProtectedRoute element={<UserProfileFirst />} requiredRole="customer"/>} />
-          <Route path='/user-profile-details' element={<ProtectedRoute element={<UserProfileDetails />} requiredRole="customer"/>} />
-          <Route path='/add-new-vehicle-driver' element={<ProtectedRoute element={< AddNewVehicle />} requiredRole="customer" />} />
-        
-          <Route path='/Crane-dashboard' element={<ProtectedRoute element={<CraneFirstPage />} requiredRole="customer"/>} />
-
-          {/* Crane Dashboard */}
-          <Route path='/crane-user-landing-page' element={<ProtectedRoute element={<CraneUserLanding />}  requiredRole="crane"/>} />
-          <Route path='/map-vendor-distance' element={<ProtectedRoute element={<MapForVendorDistance />} />} />
-
-          <Route path='/all-accident-vehicles-history' element={<ProtectedRoute element={<HistoryPageUser />} />} />
-
-          <Route path='/crane-user-dashboard' element={<ProtectedRoute element={<CraneUserDashboard />}  requiredRole="crane"/>} />
-          <Route path='/crane-user-all-cases' element={<ProtectedRoute element={<CraneOrders />} />} />
-          <Route path="/crane-vehicle-information" element={<ProtectedRoute element={<CraneVehicleData />} />} />
-          
-          <Route path='/UserSideBar' element={<UserSideBar />} />
-          <Route path='/SelectLocationOnMap' element={<SelectLocationOnMap />} />
-
-          <Route path='/new-vehicle-registration' element ={<NewAccidentVehicle/>}/>
+            <Route path='/moving-vehicle' element={<ProtectedRoute element={<MovingVehicles />} />} />
+            <Route path='/crane-driver-home' element={<ProtectedRoute element={<CraneDriverHome/>}/>}/>
+            <Route path='/ride-popup' element={<ProtectedRoute element={<RidePopUp/>}/>}/>
 
 
-          <Route path='/ProductDetailsSeller' element={<ProductDetailsSeller />} />
+            
+            <Route path='/CompletePayment' element={<CompletePayment />} requiredRole="customer" />
+            <Route path='/User-landing-page' element={<ProtectedRoute element={<FirstPage />} requiredRole="customer" />} />
+            <Route path='/all-vehicles-registered' element={<ProtectedRoute element={<AllVehicles />} requiredRole="customer" />} />
+            <Route path='/all-accident-vehicles' element={<ProtectedRoute element={<AllAccidentVehiclesUser />} requiredRole="customer" />} />
+            <Route path='/user-profile' element={<ProtectedRoute element={<UserProfileFirst />} requiredRole="customer" />} />
+            <Route path='/user-profile-details' element={<ProtectedRoute element={<UserProfileDetails />} requiredRole="customer" />} />
+            <Route path='/add-new-vehicle-driver' element={<ProtectedRoute element={< AddNewVehicle />} requiredRole="customer" />} />
+
+            <Route path='/Crane-dashboard' element={<ProtectedRoute element={<CraneFirstPage />} requiredRole="customer" />} />
+
+            {/* Crane Dashboard */}
+            <Route path='/crane-user-landing-page' element={<ProtectedRoute element={<CraneUserLanding />} requiredRole="crane" />} />
+            <Route path='/map-vendor-distance' element={<ProtectedRoute element={<MapForVendorDistance />} />} />
+
+            <Route path='/all-accident-vehicles-history' element={<ProtectedRoute element={<HistoryPageUser />} />} />
+
+            <Route path='/crane-user-dashboard' element={<ProtectedRoute element={<CraneUserDashboard />} requiredRole="crane" />} />
+            <Route path='/crane-user-all-cases' element={<ProtectedRoute element={<CraneOrders />} />} />
+            <Route path="/crane-vehicle-information" element={<ProtectedRoute element={<CraneVehicleData />} />} />
+            <Route path='/crane-user-profile' element={<ProtectedRoute element={<CraneUserProfile/>}/>} requiredRole='crane'/>
+            <Route path='/crane-all-vehicles' element={<ProtectedRoute element={<CraneAllVehicles/>}/>} requiredRole = 'crane'/>
+
+            <Route path='/UserSideBar' element={<UserSideBar />} />
+            <Route path='/SelectLocationOnMap' element={<SelectLocationOnMap />} />
+
+            <Route path='/new-vehicle-registration' element={<NewAccidentVehicle />} />
 
 
-          <Route path='/SidebarWithSubmenus' element={<SidebarWithSubmenus />} />
-          <Route path='/ProductRegister' element={<ProductRegister />} />
-
-          <Route path='/Sidebar' element={<Sidebar />} />
-
-          <Route exact path='/LoginPage' element={<LoginPage />} />
-          <Route path='/register-new-accidentvehicle' element={<Registration />} />
-
-          <Route path="/KanduTable" element={<ProtectedRoute element={<KanduTable />} />} />
-
-          {/* <Route paath='/Location' element={<ProtectedRoute element={<Location />} />} /> */}
-          {/* <Route path='/Location1' element={<ProtectedRoute element={<Location1 />} />} /> */}
-          {/* <Route path='/UserIV' element={<ProtectedRoute element={<UserIV />} />} /> */}
-          {/* <Route path='/UserIV1' element={<ProtectedRoute element={<UserIV1 />} />} /> */}
-          {/* <Route path='/CraneUser' element={<ProtectedRoute element={<CraneUser />} />} /> */}
-          {/* <Route path='/AdvocateUser' element={<ProtectedRoute element={<AdvocateUser />} />} /> */}
-          {/* <Route path='/AdvocateHistoryComponent' element={<ProtectedRoute element={<AdvocateHistoryComponent />} />} /> */}
-          {/* <Route path='/AdminInfoPage' element={<ProtectedRoute element={<AdminInfoPage />} />} /> */}
-          {/* <Route path='/Location2' element={<ProtectedRoute element={<Location2 />} />} /> */}
-          <Route path='/vendor-form' element={<ProtectedRoute element={<VendorMasterForm />}  />} />
-          <Route path='/vendor-view-form' element={<ProtectedRoute element={<VendorApporoved />} />} />
-          <Route path='/customer-form' element={<ProtectedRoute element={<CustomerMasterForm />} />} />
-          <Route path='/Visitors-form' element={<ProtectedRoute element={<Visitors />} />} />
-          <Route path='/customer-enquiry-form' element={<ProtectedRoute element={<CustomerEnquiry />} />} />
-          <Route path='/signup-form-submissions' element={<ProtectedRoute element={<VendorSignUp />} />} />
-          <Route path='/signup-form-view' element={<ProtectedRoute element={<InitialRegistration />} />} />
-          <Route path='/employee-form' element={<ProtectedRoute element={<EmployeeForm />} />} />
-          <Route path='/customer-view-form' element={<ProtectedRoute element={<CustomerApproved />} />} />
-          <Route path='/accident-vehicle-register-update' element={<ProtectedRoute element={<AccidentVehicleRegUpdate />} />} />
-          <Route path='/view-accident-vehicle-register-details' element={<ProtectedRoute element={<ViewVehicleInfo />} />} />
-          <Route path='/view-employee' element={<ProtectedRoute element={<EmployeeApproved />} />} />
-          <Route path='/accident-vehaicle' element={<ProtectedRoute element={<AccidentVehicle />} />} />
-          <Route path='/daily-image-upload' element={<ProtectedRoute element={<ImageUpload />} />} />
-          <Route path='/vendor-response' element={<ProtectedRoute element={<VendorResponse />} />} />
-          <Route path='/add-surveyor' element={<ProtectedRoute element={<SurveyorMaster />} />} />
-          <Route path='/view-surveyor' element={<ProtectedRoute element={<SurveyorApproved />} />} />
+            <Route path='/ProductDetailsSeller' element={<ProductDetailsSeller />} />
 
 
-          {/* <Route path='/VendorApporoved' element={<ProtectedRoute element={<VendorApporoved />} />} /> */}
-          {/* <Route path='/VehicleClaim' element={<ProtectedRoute element={<VehicleClaimRegistration />} />} /> */}
-          {/* <Route path='/VendorMasterEdit' element={<ProtectedRoute element={<VendorMasterEdit />} />} /> */}
-          {/* <Route path='/CustomerMasterEdit' element={<ProtectedRoute element={<CustomerMasterEdit />} />} /> */}
-          {/* <Route path='/VehicleClaimEdit' element={<ProtectedRoute element={<VehicleClaimEdit />} />} /> */}
-          <Route path='/VendorMasterViewOnly' element={<ProtectedRoute element={<VendorMasterViewOnly />} />} />
-          <Route path='/UserDashboard' element={<ProtectedRoute element={<User />} />} />
-          {/* <Route path='/AccidentVehicleUser' element={<ProtectedRoute element={<AccidentVehicleUser />} />} /> */}
-          <Route path='/AdvocateDashboard' element={<ProtectedRoute element={<Advocate />} />} />
-          {/* <Route path='/EditAccidentVehicle' element={<ProtectedRoute element={<EditAccidentVehicle />} />} /> */}
-          {/* <Route path='/AssignedVehicleAdvocate' element={<ProtectedRoute element={<AssignedVehicleAdvocate />} />} /> */}
-          {/* <Route path='/UploadDocAdvocate' element={<ProtectedRoute element={<UploadDocAdvocate />} />} /> */}
+            <Route path='/SidebarWithSubmenus' element={<SidebarWithSubmenus />} />
+            <Route path='/ProductRegister' element={<ProductRegister />} />
+            s
+            <Route path='/Sidebar' element={<Sidebar />} />
 
-          <Route path='/MechanicDashboard' element={<ProtectedRoute element={<Mechanic />} />} />
-          {/* <Route path='/AssignedVehicleMechanic' element={<ProtectedRoute element={<AssignedVehicleMechanic />} />} /> */}
-          {/* <Route path='/AddedDataByMechanic' element={<ProtectedRoute element={<AddedDataByMechanic />} />} /> */}
+            <Route exact path='/LoginPage' element={<LoginPage />} />
+            <Route path='/register-new-accidentvehicle' element={<Registration />} />
 
-          <Route path='/CraneDashboard' element={<ProtectedRoute element={<CraneHydra />} />} />
-          {/* <Route path='/AssignedVehicleCrane' element={<ProtectedRoute element={<AssignedVehicleCrane />} />} /> */}
-          <Route path='/AddedDataByCrane' element={<ProtectedRoute element={<AddedDataByCrane />} />} />
+            <Route path="/KanduTable" element={<ProtectedRoute element={<KanduTable />} />} />
+
+            {/* <Route paath='/Location' element={<ProtectedRoute element={<Location />} />} /> */}
+            {/* <Route path='/Location1' element={<ProtectedRoute element={<Location1 />} />} /> */}
+            {/* <Route path='/UserIV' element={<ProtectedRoute element={<UserIV />} />} /> */}
+            {/* <Route path='/UserIV1' element={<ProtectedRoute element={<UserIV1 />} />} /> */}
+            {/* <Route path='/CraneUser' element={<ProtectedRoute element={<CraneUser />} />} /> */}
+            {/* <Route path='/AdvocateUser' element={<ProtectedRoute element={<AdvocateUser />} />} /> */}
+            {/* <Route path='/AdvocateHistoryComponent' element={<ProtectedRoute element={<AdvocateHistoryComponent />} />} /> */}
+            {/* <Route path='/AdminInfoPage' element={<ProtectedRoute element={<AdminInfoPage />} />} /> */}
+            {/* <Route path='/Location2' element={<ProtectedRoute element={<Location2 />} />} /> */}
+            <Route path='/vendor-form' element={<ProtectedRoute element={<VendorMasterForm />} />} />
+            <Route path='/vendor-view-form' element={<ProtectedRoute element={<VendorApporoved />} />} />
+            <Route path='/customer-form' element={<ProtectedRoute element={<CustomerMasterForm />} />} />
+            <Route path='/Visitors-form' element={<ProtectedRoute element={<Visitors />} />} />
+            <Route path='/customer-enquiry-form' element={<ProtectedRoute element={<CustomerEnquiry />} />} />
+            <Route path='/signup-form-submissions' element={<ProtectedRoute element={<VendorSignUp />} />} />
+            <Route path='/signup-form-view' element={<ProtectedRoute element={<InitialRegistration />} />} />
+            <Route path='/employee-form' element={<ProtectedRoute element={<EmployeeForm />} />} />
+            <Route path='/customer-view-form' element={<ProtectedRoute element={<CustomerApproved />} />} />
+            <Route path='/accident-vehicle-register-update' element={<ProtectedRoute element={<AccidentVehicleRegUpdate />} />} />
+            <Route path='/view-accident-vehicle-register-details' element={<ProtectedRoute element={<ViewVehicleInfo />} />} />
+            <Route path='/view-employee' element={<ProtectedRoute element={<EmployeeApproved />} />} />
+            <Route path='/accident-vehaicle' element={<ProtectedRoute element={<AccidentVehicle />} />} />
+            <Route path='/daily-image-upload' element={<ProtectedRoute element={<ImageUpload />} />} />
+            <Route path='/vendor-response' element={<ProtectedRoute element={<VendorResponse />} />} />
+            <Route path='/add-surveyor' element={<ProtectedRoute element={<SurveyorMaster />} />} />
+            <Route path='/view-surveyor' element={<ProtectedRoute element={<SurveyorApproved />} />} />
+
+
+            {/* <Route path='/VendorApporoved' element={<ProtectedRoute element={<VendorApporoved />} />} /> */}
+            {/* <Route path='/VehicleClaim' element={<ProtectedRoute element={<VehicleClaimRegistration />} />} /> */}
+            {/* <Route path='/VendorMasterEdit' element={<ProtectedRoute element={<VendorMasterEdit />} />} /> */}
+            {/* <Route path='/CustomerMasterEdit' element={<ProtectedRoute element={<CustomerMasterEdit />} />} /> */}
+            {/* <Route path='/VehicleClaimEdit' element={<ProtectedRoute element={<VehicleClaimEdit />} />} /> */}
+            <Route path='/VendorMasterViewOnly' element={<ProtectedRoute element={<VendorMasterViewOnly />} />} />
+            <Route path='/UserDashboard' element={<ProtectedRoute element={<User />} />} />
+            {/* <Route path='/AccidentVehicleUser' element={<ProtectedRoute element={<AccidentVehicleUser />} />} /> */}
+            <Route path='/AdvocateDashboard' element={<ProtectedRoute element={<Advocate />} />} />
+            {/* <Route path='/EditAccidentVehicle' element={<ProtectedRoute element={<EditAccidentVehicle />} />} /> */}
+            {/* <Route path='/AssignedVehicleAdvocate' element={<ProtectedRoute element={<AssignedVehicleAdvocate />} />} /> */}
+            {/* <Route path='/UploadDocAdvocate' element={<ProtectedRoute element={<UploadDocAdvocate />} />} /> */}
+
+            <Route path='/MechanicDashboard' element={<ProtectedRoute element={<Mechanic />} />} />
+            {/* <Route path='/AssignedVehicleMechanic' element={<ProtectedRoute element={<AssignedVehicleMechanic />} />} /> */}
+            {/* <Route path='/AddedDataByMechanic' element={<ProtectedRoute element={<AddedDataByMechanic />} />} /> */}
+
+            <Route path='/CraneDashboard' element={<ProtectedRoute element={<CraneHydra />} />} />
+            {/* <Route path='/AssignedVehicleCrane' element={<ProtectedRoute element={<AssignedVehicleCrane />} />} /> */}
+            <Route path='/AddedDataByCrane' element={<ProtectedRoute element={<AddedDataByCrane />} />} />
 
 
 
-          <Route path='/WorkshopDashboard' element={<ProtectedRoute element={<Workshop />} />} />
-          {/* <Route path='/AssignedVehicleWorkshop' element={<ProtectedRoute element={<AssignedVehicleWorkshop />} />} /> */}
-          {/* <Route path='/AddedDataByWorkshop' element={<ProtectedRoute element={<AddedDataByWorkshop />} />} /> */}
+            <Route path='/WorkshopDashboard' element={<ProtectedRoute element={<Workshop />} />} />
+            {/* <Route path='/AssignedVehicleWorkshop' element={<ProtectedRoute element={<AssignedVehicleWorkshop />} />} /> */}
+            {/* <Route path='/AddedDataByWorkshop' element={<ProtectedRoute element={<AddedDataByWorkshop />} />} /> */}
 
-          {/* <Route path='/MechanicResponse' element={<ProtectedRoute element={<MechanicResponse />} />} />
+            {/* <Route path='/MechanicResponse' element={<ProtectedRoute element={<MechanicResponse />} />} />
           <Route path='/CraneResponse' element={<ProtectedRoute element={<CraneResponse />} />} />
           <Route path='/AdvocateResponse' element={<ProtectedRoute element={<AdvocateResponse />} />} />
           <Route path='/WorkshopResponse' element={<ProtectedRoute element={<WorkshopResponse />} />} />
           <Route path='/ActualVendorResponse' element={<ProtectedRoute element={<ActualVendorResponse />} />} /> */}
 
-          <Route path='/DailyWorkshop' element={<ProtectedRoute element={<DailyWorkshop />} />} />
-          {/*        <Route path='/HandoverToWorkshop' element={<ProtectedRoute element={<HandoverToWorkshop />} />} />
+            <Route path='/DailyWorkshop' element={<ProtectedRoute element={<DailyWorkshop />} />} />
+            {/*        <Route path='/HandoverToWorkshop' element={<ProtectedRoute element={<HandoverToWorkshop />} />} />
           <Route path='/Notification' element={<ProtectedRoute element={<Notification />} />} /> */}
 
-           {/*<Route path='/EmployeeFormEdit' element={<ProtectedRoute element={<EmployeeFormEdit />} />} /> */}
+            {/*<Route path='/EmployeeFormEdit' element={<ProtectedRoute element={<EmployeeFormEdit />} />} /> */}
 
 
-          <Route path='/Payment/:token' element={<Payment />} />
-          <Route path='/vendor-comission/:token' element={<VendorPayment />} />
+            <Route path='/Payment/:token' element={<Payment />} />
+            <Route path='/vendor-comission/:token' element={<VendorPayment />} />
 
 
-          {/* <Route path='/Chart' element={<ProtectedRoute element={<Chart />} />} /> */}
-          {/* <Route path='/Featured' element={<ProtectedRoute element={<Featured />} />} /> */}
+            {/* <Route path='/Chart' element={<ProtectedRoute element={<Chart />} />} /> */}
+            {/* <Route path='/Featured' element={<ProtectedRoute element={<Featured />} />} /> */}
 
-          {/* <Route path='/UserDashboard' element={<ProtectedRoute element={<UserDashboard />} />} /> */}
+            {/* <Route path='/UserDashboard' element={<ProtectedRoute element={<UserDashboard />} />} /> */}
 
-          {/* <Route path='/SeeUpdatedPics' element={<ProtectedRoute element={<SeeUpdatedPics />} />} /> */}
-          {/* <Route path='/ActivationModel' element={<ProtectedRoute element={<ActivationModel />} />} /> */}
+            {/* <Route path='/SeeUpdatedPics' element={<ProtectedRoute element={<SeeUpdatedPics />} />} /> */}
+            {/* <Route path='/ActivationModel' element={<ProtectedRoute element={<ActivationModel />} />} /> */}
 
-          <Route path="*" element={<NotFoundPage />} />
+            <Route path="*" element={<NotFoundPage />} />
 
-          <Route path='/MechanicDashboard' element={<ProtectedRoute element={<MechanicDashboard />} />} />
-          {/* <Route path='/VendorPaymentDetail' element={<ProtectedRoute element={<VendorPaymentDetail />} />} /> */}
-          <Route path='/CreatePassword/:userType' element={<CreatePassword />} />
-          <Route path='/Administration' element={<ProtectedRoute element={<Administration />} />} />
-          <Route path='/Salesteam' element={<ProtectedRoute element={<Salesteam />} />} />
-          <Route path='/Registration' element={<Registrations />} />
-          <Route path='/VehicleDetails' element={<Registration />} />
+            <Route path='/MechanicDashboard' element={<ProtectedRoute element={<MechanicDashboard />} />} />
+            {/* <Route path='/VendorPaymentDetail' element={<ProtectedRoute element={<VendorPaymentDetail />} />} /> */}
+            <Route path='/CreatePassword/:userType' element={<CreatePassword />} />
+            <Route path='/Administration' element={<ProtectedRoute element={<Administration />} />} />
+            <Route path='/Salesteam' element={<ProtectedRoute element={<Salesteam />} />} />
+            <Route path='/Registration' element={<Registrations />} />
 
-          <Route path='/ImageViewer' element={<ImageViewer />} />
+            <Route path='/ImageViewer' element={<ImageViewer />} />
 
-          <Route path='/ImageDetails' element={<ImageDetails />} />
-
-
-          {/* <Route path='/MapComponent' element={<ProtectedRoute element={<MapComponent />} />} /> */}
-
-          <Route path='/admin-dashboard-vendor-customer' element={<ProtectedRoute element={<DummyDashboard />} requiredRole={['Management',"IT"]} />} />
-          {/* <Route path='/EmployeeChart' element={<ProtectedRoute element={<EmployeeChart />} />} /> */}
-          {/* <Route path='/Table' element={<ProtectedRoute element={<Table />} />} /> */}
+            <Route path='/ImageDetails' element={<ImageDetails />} />
 
 
-        </Routes>
-      </Router>
+            {/* <Route path='/MapComponent' element={<ProtectedRoute element={<MapComponent />} />} /> */}
+
+            <Route path='/admin-dashboard-vendor-customer' element={<ProtectedRoute element={<DummyDashboard />} requiredRole={['Management', "IT"]} />} />
+            {/* <Route path='/EmployeeChart' element={<ProtectedRoute element={<EmployeeChart />} />} /> */}
+            {/* <Route path='/Table' element={<ProtectedRoute element={<Table />} />} /> */}
+
+
+          </Routes>
+        </Router>
       </WebSocketProvider>
     </Provider>
 

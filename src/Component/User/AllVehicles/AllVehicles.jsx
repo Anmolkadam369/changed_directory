@@ -37,7 +37,10 @@ import NoDataFound from '../Cards/NoDataFound.jsx';
 import Registration from '../../Registration/Registration.jsx';
 import Modal from '../../Location1/Modal.jsx';
 import Loading from '../Cards/Loading.jsx';
-
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import AddNewData from '../Cards/AddNewData.jsx';
+import LookingForAccptance from '../../Registration/LookingForAcceptance.jsx';
 
 
 
@@ -202,7 +205,9 @@ export default function AllVehicles() {
 
     const getAccidentData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
         if (response.data.message == "No accident vehicle data found.") {
             setAccidentData([])
             setDoneFetching2(true)
@@ -217,7 +222,9 @@ export default function AllVehicles() {
 
     // const getAccidentData = async (e) => {
     //     console.log("userid", userId);
-    //     const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+    //     const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+        //   'Authorization': `Bearer ${token}`
+        // }});
     //     if (response.data.message == "No accident vehicle data found.") {
     //         setAccidentData([])
     //         setDoneFetching2(true)
@@ -311,6 +318,15 @@ export default function AllVehicles() {
         getFilteredData(filter)
         setOpenFilterModal(false)
     }
+    const navigateToNewVehicle = () => {
+        navigate("/add-new-vehicle-driver")
+    }
+
+    const navigateToPage=()=>{
+        
+        selectedIndex==1?navigate("/add-new-vehicle-driver"):navigate('/register-new-accidentvehicle')
+
+    }
 
     return (
         <div style={{ marginBottom: "60px", background: 'linear-gradient(rgb(223 255 222 / 0%), rgb(255, 255, 255), rgb(242, 242, 242))' }}>
@@ -334,7 +350,7 @@ export default function AllVehicles() {
                     </div>
 
                     <div style={{
-                        marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
+                        marginBottom: "100px",
                     }}>
                         <div className="container" style={{
                             // paddingTop:"30px",
@@ -347,16 +363,48 @@ export default function AllVehicles() {
                             // pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
                         }}>
                             <div className="d-flex justify-content-center h-100">
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px", zIndex:"1" }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px", zIndex: "1" }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={handleSearch} />
                                     <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
 
                                 </div>
                                 {selectedIndex == 0 && (
-                                    <div style={{ margin: "23px 20px 0px", zIndex:"1" }}>
-                                         <FilterAltIcon style={{ height: '20px', width: "20px", color:"#ffffff" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                                    <div style={{ margin: "23px 20px 0px", zIndex: "1" }}>
+                                        <FilterAltIcon style={{ height: '20px', width: "20px", color: "#ffffff" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
                                     </div>
                                 )}
+                                {selectedIndex == 1 && (
+                                    <div style={{ position: 'relative', margin: "1px 20px 0px" }}>
+                                        <img
+                                            src="your-image-url.jpg" // Replace with your image URL
+                                            alt="Background"
+                                            style={{ width: '100%', height: 'auto' }}
+                                        />
+                                        <div
+                                            style={{
+                                                position: 'absolute',
+                                                top: '10px', // Adjust as needed
+                                                left: '10px', // Adjust as needed
+                                                zIndex: 1,
+                                                background: 'red',
+                                                padding: '10px',
+                                                borderRadius: '50%', // Makes it round
+                                            }}
+                                        >
+                                            <AddBoxIcon
+                                                style={{
+                                                    height: '20px',
+                                                    width: '20px',
+                                                    color: '#ffffff',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={navigateToNewVehicle}
+                                            />
+                                        </div>
+                                    </div>
+
+                                )}
+
                             </div>
                         </div>
                         {selectedIndex == 0 && (
@@ -365,7 +413,38 @@ export default function AllVehicles() {
                                     src={allAccidentVehicleImg}
                                     alt="All Accident Vehicles"
                                     style={{
-                                        maxHeight: "500px",
+                                        maxHeight: "200px",
+                                        width: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "10px"
+                                    }}
+                                />
+                                <p
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "20px",
+                                        left: "30px",
+                                        fontWeight: "bold",
+                                        color: "white",
+                                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                        padding: "5px 10px",
+                                        borderRadius: "5px",
+                                        fontStyle: "italic",
+                                        marginBottom:"50px"
+                                    }}
+                                >
+                                    All Accident Vehicles
+                                </p>
+                            </div>
+
+                        )}
+                        {selectedIndex == 1 && (
+                            <div style={{ position: "relative", textAlign: "center" }}>
+                                <img
+                                    src={fleetvehicles}
+                                    alt="All Accident Vehicles"
+                                    style={{
+                                        maxHeight: "200px",
                                         width: "100%",
                                         objectFit: "cover",
                                         borderRadius: "10px"
@@ -384,39 +463,9 @@ export default function AllVehicles() {
                                         fontStyle: "italic"
                                     }}
                                 >
-                                    All Accident Vehicles
+                                    All Registered Vehicles
                                 </p>
                             </div>
-
-                        )}
-                        {selectedIndex == 1 && (
-                            <div style={{ position: "relative", textAlign: "center" }}>
-                            <img
-                                src={fleetvehicles}
-                                alt="All Accident Vehicles"
-                                style={{
-                                    maxHeight: "500px",
-                                    width: "100%",
-                                    objectFit: "cover",
-                                    borderRadius: "10px"
-                                }}
-                            />
-                            <p
-                                style={{
-                                    position: "absolute",
-                                    bottom: "20px",
-                                    left: "30px",
-                                    fontWeight: "bold",
-                                    color: "white",
-                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                                    padding: "5px 10px",
-                                    borderRadius: "5px",
-                                    fontStyle: "italic"
-                                }}
-                            >
-                               All Registered Vehicles
-                            </p>
-                        </div>
                         )}
 
 
@@ -431,133 +480,64 @@ export default function AllVehicles() {
                                     }}
                                 >
                                     {data.map((item, index) => (
-                                        <div key={index} style={{
-                                            border: "1px solid teal",
-                                            minWidth: "230px",
-                                            margin: '15px 15px 0px 15px',
-                                            boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
-                                            borderRadius: "20px 20px 0 0",
-                                            padding: "10px",
-                                            maxWidth: "410px",
-                                            background: "white"
-                                        }}>
+                                        <div key={index}>
+                                            <div className='bg-[#dedfe0] w-[90%]  border-[#4b6c6d] shadow-[rgba(75,_108,_109,_0.2)]  rounded-xl m-2'>
+                                                <div className="relative ml-2 mr-2 mt-5 p-2 flex justify-between bg-[#dedfe0] rounded-xl">
+                                                    <img
+                                                        className="h-[120px] w-[120px] mt-[-50px] "
+                                                        src="https://png.pngtree.com/png-clipart/20240308/original/pngtree-3d-free-cargo-delivery-truck-png-image_14540258.png"
+                                                        alt="Truck"
+                                                    />
 
-                                            <div>
-                                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                                    <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
+                                                    <div className="p-2 mt-1 flex flex-col text-white  md:static md:items-end  ">
+                                                        <div className="flex">
+                                                            <LocalShippingOutlinedIcon className="text-black h-[30px] w-[22px] m-2 mt-2" />
+                                                            <h1 className="font-semibold  text-[#4b6c6d] pb-1 text-xl mt-2 md:text-xl">{item.vehicleNo}</h1>
+                                                        </div>
+                                                        <p className="opacity-50 pl-5 pb-1 text-[#4b6c6d]  text-xs  md:text-sm">{item.chassisNo}</p>
+                                                    </div>
                                                 </div>
-                                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                                    <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Chassis No:</p>
-                                                    <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.chassisNo}</span>
+                                                <div className="px-3 py-2 pb-3 mt-[-10px]  z-[1000] rounded-xl w-[90%] ml-auto mr-auto relative">
+                                                    {selectedIndex == 1 && (
+                                                        <div className="flex justify-end">
+                                                            <p
+                                                                className="text-[11px] mt-[5px] bg-white p-2 border border-blue-500 text-center rounded-full font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[135px] min-w-[135px]"
+                                                                onClick={() => setDetails(item)}
+                                                            >
+                                                                <KeyboardDoubleArrowRightIcon className="absolute right-[50px] left-[10px]" />
+                                                                View More
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {selectedIndex == 0 && (
+                                                        <div className="flex justify-center items-center">
+                                                            <p
+                                                                className="text-[11px] mt-[5px] bg-white p-2 border border-blue-500 rounded-xl text-center font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[400px] min-w-[135px]"
+                                                                onClick={() => setUpdateAccidentData(item)}
+                                                            >
+                                                                <KeyboardDoubleArrowRightIcon className="absolute left-[5px]" />
+                                                                Accident Detail
+                                                            </p>
+                                                            <p
+                                                                className="text-[11px] mt-[5px] py-2 px-3 border-black border border-blue-500 rounded-xl text-center font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[400px] min-w-[128px]"
+                                                                onClick={() => setViewVendors(item)}
+                                                            >
+                                                                <KeyboardDoubleArrowRightIcon className="absolute left-[5px]" />
+                                                                View Vendors
+                                                            </p>
+                                                        </div>
+                                                    )}
                                                 </div>
-
-
                                             </div>
-
-
-
-                                            <div style={{ display: "flex", alignItems: "center", margin: '3px 5px 0px 10px' }}>
-                                                {/* <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Current Status:</p> */}
-                                                {/* <span style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    marginLeft: "5px",
-                                    padding: "3px 10px",
-                                    fontSize: "12px",
-                                    borderRadius: "10px",
-                                    color: 'blue',
-                                    border: "1px solid green",
-                                    background: 'white'
-                                }}>In Repair</span> */}
-                                            </div>
-
-                                            {selectedIndex == 1 && (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
-                                                <p style={{
-                                                    fontSize: '11px',
-                                                    marginTop: "5px",
-                                                    background: "#62ff00a6",
-                                                    padding: "10px",
-                                                    border: '1px solid blue',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "black",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    margin: '5px 5px 5px 5px',
-                                                    maxWidth: "400px",
-                                                    minWidth: "200px",
-                                                }} onClick={() => setDetails(item)}>
-                                                    <KeyboardDoubleArrowRightIcon style={{
-                                                        position: "absolute",
-                                                        left: '10px'
-                                                    }} />
-                                                    View More Details
-                                                </p>
-                                            </div>)}
-                                            {selectedIndex == 0 && (<div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
-                                                <p style={{
-                                                    fontSize: '11px',
-                                                    marginTop: "5px",
-                                                    background: "#62ff00a6",
-                                                    padding: "10px",
-                                                    border: '1px solid blue',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "black",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    margin: '5px 5px 5px 5px',
-                                                    maxWidth: "400px",
-                                                    minWidth: "135px",
-                                                }} onClick={() => setUpdateAccidentData(item)}>
-                                                    <KeyboardDoubleArrowRightIcon style={{
-                                                        position: "absolute",
-                                                        left: '5px'
-                                                    }} />
-                                                    Accident Detail
-                                                </p>
-                                                <p style={{
-                                                    fontSize: '11px',
-                                                    marginTop: "5px",
-                                                    padding: "10px",
-                                                    border: '1px solid blue',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "black",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    margin: '5px 5px 5px 5px',
-                                                    maxWidth: "400px",
-                                                    minWidth: "128px",
-
-                                                }} onClick={() => setViewVendors(item)}>
-                                                    <KeyboardDoubleArrowRightIcon style={{
-                                                        position: "absolute",
-                                                        left: '5px'
-                                                    }} />
-                                                    View Vendors
-                                                </p>
-                                            </div>)}
                                         </div>
                                     ))}
                                 </div>
                             )}
                             {data.length == 0 && (
-                                <NoDataFound />
+                                // <NoDataFound />
+                                <div onClick={navigateToPage}>
+                                <AddNewData index={selectedIndex}/>
+                                </div>
                             )}
                         </div>
                         {viewDetails && (
@@ -729,7 +709,7 @@ export default function AllVehicles() {
                                         }}
                                     />
 
-                                    <Registration item={currentItem} fromPageHere={"allvehicles"} onUpdated={handleUpdate} />
+                                     <LookingForAccptance accidentData={currentItem} fromPage="quotationUpdate" />
                                 </div>
                             </div>
                         )}
@@ -810,7 +790,50 @@ export default function AllVehicles() {
             )}
 
             {doneFetching2 == false && doneFetching && (
-                <Loading />
+                // <Loading />
+                <div>
+                    {/* Header Section */}
+                    <div className="relative text-center animate-pulse">
+                        <div className="h-64 bg-gray-200 rounded"></div>
+                        <p className="absolute bottom-5 left-8 bg-gray-700 text-white w-1/2 h-6 rounded"></p>
+                    </div>
+
+                    {/* Repeated Sections */}
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+
+                        }}
+                    >
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <div key={i} className="bg-gray-400 rounded-xl m-2">
+                                <div className="relative flex justify-between bg-gray-400 rounded-xl ml-2 mr-2 mt-5 p-2">
+                                    <div className="h-32 w-32 mt-[-40px] bg-gray-200 rounded animate-pulse"></div>
+
+                                    <div className="p-2 mt-1 flex flex-col text-white md:static md:items-end space-y-2">
+                                        <div className="flex items-center space-x-2">
+                                            <div className="h-6 w-6 bg-gray-200 rounded animate-pulse"></div>
+                                            <div className="w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
+                                        </div>
+                                        <div className="w-20 h-3 bg-gray-200 rounded animate-pulse"></div>
+                                    </div>
+                                </div>
+                                <div className="px-3 py-4 mt-[-10px] bg-gray-300 rounded-xl w-[90%] mx-auto space-y-3">
+                                    <div className="flex justify-center">
+                                        <div className="w-full max-w-md h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                    </div>
+
+                                    <div className="flex justify-center space-x-4">
+                                        <div className="w-[140px] h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                        <div className="w-[140px] h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
             )}
             <div>
                 <BottomNavigationBar />

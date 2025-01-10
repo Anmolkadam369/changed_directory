@@ -8,6 +8,7 @@ const UserProfileDetails = () => {
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const [alertInfo, setAlertInfo] = useState(null);
     const [comingData, setComingData] = useState([]);
     console.log('comingdata', comingData)
 
@@ -15,6 +16,11 @@ const UserProfileDetails = () => {
         if (comingData) {
             setFormData(prevFormData => ({
                 ...prevFormData,
+                driverName: comingData.driverName || "",
+                driverNumber: comingData.driverNumber || "",
+                driverEmail: comingData.driverEmail || "",
+                customerDriverCode: comingData.customerDriverCode || "",
+                vendorDriverCode: comingData.vendorDriverCode || "",
                 CustomerCode: comingData.CustomerCode || "",
                 CustomerName: comingData.CustomerName || "",
                 CustomerType: comingData.CustomerType || "",
@@ -50,27 +56,43 @@ const UserProfileDetails = () => {
                 longitude: comingData.longitude !== null ? comingData.longitude : "",
                 latitude: comingData.latitude !== null ? comingData.latitude : "",
                 id: comingData.id,
-                choosenPlan:comingData.choosenPlan
+                choosenPlan: comingData.choosenPlan,
+                contactPersonNum: comingData.contactPersonNum || "",
+                vendorType: comingData.vendorType || ""
             }));
         }
     }, [comingData]);
 
     const [formData, setFormData] = useState({
+        driverName: "",
+        driverNumber: "",
+        driverEmail: "",
+        customerDriverCode: "",
+        vendorDriverCode: "",
         CustomerName: "",
+        contactPerson: "",
+        contactPersonNum: "",
         email: '',
         CustomerPhone: '',
         plan: '',
         vehicles: '',
         CustomerType: '',
-        choosenPlan: ""
+        choosenPlan: "",
+        vendorType: ''
     });
-
+    console.log('formdata', formData)
     useEffect(() => {
         getDataById();
     }, [userId, token])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getCustomerById/${userId}`,{ headers:{'Authorization': `Bearer ${token}`}});
+        let response;
+        if (userId.startsWith("CUD-")) response = await axios.get(`${backendUrl}/api/getDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("CC-")) response = await axios.get(`${backendUrl}/api/getCustomerById/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("VC-")) response = await axios.get(`${backendUrl}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("VED-")) response = await axios.get(`${backendUrl}/api/getVendorDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+
+
         console.log("daa", response.data.data)
         console.log("response123", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -86,110 +108,314 @@ const UserProfileDetails = () => {
         e.preventDefault();
         console.log('Form Data Submitted:', formData);
         const formDataObj = new FormData();
-        for(const key in formData){
+        for (const key in formData) {
             formDataObj.append(key, formData[key]);
         }
+        let urlPart = ''
+        if (userId.startsWith("CC-")) urlPart = 'customerUpdate';
+        if (userId.startsWith("CUD-")) urlPart = 'updateCustomerDriver';
+        if (userId.startsWith("VC-")) urlPart = 'venderUpdate';
+        if (userId.startsWith("VED-")) urlPart = 'updateDriverInfoVendor';
+
+
+        console.log("formDataObj", formDataObj)
         try {
             const response = await axios({
-              method: 'PUT',
-              url: `${backendUrl}/api/customerUpdate/${userId}/${userId}`,
-              data: formDataObj,
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
+                method: 'PUT',
+                url: `${backendUrl}/api/${urlPart}/${userId}/${userId}`,
+                data: formDataObj,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
+
             console.log("response", response.data);
-            // setIsLoading(false);
-            // setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
-            // setTimeout(() => {
-            // navigate("../Admin");
-            //   onUpdate();
-            // }, 2000);
-          }
-          catch (error) {
-            console.error("Error during form submission:", error);
-            // setIsLoading(false);
-            const errorMessage = error.response?.data?.message || 'An error occurred';
-            if (errorMessage === "jwt expired") {
-            //   setAlertInfo({ show: true, message: "Your session has expired. Redirecting to login...", severity: 'error' });
-              setTimeout(() => {
-                window.location.href = '/';
-              }, 2000);
-            } else {
-            //   setAlertInfo({ show: true, message: errorMessage, severity: 'error' });
+
+            if (response.data.status === true) {
+                setAlertInfo({
+                    type: 'success',
+                    message: 'Information updated successfully!'
+                });
+            } else if (response.data.status === 400) {
+                setAlertInfo({
+                    type: 'error',
+                    message: 'Already assigned Number!'
+                });
             }
-          }
+        } catch (error) {
+            console.error("Error:", error);
+
+            if (error.response) {
+                // Server responded with a status other than 2xx
+                if (error.response.status === 404) {
+                    setAlertInfo({
+                        type: 'error',
+                        message: 'Resource not found!'
+                    });
+                } else if (error.response.status === 400) {
+                    setAlertInfo({
+                        type: 'error',
+                        message: 'Already assigned Number!'
+                    });
+                } else {
+                    setAlertInfo({
+                        type: 'error',
+                        message: `Unexpected error: ${error.response.status}`
+                    });
+                }
+            } else if (error.request) {
+                // No response was received
+                setAlertInfo({
+                    type: 'error',
+                    message: 'No response from the server. Please try again.'
+                });
+            } else {
+                // Something else happened
+                setAlertInfo({
+                    type: 'error',
+                    message: 'An error occurred while making the request.'
+                });
+            }
+        }
+
     };
 
     return (
         <div className="user-form-container">
-            <p style={{textAlign:"center", marginTop:"30px", fontSize:"20px", fontWeight:"bold", color:"green"}}>Profile Details</p>
-            <form className="user-form" onSubmit={handleSubmit}>
-                <div className="user-form-group">
-                    <i class="fa fa-user user-icon" aria-hidden="true"></i>
-                    <input
-                        className='input-profile'
-                        type="text"
-                        name="CustomerName"
-                        placeholder="Enter your name"
-                        value={formData.CustomerName}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="user-form-group">
-                    <i class="fa fa-address-book-o user-icon" aria-hidden="true"></i>
-                    <input
-                        className='input-profile'
-                        type="text"
-                        name="CustomerType"
-                        placeholder="Enter your name"
-                        value={formData.CustomerType? formData.CustomerType.charAt(0).toUpperCase()+formData.CustomerType.slice(1):""}
-                        onChange={handleChange}
-                        readOnly
-                    />
-                </div>
-                <div className="user-form-group">
-                    <i className="fa fa-envelope-o user-icon" aria-hidden="true"></i>
-                    <input
-                        className='input-profile'
-                        type="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="user-form-group">
-                    <i className="fa fa-mobile user-icon" aria-hidden="true"></i>
-                    <input
-                        className='input-profile'
-                        type="tel"
-                        name="CustomerPhone"
-                        placeholder="Enter your mobile number"
-                        value={formData.CustomerPhone}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="user-form-group">
-                    <i className="fa fa-list user-icon" aria-hidden="true"></i>
-                    <input
-                        className='input-profile'
-                        type="text"
-                        name="choosenPlan"
-                        placeholder="Enter your current plan"
-                        value={formData.choosenPlan? formData.choosenPlan.charAt(0).toUpperCase()+formData.choosenPlan.slice(1):""}
-                        onChange={handleChange}
-                        readOnly
-                    />
-                </div>
-                
-                <button type="submit" className="user-submit-button">
-                    <i className='fa fa-paper-plane user-icon'></i> Update Information
-                </button>
-            </form>
+            <p style={{ textAlign: "center", marginTop: "30px", fontSize: "20px", fontWeight: "bold", color: "green" }}>Profile Details</p>
+            {userId.startsWith("CC-") && (
+                <form className="user-form" onSubmit={handleSubmit}>
+                    <div className="user-form-group">
+                        <i class="fa fa-user user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="text"
+                            name="contactPerson"
+                            placeholder="Enter your name"
+                            value={formData.contactPerson}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i class="fa fa-address-book-o user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="text"
+                            name="CustomerType"
+                            placeholder="Enter your name"
+                            value={formData.CustomerType ? formData.CustomerType.charAt(0).toUpperCase() + formData.CustomerType.slice(1) : ""}
+                            onChange={handleChange}
+                            readOnly
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i className="fa fa-envelope-o user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i className="fa fa-mobile user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="tel"
+                            name="CustomerPhone"
+                            placeholder="Enter your mobile number"
+                            value={formData.CustomerPhone}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i className="fa fa-list user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="text"
+                            name="choosenPlan"
+                            placeholder="Your current plan"
+                            value={formData.choosenPlan ? formData.choosenPlan.charAt(0).toUpperCase() + formData.choosenPlan.slice(1) : ""}
+                            onChange={handleChange}
+                            readOnly
+                        />
+                    </div>
+
+                    {alertInfo && (
+                        <div className={`alert alert-${alertInfo.type}`}>
+                            {alertInfo.message}
+                        </div>
+                    )}
+
+                    <button type="submit" className="user-submit-button  bg-[#515355]">
+                        <i className='fa fa-paper-plane user-icon text-white' ></i> Update Information
+                    </button>
+                </form>)}
+
+            {userId.startsWith("CUD-") && (
+                <form className="user-form" onSubmit={handleSubmit}>
+                    <div className="user-form-group">
+                        <i class="fa fa-user user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="text"
+                            name="driverName"
+                            placeholder="Enter your name"
+                            value={formData.driverName}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="user-form-group">
+                        <i className="fa fa-envelope-o user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="email"
+                            name="driverEmail"
+                            placeholder="Enter your email"
+                            value={formData.driverEmail}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i className="fa fa-mobile user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="tel"
+                            name="driverNumber"
+                            placeholder="Enter your mobile number"
+                            value={formData.driverNumber}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+
+                    {alertInfo && (
+                        <div className={`alert alert-${alertInfo.type}`}>
+                            {alertInfo.message}
+                        </div>
+                    )}
+
+                    <button type="submit" className="user-submit-button  bg-[#515355]">
+                        <i className='fa fa-paper-plane user-icon text-white' ></i> Update Information
+                    </button>
+                </form>
+            )}
+
+            {userId.startsWith("VC-") && (
+                <form className="user-form" onSubmit={handleSubmit}>
+                    <div className="user-form-group">
+                        <i class="fa fa-user user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="text"
+                            name="contactPerson"
+                            placeholder="Enter your name"
+                            value={formData.contactPerson}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="user-form-group">
+                        <i className="fa fa-envelope-o user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i className="fa fa-mobile user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="tel"
+                            name="contactPersonNum"
+                            placeholder="Enter your mobile number"
+                            value={formData.contactPersonNum}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+
+                    {alertInfo && (
+                        <div className={`alert alert-${alertInfo.type}`}>
+                            {alertInfo.message}
+                        </div>
+                    )}
+
+                    <button type="submit" className="user-submit-button  bg-[#515355]">
+                        <i className='fa fa-paper-plane user-icon text-white' ></i> Update Information
+                    </button>
+                </form>
+            )}
+
+            {userId.startsWith("VED-") && (
+                <form className="user-form" onSubmit={handleSubmit}>
+                    <div className="user-form-group">
+                        <i class="fa fa-user user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="text"
+                            name="driverName"
+                            placeholder="Enter your name"
+                            value={formData.driverName}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="user-form-group">
+                        <i className="fa fa-envelope-o user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="email"
+                            name="driverEmail"
+                            placeholder="Enter your email"
+                            value={formData.driverEmail}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="user-form-group">
+                        <i className="fa fa-mobile user-icon" aria-hidden="true"></i>
+                        <input
+                            className='input-profile'
+                            type="tel"
+                            name="driverNumber"
+                            placeholder="Enter your mobile number"
+                            value={formData.driverNumber}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+
+                    {alertInfo && (
+                        <div className={`alert alert-${alertInfo.type}`}>
+                            {alertInfo.message}
+                        </div>
+                    )}
+
+                    <button type="submit" className="user-submit-button  bg-[#515355]">
+                        <i className='fa fa-paper-plane user-icon text-white' ></i> Update Information
+                    </button>
+                </form>
+            )}
+
         </div>
     );
 };

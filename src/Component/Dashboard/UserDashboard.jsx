@@ -114,7 +114,9 @@ const UserDashboard = () => {
 
     const getAccidentData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             console.log("mesage123" ,response.message)
             console.log("mesage" ,response.data.message)
             if(response.data.message == "No accident vehicle data found.") setAccidentVehData([])
@@ -135,7 +137,9 @@ const UserDashboard = () => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             console.log("responssesesesee", response)
             if(response.data.message == "No accident vehicle data found.") setAccidentVehData([]) 
             else setAllAccidentVehicleData(response.data.data);

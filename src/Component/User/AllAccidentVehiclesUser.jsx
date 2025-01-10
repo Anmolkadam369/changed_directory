@@ -77,7 +77,9 @@ const AllAccidentVehiclesUser = () => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
         if (response.data.message == "No accident vehicle data found.") setData([])
         else {
             console.log("response123421", response.data.data);
@@ -308,7 +310,7 @@ const AllAccidentVehiclesUser = () => {
     return (
 
         <div style={{
-            background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
+            // background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))',
         }}>
 
             

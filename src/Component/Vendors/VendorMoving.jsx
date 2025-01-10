@@ -7,6 +7,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import telephonecall from '../../Assets/telephonecall.png'
 import AddedDataByCrane from "./AddedDataByCrane";
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 
 const VendorMoving = ({ item }) => {
     const navigate = useNavigate()
@@ -22,7 +23,7 @@ const VendorMoving = ({ item }) => {
     const [selectedId, setSelectedId] = useState(null);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showAddedDataByVendor, setShowAddedDataByVendor] = useState(false);
-    
+
 
     console.log("distacne", distance)
 
@@ -52,7 +53,7 @@ const VendorMoving = ({ item }) => {
 
     const getCurrentLocation = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -97,7 +98,7 @@ const VendorMoving = ({ item }) => {
             let response = await axios(`${backendUrl}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}`, {
                 method: 'PUT',
                 headers: {
-                    Authorization: token,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
@@ -141,15 +142,15 @@ const VendorMoving = ({ item }) => {
 
     const navigation = (selectedId, selectedItem) => {
         navigate('/crane-vehicle-information', { state: { id: selectedId, item: selectedItem } });
-      };
+    };
 
-      useEffect(() => {
+    useEffect(() => {
         if (showAddedDataByVendor && selectedId != null) {
-          navigation(selectedId, selectedItem); // Now navigation is defined above this
+            navigation(selectedId, selectedItem); // Now navigation is defined above this
         }
-      }, [showAddedDataByVendor, selectedId, selectedItem]); // Ensure navigation is called only when these values change
-      
-    
+    }, [showAddedDataByVendor, selectedId, selectedItem]); // Ensure navigation is called only when these values change
+
+
 
 
 
@@ -160,20 +161,23 @@ const VendorMoving = ({ item }) => {
 
 
 
-                <div className="text-overlay">
-                    <p style={{ fontSize: '14px', padding: "5px", border: '3px solid blue', borderImage: 'linear-gradient(to top, white 10% , black 90%) 1', textAlign: 'center', borderRadius: '30px', fontWeight: "bold" }}>
-                         View Orders!
-                    </p>
-
-                    <p style={{ textAlign: "center", marginTop: "10px", fontSize: "14px" }}>Vehicle No </p>
-                    <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>{item.reg}</h1>
-
-
-
-                    <div style={{ display: 'flex' }}>
-                        <p style={{ fontSize: '11px', paddingRight: '10px', marginTop: '2px' }}>Accident Location : {distance} km</p>
+                <div className="text-overlay" style={{ height: "90%", padding:'0px' }}>
+                    <div className='h-full w-full '>
+                        <MapContainer zoom={13} center={[19.0760, 72.8777]} style={{ width: '100%', height: '100vh' }}>
+                            <TileLayer
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'
+                            />
+                        </MapContainer>
                     </div>
-                    <div className="text-overlay text-overlay2">
+
+                    <div className="text-overlay text-overlay2" style={{ height: "30%", padding:"10px 20px 20px 20px", zIndex:"1000" }}>
+                        <div className="flex justify-between m-3">
+
+                            <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>{item.reg}</h1>
+                            <p style={{ fontSize: '11px', paddingRight: '10px', marginTop: '2px' }}>Accident Location : {distance} km</p>
+                        </div>
+
                         {/* <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
                         {item.details[0]?.vendorMoved == false && item.details[0].customerAcceptedVendor == true && item.details[0].closeCraneOrder == false && (<p style={{
                             fontSize: '11px',
@@ -335,7 +339,7 @@ const VendorMoving = ({ item }) => {
                 </div>
 
             )}
-           
+
         </div>
     )
 }

@@ -15,6 +15,7 @@ import backendUrl from '../../environment';
 import Button from '@mui/material/Button';
 import Modal from '../Location1/Modal';
 import crossUser from '../../Assets/crossUser.png'
+import FirstCardPage from './FIrstCardPage';
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
     const toRadians = angle => (Math.PI / 180) * angle;
@@ -65,6 +66,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     useEffect(() => {
         if (data && data[0]?.AccidentVehicleCode) {
+            console.log("caseFirstCardhser")
             getVendorById(userId);
             getAccidentDataById(data[0].AccidentVehicleCode);
         }
@@ -75,7 +77,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     const getVendorById = async (userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
             console.log("caseFirstCardhser", response.data.data)
             setGetVendorData(response.data.data);
         } catch (error) {
@@ -116,6 +118,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                         lon: accidentDataById[0].accidentLongitude
                     };
                     const distance = haversineDistance(currentLat, currentLon, accidentLocation.lat, accidentLocation.lon);
+                    console.log("Dsitacen", distance)
                     setAccidentLocationDistance(distance.toFixed(2));
                 },
                 (error) => console.error("Error fetching location", error),
@@ -134,6 +137,10 @@ const CaseFirstCard = ({ data, getBackPage }) => {
     const [completeSuccessfully, setCompleteSuccessfully] = useState(false);
     const [vendorDecision, setVendorDecision] = useState("");
     const [isViewImage, setIsViewImage] = useState(false);
+    const [alreadyDoneNotification, setAlreadyDoneNotification] = useState(false);
+    const [incomingMessage, setIncomingMessage] = useState('');
+
+
 
 
 
@@ -199,13 +206,12 @@ const CaseFirstCard = ({ data, getBackPage }) => {
         setIsBudget(false)
         setIsAccepted(true)
         setVendorDecision('accept');
-
     }
 
-    // useEffect to call handleSubmit when both isAccepted and vendorDecision are updated
+
+
     useEffect(() => {
         if (vendorDecision === 'accept') {  // Corrected from isAccpeted
-            console.log("Calling handleSubmit...");
             handleSubmit();
         }
     }, [isAccepted, vendorDecision]);
@@ -270,6 +276,8 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     console.log("isAccepteod", isAccepted)
     const handleSubmit = async () => {
+
+
         try {
             // Validate inputs for rejection case
             if (vendorDecision === 'reject' && selectedReasons.length === 0 && otherReason.trim() === "") {
@@ -284,11 +292,9 @@ const CaseFirstCard = ({ data, getBackPage }) => {
             const updatedReasons = vendorDecision === 'reject'
                 ? [...selectedReasons, otherReason]
                 : selectedReasons;
-
             const formData = {
                 vendorDecision: vendorDecision,
                 rejectionReason: updatedReasons,
-                charges: charges
             };
             console.log("FOrmData1234", formData)
 
@@ -312,18 +318,30 @@ const CaseFirstCard = ({ data, getBackPage }) => {
             // Submit data via axios
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${data[0].AccidentVehicleCode}/${userId}/${accidentDataById[0].assignedBy}`,
+                url: `${backendUrl}/api/vendorOnAssignedVehicle/${data[0].AccidentVehicleCode}/${userId}/admin`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (response.status === 200) {
+            
+            if (response.data.message == "Another Vendor Already Accepted Case") {
+                console.log("hey123")
+                setAlreadyDoneNotification(true)
+                setIncomingMessage(response.data.message)
+                // setFirstPage(true)
+            }
+            if (response.data.message == "Order Gets Cancelled") {
+                console.log("hey123")
+                setAlreadyDoneNotification(true)
+                setIncomingMessage(response.data.message)
+                // setFirstPage(true)
+            }
+            if (response.data.message === "Your Request Added Successfully !!!.") {
                 // Success handling
                 setIsRejected(false);
                 setFirstPage(false);
-                setIsAccepted(true);
+                setIsAccepted(false);
 
                 // Navigate back
                 setTimeout(() => {
@@ -349,10 +367,16 @@ const CaseFirstCard = ({ data, getBackPage }) => {
         })
     }
 
-
+    console.log("mdo23432", FirstPage, accidentLocationDistance, accidentDataById.length, getVendorData.length)
 
     return (
         <div>
+            {alreadyDoneNotification && (
+                <div className='flex  fixed top-5 left-15 text-white bg-black  px-6 py-3 rounded-xl ml-2 mb-1' style={{zIndex:"1001"}}>
+                    <p className='mt-1 mr-2'>${`Thank You But ${incomingMessage}!!!`}</p> 
+                    <CloseIcon  onClick={()=>setAlreadyDoneNotification(false)}  />
+                </div>
+            )} 
             {FirstPage && accidentLocationDistance && accidentDataById.length !== 0 && getVendorData.length != 0 && (
                 <div style={{
                     position: "fixed",
@@ -367,10 +391,9 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                     justifyContent: "center",
                     animation: "slideUp 0.5s ease-out",
                 }}>
-                    <div className="image-container">
+                    {/* <div className="image-container">
                         <div className="background-image"></div>
 
-                        {/* Text Overlay with green background */}
                         <div className="text-overlay">
                             <p style={{ fontSize: '14px', padding: "5px", border: '3px solid blue', borderImage: 'linear-gradient(to top, white 10% , black 90%) 1', textAlign: 'center', borderRadius: '30px', fontWeight: "bold" }}>
                                 Case Assigned!
@@ -390,7 +413,6 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                                     <p style={{ fontSize: "12px", marginTop: "10px", fontWeight: "bold" }}>{getVendorData[0].vendorName}</p>
                                     <h4 style={{ marginBottom: '5px', fontSize: "11px", marginTop: "5px", border: "2px solid grey", borderRadius: "10px", fontSize: "10px", padding: "5px" }} onClick={viewImageHere}>View Images</h4>
                                 </div>
-                                {/* <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
                                 <p style={{
                                     fontSize: '12px',
                                     marginTop: "10px",
@@ -462,7 +484,8 @@ const CaseFirstCard = ({ data, getBackPage }) => {
                             </div>
 
                         </div>
-                    </div>
+                    </div> */}
+                    <FirstCardPage accidentData={accidentDataById[0]} setFirstPage={setFirstPage} setIsViewImage={setIsViewImage} setIsRejected={setIsRejected} setIsAccepted={setIsAccepted} setVendorDecision={setVendorDecision} />
                 </div>)}
             {isRejected && (
                 <div>

@@ -77,40 +77,44 @@ const CraneOrders = () => {
             // Temporary arrays for each category
             const tempApprovedCaseByYou = [];
             const tempRejectedByYou = [];
-            const tempRejectedByAdmin = [];
+            // const tempRejectedByAdmin = [];
             const tempRejectedByCustomer = [];
             const tempCompletedVehicle = [];
     
             response.data.data.forEach((item) => {
-                if (item.details[0]?.firstResponseOn != null && item.details[0]?.vendorDecision == 'accept' &&
-                    (item.details[0]?.acceptedByAdmin == null || item.details[0]?.acceptedByAdmin == 'accept') &&
-                    item.details[0]?.cancelOrderReason == null && item.details[0]?.closeCraneWorker == false) {
+                if (item.details[0].completeOrder == false && item.details[0]?.firstResponseOn != null && item.details[0]?.vendorDecision == 'accept' &&
+                   item.details[0]?.cancelOrder == false && item.details[0]?.cancelPreAssignOrder == false && item.details[0]?.closeCraneWorker == false) {
                     tempApprovedCaseByYou.push(item);
                 }
                 if (item.details[0]?.vendorDecision == 'reject') {
                     tempRejectedByYou.push(item);
                 }
-                if (item.details[0]?.vendorDecision == 'accept' && item.details[0]?.acceptedByAdmin == 'reject') {
-                    tempRejectedByAdmin.push(item);
-                }
-                if (item.details[0]?.cancelOrder == true && item.details[0].cancelOrderReason != null) {
+                // if (item.details[0]?.vendorDecision == 'accept' && item.details[0]?.acceptedByAdmin == 'reject') {
+                //     tempRejectedByAdmin.push(item);
+                // }
+                if (
+                    item.details[0]?.completeOrder === false &&
+                    (item.details[0]?.cancelPreAssignOrder || item.details[0]?.cancelOrder) &&
+                    (item.details[0]?.cancelPreAssignOrderReason !== null && item.details[0]?.cancelOrderReason !== null)
+                  ) {
                     tempRejectedByCustomer.push(item);
-                }
-                if (item.details[0]?.approvedReaching == true) {
+                  }
+                  
+                if (item.details[0]?.approvedReaching == true && item.details[0].completeOrder == true) {
                     tempCompletedVehicle.push(item);
                 }
             });
     
             console.log("tempApprovedCaseByYou",tempApprovedCaseByYou)
             console.log("tempRejectedByYou",tempRejectedByYou)
-            console.log("tempRejectedByAdmin",tempRejectedByAdmin)
+            // console.log("tempRejectedByAdmin",tempRejectedByAdmin)
             console.log("tempRejectedByCustomer",tempRejectedByCustomer)
             console.log("tempCompletedVehicl1e",tempCompletedVehicle)
 
             // Update state with collected results
             setApprovedCaseByYou(tempApprovedCaseByYou);
             setRejectedByYou(tempRejectedByYou);
-            setRejectedByAdmin(tempRejectedByAdmin);
+            // setRejectedByAdmin(tempRejectedByAdmin);
             setRejectedByCustomer(tempRejectedByCustomer);
             setCompletedVehicle(tempCompletedVehicle);
     
@@ -134,7 +138,7 @@ const CraneOrders = () => {
     }
     return (
         <div>
-            <div className="start-container" style={{ background: "#166937", height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px" }}>
+            <div className="start-container" style={{  height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px" }}>
                 <div className="imageContainer" style={{ marginTop: "10px", height: "0px" }}>
                     {["Working cases", "Rejected cases", "Completed cases"].map((text, index) => (
                         <div
@@ -153,7 +157,7 @@ const CraneOrders = () => {
 
             {selectedIndex == 1 && (
                 <div className="imageContainer" style={{ height: "0px" }}>
-                    {["By You", 'By Admin', 'By Customer'].map((text, index) => (
+                    {["By You",  'By Customer'].map((text, index) => (
                         <div
                             key={index}
                             style={{ cursor: 'pointer', marginTop:"10px" }}
@@ -171,7 +175,7 @@ const CraneOrders = () => {
             {selectedIndex == 0 && (
                 <CraneAcceptedOrders data={approvedCaseByYou} />
             )}
-
+            
             {selectedIndex == 2 &&(
                 <CraneCompletedOrders data={completedVehicle}/>
             )}
@@ -180,11 +184,11 @@ const CraneOrders = () => {
                 <CraneRejectedOrder data={rejectedByYou} />
             )}
             {selectedIndex == 1 && selectedRejectedIndex == 1 && (
-                <CraneRejectedOrder data={rejectedByAdmin} />
-            )}
-            {selectedIndex == 1 && selectedRejectedIndex == 2 && (
                 <CraneRejectedOrder data={rejectedByCustomer} />
             )}
+            {/* {selectedIndex == 1 && selectedRejectedIndex == 1 && (
+                <CraneRejectedOrder data={rejectedByAdmin} />
+            )} */}
 
             <div
                 // style={{

@@ -287,7 +287,9 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${id}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${id}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             console.log("responssesesesee", response)
         } catch (error) {
             console.error("Error fetching all accident vehicle data", error);

@@ -18,10 +18,18 @@ import crossUser from '../../../Assets/crossUser.png'
 import NoDataFound from '../Cards/NoDataFound';
 import filterUser from '../../../Assets/filterUser.png'
 import ratingStar from '../../../Assets/ratingStar.png'
+import telephonecall from '../../../Assets/telephonecall.png'
 
 import Modal from '../../Location1/Modal.jsx';
 import Loading from '../Cards/Loading.jsx';
 
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import ArticleIcon from '@mui/icons-material/Article';
+import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
+import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
 
 
 
@@ -29,9 +37,11 @@ import Loading from '../Cards/Loading.jsx';
 
 const StatusTracking = ({ vehicleNumber }) => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate()    
+    const { messages } = useWebSocket();
     const { state } = useLocation();
     const [currentStage, setCurrentStage] = useState([]); // Example stage
+    console.log("currentStage123", currentStage)
     const [isImageContainerVisible, setIsImageContainerVisible] = useState(false);
     const [data, setData] = useState([]);
     const [dummyData, setDummyData] = useState([]);
@@ -66,12 +76,21 @@ const StatusTracking = ({ vehicleNumber }) => {
     console.log('isImageContainer', isImageContainerVisible)
 
     useEffect(() => {
-        getData();
+        if(messages.length>0){
+            messages.forEach((message) => {
+                console.log("messages123", message)
+                if (message.forPage == 'crane-user-all-cases') {
+
+                    getData();
+                }
+            })
+        }
+       else getData();
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
         }
-    }, [token, userId, navigate]);
+    }, [token, userId, navigate,messages]);
 
 
 
@@ -172,7 +191,9 @@ const StatusTracking = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
         if (response.data.message == "No accident vehicle data found.") {
             setData([])
             setDoneFetching(true)
@@ -223,23 +244,31 @@ const StatusTracking = ({ vehicleNumber }) => {
     }
 
     useEffect(() => {
-        if (data.length > 0 && data.length != currentStage.length) {
-            data.map((item) => {
-                avg.push(0)
-            })
-            data.map((item) => {
+        console.log('data changes', data.length, currentStage.length)
+        if (data.length > 0 ) {
+            console.log("push avg")
+
+            const newAvg = Array(data.length).fill(0);
+
+            const newCurrentStage = data.map((item) => {
+                console.log("gostrage1")
                 let gotStage = getStage(item?.[`${currentService}Details`]?.vendorMoved, item?.[`${currentService}Details`]?.approvedReaching)
-                currentStage.push(gotStage)
-                getData()
+                console.log("gostrage", gotStage)
+                return gotStage;
             })
+            setAvg(newAvg);
+            setCurrentStage(newCurrentStage);
+
             data.forEach((item, index) => {
+            console.log("push currentService")
+
                 console.log("${item.currentService", `${currentService}`)
                 getVendorLocation(`${item?.[currentService]}`, item.accidentLatitude, item.accidentLongitude, index);
                 getVendorRating(`${item?.[currentService]}`)
             });
         }
 
-    }, [data])
+    }, [data,currentService])
 
 
     function haversine(lat1, lon1, lat2, lon2) {
@@ -266,7 +295,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", currentServiceId, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${currentServiceId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${currentServiceId}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -311,7 +340,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}`, {
                 method: 'PUT',
                 headers: {
-                    Authorization: token,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -340,7 +369,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${currentService}`, {
                 method: 'PUT',
                 headers: {
-                    Authorization: token,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -421,21 +450,154 @@ const StatusTracking = ({ vehicleNumber }) => {
 
 
     console.log("{item?.[`${currentService}Details`]?.customerAcceptedVendor", data[0]?.[`${currentService}Details`]?.customerAcceptedVendor)
-    console.log("disptan", distance.length, avg.length)
+    console.log("disptan", data.length, doneFetching, distance.length, avg.length)
     return (
         <div style={{ marginBottom: "60px", background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))' }}>
 
             {doneFetching == false && (
-                <Loading />
+                // <Loading />
+
+                <div>
+                      <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+
+                        }}
+                    >
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                            style={{
+                                filter: "none",
+                                opacity: 1,
+                                pointerEvents: "none",
+                                border: "1px solid teal",
+                                maxWidth: "410px",
+                                minWidth: "280px",
+                                margin: '10px',
+                                boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                borderRadius: "5px",
+                                padding: "10px",
+                                background: "#ffffff"
+                            }}
+                        >
+                            {/* Skeleton for Customer Accepted Vendor */}
+                            <div style={{
+                                height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginBottom: "10px"
+                            }}></div>
+
+                            {/* Skeleton for Stages */}
+                            <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
+                                {[...Array(3)].map((_, index) => (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            textAlign: "center",
+                                            position: "relative",
+                                            flex: 1,
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                borderRadius: "50%",
+                                                backgroundColor: "#ccc",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                zIndex: 1,
+                                                marginBottom: "5px",
+                                            }}
+                                        >
+                                            <div style={{
+                                                width: "20px",
+                                                height: "20px",
+                                                backgroundColor: "#f0f0f0",
+                                                borderRadius: "50%",
+                                            }}></div>
+                                        </div>
+
+                                        <div
+                                            style={{
+                                                height: "12px",
+                                                width: "60%",
+                                                backgroundColor: "#e0e0e0",
+                                                borderRadius: "5px",
+                                            }}
+                                        ></div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Skeleton for Additional Info */}
+                            <div style={{ background: "white" }}>
+                                <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
+                                    <div style={{
+                                        display: 'flex', justifyContent: 'space-between', marginTop: '10px',
+                                        padding: "10px"
+                                    }}>
+                                        <div style={{ width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px" }}></div>
+                                        <div style={{ display: "flex", alignItems: "center", width: "35%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px" }}></div>
+                                    </div>
+
+                                    <div style={{
+                                        display: 'flex', justifyContent: 'space-between', padding: '10px'
+                                    }}>
+                                        <div style={{ display: "flex", alignItems: "center", marginRight: "20px" }}>
+                                            <div style={{
+                                                width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e0e0e0"
+                                            }}></div>
+                                            <div style={{
+                                                width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginLeft: "10px"
+                                            }}></div>
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <div style={{
+                                                width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e0e0e0"
+                                            }}></div>
+                                            <div style={{
+                                                width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginLeft: "10px"
+                                            }}></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Skeleton for Buttons */}
+                                    <div style={{
+                                        display: "flex", justifyContent: 'center', marginTop: "20px", gap: "10px"
+                                    }}>
+                                        <div
+                                            style={{
+                                                width: "120px", height: "40px", backgroundColor: "#e0e0e0", borderRadius: "20px"
+                                            }}
+                                        ></div>
+                                        <div
+                                            style={{
+                                                width: "40px", height: "40px", backgroundColor: "#e0e0e0", borderRadius: "20px"
+                                            }}
+                                        ></div>
+                                    </div>
+
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                </div>
             )}
             {doneFetching && (
                 <div>
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
 
-                        <div className="container h-100">
+                        <div className="container ">
                             <div className="d-flex justify-content-center h-100">
                                 <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
-                                    <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}  value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
+                                    <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
                                     {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
                             </a> */}
@@ -448,299 +610,315 @@ const StatusTracking = ({ vehicleNumber }) => {
                             </div>
                         </div>
                     </div>
+                    {/* {data.length > 0 && doneFetching && distance.length > 0 && avg.length > 0 && ( */}
 
-                    {data.length > 0 && doneFetching && distance.length > 0 && avg.length > 0 && (
-                       <div
-                       style={{
-                           display: "grid",
-                           gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-                           
-                       }}
-                   >
-                      {  data.map((item, dataIndex) => (
-                            <div style={{
-                                filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                                opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                                pointerEvents: isImageContainerVisible ? "none" : "auto",
-                                border: "1px solid teal",maxWidth: "410px", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea"
-                            }}>
-                                {item?.[`${currentService}Details`]?.customerAcceptedVendor == true}
-                                <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
-                                    {stages.map((stage, index) => (
-                                        <div
-                                            key={index}
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                alignItems: "center",
-                                                textAlign: "center",
-                                                position: "relative",
-                                                flex: 1,
-                                            }}
-                                        >
-                                            {/* Icon/Image for each stage */}
+                    {data.length > 0 && doneFetching  && (
+                        <div
+                            style={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+
+                            }}
+                        >
+                            {data.map((item, dataIndex) => (
+                                <div style={{
+                                    filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
+                                    opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
+                                    pointerEvents: isImageContainerVisible ? "none" : "auto",
+                                    border: "1px solid teal",
+                                     maxWidth: "410px", minWidth: "280px", margin: '10px',
+                                      boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                       borderRadius: "5px", padding: "10px",
+                                        background: "#ffffff"
+                                }}>
+                                    {item?.[`${currentService}Details`]?.customerAcceptedVendor == true}
+                                    <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
+                                        {stages.map((stage, index) => (
                                             <div
+                                                key={index}
                                                 style={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    borderRadius: "50%",
-                                                    backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
                                                     display: "flex",
+                                                    flexDirection: "column",
                                                     alignItems: "center",
-                                                    justifyContent: "center",
-                                                    border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
-                                                    transition: "background-color 0.3s ease",
-                                                    zIndex: 1,
+                                                    textAlign: "center",
+                                                    position: "relative",
+                                                    flex: 1,
                                                 }}
                                             >
-                                                <img
-                                                    src={stage.img}
-                                                    alt={stage.label}
-                                                    style={{
-                                                        width: "20px",
-                                                        height: "20px",
-                                                        opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
-                                                    }}
-                                                />
-                                            </div>
-
-                                            {/* Stage Label */}
-                                            <p
-                                                style={{
-                                                    marginTop: "5px",
-                                                    color: index <= currentStage[dataIndex] ? "black" : "#aaa",
-                                                    fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
-                                                    fontSize: "12px",
-                                                }}
-                                            >
-                                                {stage.label}
-                                            </p>
-
-                                            {/* Connecting Line */}
-                                            {index < stages.length - 1 && (
+                                                {/* Icon/Image for each stage */}
                                                 <div
                                                     style={{
-                                                        position: "absolute",
-                                                        top: "15px", // Aligns with the center of the icon
-                                                        left: "50%",
-                                                        right: "-50%",
-                                                        width: "100%",
-                                                        height: "2px",
-                                                        backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
-                                                        zIndex: 0,
+                                                        width: "30px",
+                                                        height: "30px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
+                                                        transition: "background-color 0.3s ease",
+                                                        zIndex: 1,
                                                     }}
-                                                ></div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                                {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (
+                                                >
+                                                    <img
+                                                        src={stage.img}
+                                                        alt={stage.label}
+                                                        style={{
+                                                            width: "20px",
+                                                            height: "20px",
+                                                            opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
+                                                        }}
+                                                    />
+                                                </div>
 
-                                    <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                {/* Stage Label */}
+                                                <p
+                                                    style={{
+                                                        marginTop: "5px",
+                                                        color: index <= currentStage[dataIndex] ? "black" : "#aaa",
+                                                        fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
+                                                        fontSize: "12px",
+                                                    }}
+                                                >
+                                                    {stage.label}
+                                                </p>
 
-                                            <div style={{ display: "flex", alignItems: "center", margin: '25px 5px 0px 10px' }}>
-                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                                <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
-                                            </div>
-                                            <div style={{ marginTop: "10px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
-
-                                        </div>
-
-                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
-                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}</span>
-                                        </div>
-
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                                            <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
-                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vendor Currently  : </p>
-                                                <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }} >{distance[dataIndex]} Km away</span>
-                                            </div>
-                                            <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
-                                                {/* <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold", marginTop: '5px' }}>Current Status:</p> */}
-                                                {!item?.[`${currentService}Details`]?.vendorMoved && (
-                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'blue', border: "1px solid blue", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Ready to move </span>
+                                                {/* Connecting Line */}
+                                                {index < stages.length - 1 && (
+                                                    <div
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "15px", // Aligns with the center of the icon
+                                                            left: "50%",
+                                                            right: "-50%",
+                                                            width: "100%",
+                                                            height: "2px",
+                                                            backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
+                                                            zIndex: 0,
+                                                        }}
+                                                    ></div>
                                                 )}
-                                                {item?.[`${currentService}Details`]?.vendorMoved == true && item?.[`${currentService}Details`]?.vendorReached == false && (
-                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>On the way</span>
-                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (
+
+                                        <div style={{ background: "white" }}>
+                                            <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
+                                                <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+
+                                                    <div>
+
+                                                    </div>
+                                                    <div
+                                                        className="right-10  flex items-center mt-1"
+                                                        style={{ margin: '5px 5px 0 5px' }}
+                                                    >
+                                                        <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
+                                                        <span className="text-xs font-medium ml-2">
+                                                            {item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className='px-2  ' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 2px' }}>
+                                                        <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
+                                                        <span className='text-sm font-semibold' style={{ marginLeft: "5px" }}>{item.vehicleNo}</span>
+                                                    </div>
+
+                                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 1px' }}>
+                                                        <SignalWifiStatusbarNullIcon className='h-[30px] w-[30px] text-red' />
+                                                        <span className='text-medium font-base' style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 0px 5px 1px", fontSize: "12px", borderRadius: "10px", color: 'blue', fontWeight: 'bold' }}>
+                                                            {!item?.[`${currentService}Details`]?.vendorMoved && (
+                                                                <span >Ready to move </span>
+                                                            )}
+                                                            {item?.[`${currentService}Details`]?.vendorMoved == true && item?.[`${currentService}Details`]?.vendorReached == false && (
+                                                                <span >On the way</span>
+                                                            )}
+                                                            {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
+                                                                <span>Confirm</span>
+                                                            )}
+                                                            {item?.[`${currentService}Details`]?.vendorReached == true && item?.[`${currentService}Details`]?.approvedReaching == true && (
+                                                                <span>Reached</span>
+                                                            )}
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                <div className='px-2  flex-col'>
+                                                    <div class='flex'>
+                                                        <MyLocationIcon className='m-1 ' />
+                                                        <div className='px-2 py-2 flex-col'>
+                                                            <h4 className='text-sm font-base'>{item?.[`${currentService}Details`]?.pickupLocation} </h4>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class='flex'>
+                                                        <SocialDistanceIcon className='m-1' />
+                                                        <div className='px-1 py-1 flex-col'>
+                                                            <p className='text-sm font-base'>{distance[dataIndex]} KM</p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+
+                                                <div>
+                                                    <div className="flex justify-between m-3">
+                                                        <div className="flex items-center">
+                                                            <div
+                                                                className="bg-green-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
+                                                                onClick={() => { goToMap(item) }}
+                                                            >
+                                                                <p className="text-white font-semibold text-xs text-center">Track Location </p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex flex-col items-center justify-center px-4 py-2">
+                                                            <img src={telephonecall} className="h-[30px] w-[30px]" alt="call for help" />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                                 {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
-                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Confirm</span>
-                                                )}
-                                                {item?.[`${currentService}Details`]?.vendorReached == true && item?.[`${currentService}Details`]?.approvedReaching == true && (
-                                                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 20px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Reached</span>
-                                                )}
+                                                    <div>
+                                                        <hr />
+                                                        <div style={{ justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
+                                                            {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (<p style={{
+                                                                fontSize: '11px',
+                                                                marginTop: "2px",
+                                                                background: "green",
+                                                                padding: "10px",
+                                                                border: '1px solid blue',
+                                                                textAlign: 'center',
+                                                                borderRadius: '30px',
+                                                                fontWeight: "bold",
+                                                                color: "white",
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: "center",
+                                                                position: "relative",
+                                                                cursor: "pointer",
+                                                                margin: '5px 5px 5px 5px',
+                                                                maxWidth: "400px",
+                                                                minWidth: "140px",
+                                                            }} onClick={(e) => vendorReached(item, true)} >
+                                                                <KeyboardDoubleArrowRightIcon style={{
+                                                                    position: "absolute",
+                                                                    left: '5px'
+                                                                }} />
+                                                                Vendor Reached
+                                                            </p>)}
+                                                            {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
+                                                                <p style={{
+                                                                    fontSize: '11px',
+                                                                    marginTop: "2px",
+                                                                    background: "#ec5a5a",
+                                                                    padding: "10px",
+                                                                    border: '1px solid blue',
+                                                                    textAlign: 'center',
+                                                                    borderRadius: '30px',
+                                                                    fontWeight: "bold",
+                                                                    color: "white",
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: "center",
+                                                                    position: "relative",
+                                                                    cursor: "pointer",
+                                                                    margin: '5px 5px 5px 5px',
+                                                                    maxWidth: "400px",
+                                                                    minWidth: "140px",
+                                                                }} onClick={(e) => vendorReached(item, false)} >
+                                                                    <KeyboardDoubleArrowLeftIcon style={{
+                                                                        position: "absolute",
+                                                                        right: '10px',
+                                                                    }} />
+                                                                    Not Reached
+                                                                </p>)}
+                                                        </div>
+                                                    </div>)}
+                                                {item?.[`${currentService}Details`]?.doneWorking == true && (
+                                                    <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
+                                                        {item?.[`${currentService}Details`]?.doneWorking == true && item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
+                                                            <p style={{
+                                                                fontSize: '11px',
+                                                                marginTop: "2px",
+                                                                background: "green",
+                                                                padding: "10px",
+                                                                border: '1px solid blue',
+                                                                textAlign: 'center',
+                                                                borderRadius: '30px',
+                                                                fontWeight: "bold",
+                                                                color: "white",
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: "center",
+                                                                position: "relative",
+                                                                cursor: "pointer",
+                                                                margin: '5px 5px 5px 5px',
+                                                                maxWidth: "400px",
+                                                                minWidth: "140px",
+                                                            }} onClick={(e) => workDoneConfirmation(item, true)} >
+                                                                <KeyboardDoubleArrowRightIcon style={{
+                                                                    position: "absolute",
+                                                                    left: '5px'
+                                                                }} />
+                                                                Work Done
+                                                            </p>)}
+                                                        {item?.[`${currentService}Details`]?.doneWorking == true && item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
+                                                            <p style={{
+                                                                fontSize: '11px',
+                                                                marginTop: "2px",
+                                                                background: "#ec5a5a",
+                                                                padding: "10px",
+                                                                border: '1px solid blue',
+                                                                textAlign: 'center',
+                                                                borderRadius: '30px',
+                                                                fontWeight: "bold",
+                                                                color: "white",
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: "center",
+                                                                position: "relative",
+                                                                cursor: "pointer",
+                                                                margin: '5px 5px 5px 5px',
+                                                                maxWidth: "400px",
+                                                                minWidth: "140px",
+                                                            }} onClick={(e) => workDoneConfirmation(item, false)} >
+                                                                <KeyboardDoubleArrowLeftIcon style={{
+                                                                    position: "absolute",
+                                                                    right: '10px'
+                                                                }} />
+                                                                Not Done Yet
+                                                            </p>)}
+                                                    </div>)}
                                             </div>
-                                        </div>
 
-                                        {item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
-                                            <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "20px", }}>
 
-                                                <p style={{
-                                                    fontSize: '11px',
-                                                    marginTop: "2px",
-                                                    background: "#8f8f8f",
-                                                    padding: "10px",
-                                                    border: '2px solid #000000',
-                                                    textAlign: 'center',
-                                                    borderRadius: '30px',
-                                                    fontWeight: "bold",
-                                                    color: "white",
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: "center",
-                                                    position: "relative",
-                                                    cursor: "pointer",
-                                                    maxWidth: "400px",
-                                                    minWidth: "280px",
-                                                    margin: '5px 0px 10px 5px',
-                                                    height: "30px"
-                                                }} onClick={() => { goToMap(item) }}>
-                                                    Track Location
+                                            {selectedAction !== null && (
+                                                <p style={{ marginTop: "5px", fontSize: "12px", padding: "10px", background: "lightgoldenrodyellow" }} className={`alert alert-${alertType} text-center`} role="alert">
+                                                    {selectedAction ? "Vendor Reached Successfully" : "Vendor Doesn't Reached investigating..."}
                                                     <KeyboardDoubleArrowRightIcon style={{
                                                         position: "absolute",
                                                         left: '10px'
                                                     }} />
                                                 </p>
-                                            </div>)}
-
-                                        {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
-                                            <div>
-                                                <hr />
-                                                <div style={{ justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
-                                                    {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (<p style={{
-                                                        fontSize: '11px',
-                                                        marginTop: "2px",
-                                                        background: "green",
-                                                        padding: "10px",
-                                                        border: '1px solid blue',
-                                                        textAlign: 'center',
-                                                        borderRadius: '30px',
-                                                        fontWeight: "bold",
-                                                        color: "white",
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: "center",
-                                                        position: "relative",
-                                                        cursor: "pointer",
-                                                        margin: '5px 5px 5px 5px',
-                                                        maxWidth: "400px",
-                                                        minWidth: "140px",
-                                                    }} onClick={(e) => vendorReached(item, true)} >
-                                                        <KeyboardDoubleArrowRightIcon style={{
-                                                            position: "absolute",
-                                                            left: '5px'
-                                                        }} />
-                                                        Vendor Reached
-                                                    </p>)}
-                                                    {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
-                                                        <p style={{
-                                                            fontSize: '11px',
-                                                            marginTop: "2px",
-                                                            background: "#ec5a5a",
-                                                            padding: "10px",
-                                                            border: '1px solid blue',
-                                                            textAlign: 'center',
-                                                            borderRadius: '30px',
-                                                            fontWeight: "bold",
-                                                            color: "white",
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: "center",
-                                                            position: "relative",
-                                                            cursor: "pointer",
-                                                            margin: '5px 5px 5px 5px',
-                                                            maxWidth: "400px",
-                                                            minWidth: "140px",
-                                                        }} onClick={(e) => vendorReached(item, false)} >
-                                                            <KeyboardDoubleArrowLeftIcon style={{
-                                                                position: "absolute",
-                                                                right: '10px',
-                                                            }} />
-                                                            Not Reached
-                                                        </p>)}
+                                            )}
+                                            {alertMessage && (
+                                                <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
+                                                    {alertMessage}
                                                 </div>
-                                            </div>)}
-                                        {item?.[`${currentService}Details`]?.doneWorking == true && (
-                                            <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
-                                                {item?.[`${currentService}Details`]?.doneWorking == true && item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
-                                                    <p style={{
-                                                        fontSize: '11px',
-                                                        marginTop: "2px",
-                                                        background: "green",
-                                                        padding: "10px",
-                                                        border: '1px solid blue',
-                                                        textAlign: 'center',
-                                                        borderRadius: '30px',
-                                                        fontWeight: "bold",
-                                                        color: "white",
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: "center",
-                                                        position: "relative",
-                                                        cursor: "pointer",
-                                                        margin: '5px 5px 5px 5px',
-                                                        maxWidth: "400px",
-                                                        minWidth: "140px",
-                                                    }} onClick={(e) => workDoneConfirmation(item, true)} >
-                                                        <KeyboardDoubleArrowRightIcon style={{
-                                                            position: "absolute",
-                                                            left: '5px'
-                                                        }} />
-                                                        Done Working
-                                                    </p>)}
-                                                {item?.[`${currentService}Details`]?.doneWorking == true && item?.[`${currentService}Details`]?.confirmDoneWorking == false && (
-                                                    <p style={{
-                                                        fontSize: '11px',
-                                                        marginTop: "2px",
-                                                        background: "#ec5a5a",
-                                                        padding: "10px",
-                                                        border: '1px solid blue',
-                                                        textAlign: 'center',
-                                                        borderRadius: '30px',
-                                                        fontWeight: "bold",
-                                                        color: "white",
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: "center",
-                                                        position: "relative",
-                                                        cursor: "pointer",
-                                                        margin: '5px 5px 5px 5px',
-                                                        maxWidth: "400px",
-                                                        minWidth: "140px",
-                                                    }} onClick={(e) => workDoneConfirmation(item, false)} >
-                                                        <KeyboardDoubleArrowLeftIcon style={{
-                                                            position: "absolute",
-                                                            right: '10px'
-                                                        }} />
-                                                        Not Done Yet
-                                                    </p>)}
-                                            </div>)}
-
-                                        {selectedAction !== null && (
-                                            <p style={{ marginTop: "5px", fontSize: "12px", padding: "10px", background: "lightgoldenrodyellow" }} className={`alert alert-${alertType} text-center`} role="alert">
-                                                {selectedAction ? "Vendor Reached Successfully" : "Vendor Doesn't Reached investigating..."}
-                                                <KeyboardDoubleArrowRightIcon style={{
-                                                    position: "absolute",
-                                                    left: '10px'
-                                                }} />
-                                            </p>
-                                        )}
-                                        {alertMessage && (
-                                            <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-${alertType} text-center`} role="alert">
-                                                {alertMessage}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
+                                            )}
+                                        </div>
+                                    )}
 
 
 
-                            </div>
-                        ))}
-                    </div>
+                                </div>
+                            ))}
+                        </div>
                     )}
                     {data.length == 0 && doneFetching && (
                         <NoDataFound />

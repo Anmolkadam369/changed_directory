@@ -30,6 +30,7 @@ import { useWebSocket } from '../ContexAPIS/WebSocketContext';
 const CraneUserDashboard = () => {
 
     const navigate = useNavigate()
+    const { sendMessage } = useWebSocket();
     const { messages } = useWebSocket()
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [approvedCase, setApprovedCase] = useState([])
@@ -39,6 +40,7 @@ const CraneUserDashboard = () => {
     const [caseDetails, setCaseDetails] = useState(false);
 
     const [isNewCase, setNewCase] = useState(false)
+    console.log('isNewCae', isNewCase)
     const [newCasesItems, setNewCasesItems] = useState([])
     const [avg, setAvg] = useState([])
     const [vendorCurrentLatitude, setVendorCurrentLatitude] = useState("")
@@ -67,20 +69,13 @@ const CraneUserDashboard = () => {
         getGotResponseVehicle()
     }, [token, userId, navigate]);
 
-    useEffect(()=>{
-        setTimeout(()=>{
-            const getSomeInfo=async()=>{
-                const response = await axios.get(`${backendUrl}/api/testing-websocket`);
-                console.log("responsefrom",response.data)
-            }     
-            getSomeInfo()   
-        },5000)
-    },[])
 
+    const [newmessg, setnewmessge] = useState(false)
     useEffect(() => {
         messages.forEach((message) => {
-            console.log("messages123", message)
             if (message.forPage == "crane-user-dashboard") {
+                console.log("i have got the task here")
+                setnewmessge(true)
                 fetchAssignedCases();
                 getGotResponseVehicle()
             }
@@ -195,7 +190,7 @@ const CraneUserDashboard = () => {
             for (let i = 0; i < totalAssignedCases.length; i++) {
                 console.log("totalAssignedCases[i].details[0].vendorDecision", i, totalAssignedCases[i].details[0])
                 if (totalAssignedCases[i].details[0]?.vendorDecision != 'reject' && (totalAssignedCases[i].details?.length === 0 || totalAssignedCases[i].details[0]?.acceptedByAdmin === null)) {
-                    pendingCount++; 
+                    pendingCount++;
                 } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "accept") {
                     acceptedCount++;
                 } else if (totalAssignedCases[i].details[0].acceptedByAdmin === "reject") {
@@ -228,10 +223,13 @@ const CraneUserDashboard = () => {
             setWorkingCases(workingCount);
         }
 
-        if ((totalAssignedCases.length - gotResponse.length) > 0) {
-            const filteredItems = totalAssignedCases.filter((caseItem) => caseItem?.details[0]?.firstResponseOn == null);
+        if (totalAssignedCases.length > 0 && gotResponse.length > 0) {
+            const filteredItems = totalAssignedCases.filter((caseItem) => caseItem?.details[0]?.firstResponseOn == null && caseItem?.details[0]?.timedOut == false);
+            console.log("foltredd", filteredItems)
+            console.log("setisNewCase", isNewCase)
+
             setNewCasesItems(filteredItems);
-            setNewCase(true);
+            setNewCase(filteredItems.length > 0);
         } else {
             setNewCasesItems([]);
             setNewCase(false);
@@ -254,7 +252,7 @@ const CraneUserDashboard = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'
@@ -321,7 +319,7 @@ const CraneUserDashboard = () => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -340,69 +338,141 @@ const CraneUserDashboard = () => {
         }
     }
 
+    useEffect(() => {
+        sendMessage({
+            type: "join",
+            userId: userId,
+            userType: "crane",
+        });
+        const updateLocation = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    console.log("sendingLocatio", {
+                        type: 'update-location-vendor',
+                        userId: userId,
+                        location: {
+                            ltd: position.coords.latitude,
+                            lng: position.coords.longitude
+                        }
+                    })
+                    sendMessage({
+                        type: 'update-location-vendor',
+                        userId: userId,
+                        location: {
+                            ltd: position.coords.latitude,
+                            lng: position.coords.longitude
+                        }
+                    })
+                })
+            }
+        }
+
+        const locationInterval = setInterval(updateLocation, 120000);
+        updateLocation()
+
+    }, [])
+
 
     const handleBack = () => {
-        setNewCase(false)
         getGotResponseVehicle()
         fetchAssignedCases()
-        // getAllAccidentVehicleData()
+        setNewCase(false)
     }
+
+    const [pickupLocation, setPickupLocation] = useState('')
+
+    useEffect(() => {
+        const getLocation = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+            }
+        };
+        getLocation()
+    }, [])
+
+
+    const showPosition = async (position) => {
+        const { latitude, longitude } = position.coords;
+
+
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await response.json();
+            if (data && data.address) {
+                const { road, city, state, country } = data.address;
+                setPickupLocation(`${road || ''}, ${city || ''}, ${state || ''}, ${country || ''}`);
+            } else {
+                setPickupLocation('Location details not found.');
+            }
+        } catch (error) {
+        }
+    };
+
+    const showError = (error) => {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                break;
+            case error.POSITION_UNAVAILABLE:
+                break;
+            case error.TIMEOUT:
+                break;
+            case error.UNKNOWN_ERROR:
+                break;
+            default:
+        }
+    };
 
     return (
         <div style={{ height: "100%" }}>
-            {/* Red Top Section */}
-            {/* <div>
-                <p style={{ marginTop: "30px", marginLeft: "20px", fontWeight: "bolder", fontSize: "15px" }}>PAPPU TRUCK BODY REPAIRING WORKS</p>
-                <div style={{ display: 'flex' }}>
-                    <p style={{ marginTop: "10px", marginLeft: "20px", fontWeight: "bolder", fontSize: "17px" }}>Service: </p>
-                    <p style={{ marginTop: "10px", marginLeft: "10px", fontWeight: "bolder", fontSize: "17px" }}>Crane</p>
-                </div>
-            </div> */}
 
-            <div style={{ margin: '10px' }}>
-                <div className='imageContainer' style={{ display: 'flex', gap: "25px", padding: '20px', alignItems: 'center' }}>
-                    <div>
-                        <img src={nearbyhospital} style={{ height: "35px", width: "35px", textAlign: 'center' }} />
-                        <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Hospital</p>
+            <div style={{ marginTop: '10px' }}>
+                <div style={{ background: "transperant", padding: '8px', marginBottom: "8px", borderRadius: "5px" }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <i class="fa fa-location-arrow" style={{ fontSize: "20px", color: "rgb(0 0 0)", marginRight: "10px" }}></i>
+                        <p style={{ color: 'red', fontSize: "13px", margin: "5px 5px", color: "#555" }}>
+                            {pickupLocation}
+                        </p>
                     </div>
-                    <div>
-                        <img src={nearbytoll} style={{ height: "35px", width: "40px", textAlign: 'center' }} />
-                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Toll</p>
-                    </div>                <div>
-                        <img src={nearbyRestaurant} style={{ height: "25px", width: "30px", textAlign: 'center' }} />
-                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Restaurant</p>
-                    </div>
-                    <div>
-                        <img src={nearbyPetrolPump} style={{ height: "30px", width: "35px", textAlign: 'center' }} />
-                        <p style={{ fontSize: "10px", marginTop: "5px", textAlign: 'center' }}>Near By Pump</p>
-                    </div>
-                    <div>
-                        <img src={nearbyParking} style={{ height: "40px", width: "40px", textAlign: 'center', marginLeft: "5px", marginBottom: "8px" }} />
-                        <p style={{ fontSize: "10px", textAlign: 'center' }}>Near By Parking</p>
-                    </div>
-
                 </div>
             </div>
 
             <div className="stat-container">
 
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('getAll')}
+                <div
+                    className="stat-item"
+                    onClick={() => casesFilterForVehicleCrane('getAll')}
                     style={{
-                        margin: "40px 5px 5px 5px",
+                        margin: "20px 5px 5px 5px",
                         boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
                         borderLeft: "2px solid darkgreen",
                         borderTop: "1px solid darkgreen",
                         cursor: "pointer",
-                        backgroundColor: isSelected == "getAll" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <img src={craneadvocatemechanic} className="small-image" alt="Vendor Types" />
+                        backgroundColor: isSelected === "getAll" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                        display: "flex", // Add flexbox
+                        flexDirection: "column", // Ensure vertical alignment
+                        alignItems: "center", // Horizontally center all children
+                        justifyContent: "center", // Vertically center the image
+                    }}
+                >
+                    <img
+                        src={craneadvocatemechanic}
+                        className="small-image"
+                        alt="Vendor Types"
+                        style={{
+                            marginBottom: "10px", // Add spacing below the image if needed
+                        }}
+                    />
                     <h3 style={{ fontSize: "0.6rem" }}>Total Cases Assigned</h3>
                     <p>{totalAssignedCases.length}</p>
                 </div>
 
+
                 <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Accepted Vehicles')}
                     style={{
-                        margin: "40px 5px 5px 5px",
+                        margin: "20px 5px 5px 5px",
                         boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
                         borderLeft: "2px solid darkgreen",
                         borderTop: "1px solid darkgreen",
@@ -417,7 +487,7 @@ const CraneUserDashboard = () => {
 
                 <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Rejected Vehicles')}
                     style={{
-                        margin: "40px 5px 5px 5px",
+                        margin: "20px 5px 5px 5px",
                         boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
                         borderLeft: "2px solid darkgreen",
                         borderTop: "1px solid darkgreen",
@@ -431,7 +501,7 @@ const CraneUserDashboard = () => {
 
                 <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Pending Vehicles')}
                     style={{
-                        margin: "40px 5px 5px 5px",
+                        margin: "20px 5px 5px 5px",
                         boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
                         borderLeft: "2px solid darkgreen",
                         borderTop: "1px solid darkgreen",
@@ -454,8 +524,14 @@ const CraneUserDashboard = () => {
                         borderTop: "1px solid darkgreen",
                         cursor: "pointer",
                         backgroundColor: isSelected == "Response given" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                        display: "flex", // Add flexbox
+                        flexDirection: "column", // Ensure vertical alignment
+                        alignItems: "center", // Horizontally center all children
+                        justifyContent: "center", // Vertically center the image
                     }}>
-                    <img src={vehicleIcon} className="small-image" alt="Vendor Types" />
+                    <img src={vehicleIcon} className="small-image" alt="Vendor Types" style={{
+                        marginBottom: "10px", // Add spacing below the image if needed
+                    }} />
                     <h3 style={{ fontSize: "0.6rem" }}>Response Given by admin</h3>
                     <p>{gotResponse.length}</p>
                 </div>
@@ -504,30 +580,29 @@ const CraneUserDashboard = () => {
 
             </div>
 
+                <div className="statistics">
+                    <div className="charts">
 
+                        <div className="chart-item" style={{ background: "radial-gradient(rgb(171 221 193), rgba(245, 245, 245, 0))" }}>
+                            <h3 className="chart-title"> Vehicle Working Status</h3>
+                            <Doughnut data={doughnutData} />
+                        </div>
 
-            <div className="statistics">
-                <div className="charts">
+                        <div className="chart-item" style={{ background: "radial-gradient(rgb(81 ,191, 213), rgba(245, 245, 245, 0))" }}>
+                            <h3 className="chart-title"> Admin Cases Status</h3>
+                            <Doughnut data={doughnutData2} />
+                        </div>
+                        <Featured />
+                        <VendorViewRating />
 
-                    <div className="chart-item" style={{ background: "radial-gradient(rgb(171 221 193), rgba(245, 245, 245, 0))" }}>
-                        <h3 className="chart-title"> Vehicle Working Status</h3>
-                        <Doughnut data={doughnutData} />
                     </div>
-
-                    <div className="chart-item" style={{ background: "radial-gradient(rgb(81 ,191, 213), rgba(245, 245, 245, 0))" }}>
-                        <h3 className="chart-title"> Admin Cases Status</h3>
-                        <Doughnut data={doughnutData2} />
-                    </div>
-                    <Featured />
-                    <VendorViewRating />
-
-                </div>
             </div>
 
-
-
             {isNewCase && (
-                <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
+                <div style={{ marginTop: "-500px" }}>
+                    {/* <p >hello</p> */}
+                    <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
+                </div>
             )}
 
 

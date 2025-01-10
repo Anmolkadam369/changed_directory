@@ -198,7 +198,6 @@ const Registrations = () => {
         // Create a copy of formData
         let updatedValue = value;
 
-        // Process specific fields differently
         if (name === "phone") {
             console.log("phonenois", value)
             updatedValue = value.replace(/\D/g, ''); // Remove non-digit characters
@@ -347,20 +346,13 @@ const Registrations = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // if (!validatePassword(formData.password) || !validatePassword(formData.confirmPassword)) {
-        //     setAlertInfo({ show: true, message: 'Password and Confirm Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol.', severity: 'error' });
-        //     return;
-        // }
+ 
 
         if (!validateEmail(formData.email)) {
             setAlertInfo({ show: true, message: 'Please Enter Valid Email', severity: 'error' });
             return;
         }
 
-        // if (formData.password !== formData.confirmPassword) {
-        //     setAlertInfo({ show: true, message: 'Passwords does not match.', severity: 'error' });
-        //     return;
-        // }
 
 
         setIsLoading(true);
@@ -471,32 +463,7 @@ const Registrations = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* <div className="row">
-                                                <div className="col-md-5 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input type="text" id="form3Examplea7" className="form-control form-control-lg" />
-                                                        <label className="form-label" htmlFor="form3Examplea7">Code +</label>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-7 mb-4">
-                                                    <div className="form-outline form-white">
-                                                        <input type="text" id="form3Examplea8" className="form-control form-control-lg" />
-                                                        <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
-                                                    </div>
-                                                </div>
-                                            </div> */}
-
-
-
-                                        {/* <div className="form-check d-flex justify-content-start mb-4 pb-3">
-                                                <input className="form-check-input me-3" type="checkbox" value="" id="form2Example3c" />
-                                                <label className="form-check-label text-white" htmlFor="form2Example3">
-                                                    I do accept the <a href="#!" className="text-white"><u>Terms and Conditions</u></a> of your site.
-                                                </label>
-                                            </div> */}
-
-                                        {/* </div>
-                                    </div> */}
+                                        
                                         {!isClickedNext && (<div className="col-lg-6" style={{ background: "#ccccc" }}>
                                             <div className="p-5">
                                                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
@@ -531,23 +498,10 @@ const Registrations = () => {
                                                             <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
                                                         </div>
                                                     </div>
-                                                    {/* <div className=" col-md-6 mb-4">
-                                                        <div className="form-outline form-white">
-                                                            <input type="text" id="form3Examplea6" className="form-control form-control-lg" name='country' value={"India"} readOnly style={{ border: "1px solid black" }} />
-                                                            <label className="form-label" htmlFor="form3Examplea6">Country</label>
-                                                        </div>
-                                                    </div> */}
+                                                  
                                                 </div>
 
-                                                {/* <div className="row">
-
-                                                <div className="col-md-6 mb-4">
-                                                    <div className="form-outline">
-                                                        <input type="text" id="form3Examplev3" className="form-control form-control-lg" />
-                                                        <label className="form-label" htmlFor="form3Examplev3">Last name</label>
-                                                    </div>
-                                                </div>
-                                            </div> */}
+                                            
                                                 <div className="row">
                                                     <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
                                                         <div className="form-outline form-white">
@@ -674,97 +628,7 @@ const Registrations = () => {
                                                     </div>
                                                 </div>
 
-                                                {/* <div className="row">
-                                                    <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
-                                                        <div className="form-outline form-white">
-                                                            <div className="dropdown green-dropdown form-field col-md-6 mb-4">
-                                                                <select
-                                                                    name="state"
-                                                                    style={{
-                                                                        borderRadius: "5px",
-                                                                        padding: "15px",
-                                                                        background: 'white',
-                                                                        marginTop: "0px",
-                                                                        border: '1px solid black',
-                                                                        width: '100%' // Makes sure it takes up the full width like the button
-                                                                    }}
-                                                                    onChange={handleChange}
-                                                                    disabled={isLoadingStates}
-                                                                    value={formData.state}>
-                                                                    <option value="">Select State</option>
-                                                                    {states.map(state => (
-                                                                        <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select State</label>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="col-md-6 mb-4" style={{ paddingLeft: "7px" }}>
-                                                        <div className="form-outline form-white">
-                                                            <div className="dropdown green-dropdown form-field col-md-6 mb-4">
-                                                                <select
-                                                                    name="district"
-                                                                    style={{
-                                                                        padding: "15px",
-                                                                        borderRadius: "5px",
-                                                                        background: 'white',
-                                                                        marginTop: "0px",
-                                                                        border: '1px solid black',
-                                                                        width: '100%' // Full-width to match the button style
-                                                                    }}
-                                                                    value={formData.district}
-                                                                    onChange={handleChange}
-                                                                    disabled={isLoadingCities || !formData.state}
-                                                                >
-                                                                    <option value="">Select City</option>
-                                                                    {!cities.error && cities.map(city => (
-                                                                        <option key={city.iso2} value={city.iso2}>
-                                                                            {city.name}
-                                                                        </option>
-                                                                    ))}
-                                                                </select>
-                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px", fontSize: "12px" }}>Select City</label>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                                <div className="row">
-                                                    <div className=" col-md-6 mb-4">
-                                                        <div className="form-outline form-white">
-                                                            <textarea
-                                                                name="address"
-                                                                value={formData.address}
-                                                                onChange={handleChange}
-                                                                required
-                                                                className="form-control"
-                                                                style={{ border: "1px solid black" }}
-                                                            />
-                                                            <label className="form-label" htmlFor="form3Examplea2">Address</label>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-6 mb-4">
-                                                        <div className="form-outline form-white">
-                                                            <input
-                                                                type='tel'
-                                                                name="pincode"
-                                                                value={formData.pincode}
-                                                                onChange={handleChange}
-                                                                required
-                                                                pattern="\d{6}"
-                                                                title="Pincode must be 6 digits"
-                                                                className="form-control"
-                                                                style={{ border: "1px solid black" }}
-                                                            />
-                                                            <label className="form-label" htmlFor="form3Examplea4">Pin Code</label>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
+                                                
 
                                                 {alertInfo.show && (
                                                     <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
@@ -797,14 +661,7 @@ const Registrations = () => {
                                                         Account Already Created ? Sign In
                                                     </div>
 
-                                                {/* <div className="d-flex justify-content-center mt-2" >
-                                                    <button type="button" className={`btn btn-dark btn-lg ${isClicked ? 'clicked' : ''}`} data-mdb-ripple-color="dark" onClick={goToNext} style={{ borderRadius: "30px", background: "none", color: "green", fontSize: "15px", paddingRight: "0px", paddingLeft: "10px" }} >
-                                                        <div style={{ alignItems: 'center', display: "flex", flexDirection: "column" }}>
-                                                            <Button startIcon={<ArrowForwardIcon />} style={{ background: "none", color: "#077ede" }} onClick={goToNext} />
-                                                        </div>
-                                                    </button>
-                                                </div> */}
-
+           
                                             </div>
                                         </div>)}
 
@@ -832,103 +689,6 @@ const Registrations = () => {
                                                     </div>
 
 
-                                                    {/* <div className="row">
- 
-                                                 <div className="col-md-6 mb-4">
-                                                     <div className="form-outline">
-                                                         <input type="text" id="form3Examplev3" className="form-control form-control-lg" />
-                                                         <label className="form-label" htmlFor="form3Examplev3">Last name</label>
-                                                     </div>
-                                                 </div>
-                                             </div> */}
-                                                    {/* <div className="row">
-                                                 <div className="col-md-6 mb-4" style={{paddingLeft:"7px"}}>
-                                                     <div className="form-outline form-white">
-                                                         <div className="dropdown green-dropdown form-field">
-                                                             <button
-                                                                 className="form-field input-group mb-3"
-                                                                 type="button"
-                                                                 id="dropdownMenuButton"
-                                                                 data-bs-toggle="dropdown"
-                                                                 aria-expanded="false"
-                                                                 onClick={toggleDropdown}
-                                                                 style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
-                                                             >
-                                                                 <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
-                                                                 <p style={{alignItems:"left"}}>{formData.joinInType || "Select Type"}</p>
-                                                                 </div>
-                                                             </button>
-                                                             <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
-                                                                 <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Vendor")}>Vendor</a></li>
-                                                                 <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Customer")}>Customer</a></li>
-                                                             </ul>
-                                                             <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select Type</label>
-                                                         </div>
-                                                     </div>
-                                                 </div>
- 
-                                                 {formData.joinInType === "Vendor" && (
-                                                     <div className="col-md-6 mb-4" style={{paddingLeft:"7px"}}>
-                                                         <div className="form-outline form-white">
-                                                             <div className="dropdown green-dropdown form-field">
-                                                                 <button
-                                                                     className="form-field input-group mb-3 form-control-lg"
-                                                                     type="button"
-                                                                     id="dropdownMenuButton1"
-                                                                     data-bs-toggle="dropdown"
-                                                                     aria-expanded="false"
-                                                                     onClick={toggleDropdown1}
-                                                                     style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
-                                                                 >
-                                                                     <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
-                                                                 <p style={{alignItems:"left"}}>{formData.vendorType || "Select Vendor Type"}</p>
-                                                                 </div>
-                                                                 </button>
-                                                                 <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownVendor ? " show" : ""}`} aria-labelledby="dropdownMenuButton1">
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "advocate")}>Advocate</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "crane")}>Crane</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "mechanic")}>Mechanic</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "workshop")}>Workshop</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "partsDistributor")}>Parts Distributor</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "insuranceCompany")}>Insurance Company</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "surveyor")}>Surveyor</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "scrapBuyer")}>Scrap Buyer</a></li>
-                                                                 </ul>
-                                                                 <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Vendor Type</label>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 )}
- 
-                                                 {formData.joinInType === "Customer" && (
-                                                     <div className="col-md-6 mb-4" style={{paddingLeft:"7px"}}>
-                                                         <div className="form-outline form-white">
-                                                             <div className="dropdown green-dropdown form-field">
-                                                                 <button
-                                                                     className="form-field input-group mb-3 form-control-lg"
-                                                                     type="button"
-                                                                     id="dropdownMenuButton2"
-                                                                     data-bs-toggle="dropdown"
-                                                                     aria-expanded="false"
-                                                                     onClick={toggleDropdown2}
-                                                                     style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
-                                                                 >
-                                                                     
-                                                                     <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
-                                                                 <p style={{alignItems:"left"}}>{formData.customerType || "Select Customer Type"}</p>
-                                                                 </div>
-                                                                 </button>
-                                                                 <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownCustomer ? " show" : ""}`} aria-labelledby="dropdownMenuButton2">
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "retail")}>Retailer</a></li>
-                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "fleetOwner")}>Fleet Owner</a></li>
-                                                                 </ul>
-                                                                 <label className="form-label" htmlFor="dropdownMenuButton2" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Customer Type</label>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 )}
-                                             </div>
-  */}
 
 
 

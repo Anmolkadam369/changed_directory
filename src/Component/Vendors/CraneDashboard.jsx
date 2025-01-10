@@ -334,7 +334,9 @@ const CraneDashboard = ({ getData }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
             console.log("responssesesesee", response)
         } catch (error) {
             console.error("Error fetching all accident vehicle data", error);

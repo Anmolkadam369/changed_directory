@@ -91,9 +91,9 @@ const CraneFirstPage = () => {
 
     return (
         <div>
-            <div className="start-container" style={{ height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px" }}>
+            <div className="start-container" style={{ height: "40px", zIndex: "10", margin: "0px 0px 0px 0px", position: "sticky", top: "0.1px"}}>
                 <div className="imageContainer" style={{ marginTop: "10px", height: "0px" }}>
-                    {["Status tracking", "Quotation & Updates", 'History & Receipts', 'Cancelled Orders', "Summary & Reviews",].map((text, index) => (
+                    {["Status tracking", "Quotation & Updates", 'History & Receipts', 'Cancelled Orders', "Summary & Reviews"].map((text, index) => (
                         <div
                             key={index}
                             style={{ cursor: 'pointer' }}
@@ -128,7 +128,7 @@ const CraneFirstPage = () => {
                     src={choosenService == "crane" ? craneworkdoing : choosenService == 'advocate' ? advocatecurrentservice : choosenService === 'mechanic' ? mechaniccurrentservice : workshopcurrentservice}
                     alt="All Accident Vehicles"
                     style={{
-                        maxHeight: "500px",
+                        maxHeight: "300px",
                         width: "100%",
                         objectFit: "cover",
                         borderRadius: "10px"

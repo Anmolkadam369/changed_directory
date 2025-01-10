@@ -13,6 +13,12 @@ import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import filterUser from '../../../Assets/filterUser.png'
 import Modal from "../../Location1/Modal";
 import viewcase from '../../../Assets/viewcase.png'
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import ArticleIcon from '@mui/icons-material/Article';
+import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 function haversine(lat1, lon1, lat2, lon2) {
     console.log("accident latitude", lat1)
@@ -67,6 +73,15 @@ const CraneRejectedOrder = ({ data }) => {
         setTotalRejectedCase(data)
         setSpareUseData(data)
         setIsRejectedCasesReady(true);
+        if (choosenCase.length > 0) {
+            const updatedCase = data.find(item => item.accidentFileNo === choosenCase[0].accidentFileNo);
+            if (updatedCase) {
+                setChoosenCase([updatedCase]);
+            } else {
+                setChoosenCase([]); 
+                setOpenDetails(false)
+            }
+        }
     }, [data])
 
     const handleChoosenCase = (item) => {
@@ -243,7 +258,7 @@ const CraneRejectedOrder = ({ data }) => {
     return (
         <div>
             <div style={{
-                marginBottom: "100px", background: 'linear-gradient(rgb(29 97 25 / 75%), rgb(255, 255, 255), rgb(249 241 241))'
+                marginBottom: "100px"
             }}>
                 <div className="container" style={{
                     paddingTop: "30px",
@@ -277,7 +292,7 @@ const CraneRejectedOrder = ({ data }) => {
                         
                     }}>
                     {totalRejectedCases.map((item, dataIndex) => (
-                        <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "5px", padding: "10px", background: "#d0e3ea", marginTop:"20px" }}>
+                        <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "20px", padding: "10px",  marginTop:"20px" }}>
 
                             <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
                                 {stages.map((stage, index) => (
@@ -298,7 +313,7 @@ const CraneRejectedOrder = ({ data }) => {
                                                 width: "30px",
                                                 height: "30px",
                                                 borderRadius: "50%",
-                                                backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "rgb(251 161 161)" : "#ccc",
+                                                backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "rgb(210 104 104)" : "#ccc",
                                                 display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "center",
@@ -348,8 +363,62 @@ const CraneRejectedOrder = ({ data }) => {
                                     </div>
                                 ))}
                             </div>
+                            <div style={{ marginTop: "20px" }}>
+                                    <hr className="text-black" />
+                                    {/* <hr className="color-black m-0" /> */}
 
-                            <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
+                                    <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
+                                            <span className='text-md font-semibold' style={{ marginLeft: "5px" }}>{item.reg}</span>
+                                        </div>
+                                        <div
+                                            className="right-10  flex items-center mt-1"
+                                            style={{ margin: '0px 5px 0 5px' }}
+                                        >
+                                            <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
+                                            <span className="text-xs font-medium ml-2">
+                                                {item.craneAssignedOn?.split("|")[0]}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div style={{ borderTop: '1px solid gray', borderRadius: "10px 0px 0px 10px", borderBottom: "1px solid", padding: '4px 5px 9px 5px', display: 'inline-block', background: "linear-gradient(42deg, #e7fae8, transparent)", margin: '10px' }}>
+                                        <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 15px' }}>
+                                            <ThumbDownOffAltIcon className='h-[30px] w-[30px] text-red-500' />
+                                            <span className="text-sm font-semibold" style={{ marginLeft: "5px" }}>Rejected Task</span>
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 15px' }}>
+                                            <DateRangeOutlinedIcon className='h-[30px] w-[30px]  text-red-500' />
+                                            <p className="text-sm ml-2 text-green-700">Date</p>
+                                            <span className="text-sm" style={{ marginLeft: "5px" }}>{item.details[0].firstResponseOn?.split("|")[0]}</span>
+
+                                            <AccessTimeOutlinedIcon className='h-[30px] w-[30px] text-red-500 ml-5' />
+                                            <span className="text-sm" style={{ marginLeft: "5px" }}>{item.details[0].firstResponseOn?.split("|")[1]}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-2 ml-auto flex justify-end mb-2">
+                                        <p
+                                            className="text-xs mt-1 font-semibold   text-center rounded-full  flex items-center justify-center relative cursor-pointer max-w-[200px] min-w-[150px] h-[30px]"
+                                            style={{ paddingLeft: "10px", background: "#ff7676", color: "white", border: '2px solid #000000', }}
+                                            onClick={() => handleChoosenCase(item)}
+                                        >
+                                            View Case
+                                            <img
+                                                src={viewcase}
+                                                className="absolute left-2 h-[20px] w-[20px]"
+                                                alt="history icon"
+                                            />
+                                        </p>
+                                    </div>
+
+
+                                </div>
+
+                            {/* <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", marginTop: "30px" }}>File No: </p>
@@ -416,7 +485,7 @@ const CraneRejectedOrder = ({ data }) => {
 
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     ))}
                     </div>
@@ -432,18 +501,17 @@ const CraneRejectedOrder = ({ data }) => {
                         backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
                         zIndex: 1001,
                         display: "flex",
-                        alignItems: "flex-end", // positions the container at the bottom
+                        // alignItems: "flex-end", // positions the container at the bottom
                         justifyContent: "center",
                         animation: "slideUp 0.5s ease-out",
                     }}>
 
-                        <div className="image-container" >
-                            <div className="background-image"></div>
+                        <div  >
                             <img
                                 src={crossUser}
                                 onClick={() => setOpenDetails(false)}
                                 style={{
-                                    position: "fixed",
+                                    position: "static",
                                     // top: "-10px",
                                     left: "calc(100% - 80px)",
                                     width: "25px",
@@ -451,9 +519,12 @@ const CraneRejectedOrder = ({ data }) => {
                                     cursor: "pointer",
                                     zIndex: 1001,
                                     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
-                                    bottom: "360px"
+                                    bottom: "360px",
+                                    margin:'20px 0px 0px 50px'
                                 }}
                             />
+                        </div>
+                        <div className="image-container" style={{position:"static",boxShadow:"none", borderRadius:"10px 10px 0px 0px"}}>
                             <VendorMoving item={choosenCase[0]} />
                         </div>
                     </div>
