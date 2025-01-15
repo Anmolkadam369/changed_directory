@@ -450,7 +450,7 @@ const Admin = () => {
         startingPage(true);
     }
 
-    console.log("getData.randomId", getData.randomId)
+    console.log("getData.randomId", getData)
 
     return (
         <div>

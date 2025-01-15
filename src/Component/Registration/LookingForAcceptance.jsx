@@ -16,6 +16,8 @@ import CallIcon from '@mui/icons-material/Call';
 const LookingForAccptance = (props) => {
     const navigate = useNavigate()
     console.log("props.accidentData", props.fromPage)
+    console.log("props.accidentData", props)
+
     return (
         <div style={{
             background: "linear-gradient(217deg, rgb(236 236 236), transparent)",

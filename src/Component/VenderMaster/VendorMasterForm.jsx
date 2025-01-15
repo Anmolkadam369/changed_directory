@@ -656,7 +656,7 @@ const VendorMasterForm = () => {
       </Helmet>
 
       <div className='switchparent-container'>
-       a <div className="switch-container">
+        <div className="switch-container">
           <FormControlLabel
             control={<Android12Switch defaultChecked />}
             checked={singleVendor}

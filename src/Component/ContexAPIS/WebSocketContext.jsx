@@ -8,7 +8,7 @@ export const WebSocketProvider = ({ children }) => {
     const socketRef = useRef(null); // Ref to store the WebSocket instance
 
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:3001");
+        const ws = new WebSocket("wss://claimpro.in/ws/");
         socketRef.current = ws; // Store the WebSocket instance in the ref
 
         ws.onopen = () => {

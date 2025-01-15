@@ -901,7 +901,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
                                                 {/* Input Panel */}
                                                 <div
-                                                    className={`bg-white mt-5 p-4 rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
+                                                    className={`bg-white pt-5 p-4  rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
                                                     style={{
                                                         transform: panelOpen ? 'translateY(0)' : 'translateY(100%)',
                                                         position: panelOpen ? 'fixed' : 'absolute',
@@ -974,6 +974,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     </div>
 
                                                     {/* Panel content */}
+
+
+                                                    <div className='position max-h-[500px] overflow-y-auto'> 
                                                     <LocationSearchPanel
                                                         suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
                                                         setPanelOpen={setPanelOpen}
@@ -982,6 +985,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                         setDropLocation={setDropLocation}
                                                         activeField={activeField}
                                                     />
+                                                    </div>
                                                 </div>
                                                 <div ref={vehiclePanelRef} style={{zIndex:"1001"}}  className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
                                                     <VehiclePanel setVehicleType={setVehicleType} setConfirmVehicle={setConfirmVehicle} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />

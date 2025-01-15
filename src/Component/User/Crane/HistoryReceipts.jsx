@@ -238,10 +238,15 @@ const HistoryReceipts = ({ vehicleNumber }) => {
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info?.[`${currentService}Details`]?.confirmDoneWorking == true
+                info?.[`${currentService}Details`]?.confirmDoneWorking == true &&
+                info?.[`${currentService}Details`]?.customerAcceptedVendor == true &&
+             info?.[`${currentService}Details`]?.cancelOrder == false && info?.[`${currentService}Details`]?.cancelPreAssignOrder == false && 
+             info?.[`${currentService}Details`]?.completeOrder == true
             );
             let notCompleted = response.data.data.filter((info) =>
-                info?.[`${currentService}Details`]?.confirmDoneWorking == false
+                info?.[`${currentService}Details`]?.confirmDoneWorking == false &&
+             info?.[`${currentService}Details`]?.cancelOrder == false && info?.[`${currentService}Details`]?.cancelPreAssignOrder == false && 
+             info?.[`${currentService}Details`]?.completeOrder == false
             )
             setFiltering(filteredData)
             setFilteredData(filteredData);
@@ -339,8 +344,8 @@ const HistoryReceipts = ({ vehicleNumber }) => {
             <div  style={{ height: '100vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
                 <div className="container h-100">
-                    <div className="d-flex justify-content-center h-100">
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                    <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
                             <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}   onChange={(e)=>{handleSearch(e.target.value)}} />
                             <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
                         </div>
@@ -391,8 +396,8 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                                 <div style={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '0px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0, fontWeight: "bold" }}>Current Status:</p>
-                                        {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (<span style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', fontWeight: "bold" }}>Completed</span>)}
-                                        {item?.[`${currentService}Details`]?.customerAcceptedVendor == false && (<span style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', fontWeight: "bold" }}>Processing</span>)}
+                                        {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && item?.[`${currentService}Details`]?.cancelOrder == false && item?.[`${currentService}Details`]?.cancelPreAssignOrder == false && item?.[`${currentService}Details`]?.completeOrder == true   && (<span style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', fontWeight: "bold" }}>Completed</span>)}
+                                        { item?.[`${currentService}Details`]?.cancelOrder == false && item?.[`${currentService}Details`]?.cancelPreAssignOrder == false && item?.[`${currentService}Details`]?.completeOrder == false && (<span style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px", fontSize: "12px", borderRadius: "10px", color: 'green', fontWeight: "bold" }}>Processing</span>)}
 
                                     </div>
 
@@ -436,7 +441,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                 ))}
                 </div>
             )}
-            </div>
+            </div> 
 
             {isHistoryPage && (
                 <div
@@ -573,10 +578,6 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                     </div>
                 </div>
             )}
-            {/* 
-            {viewReceipts && (
-                <ReceiptsUser/>
-            )} */}
 
             <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
                 {openFilterModal && (

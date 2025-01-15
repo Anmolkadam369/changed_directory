@@ -157,11 +157,11 @@ const CraneFirstPage = () => {
 
             <Modal isOpen={openServiceModal} onClose={() => setOpenServiceModal(!openServiceModal)}>
                 {openServiceModal && (
-                    <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('advocate')}>Advocate</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('crane')}>Crane</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('mechanic')}>Mechanic</p>
-                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('workshop')}>Workshop</p>
+                    <div style={{ textAlign: "center", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('advocate')}>Advocate</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('crane')}>Crane</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('mechanic')}>Mechanic</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('workshop')}>Workshop</p>
                     </div>
                 )}
             </Modal>

@@ -189,7 +189,7 @@ export default function AddNewVehicle() {
 
 
     return (
-        <div className="mb-5 mt-5">
+        <div style={{marginBottom:"100px"}} className="mb-10 mt-5">
             <div className="relative m-2 mt-3 p-2 flex justify-between bg-[#ff7777] rounded-xl">
                 <div className="p-2 mt-1 absolute inset-0 flex flex-col justify-start text-white md:static md:items-start md:justify-start">
                     <div className="flex">

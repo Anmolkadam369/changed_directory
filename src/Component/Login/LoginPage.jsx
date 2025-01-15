@@ -175,7 +175,7 @@ console.log({email :  encryptedEmail.encryptedData,
 
         setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
 
-        console.log("RESPONSEONDSTS", response.data.data)
+        console.log("RESPONSEONDSTS", response.data.data.userType )
         if (response.data.data?.userType === "admin" ||
           response.data.data.department?.trim() === "Management") {
           localStorage.setItem("userRole", "Management");
@@ -224,7 +224,6 @@ console.log({email :  encryptedEmail.encryptedData,
           localStorage.setItem("fromLogin", true)
           navigate('../user-landing-page');
         }
-
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'An error occurred';

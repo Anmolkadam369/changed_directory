@@ -95,34 +95,36 @@ const MapForVendorDistance = () => {
     }, [map, currentLocation, accidentLatitude, accidentLongitude]);
 
     return (
-        <div style={{height:"30vh"}}>
+        <div style={{ height: "30vh" }}>
             {currentLocation && (
 
-                        <MapContainer
-                            center={[accidentLatitude || currentLocation.latitude, accidentLongitude || currentLocation.longitude]}
-                            zoom={14}
-                   a         whenCreated={setMap}
-                            style={{ height: "100%", width: "100%" }}
-                        >
-                            <TileLayer
-                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'
-                            />
-                            <Marker
-                                 position={[
-                                    accidentLatitude || currentLocation.latitude,
-                                    accidentLongitude || currentLocation.longitude,
-                                ]}
-                                icon={accidentIcon}
-                            >
-                                <Popup>Current Location</Popup>
-                            </Marker>
-                            {vendorLatitude && vendorLongitude && (
-                                <Marker position={[vendorLatitude, vendorLongitude]} icon={markerIcon}>
-                                    <Popup>Vendor Location</Popup>
-                                </Marker>
-                            )}
-                        </MapContainer>
+                <MapContainer
+                    center={[
+                        accidentLatitude || currentLocation.latitude,
+                        accidentLongitude || currentLocation.longitude,
+                    ]}
+                    zoom={14}
+                    style={{ height: "100%", width: "100%" }}
+                >
+                    <TileLayer
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                        attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'
+                    />
+                    <Marker
+                        position={[
+                            accidentLatitude || currentLocation.latitude,
+                            accidentLongitude || currentLocation.longitude,
+                        ]}
+                        icon={accidentIcon}
+                    >
+                        <Popup>Current Location</Popup>
+                    </Marker>
+                    {vendorLatitude && vendorLongitude && (
+                        <Marker position={[vendorLatitude, vendorLongitude]} icon={markerIcon}>
+                            <Popup>Vendor Location</Popup>
+                        </Marker>
+                    )}
+                </MapContainer>
 
             )}
         </div>

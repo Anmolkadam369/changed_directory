@@ -95,7 +95,7 @@ const VendorMoving = ({ item }) => {
 
     const reachedLocation = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}`, {
+            let response = await axios(`${backendUrl}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}/${userId}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -115,11 +115,34 @@ const VendorMoving = ({ item }) => {
             setAlertType("danger"); // Bootstrap alert type for error
         }
 
-        // Hide the alert automatically after 5 seconds
         setTimeout(() => {
             setAlertMessage(null);
         }, 5000);
     };
+
+    const workDone = async () => {
+        try {
+            let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
+                method: 'PUT',
+                headers: {
+                    Authorization:  `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (response.data.status) {
+                setAlertMessage("Updated successfully!");
+                setAlertType("success"); // Bootstrap alert type for success
+            }
+            else {
+                setAlertMessage("There is some issue.");
+                setAlertType("danger"); // Bootstrap alert type for error
+            }
+        }
+        catch (error) {
+            setAlertMessage(`An error occurred: ${error.message}`);
+            setAlertType("danger"); // Bootstrap alert type for error
+        }
+    }
 
     const goToMap = () => {
         navigate('/map-vendor-distance', {
@@ -321,8 +344,8 @@ const VendorMoving = ({ item }) => {
                                 justifyContent: "center",
                                 position: "relative",
                                 cursor: "pointer"
-                            }} onClick={() => viewData(item.AccidentVehicleCode, item.details[0])}>
-                                Updation of work<KeyboardDoubleArrowLeftIcon style={{
+                            }} onClick={workDone}>
+                                Work Done<KeyboardDoubleArrowLeftIcon style={{
                                     position: 'absolute',
                                     right: "10px"
                                 }} />

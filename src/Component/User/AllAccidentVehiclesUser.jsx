@@ -205,7 +205,7 @@ const AllAccidentVehiclesUser = () => {
     const vendorReached = async (item, action) => {
         try {
 
-            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}`, {
+            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${userId}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,

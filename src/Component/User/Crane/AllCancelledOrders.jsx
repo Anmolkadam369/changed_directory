@@ -15,7 +15,12 @@ import comingCrane from '../../../Assets/comingCrane.png'
 import checksuccess from '../../../Assets/checksuccess.png'
 import ratingStar from '../../../Assets/ratingStar.png'
 import dropReason from '../../../Assets/dropReason.png'
-
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
 
 const AllCancelledOrders = ({ vehicleNumber }) => {
     const [preCancelledOrders, setPreCancelledOrders] = useState([]);
@@ -282,8 +287,8 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
 
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
                         <div className="container h-100">
-                            <div className="d-flex justify-content-center h-100">
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={(e) => { handleSearch(e.target.value) }} />
                                     <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
                                 </div>
@@ -312,34 +317,39 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                         margin: "10px",
                                         boxShadow: "rgba(0, 0, 0, 0.2) 3px 4px 12px 8px",
                                         padding: "10px",
-                                        maxWidth: "400px"
+                                        maxWidth: "400px",
+                                        borderRadius:'20px'
                                     }}
                                     key={dataIndex} // Ensure `dataIndex` is unique or use a unique property from `item`
                                 >
                                     <div style={{ background: "20px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                                            <div style={{ display: "flex", alignItems: "center", margin: "20px 5px 0px 10px" }}>
-                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                                <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.reg}</span>
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 2px' }}>
+                                                <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
+                                                <span className='text-s font-semibold' style={{ marginLeft: "5px" }}>{item.reg}</span>
                                             </div>
-                                            <div style={{ marginTop: "5px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
+                                            <div style={{ marginTop: "5px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' , height:'30px'}}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
                                         </div>
 
-                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Order:</p>
+                                        <hr className="m-1 mb-3"/>
+
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 10px 5px' }}>
+                                            <p className="text-xs text-green-700 mr-1">Registered</p>
+                                            <AppRegistrationIcon className='h-[30px] w-[30px]' />
                                             <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.filedCaseFullyTime.split("|")[0]}</span>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Time:</p>
+                                            <AccessTimeIcon className='h-[30px] w-[30px] mr-[0px] ml-[15px]' />
                                             <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.filedCaseFullyTime.split("|")[1]}</span>
                                         </div>
-                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Cancelled Order:</p>
+                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 10px 5px' }}>
+                                        <p className="text-xs text-red-700 mr-1">Cancelled</p>
+                                            <CancelPresentationIcon className='h-[30px] w-[30px]' />
                                             <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.cancelledAt.split("|")[0]}</span>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Time:</p>
+                                            <AccessTimeFilledIcon className='h-[30px] w-[30px] mr-[0px] ml-[15px]' />
                                             <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.cancelledAt.split("|")[1]}</span>
                                         </div>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                            <div style={{ display: "flex", alignItems: "center", margin: "0px 5px 0px 10px" }}>
-                                                <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Current Status:</p>
+                                            <div style={{ display: "flex", alignItems: "center", margin: "0px 5px 10px 10px" }}>
+                                                <SignalWifiStatusbarNullIcon className='h-[30px] w-[30px]' />
                                                 {selectedIndex === 0 && (
                                                     <span
                                                         style={{
@@ -347,9 +357,9 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                                             alignItems: "center",
                                                             justifyContent: "center",
                                                             padding: "5px",
-                                                            fontSize: "12px",
+                                                            fontSize: "14px",
                                                             borderRadius: "10px",
-                                                            color: "#000329",
+                                                            color: "#ff0000",
                                                             fontWeight: "bold",
                                                         }}
                                                     >
@@ -363,9 +373,9 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                                             alignItems: "center",
                                                             justifyContent: "center",
                                                             padding: "5px",
-                                                            fontSize: "12px",
+                                                            fontSize: "14px",
                                                             borderRadius: "10px",
-                                                            color: "#000329",
+                                                            color: "#ff0000",
                                                             fontWeight: "bold",
                                                         }}
                                                     >
@@ -406,7 +416,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                                 }}
                                                 onClick={(e) => getStageAndHistory(item, dataIndex)}
                                             >
-                                                See Order Status
+                                                Order Status
                                                 <img
                                                     src={historyUser}
                                                     style={{
@@ -439,7 +449,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                                 }}
                                                 onClick={(e) => getReason(item, dataIndex)}
                                             >
-                                                 Drop Reason
+                                                Reason
                                                 <img
                                                     src={dropReason}
                                                     style={{
@@ -606,7 +616,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                 left: 0,
                                 width: "100%",
                                 height: "100%",
-                                backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
+                                backgroundColor: "#00000052", // semi-transparent background
                                 zIndex: 1000,
                                 display: "flex",
                                 alignItems: "flex-end", // positions the container at the bottom

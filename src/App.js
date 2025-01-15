@@ -152,13 +152,11 @@ function App() {
             <Route path='/SuccessIcon' element={<SuccessIcon />} />
             <Route path='/ErrorIcon' element={<ErrorIcon />} />
 
-            <Route path='/Admin' element={<ProtectedRoute element={<Admin />} requiredRole={['Management', "IT"]} />} />
+            <Route path='/Admin' element={<ProtectedRoute element={<Admin />}  />} />
 
             <Route path='/moving-vehicle' element={<ProtectedRoute element={<MovingVehicles />} />} />
             <Route path='/crane-driver-home' element={<ProtectedRoute element={<CraneDriverHome/>}/>}/>
             <Route path='/ride-popup' element={<ProtectedRoute element={<RidePopUp/>}/>}/>
-
-
             
             <Route path='/CompletePayment' element={<CompletePayment />} requiredRole="customer" />
             <Route path='/User-landing-page' element={<ProtectedRoute element={<FirstPage />} requiredRole="customer" />} />

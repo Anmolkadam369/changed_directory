@@ -260,7 +260,6 @@ export default function AllVehicles() {
         console.log(item.vehicleNo)
         const gotItem = accidentData.find((accidentItem) => {
             console.log(item.vehicleNo, accidentItem.reg)
-
             return (accidentItem.reg == item.vehicleNo)
         })
         console.log("GOTITEM", gotItem)
@@ -363,10 +362,9 @@ export default function AllVehicles() {
                             // pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
                         }}>
                             <div className="d-flex justify-content-center h-100">
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px", zIndex: "1" }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "100px",maxWidth: "150px", zIndex: "1" }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={handleSearch} />
                                     <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-
                                 </div>
                                 {selectedIndex == 0 && (
                                     <div style={{ margin: "23px 20px 0px", zIndex: "1" }}>
@@ -374,23 +372,11 @@ export default function AllVehicles() {
                                     </div>
                                 )}
                                 {selectedIndex == 1 && (
-                                    <div style={{ position: 'relative', margin: "1px 20px 0px" }}>
-                                        <img
-                                            src="your-image-url.jpg" // Replace with your image URL
-                                            alt="Background"
-                                            style={{ width: '100%', height: 'auto' }}
-                                        />
-                                        <div
-                                            style={{
-                                                position: 'absolute',
-                                                top: '10px', // Adjust as needed
-                                                left: '10px', // Adjust as needed
-                                                zIndex: 1,
-                                                background: 'red',
-                                                padding: '10px',
-                                                borderRadius: '50%', // Makes it round
-                                            }}
-                                        >
+                                    <div  onClick={navigateToNewVehicle} className='flex px-4 mr-3 text-sm' style={{ position: 'fixed',background: 'slategrey',borderRadius:"20px", bottom:10, right:0 , marginBottom:"50px" , gap:'10px', zIndex:'1001' }}>
+                                        <p style={{ width: '100%', textAlign:'center',color:"white", height: 'auto', marginTop:"10px" }}>
+                                            New Vehicles
+                                        </p>
+                                        <div className='mt-2 mb-2'>
                                             <AddBoxIcon
                                                 style={{
                                                     height: '20px',
@@ -398,7 +384,7 @@ export default function AllVehicles() {
                                                     color: '#ffffff',
                                                     cursor: 'pointer',
                                                 }}
-                                                onClick={navigateToNewVehicle}
+                                               
                                             />
                                         </div>
                                     </div>
@@ -481,8 +467,8 @@ export default function AllVehicles() {
                                 >
                                     {data.map((item, index) => (
                                         <div key={index}>
-                                            <div className='bg-[#dedfe0] w-[90%]  border-[#4b6c6d] shadow-[rgba(75,_108,_109,_0.2)]  rounded-xl m-2'>
-                                                <div className="relative ml-2 mr-2 mt-5 p-2 flex justify-between bg-[#dedfe0] rounded-xl">
+                                            <div style={{background:'linear-gradient(78deg, #d6d5d5, transparent)'}} className=' w-[90%]  border-[#4b6c6d] shadow-[rgba(75,_108,_109,_0.2)]  rounded-xl m-2'>
+                                                <div className="relative ml-2 mr-2 mt-5 p-2 flex justify-between rounded-xl">
                                                     <img
                                                         className="h-[120px] w-[120px] mt-[-50px] "
                                                         src="https://png.pngtree.com/png-clipart/20240308/original/pngtree-3d-free-cargo-delivery-truck-png-image_14540258.png"
@@ -574,9 +560,9 @@ export default function AllVehicles() {
                                         onClick={() => setViewDetails(false)}
                                         style={{
                                             position: "fixed",
-                                            left: "calc(100% - 35px)",
-                                            width: "25px",
-                                            height: "25px",
+                                            left: "calc(100% - 55px)",
+                                            width: "35px",
+                                            height: "35px",
                                             cursor: "pointer",
                                             zIndex: 1001,
                                             filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
@@ -646,15 +632,8 @@ export default function AllVehicles() {
                                             minWidth: "70%",
                                             cursor: "pointer"
                                         }} onClick={goToNewCase} >
-                                            Register as accident vehicle
-                                            <KeyboardDoubleArrowLeftIcon style={{
-                                                position: 'absolute',
-                                                right: "10px"
-                                            }} />
-                                            <KeyboardDoubleArrowRightIcon style={{
-                                                position: 'absolute',
-                                                left: "10px"
-                                            }} />
+                                            Register as Accident
+                                           
                                         </p>
                                     </div>
                                 </div>
@@ -700,16 +679,16 @@ export default function AllVehicles() {
                                         }}
                                         style={{
                                             position: "fixed",
-                                            left: "calc(100% - 35px)",
-                                            width: "25px",
-                                            height: "25px",
+                                            left: "calc(100% - 55px)",
+                                            width: "35px",
+                                            height: "35px",
                                             cursor: "pointer",
                                             zIndex: 1001,
                                             filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
                                         }}
                                     />
 
-                                     <LookingForAccptance accidentData={currentItem} fromPage="quotationUpdate" />
+                                     <LookingForAccptance accidentData={currentItem?.[`${currentService}Details`]} fromPage="quotationUpdate" />
                                 </div>
                             </div>
                         )}
@@ -750,9 +729,9 @@ export default function AllVehicles() {
                                         }}
                                         style={{
                                             position: "fixed",
-                                            left: "calc(100% - 35px)",
-                                            width: "25px",
-                                            height: "25px",
+                                            left: "calc(100% - 55px)",
+                                            width: "35px",
+                                            height: "35px",
                                             cursor: "pointer",
                                             zIndex: 1001,
                                             filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",

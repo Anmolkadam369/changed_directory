@@ -35,6 +35,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import ScaleIcon from '@mui/icons-material/Scale';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
 import PersonIcon from '@mui/icons-material/Person';
+import { Alert } from '@mui/material';
 
 
 
@@ -79,7 +80,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
 
     const [selectedReasons, setSelectedReasons] = useState([]);
-    const [otherReason, setOtherReason] = useState("");
+    const [otherReason, setOtherReason] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -202,6 +203,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
     const [isCancelSecondaryContainerVisible, setIsCancelSecondaryContainerVisible] = useState(false);
     const [selectedSecReasons, setSelectedSecReasons] = useState([]);
     const [otherSecReason, setOtherSecReason] = useState("");
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
     const secReasons = [
         "Too much time taking",
@@ -221,6 +223,10 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const cancelingSecOrder = async (currentItem) => {
         try {
+            const reasons = [...selectedSecReasons, otherSecReason].filter(Boolean);
+            if (reasons.length === 0) {
+                return setAlertInfo({ show: true, message: 'Select Respective Reason', severity: 'error' });
+            }
             const response = await axios({
                 method: "PUT",
                 url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem.AccidentVehicleCode}/${currentService}/${userId}/${currentItem.crane}`,
@@ -369,6 +375,12 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const cancelingOrder = async (currentItem) => {
         try {
+            const reasons = [...selectedReasons, otherReason].filter(Boolean);
+            if (reasons.length === 0) {console.log('insoidre')
+                return setAlertInfo({ show: true, message: 'Select Respective Reason', severity: 'error' });
+                console.log('insoidre1')
+            }
+            console.log('i am here')
             const response = await axios({
                 method: "PUT",
                 url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/${currentService}/${userId}`,
@@ -535,7 +547,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
                     <div className="container " >
                         <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }} >
-                            <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
                                 <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
                                 {/* <a href="#" className="search_icon">
             <i className="fas fa-search"></i>
@@ -754,8 +766,8 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                     position: "absolute",
                                     top: "-10px", // Position slightly above the container
                                     left: "50%",
-                                    width: '25px',
-                                    height: '25px',
+                                    width: '35px',
+                                    height: '35px',
                                     cursor: "pointer",
                                     zIndex: 1001, // Ensure it’s above other elements
                                     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"
@@ -921,7 +933,8 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                             boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
                             maxWidth: "600px",
                             width: "97%",
-                            marginBottom: "20px"
+                            marginBottom: "20px",
+                            overflowY:'auto'
                         }}>
 
                             <div className="background-image"></div>
@@ -1042,7 +1055,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                                 {errorMessage && <div style={{ color: "red", margin: "10px 10px 20px 10px", marginBottom: "10px" }}>{errorMessage}</div>}
 
 
-                                                <div>
+                                                <div className='pb-10'>
                                                     {isLoading && (
                                                         <div style={{ marginTop: '10px', display: "flex", justifyContent: "center", alignItems: 'center' }}>
                                                             <ClipLoader color="black" loading={isLoading} />
@@ -1052,6 +1065,11 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                                     {alreadyCancelled && (<div class="alert alert-danger" role="alert">
                                                         You have already Cancelled Case !!!
                                                     </div>)}
+                                                    {alertInfo.show && (
+                                                                <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                                                  {alertInfo.message}
+                                                                </Alert>
+                                                    )}
                                                     <p type="submit"
                                                         style={{
                                                             fontSize: '11px',
@@ -1370,10 +1388,10 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                 style={{
 
                                     position: "absolute",
-                                    top: "-10px", // Position slightly above the container
+                                    top: "40px", // Position slightly above the container
                                     left: "50%",
-                                    width: '25px',
-                                    height: '25px',
+                                    width: '35px',
+                                    height: '35px',
                                     cursor: "pointer",
                                     zIndex: 1001, // Ensure it’s above other elements
                                     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"

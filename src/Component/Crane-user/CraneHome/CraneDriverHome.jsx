@@ -134,14 +134,16 @@ const CraneDriverHome = () => {
 
     useEffect(() => {
         if (totalAssignedCases.length > 0) {
+            console.log('totakassisdaf', totalAssignedCases)
             const filteredItems = totalAssignedCases.filter((caseItem) => caseItem?.details[0]?.firstResponseOn == null && caseItem?.details[0]?.timedOut == false);
+            console.log('filteredItems', filteredItems)
             setNewCasesItems(filteredItems);
             setNewCase(filteredItems.length > 0);
         } else {
             setNewCasesItems([]);
             setNewCase(false);
         }
-    }, [totalAssignedCases, gotResponse])
+    }, [totalAssignedCases])
 
     const fetchAssignedCases = async () => {
         try {

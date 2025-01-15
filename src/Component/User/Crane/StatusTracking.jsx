@@ -337,7 +337,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     const vendorReached = async (item, action) => {
         try {
 
-            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}`, {
+            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${userId}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -595,8 +595,8 @@ const StatusTracking = ({ vehicleNumber }) => {
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
 
                         <div className="container ">
-                            <div className="d-flex justify-content-center h-100">
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
+                            <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
                                     {/* <a href="#" className="search_icon">
                             <i className="fas fa-search"></i>
