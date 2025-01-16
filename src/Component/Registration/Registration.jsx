@@ -30,6 +30,7 @@ import WaitForVehicleCome from './WaitForVehicleCome';
 import MapForVendorDistance from '../User/MapForVendorDistance';
 import Loading from '../User/Cards/Loading';
 import AddNewData from '../User/Cards/AddNewData';
+import VehicleImagePanel from './VehicleImagePanel';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -95,12 +96,16 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
 
     const [vehicleFound, setVehicleFound] = useState(false)
+    const [vehicleImagesPanel, setVehicleImagesPanel] = useState(false);
+
     const [vehicleType, setVehicleType] = useState(null)
 
     const panelRef = useRef(null)
     const vehiclePanelRef = useRef(null)
     const confirmVehicleRef = useRef(null)
     const vehicleFoundRef = useRef(null)
+    const vehicleImagesPanelRef = useRef(null)
+
 
 
 
@@ -235,6 +240,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+    const [images, setImages] = useState({})
+    console.log('images123', images)
 
     const [photoPreviews, setPhotoPreviews] = useState({
         MajorDamages1: item?.MajorDamages1 || null,
@@ -280,6 +287,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     };
 
 
+
+
     useEffect(() => {
         if (vehicleFound) handleSubmit()
     }, [vehicleFound])
@@ -304,12 +313,15 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const [cities, setCities] = useState([]); // State to hold the list of cities
     const [isLoadingCities, setIsLoadingCities] = useState(true);
     const [isLoadingStates, setIsLoadingStates] = useState(true);
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isRecoveryVan, setIsRecoveryVan] = useState(item?.isRecoveryVan || false);
     const [successDone, setSuccessDone] = useState(false);
     const [pickupSuggestions, setPickupSuggestions] = useState([])
     const [destinationSuggestions, setDestinationSuggestions] = useState([])
+
+
 
 
     const { state } = useLocation();
@@ -512,7 +524,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     let accidentDataObject
 
 
-    accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...photos, ...comingVehicle, ...getData, latitude, longitude, pickupLocation, dropLocation, dropLatitude, dropLongitude, selectedOptions: finalSelectedService };
+    accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget,...images, ...photos, ...comingVehicle, ...getData, latitude, longitude, pickupLocation, dropLocation, dropLatitude, dropLongitude, selectedOptions: finalSelectedService };
     console.log("accidentDataObject123445", accidentDataObject)
 
     useGSAP(function () {
@@ -541,7 +553,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 opacity: 1,
                 duration: 1,
                 ease: 'power-3.inOut',
-                zIndex: '1000',
+                zIndex: '1001',
+                boxShadow:'inset -1px -6px 20px 0px #020202'
             });
         } else {
             gsap.to(vehiclePanelRef.current, {
@@ -552,6 +565,30 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
             });
         }
     }, [vehiclePanel]);
+
+    useGSAP(function () {
+        if (vehicleImagesPanel) {
+            gsap.to(vehicleImagesPanelRef.current, {
+                transform: 'translateY(0%)',
+                opacity: 1,
+                duration: 1,
+                ease: 'power-3.inOut',
+                zIndex: '1001',
+                boxShadow:'inset -1px -6px 20px 0px #020202',
+                height:'400px',
+                overflowY:'auto'
+
+            });
+        } else {
+            gsap.to(vehicleImagesPanelRef.current, {
+                transform: 'translateY(100%)',
+                opacity: 0,
+                duration: 0,
+                zIndex: '-1',
+                height:'0px'
+            });
+        }
+    }, [vehicleImagesPanel]);
     
     useGSAP(function () {
         if (confirmVehicle) {
@@ -793,7 +830,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                     </div>
                                     {/* <span className="cd-paragraph-clean Registrationdetails-elem-8"> */}
 
-                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No <span className='text-xs font-semibold text-red-500'>(select vehicle)</span></p>
+                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No </p>
                                     
                                     {/* </span> */}
                                     <div style={{ display: "flex", marginBottom: "20px" }}>
@@ -901,8 +938,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
                                                 {/* Input Panel */}
                                                 <div
-                                                    className={`bg-white pt-5 p-4  rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
                                                     style={{
+                                                        paddingTop: panelOpen ?'70px':'20px',
                                                         transform: panelOpen ? 'translateY(0)' : 'translateY(100%)',
                                                         position: panelOpen ? 'fixed' : 'absolute',
                                                         zIndex: panelOpen ? '100' : '1000',
@@ -911,6 +948,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                         width: '100%',
                                                         transition: panelOpen ? 'transform 0.3s ease-in-out, opacity 0s' : 'none', // Apply instant opacity change when not open
                                                       }}
+                                                    className={`bg-white   pl-4 pr-4 pb-4 rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
                                                 >
                                                     <h5 className="text-sm text-black font-semibold mb-3 text-left">Book Vehicle Now</h5>
                                                     <div
@@ -961,6 +999,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                         height: panelOpen ? '100%' : '0%', 
                                                         opacity: panelOpen ? 1 : 1,
                                                         paddingTop: panelOpen ? '20px' : '0',
+
                                                     }}
                                                 >
                                                     {/* Close Icon */}
@@ -988,10 +1027,13 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     </div>
                                                 </div>
                                                 <div ref={vehiclePanelRef} style={{zIndex:"1001"}}  className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
-                                                    <VehiclePanel setVehicleType={setVehicleType} setConfirmVehicle={setConfirmVehicle} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
+                                                    <VehiclePanel setVehicleType={setVehicleType} setVehicleImagesPanel={setVehicleImagesPanel} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
+                                                </div>
+                                                <div ref={vehicleImagesPanelRef} style={{zIndex:"1001"}}  className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
+                                                    <VehicleImagePanel setImages={setImages} setConfirmVehicle={setConfirmVehicle}  setVehicleImagesPanel={setVehicleImagesPanel} setVehiclePanel={setVehiclePanel}/>
                                                 </div>
                                                 <div ref={confirmVehicleRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
-                                                    <ConfirmedRide vehicleType={vehicleType} accidentData={accidentDataObject} setConfirmVehicle={setConfirmVehicle} setVehiclePanel={setVehiclePanel} setVehicleFound={setVehicleFound} />
+                                                    <ConfirmedRide vehicleType={vehicleType} accidentData={accidentDataObject} setConfirmVehicle={setConfirmVehicle} setVehicleImagesPanel={setVehicleImagesPanel} setVehicleFound={setVehicleFound} />
                                                 </div>
                                                 <div ref={vehicleFoundRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
                                                     <LookingForAccptance vehicleType={vehicleType} accidentData={accidentDataObject} setVehicleFound={setVehicleFound} />

@@ -20,7 +20,7 @@ const ConfirmedRide = (props) => {
         }}>
             <h5 className='p-1 text-center w-[93%] absolute top-0' onClick={() => {
                 props.setConfirmVehicle(false)
-                props.setVehiclePanel(true)
+                props.setVehicleImagesPanel(true)
             }}>  <ExpandMoreIcon /></h5>
             <h3 className='text-2xl font-semibold mb-5'>Confirm Information</h3>
 

@@ -10,8 +10,8 @@ const VehiclePanel = (props) => {
             <div className='text-center top-0 mb-1'>
                 <IconButton
                     onClick={() => {
-                        props.setPanelOpen(true)
                         props.setVehiclePanel(false)
+                        props.setPanelOpen(true)
                     }}
                     className="absolute mb-1 pb-1"
                 >
@@ -21,7 +21,8 @@ const VehiclePanel = (props) => {
             <h3 className='font-mediumn text-base font-bold mb-2'>Choose Vehicle Type</h3>
 
             <div onClick={()=>{
-                props.setConfirmVehicle(true)
+                props.setVehicleImagesPanel(true)
+                props.setVehiclePanel(false)
                 props.setVehicleType('crane')
             }} className='flex bg-[#f5f5f5] rounded-xl active:border-green p-3 w-full items-center justify-between ' style={{ border: "3px solid black" }}>
                 <img className='h-20 w-20 p-2' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGO-VK9DCPXVGAmbx27ErrmIbqaJBMfJcAYw&s" alt="crane" />
@@ -34,7 +35,8 @@ const VehiclePanel = (props) => {
             </div>
 
             <div onClick={()=>{
-                props.setConfirmVehicle(true)
+                props.setVehicleImagesPanel(true)
+                props.setVehiclePanel(false)
                 props.setVehicleType('craneandrecoveryvan')
             }} className='mt-3 flex bg-[#f5f5f5] rounded-xl active:border-green p-3 w-full items-center justify-between ' style={{ border: "3px solid black" }}>
                 <img className='h-[65px] w-[74px] mb-[-15px] p-2' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGO-VK9DCPXVGAmbx27ErrmIbqaJBMfJcAYw&s" alt="crane" />

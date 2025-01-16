@@ -71,7 +71,7 @@ export default function BottomNavigationBar() {
                 onClick={() => { navigate("/user-landing-page") }}
                 icon={<HomeIcon />}
             />)}
-
+s
 
           {userId.startsWith("CC-") && (  <BottomNavigationAction
                 sx={{

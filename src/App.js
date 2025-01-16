@@ -137,6 +137,7 @@ import CraneDriverHome from './Component/Crane-user/CraneHome/CraneDriverHome';
 import RidePopUp from './Component/Crane-user/CraneHome/RidePopUp';
 import CraneUserProfile from './Component/Crane-user/Crane-user-profile/CraneUserProfile';
 import CraneAllVehicles from './Component/Crane-user/CraneAllVehicles';
+import VehicleImagePanel from './Component/Registration/VehicleImagePanel';
 
 function App() {
   return (
@@ -167,6 +168,9 @@ function App() {
             <Route path='/add-new-vehicle-driver' element={<ProtectedRoute element={< AddNewVehicle />} requiredRole="customer" />} />
 
             <Route path='/Crane-dashboard' element={<ProtectedRoute element={<CraneFirstPage />} requiredRole="customer" />} />
+
+
+            <Route path='/vehicleimagepanel' element ={<VehicleImagePanel/>}/>
 
             {/* Crane Dashboard */}
             <Route path='/crane-user-landing-page' element={<ProtectedRoute element={<CraneUserLanding />} requiredRole="crane" />} />
