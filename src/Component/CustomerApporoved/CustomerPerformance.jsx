@@ -5,7 +5,7 @@ import backendUrl from '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import craneadvocatemechanic from '../../Assets/camw.webp'; // Correct import path
 import customerImage from '../../Assets/customer.webp'; // Correct import path
 import complaints from '../../Assets/complaints.webp'; // Correct import path
@@ -18,11 +18,13 @@ import Featured from '../Charts/Featured';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
+import Admin from '../Admin/Admin';
 
-const CustomerPerformance = ({ customerId, onUpdate }) => {
+const CustomerPerformance = () => {
     const [vendorData, setVendorData] = useState([]);
     const [accidentVehData, setAccidentVehData] = useState([]);
     const [allAccidentVehicleData, setAllAccidentVehicleData] = useState([]);
+    const state = useLocation();
     console.log("answer", accidentVehData)
 
     const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
@@ -90,7 +92,7 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     const getAccidentData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${customerId}`,{        headers: {
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
@@ -102,7 +104,7 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${customerId}`);
+            const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${state.customerId}`);
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);
@@ -111,7 +113,7 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${customerId}`,{        headers: {
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)
@@ -137,7 +139,7 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
     });
 
     const handleBack = () => {
-        onUpdate();
+        navigate(-1)
     }
 
     const [currentItems, setCurrentItems] = useState(allAccidentVehicleData);
@@ -218,6 +220,7 @@ const CustomerPerformance = ({ customerId, onUpdate }) => {
 
     return (
         <div className="dashboard">
+            <Admin/>
             <Helmet>
                 <title>Accident Dashboard - Claimpro</title>
                 <meta name="description" content="Dashboard for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors, Customers actions taken." />

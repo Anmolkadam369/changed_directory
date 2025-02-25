@@ -17,6 +17,7 @@ import ImageUpload from "../ImageUpload/ImageUpload"
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
+import Admin from '../Admin/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -168,7 +169,7 @@ const ViewVehicleInfo = () => {
     setShowEditVehicleInfo(true)
     setShowMainContent(false)
     setShowUploadImage(false)
-    // navigate("../VehicleClaimEdit", { state: { id } });
+    navigate("/vehicle-claim-edit", { state: { id } });
   }
 
   const handleUpdate = () => {
@@ -183,7 +184,7 @@ const ViewVehicleInfo = () => {
     setShowEditVehicleInfo(false)
     setShowMainContent(false)
     setShowUploadImage(true)
-    // navigate("../ImageUpload", { state: { id } });
+    navigate("/daily-image-upload", { state: { id } });
   }
 
   const getData = async (e) => {
@@ -290,6 +291,7 @@ const ViewVehicleInfo = () => {
 
   return (
     <div>
+      <Admin/>
       {showMainContent && (<div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px'}}>
         <Helmet>
           <title>Accident Vehicle Infomation - Claimpro</title>
@@ -339,9 +341,9 @@ const ViewVehicleInfo = () => {
         </div>
 
         <div className="container d-flex justify-content-center " style={{marginTop:"10px"}}>
-            <div className="container my-5">
+            <div className="container-for-tables my-5">
               <DataTable
-                  columns={columns}
+                  columns={columns}g
                   data={currentItems}
                   fixedHeader
                   pagination
@@ -354,12 +356,12 @@ const ViewVehicleInfo = () => {
           </div>
 
       </div>)}
-      {showEditVehicleInfo && (
+      {/* {showEditVehicleInfo && (
         <VehicleClaimEdit id={selectedId} onUpdate={handleUpdate} />
-      )}
-      {showUploadImage && (
+      )} */}
+      {/* {showUploadImage && (
         <ImageUpload id={selectedUploadId} onUpdate={handleUpdate} />
-      )}
+      )} */}
     </div>
   );
 

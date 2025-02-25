@@ -276,7 +276,7 @@ const Salesteam = () => {
         console.log("HEY", `${backendUrl}/api/findById/${id}`,{
             headers:{ 'Authorization': `Bearer ${token}`}
         })
-        const response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
+        const response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${id}`);
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);
         setGetData(response.data.data[0])

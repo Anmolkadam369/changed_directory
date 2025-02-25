@@ -1,9 +1,10 @@
-import React from "react";
+import React , {useState} from "react";
 import { Alert, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import PersonIcon from '@mui/icons-material/Person';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcon from '@mui/icons-material/Add';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -12,6 +13,12 @@ import CallIcon from '@mui/icons-material/Call';
 
 const ConfirmedRide = (props) => {
     console.log("props", props.accidentData)
+    const [loading, setLoading] = useState(false);
+    const handleClick = () => {
+        setLoading(true);
+        // props.setConfirmVehicle(false);
+        props.setVehicleFound(true);
+    };
     return (
         <div style={{
             background: "linear-gradient(217deg, #f2f2f2, transparent)",
@@ -26,8 +33,8 @@ const ConfirmedRide = (props) => {
 
             <div className='flex gap-2 justify-between flex-col items-center'>
                 <div>
-                    {props.vehicleType == 'craneandrecoveryvan' && (
-                        <div  className="flex flex-row">
+                    {props.vehicleType == 'crane,recoveryVan' && (
+                        <div className="flex flex-row">
                             <img className='h-[65px] w-[74px] mt-[15px] p-2' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGO-VK9DCPXVGAmbx27ErrmIbqaJBMfJcAYw&s" alt="crane" />
                             <p className="m-1 mt-4 mt-[30px]"><AddIcon /></p>
                             <img className='h-20 w-20 p-2' src="https://toppng.com/uploads/preview/crane-png-indo-power-crane-11563243373unjn5iufbu.png" alt="crane" />
@@ -35,6 +42,11 @@ const ConfirmedRide = (props) => {
                     )}
                     {props.vehicleType == 'crane' && (
                         <div>
+                            <img className='h-20 w-20 p-2' src="https://toppng.com/uploads/preview/crane-png-indo-power-crane-11563243373unjn5iufbu.png" alt="crane" />
+                        </div>
+                    )}
+                     {props.vehicleType == 'recoveryVan' && (
+                        <div className="flex flex-row">
                             <img className='h-20 w-20 p-2' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGO-VK9DCPXVGAmbx27ErrmIbqaJBMfJcAYw&s" alt="crane" />
                         </div>
                     )}
@@ -47,6 +59,8 @@ const ConfirmedRide = (props) => {
                             <p className='text-sm mt-1 text-gray-600'>{props.accidentData.regNo}</p>
                         </div>
                     </div>
+
+
                     <div className='flex items-center gap-5 p-3 border-b-2' style={{ borderBottom: "1px solid black" }}>
                         <PersonIcon />
                         <div>
@@ -61,14 +75,21 @@ const ConfirmedRide = (props) => {
                             <p className='text-sm mt-1 text-gray-600'>{props.accidentData.onSpotContact}</p>
                         </div>
                     </div>
-                   {props.accidentData.quantity != "" && (
-                     <div className='flex items-center gap-5 p-3 border-b-2' style={{ borderBottom: "1px solid black" }}>
-                        <ScaleIcon />
+                    {props.accidentData.quantity != "" && (
+                        <div className='flex items-center gap-5 p-3 border-b-2' style={{ borderBottom: "1px solid black" }}>
+                            <ScaleIcon />
+                            <div>
+                                <h3 className='text-sm font-base'>Quantity</h3>
+                                <p className='text-sm mt-1 text-gray-600'>{props.accidentData.quantity}</p>
+                            </div>
+                        </div>)}
+                    <div className='flex items-center gap-5 p-3 border-b-2' style={{ borderBottom: "1px solid black" }}>
+                        <CheckBoxOutlineBlankIcon />
                         <div>
-                            <h3 className='text-sm font-base'>Quantity</h3>
-                            <p className='text-sm mt-1 text-gray-600'>{props.accidentData.quantity}</p>
+                            <h3 className='text-sm font-base'>Selected Option</h3>
+                            <p className='text-sm mt-1 text-gray-600'>{props.accidentData.selectedOptions}</p>
                         </div>
-                    </div>)}
+                    </div>
                     <div className='flex items-center gap-5 p-3 border-b-2' style={{ borderBottom: "1px solid black" }}>
                         <PushPinIcon />
                         <div>
@@ -85,14 +106,36 @@ const ConfirmedRide = (props) => {
                     </div>
 
                 </div>
-                <button onClick={() => {
-                    props.setConfirmVehicle(false)
-                    props.setVehicleFound(true)
-
-                    // props.setConfirmRidePanel(false)
-                    // props.createRide()
-
-                }} className='w-full mt-3 bg-green-600 text-white font-semibold p-3 rounded-lg'>Confirm Details</button>
+                <button
+                    onClick={handleClick}
+                    className={`w-full mt-3 bg-green-600 text-white font-semibold p-3 rounded-lg flex items-center justify-center ${loading ? "opacity-70 cursor-not-allowed" : ""
+                        }`}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <svg
+                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8H4z"
+                            ></path>
+                        </svg>
+                    ) : null}
+                    {loading ? "Processing..." : "Confirm Details"}
+                </button>
             </div>
         </div>
     )

@@ -173,7 +173,7 @@ export default function AddNewVehicle() {
                         navigate('/crane-all-vehicles')
                     },4000)
                 }
-                setTimeout(()=>{
+              else  setTimeout(()=>{
                     navigate('/register-new-accidentvehicle')
                 },4000)
             }

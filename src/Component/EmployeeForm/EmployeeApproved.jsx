@@ -22,6 +22,7 @@ import ActivationModel from '../Visitors/ActivationModel';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
+import Admin from '../Admin/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -146,7 +147,7 @@ const tableCustomStyles = {
     console.log("myId", id)
     setSelectedId(id);
     setShowEmployeeMasterEdit(true)
-    // navigate("../EmployeeFormEdit", { state: { id } });
+    navigate("/edit-employee", { state: { id : id} });
   }
   const handleUpdate = () => {
     setShowEmployeeMasterEdit(false); // Hide VendorMasterEdit
@@ -346,7 +347,7 @@ const tableCustomStyles = {
 
   return (
     <div>
-
+      <Admin/>
     {!showEmployeeMasterEdit && (<div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
       <Helmet>
         <title>Employee Information - Claimpro</title>
@@ -399,7 +400,7 @@ const tableCustomStyles = {
         )}
        
        <div className="container d-flex justify-content-center " style={{marginTop:"10px"}}>
-            <div className="container my-5">
+            <div className="container-for-tables my-5">
               <DataTable
                   columns={columns}
                   data={currentItems}
@@ -446,9 +447,9 @@ const tableCustomStyles = {
           )}
     </div>)}
 
-    {showEmployeeMasterEdit && (
+    {/* {showEmployeeMasterEdit && (
       <EmployeeFormEdit id={selectedId} onUpdate={handleUpdate}/>
-    )}
+    )} */}
     </div>
   );
 

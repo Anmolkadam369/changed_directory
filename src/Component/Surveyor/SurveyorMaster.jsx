@@ -28,6 +28,7 @@ import vendorsInfo from '../../Assets/vendorsInfo.xlsx';
 import fleetInfo from '../../Assets/fleetInfo.xlsx';
 import { IconButton } from '@mui/material';
 import Sidebar from '../Home/Sidebar';
+import Admin from '../Admin/Admin';
 
 
 const config = {
@@ -613,6 +614,7 @@ const SurveyorMaster = () => {
     return (
         <div>
             {/* <Sidebar/> */}
+            <Admin/>
             <Helmet>
                 <title>Vendor Details - Claimpro</title>
                 <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />

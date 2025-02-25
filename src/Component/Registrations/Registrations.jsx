@@ -12,7 +12,7 @@ import backendUrl from '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import claimproassist from "../../Assets/claimproassistwithoutNameblue.jpg";
+import claimproassist from "../../Assets/claimproimage.png";
 import Header from '../Home/Header';
 import Footer from '../Home/Footer';
 
@@ -453,7 +453,7 @@ const Registrations = () => {
                                             <div className="d-flex justify-content-center h-100" style={{ marginTop: '20px' }}>
                                                 <div className="col-10 col-xl-8 py-3" >
                                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                                        <img src={claimproassist} style={{ width: "90px", height: 'auto' }} alt="company logo" />
+                                                        <img className='mb-2' src={claimproassist} style={{ width: "90px", height: 'auto', }} alt="company logo" />
                                                         <p style={{ alignItems: "center", justifyContent: "center" }}>BVC CLAIM PRO</p>
                                                     </div>
                                                     <hr className="border-primary-subtle mb-4" />
@@ -478,22 +478,22 @@ const Registrations = () => {
                                                                 name="FullName"
                                                                 onChange={handleChange}
                                                                 value={formData.FullName}
-                                                                style={{ border: "1px solid black" }}
+                                                               
 
                                                             />
                                                             <label className="form-label" htmlFor="form3Examplev2">Full Name</label>
                                                         </div>
                                                     </div>
-                                                    <div className=" col-md-6 mb-4">
+                                                    <div className=" col-md-6 mb-4 mt-1">
                                                         <div className="form-outline form-white">
                                                             <input
                                                                 type="tel"
                                                                 name="phone"
-                                                                id="form3Examplea8"
+                                                                id="form3Examplea8" 
                                                                 className="form-control form-control-lg"
                                                                 onChange={handleChange}
                                                                 value={formData.phone}
-                                                                style={{ border: "1px solid black" }}
+                                                               
                                                                 maxLength="10" />
                                                             <label className="form-label" htmlFor="form3Examplea8">Phone Number</label>
                                                         </div>
@@ -513,9 +513,9 @@ const Registrations = () => {
                                                                     data-bs-toggle="dropdown"
                                                                     aria-expanded="false"
                                                                     onClick={toggleDropdown}
-                                                                    style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                                    style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid #d4d4d4' }}
                                                                 >
-                                                                    <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                                                                    <div style={{ display: "flex", justifyContent: "flex-start", width: "100%", fontSize:'11px', fontWeight:'bold' }}>
                                                                         <p style={{ alignItems: "left" }}>{formData.joinInType || "Select Type"}</p>
                                                                     </div>
                                                                 </button>
@@ -523,7 +523,7 @@ const Registrations = () => {
                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Vendor")}>Vendor</a></li>
                                                                     <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect(e, "Customer")}>Customer</a></li>
                                                                 </ul>
-                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Select Type</label>
+                                                                <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "#ff0000", fontSize: "12px" }}>Select Type</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -539,15 +539,16 @@ const Registrations = () => {
                                                                         data-bs-toggle="dropdown"
                                                                         aria-expanded="false"
                                                                         onClick={toggleDropdown1}
-                                                                        style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                                        style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid #d4d4d4' }}
                                                                     >
-                                                                        <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                                                                        <div style={{ display: "flex", justifyContent: "flex-start", width: "100%", fontSize:'11px', fontWeight:'bold' }}>
                                                                             <p style={{ alignItems: "left" }}>{formData.vendorType || "Select Vendor Type"}</p>
                                                                         </div>
                                                                     </button>
                                                                     <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownVendor ? " show" : ""}`} aria-labelledby="dropdownMenuButton1">
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "advocate")}>Advocate</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "crane")}>Crane</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "recoveryVan")}>recovery van</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "mechanic")}>Mechanic</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "workshop")}>Workshop</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "partsDistributor")}>Parts Distributor</a></li>
@@ -555,7 +556,7 @@ const Registrations = () => {
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "surveyor")}>Surveyor</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "scrapBuyer")}>Scrap Buyer</a></li>
                                                                     </ul>
-                                                                    <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Vendor Type</label>
+                                                                    <label className="form-label" htmlFor="dropdownMenuButton" style={{ top: '-10px', left: '8px', color: "#ff0000", fontSize: "12px" }}>Vendor Type</label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -572,10 +573,10 @@ const Registrations = () => {
                                                                         data-bs-toggle="dropdown"
                                                                         aria-expanded="false"
                                                                         onClick={toggleDropdown2}
-                                                                        style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid black' }}
+                                                                        style={{ borderRadius: "5px", padding: "15px", background: 'white', marginTop: "0px", border: '1px solid #d4d4d4' }}
                                                                     >
 
-                                                                        <div style={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                                                                        <div style={{ display: "flex", justifyContent: "flex-start", width: "100%", fontSize:'11px', fontWeight:'bold' }}>
                                                                             <p style={{ alignItems: "left" }}>{formData.customerType || "Select Customer Type"}</p>
                                                                         </div>
                                                                     </button>
@@ -583,7 +584,7 @@ const Registrations = () => {
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "retail")}>Retailer</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect2(e, "fleetOwner")}>Fleet Owner</a></li>
                                                                     </ul>
-                                                                    <label className="form-label" htmlFor="dropdownMenuButton2" style={{ top: '-10px', left: '8px', color: "blue", fontSize: "12px" }}>Customer Type</label>
+                                                                    <label className="form-label" htmlFor="dropdownMenuButton2" style={{ top: '-10px', left: '8px', color: "#ff0000", fontSize: "12px" }}>Customer Type</label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -594,7 +595,7 @@ const Registrations = () => {
                                                 <div className='row'>
                                                     <div className=" col-md-6 mb-4">
                                                         <div className="form-outline form-white">
-                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black",marginTop:"0px" }} />
+                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid #d4d4d4",marginTop:"0px" }} />
                                                             <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
                                                             {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
                                                         </div>
@@ -608,7 +609,7 @@ const Registrations = () => {
                                                                 name="password"
                                                                 onChange={handleChange}
                                                                 value={formData.password}
-                                                                style={{ border: "1px solid black" }}
+                                                               
                                                             />
                                                             <label className="form-label" htmlFor="form3Examplea9">Password</label>
 
@@ -681,7 +682,7 @@ const Registrations = () => {
                                                                 name="FullName"
                                                                 onChange={handleChange}
                                                                 value={formData.FullName}
-                                                                style={{ border: "1px solid black" }}
+                                                               
 
                                                             />
                                                             <label className="form-label" htmlFor="form3Examplev2">Full Name</label>
@@ -694,7 +695,7 @@ const Registrations = () => {
 
                                                     <div className="mb-4">
                                                         <div className="form-outline form-white">
-                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} style={{ border: "1px solid black" }} />
+                                                            <input type="text" id="form3Examplea9" className="form-control form-control-lg" name="email" onChange={handleChange} value={formData.email} />
                                                             <label className="form-label" htmlFor="form3Examplea9">Your Email</label>
                                                             {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
                                                         </div>
@@ -709,7 +710,7 @@ const Registrations = () => {
                                                                 name="password"
                                                                 onChange={handleChange}
                                                                 value={formData.password}
-                                                                style={{ border: "1px solid black" }}
+                                                               
                                                             />
                                                             <label className="form-label" htmlFor="form3Examplea9">Password</label>
 
@@ -737,7 +738,7 @@ const Registrations = () => {
                                                                 name="confirmPassword"
                                                                 onChange={handleChange}
                                                                 value={formData.confirmPassword}
-                                                                style={{ border: "1px solid black" }}
+                                                               
                                                             />
                                                             <label className="form-label" htmlFor="form3Examplea9">Confirm Password</label>
 

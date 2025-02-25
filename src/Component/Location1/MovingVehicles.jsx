@@ -86,7 +86,7 @@ const MovingVehicles = () => {
                                     <p className='text-white font-semibold text-xs'> Reject Case</p>
                                 </div>
                             </div>
-                            <div className='flex flex-col items-center justify-center px-4 py-2'>
+                            <div onClick={() => (window.location.href = 'tel: +91 7800 78 4700')} className='flex flex-col items-center justify-center px-4 py-2'>
                                 <img src={telephonecall} className='h-[30px] w-[30px]' alt="call for help" />
                                 <p className='text-black font-semibold text-xs text-center'> call for help</p>
 

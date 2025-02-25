@@ -25,7 +25,8 @@ import Loading from '../Cards/Loading.jsx';
 
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
-import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
+import NetworkWifiIcon from '@mui/icons-material/NetworkWifi';
+
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
@@ -37,7 +38,7 @@ import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
 
 const StatusTracking = ({ vehicleNumber }) => {
 
-    const navigate = useNavigate()    
+    const navigate = useNavigate()
     const { messages } = useWebSocket();
     const { state } = useLocation();
     const [currentStage, setCurrentStage] = useState([]); // Example stage
@@ -76,21 +77,25 @@ const StatusTracking = ({ vehicleNumber }) => {
     console.log('isImageContainer', isImageContainerVisible)
 
     useEffect(() => {
-        if(messages.length>0){
+        if (messages.length > 0) {
             messages.forEach((message) => {
                 console.log("messages123", message)
                 if (message.forPage == 'crane-user-all-cases') {
-
                     getData();
                 }
             })
         }
-       else getData();
+        else{
+            console.log('currentService12345', currentService)
+        if(currentService != null ){
+             getData();
+            }
+        }
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
         }
-    }, [token, userId, navigate,messages]);
+    }, [token, userId, navigate, messages, currentService]);
 
 
 
@@ -190,10 +195,14 @@ const StatusTracking = ({ vehicleNumber }) => {
     }
 
     const getData = async (e) => {
-        console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
-          'Authorization': `Bearer ${token}`
-        }});
+        console.log("userid", userId, currentService);
+        console.log('currentService1234123', currentService.length, doneFetching)
+    if(currentService !== ''){
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (response.data.message == "No accident vehicle data found.") {
             setData([])
             setDoneFetching(true)
@@ -222,18 +231,19 @@ const StatusTracking = ({ vehicleNumber }) => {
 
             setCurrentItems(response.data.data);
         }
+    }
     };
 
     const goToMap = (item) => {
         console.log("itemfromgotomap", item)
-        console.log("item.accidentLatitude", item.accidentLatitude, "item.accidentLongitude", item.accidentLongitude, "vendorCurrentLatitude", vendorCurrentLatitude, "vendorCurrentLongitude", vendorCurrentLongitude)
+        console.log("item.accidentLatitude", `${item?.[`${currentService}Details`].accidentLatitude}`, "item.accidentLongitude", item.accidentLongitude, "vendorCurrentLatitude", vendorCurrentLatitude, "vendorCurrentLongitude", vendorCurrentLongitude)
         navigate('/map-vendor-distance', {
             state: {
-                accidentLatitude: item.accidentLatitude,
-                accidentLongitude: item.accidentLongitude,
+                accidentLatitude: `${item?.[`${currentService}Details`].accidentLatitude}`,
+                accidentLongitude: `${item?.[`${currentService}Details`].accidentLongitude}`,
                 vendorLatitude: vendorCurrentLatitude,
                 vendorLongitude: vendorCurrentLongitude,
-                vehicleNo: item.vehicleNo,
+                vehicleNo: `${item?.[`${currentService}Details`].vehicleNo}`,
                 fromPage: "statusTracking"
             }
         })
@@ -245,7 +255,8 @@ const StatusTracking = ({ vehicleNumber }) => {
 
     useEffect(() => {
         console.log('data changes', data.length, currentStage.length)
-        if (data.length > 0 ) {
+        console.log('curren4123', doneFetching)
+        if (data.length > 0 && currentService && doneFetching==true) {
             console.log("push avg")
 
             const newAvg = Array(data.length).fill(0);
@@ -258,17 +269,18 @@ const StatusTracking = ({ vehicleNumber }) => {
             })
             setAvg(newAvg);
             setCurrentStage(newCurrentStage);
+            console.log('currentService1231231231231',currentService )
+            // data.forEach((item, index) => {
+            //     console.log("push currentService", `${item?.[`${currentService}Details`][`${currentService}`]}`)
+            //     // console.log("push currentService", `${item?.[`${currentService}Details`].accidentLongitude})
 
-            data.forEach((item, index) => {
-            console.log("push currentService")
-
-                console.log("${item.currentService", `${currentService}`)
-                getVendorLocation(`${item?.[currentService]}`, item.accidentLatitude, item.accidentLongitude, index);
-                getVendorRating(`${item?.[currentService]}`)
-            });
+            //     console.log('hellow', `${item?.[`${currentService}Details`][`${currentService}`]}`, `${item?.[`${currentService}Details`].accidentLatitude}`, `${item?.[`${currentService}Details`].accidentLongitude}`, index)
+            //     getVendorLocation(`${item?.[`${currentService}Details`][`${currentService}`]}`, `${item?.[`${currentService}Details`].accidentLatitude}`, `${item?.[`${currentService}Details`].accidentLongitude}`, index)
+            //     getVendorRating(`${item?.[`${currentService}Details`][`${currentService}`]}`)
+            // });
         }
 
-    }, [data,currentService])
+    }, [data, currentService, doneFetching])
 
 
     function haversine(lat1, lon1, lat2, lon2) {
@@ -315,7 +327,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     }
     const getVendorRating = async (crane) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/customersRating/${crane}`);
+            const response = await axios.get(`${backendUrl}/api/customersRating/${crane}/${crane}`);
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")
@@ -335,9 +347,14 @@ const StatusTracking = ({ vehicleNumber }) => {
         }
     }
     const vendorReached = async (item, action) => {
+        console.log('items', item)
+        console.log('items', `${item[`${currentService}Details`]?.AccidentVehicleCode}`)
+
+        console.log('items2', `${backendUrl}/api/vendorReachedConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${userId}/${currentService}`)
+
         try {
 
-            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${userId}`, {
+            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${userId}/${currentService}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -346,6 +363,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             })
             if (response.data.status) {
                 console.log("updated successfully")
+
                 setSelectedAction(action)
                 getData()
             }
@@ -366,7 +384,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     const workDoneConfirmation = async (item, action) => {
         try {
             setCurrentltem(item)
-            let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${currentService}`, {
+            let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${currentService}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -438,8 +456,8 @@ const StatusTracking = ({ vehicleNumber }) => {
             const searchLower = value; // Use the updated search value directly
 
             const idValue = formattedId.includes(searchLower);
-            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchLower);
-            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(searchLower);
+            const vehicleNoValue = (row?.[`${currentService}Details`]?.vehicleNo ?? '').toLowerCase().includes(searchLower);
+            const chassisNoValue = (row?.[`${currentService}Details`]?.chassisNo ?? '').toLowerCase().includes(searchLower);
 
             return vehicleNoValue || chassisNoValue;
         });
@@ -452,171 +470,166 @@ const StatusTracking = ({ vehicleNumber }) => {
     console.log("{item?.[`${currentService}Details`]?.customerAcceptedVendor", data[0]?.[`${currentService}Details`]?.customerAcceptedVendor)
     console.log("disptan", data.length, doneFetching, distance.length, avg.length)
     return (
-        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))' }}>
+        <div style={{ marginBottom: "60px" }}>
 
             {doneFetching == false && (
                 // <Loading />
 
                 <div>
-                      <div
+                    <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
 
                         }}
                     >
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <div
-                            style={{
-                                filter: "none",
-                                opacity: 1,
-                                pointerEvents: "none",
-                                border: "1px solid teal",
-                                maxWidth: "410px",
-                                minWidth: "280px",
-                                margin: '10px',
-                                boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
-                                borderRadius: "5px",
-                                padding: "10px",
-                                background: "#ffffff"
-                            }}
-                        >
-                            {/* Skeleton for Customer Accepted Vendor */}
-                            <div style={{
-                                height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginBottom: "10px"
-                            }}></div>
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <div
+                                style={{
+                                    filter: "none",
+                                    opacity: 1,
+                                    pointerEvents: "none",
+                                    // border: "2px solid #34882f",
+                                    maxWidth: "410px",
+                                    minWidth: "280px",
+                                    margin: '10px',
+                                    boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                    borderRadius: "20px",
+                                    padding: "10px",
+                                    background: "#ffffff"
+                                }}
+                            >
+                                {/* Skeleton for Customer Accepted Vendor */}
+                                <div style={{
+                                    height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginBottom: "10px"
+                                }}></div>
 
-                            {/* Skeleton for Stages */}
-                            <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
-                                {[...Array(3)].map((_, index) => (
-                                    <div
-                                        key={index}
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                            textAlign: "center",
-                                            position: "relative",
-                                            flex: 1,
-                                        }}
-                                    >
+                                {/* Skeleton for Stages */}
+                                <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
+                                    {[...Array(3)].map((_, index) => (
                                         <div
+                                            key={index}
                                             style={{
-                                                width: "30px",
-                                                height: "30px",
-                                                borderRadius: "50%",
-                                                backgroundColor: "#ccc",
                                                 display: "flex",
+                                                flexDirection: "column",
                                                 alignItems: "center",
-                                                justifyContent: "center",
-                                                zIndex: 1,
-                                                marginBottom: "5px",
+                                                textAlign: "center",
+                                                position: "relative",
+                                                flex: 1,
                                             }}
                                         >
-                                            <div style={{
-                                                width: "20px",
-                                                height: "20px",
-                                                backgroundColor: "#f0f0f0",
-                                                borderRadius: "50%",
-                                            }}></div>
+                                            <div
+                                                style={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    borderRadius: "50%",
+                                                    backgroundColor: "#ccc",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    zIndex: 1,
+                                                    marginBottom: "5px",
+                                                }}
+                                            >
+                                                <div style={{
+                                                    width: "20px",
+                                                    height: "20px",
+                                                    backgroundColor: "#f0f0f0",
+                                                    borderRadius: "50%",
+                                                }}></div>
+                                            </div>
+
+                                            <div
+                                                style={{
+                                                    height: "12px",
+                                                    width: "60%",
+                                                    backgroundColor: "#e0e0e0",
+                                                    borderRadius: "5px",
+                                                }}
+                                            ></div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Skeleton for Additional Info */}
+                                <div style={{ background: "white" }}>
+                                    <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
+                                        <div style={{
+                                            display: 'flex', justifyContent: 'space-between', marginTop: '15px',
+                                            padding: "10px"
+                                        }}>
+                                            <div style={{ width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px" }}></div>
+                                            <div style={{ display: "flex", alignItems: "center", width: "35%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px" }}></div>
                                         </div>
 
-                                        <div
-                                            style={{
-                                                height: "12px",
-                                                width: "60%",
-                                                backgroundColor: "#e0e0e0",
-                                                borderRadius: "5px",
-                                            }}
-                                        ></div>
-                                    </div>
-                                ))}
-                            </div>
+                                        <div style={{
+                                            display: 'flex', justifyContent: 'space-between', padding: '10px'
+                                        }}>
+                                            <div style={{ display: "flex", alignItems: "center", marginRight: "20px" }}>
+                                                <div style={{
+                                                    width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e0e0e0"
+                                                }}></div>
+                                                <div style={{
+                                                    width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginLeft: "10px"
+                                                }}></div>
+                                            </div>
 
-                            {/* Skeleton for Additional Info */}
-                            <div style={{ background: "white" }}>
-                                <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
-                                    <div style={{
-                                        display: 'flex', justifyContent: 'space-between', marginTop: '10px',
-                                        padding: "10px"
-                                    }}>
-                                        <div style={{ width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px" }}></div>
-                                        <div style={{ display: "flex", alignItems: "center", width: "35%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px" }}></div>
-                                    </div>
-
-                                    <div style={{
-                                        display: 'flex', justifyContent: 'space-between', padding: '10px'
-                                    }}>
-                                        <div style={{ display: "flex", alignItems: "center", marginRight: "20px" }}>
-                                            <div style={{
-                                                width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e0e0e0"
-                                            }}></div>
-                                            <div style={{
-                                                width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginLeft: "10px"
-                                            }}></div>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                                <div style={{
+                                                    width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e0e0e0"
+                                                }}></div>
+                                                <div style={{
+                                                    width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginLeft: "10px"
+                                                }}></div>
+                                            </div>
                                         </div>
 
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                            <div style={{
-                                                width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#e0e0e0"
-                                            }}></div>
-                                            <div style={{
-                                                width: "60%", height: "20px", backgroundColor: "#e0e0e0", borderRadius: "5px", marginLeft: "10px"
-                                            }}></div>
+                                        {/* Skeleton for Buttons */}
+                                        <div style={{
+                                            display: "flex", justifyContent: 'center', marginTop: "20px", gap: "10px"
+                                        }}>
+                                            <div
+                                                style={{
+                                                    width: "120px", height: "40px", backgroundColor: "#e0e0e0", borderRadius: "20px"
+                                                }}
+                                            ></div>
+                                            <div
+                                                style={{
+                                                    width: "40px", height: "40px", backgroundColor: "#e0e0e0", borderRadius: "20px"
+                                                }}
+                                            ></div>
                                         </div>
-                                    </div>
 
-                                    {/* Skeleton for Buttons */}
-                                    <div style={{
-                                        display: "flex", justifyContent: 'center', marginTop: "20px", gap: "10px"
-                                    }}>
-                                        <div
-                                            style={{
-                                                width: "120px", height: "40px", backgroundColor: "#e0e0e0", borderRadius: "20px"
-                                            }}
-                                        ></div>
-                                        <div
-                                            style={{
-                                                width: "40px", height: "40px", backgroundColor: "#e0e0e0", borderRadius: "20px"
-                                            }}
-                                        ></div>
-                                    </div>
 
-                                  
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
                 </div>
             )}
             {doneFetching && (
                 <div>
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
-
                         <div className="container ">
                             <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px" }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
-                                    {/* <a href="#" className="search_icon">
-                            <i className="fas fa-search"></i>
-                            </a> */}
                                     <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-
                                 </div>
                                 <div style={{ margin: "23px 20px 0px" }}>
-                                    <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                                    <img src={filterUser} style={{ height: '20px', width: "20px", background: 'linear-gradient(45deg, white, transparent)', borderRadius: "10px", }} onClick={() => setOpenFilterModal(!openFilterModal)} />
                                 </div>
                             </div>
                         </div>
                     </div>
                     {/* {data.length > 0 && doneFetching && distance.length > 0 && avg.length > 0 && ( */}
 
-                    {data.length > 0 && doneFetching  && (
+                    {data.length > 0 && doneFetching && (
                         <div
                             style={{
                                 display: "grid",
-                                gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
 
                             }}
                         >
@@ -625,11 +638,15 @@ const StatusTracking = ({ vehicleNumber }) => {
                                     filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
                                     opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
                                     pointerEvents: isImageContainerVisible ? "none" : "auto",
-                                    border: "1px solid teal",
-                                     maxWidth: "410px", minWidth: "280px", margin: '10px',
-                                      boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
-                                       borderRadius: "5px", padding: "10px",
-                                        background: "#ffffff"
+                                    border: "2px solid #34882f",
+                                    maxWidth: "410px", minWidth: "280px", margin: '10px',
+                                    boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                    borderRadius: "20px", padding: "10px",
+                                    // background: "#ffffff"
+                                    backgroundImage: "url('https://static.vecteezy.com/system/resources/thumbnails/027/101/183/small/a-truck-with-a-trailer-is-driving-on-the-motorway-at-night-with-an-orange-sunny-sunset-in-the-free-photo.jpg')", // ✅ Corrected syntax
+                                    backgroundSize: "cover", // ✅ Ensures the image covers the container
+                                    backgroundPosition: "center", // ✅ Centers the image
+                                    backgroundRepeat: "no-repeat", // ✅ Prevents tiling  
                                 }}>
                                     {item?.[`${currentService}Details`]?.customerAcceptedVendor == true}
                                     <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
@@ -703,7 +720,7 @@ const StatusTracking = ({ vehicleNumber }) => {
                                     </div>
                                     {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (
 
-                                        <div style={{ background: "white" }}>
+                                        <div style={{ background: "#d3d3d3d9", borderRadius:'20px', paddingBottom:'1px' }}>
                                             <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
                                                 <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
 
@@ -711,24 +728,24 @@ const StatusTracking = ({ vehicleNumber }) => {
 
                                                     </div>
                                                     <div
-                                                        className="right-10  flex items-center mt-1"
+                                                        className="right-10  flex items-center mt-1 "
                                                         style={{ margin: '5px 5px 0 5px' }}
                                                     >
                                                         <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
-                                                        <span className="text-xs font-medium ml-2">
-                                                            {item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}
+                                                        <span className="text-sm font-medium ml-2">
+                                                            {item?.[`${currentService}Details`]?.systemDate.split("T")[0]}
                                                         </span>
                                                     </div>
                                                 </div>
 
-                                                <div className='px-2  ' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <div className='px-2' style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 2px' }}>
-                                                        <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
-                                                        <span className='text-sm font-semibold' style={{ marginLeft: "5px" }}>{item.vehicleNo}</span>
+                                                        <LocalShippingOutlinedIcon className='h-[30px] w-[30px] text-red-500' />
+                                                        <span className='text-xl font-semibold' style={{ marginLeft: "5px" }}>{item?.[`${currentService}Details`]?.vehicleNo}</span>
                                                     </div>
 
                                                     <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 1px' }}>
-                                                        <SignalWifiStatusbarNullIcon className='h-[30px] w-[30px] text-red' />
+                                                        <NetworkWifiIcon className='h-[30px] w-[30px] text-green-500' />
                                                         <span className='text-medium font-base' style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 0px 5px 1px", fontSize: "12px", borderRadius: "10px", color: 'blue', fontWeight: 'bold' }}>
                                                             {!item?.[`${currentService}Details`]?.vendorMoved && (
                                                                 <span >Ready to move </span>
@@ -757,7 +774,7 @@ const StatusTracking = ({ vehicleNumber }) => {
                                                     <div class='flex'>
                                                         <SocialDistanceIcon className='m-1' />
                                                         <div className='px-1 py-1 flex-col'>
-                                                            <p className='text-sm font-base'>{distance[dataIndex]} KM</p>
+                                                            <p className='text-sm font-base'>{distance.length !== 0 ? distance[dataIndex] : 0} KM</p>
                                                         </div>
                                                     </div>
 
@@ -776,7 +793,7 @@ const StatusTracking = ({ vehicleNumber }) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex flex-col items-center justify-center px-4 py-2">
+                                                        <div onClick={() => (window.location.href = 'tel: +91 7800 78 4700')} className="flex flex-col items-center justify-center px-4 py-2">
                                                             <img src={telephonecall} className="h-[30px] w-[30px]" alt="call for help" />
                                                         </div>
                                                     </div>
@@ -784,7 +801,7 @@ const StatusTracking = ({ vehicleNumber }) => {
                                                 </div>
                                                 {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (
                                                     <div>
-                                                        <hr />
+                                                        <hr className='mt-2' />
                                                         <div style={{ justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
                                                             {item?.[`${currentService}Details`]?.vendorReached == true && !item?.[`${currentService}Details`]?.approvedReaching && (<p style={{
                                                                 fontSize: '11px',

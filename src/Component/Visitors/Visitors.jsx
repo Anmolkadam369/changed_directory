@@ -22,6 +22,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
+import Admin from '../Admin/Admin';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -520,7 +521,7 @@ const Visitors = () => {
 
     return (
         <div>
-
+            <Admin/>
             <Helmet>
                 <title>Visitors Information - Claimpro</title>
                 <meta name="description" content="Visitors Information For BVC Claimpro Assist" />

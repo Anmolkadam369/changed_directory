@@ -22,6 +22,7 @@ import customerInfo from '../../Assets/customerInfo.xlsx';
 import fleetInfo from '../../Assets/fleetInfo.xlsx';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
+import Admin from '../Admin/Admin';
 
 
 const config = {
@@ -576,6 +577,7 @@ const CustomerMaster = () => {
 
   return (
     <div>
+      <Admin/>
       <Helmet>
         <title>Customer Service - Claimpro</title>
         <meta name="description" content="Customer Service form" />

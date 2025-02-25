@@ -20,6 +20,7 @@ import DataTable from "react-data-table-component";
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TaskIcon from '@mui/icons-material/Task';
 import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
+import Admin from '../Admin/Admin';
 
 const formatDate = (isoDateString) => {
   if (!isoDateString) return "___"; // Handle null or undefined input
@@ -310,6 +311,7 @@ const VendorResponse = () => {
 
   return (
     <div>
+      <Admin/>
       {!showActualVendorResponse && (
         <div className="Customer-master-form" style={{  marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>

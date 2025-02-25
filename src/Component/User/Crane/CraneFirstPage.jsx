@@ -25,6 +25,8 @@ import craneworkdoing from "../../../Assets/crane-work-doing.jpeg"
 import advocatecurrentservice from "../../../Assets/advocatecurrentservice.jpg"
 import mechaniccurrentservice from "../../../Assets/mechaniccurrentservice.jpg"
 import workshopcurrentservice from "../../../Assets/workshopcurrentservice.jpg"
+import recoveryvancurrentservice from "../../../Assets/recovery.jpg"
+
 
 
 
@@ -125,13 +127,14 @@ const CraneFirstPage = () => {
 
             <div style={{ position: "relative", textAlign: "center" }}>
                 <img
-                    src={choosenService == "crane" ? craneworkdoing : choosenService == 'advocate' ? advocatecurrentservice : choosenService === 'mechanic' ? mechaniccurrentservice : workshopcurrentservice}
+                    src={choosenService == "crane" ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTky595ta6n5tvatvhI46BydDACDxrCoe5NDA&s' : choosenService == 'advocate' ? advocatecurrentservice : choosenService === 'mechanic' ? mechaniccurrentservice : choosenService === 'worshop' ? workshopcurrentservice:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiq6dCqQlhX-oYYHc95MTu_us5GLx21hdgO_T2RSp8rmANd678e3VtFJOP_Pj95hkv8Yo&usqp=CAU'}
                     alt="All Accident Vehicles"
                     style={{
-                        maxHeight: "300px",
+                        maxHeight: "200px",
                         width: "100%",
                         objectFit: "cover",
-                        borderRadius: "10px"
+                        // borderRadius: "10px",
+                        marginTop:'160px'
                     }}
                 />
                 <p
@@ -162,6 +165,8 @@ const CraneFirstPage = () => {
                         <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('crane')}>Crane</p>
                         <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('mechanic')}>Mechanic</p>
                         <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('workshop')}>Workshop</p>
+                        <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }} onClick={() => chooseCurrentService('recoveryVan')}>Recovery</p>
+
                     </div>
                 )}
             </Modal>

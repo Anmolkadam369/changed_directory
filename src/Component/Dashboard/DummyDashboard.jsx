@@ -343,7 +343,7 @@ const DummyDashboard = () => {
             });
             console.log("daa", response.data)
             if (response.data.message == "No user found") {
-                response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
+                response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${id}`);
             }
             console.log("daa2", response.data)
 
@@ -459,33 +459,39 @@ const DummyDashboard = () => {
     };
 
     const vendorInfo = () => {
-        resetStates()
-        setVendorOnly(true)
+       navigate('/vendor-view-form');
     }
 
     const customerInfo = () => {
         resetStates()
         setShowViewCustomer(true)
+       navigate('/customer-view-form');
+
     }
+    
 
     const employeeInfo = () => {
         resetStates()
         setShowViewEmployee(true)
+        navigate('/view-employee');
     }
 
     const accidentInfo = () => {
         resetStates()
         setAccidentVehicle(true)
+        navigate('/accident-vehicle');
     }
 
     const claimInfo = () => {
         resetStates()
         setShowVehicleClaimView(true)
+        navigate('/view-accident-vehicle-register-details');
     }
 
     const vendorResponseInfo = () => {
         resetStates()
         setVendorResponsing(true)
+        navigate('/vendor-response');
     }
 
     const visitorsInfo = () => {
@@ -571,9 +577,9 @@ const DummyDashboard = () => {
 
             {dashboardOnly && (
                 <div className="dashboard">
-                    {/* <Admin/> */}
+                    <Admin/>
                     <main className="main-content">
-                        <div style={{ display: 'flex' }}>
+                        <div style={{ display: 'flex', marginTop:'20px' }}>
                             <p
                                 className={`topdivs ${selected === 1 ? 'selected' : ''}`}
                                 onClick={() => handleClick(AllDashboardFunc, 1)}

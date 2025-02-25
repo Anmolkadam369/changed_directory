@@ -23,6 +23,7 @@ import DataTable from "react-data-table-component";
 import SurveyorMasterEdit from './SurveyorMasterEdit.jsx'
 import VendorByMap from '../VendorApproved/VendorByMap.js'
 import SurveyorByMap from './SurveyorByMap.jsx';
+import Admin from '../Admin/Admin.jsx';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -455,6 +456,7 @@ const SurveyorApproved = () => {
 
   return (
     <div>
+      <Admin/>
       {showVendorTable && (
         <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>

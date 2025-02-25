@@ -15,9 +15,10 @@ function Payment() {
   
   const [vehicleNo, setVehicleNo] = useState('')
   const [accidentVehicleCode, setAccidentVehicleCode] = useState('')
-  const [vendorCode, setVendorCode] = useState('')
+  const [vendorCode, setVendorCode] = useState ('')
   const [customerCode, setCustomerCode] = useState('')
   const [vendorType, setVendorType] = useState('')
+  console.log('vendorType' ,vendorType)
 
 
   useEffect (()=>{
@@ -82,6 +83,7 @@ function Payment() {
 
   const handlePayment = async () => {
     try {
+      console.log('hellow', `${backendUrl}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`)
       const orderUrl = `${backendUrl}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`;
       const { data } = await axios.post(orderUrl);
       console.log("orderData", data);

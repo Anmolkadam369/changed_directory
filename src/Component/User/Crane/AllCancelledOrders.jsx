@@ -20,7 +20,7 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
+import SignalWifiBadIcon from '@mui/icons-material/SignalWifiBad';
 
 const AllCancelledOrders = ({ vehicleNumber }) => {
     const [preCancelledOrders, setPreCancelledOrders] = useState([]);
@@ -54,7 +54,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getCancelledOrdersByCustomers/${userId}/${currentService}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${backendUrl}/api/getCancelledOrdersByCustomers/${userId}/${currentService}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         if (response.data.message == "No accident vehicle data found.") {
             setPreCancelledOrders([])
             setPostCancelledOrders([])
@@ -185,8 +185,8 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
             ]);
         }
     }, [currentStage[0]]);
-    const getStage = (filedCaseFullyTime, connectedVendorFully, vendorMovedTime, vendorReachedTime, doneWorkingTime, cancelledAt) => {
-        const stages = [filedCaseFullyTime, connectedVendorFully, vendorMovedTime, vendorReachedTime, doneWorkingTime, cancelledAt]
+    const getStage = (systemDate, connectedVendorFully, vendorMovedTime, vendorReachedTime, doneWorkingTime, cancelledAt) => {
+        const stages = [systemDate, connectedVendorFully, vendorMovedTime, vendorReachedTime, doneWorkingTime, cancelledAt]
         console.log("stage", stages)
         // return stages.filter((item) => item != "")
         return stages;
@@ -194,8 +194,8 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
 
     const getStageAndHistory = (item, index) => {
         console.log("tem?.cancelledAt", item?.cancelledAt)
-        console.log("filedCaseFullyTime, vendorMovedTime, vendorReachedTime, doneWorkingTime, cancelledAt", item?.filedCaseFullyTime, item?.connectedVendorFully ? item?.connectedVendorFullyTime : "hey", item?.customerAcceptedVendor ? item?.customerAcceptedVendorTime : "hey", item?.vendorMoved ? item.vendorMovedTime : "hey", item.vendorReached ? item?.vendorReachedTime : "hey", item.doneWorking ? item?.doneWorkingTime : "hey", item?.cancelledAt)
-        let gotStage = getStage(item?.filedCaseFullyTime, item?.connectedVendorFully ? item?.connectedVendorFullyTime : "", item?.vendorMoved ? item.vendorMovedTime : "", item.vendorReached ? item?.vendorReachedTime : "", item.doneWorking ? item?.doneWorkingTime : "", item?.cancelledAt)
+        console.log("systemDate, vendorMovedTime, vendorReachedTime, doneWorkingTime, cancelledAt", item?.systemDate, item?.connectedVendorFully ? item?.connectedVendorFullyTime : "hey", item?.customerAcceptedVendor ? item?.customerAcceptedVendorTime : "hey", item?.vendorMoved ? item.vendorMovedTime : "hey", item.vendorReached ? item?.vendorReachedTime : "hey", item.doneWorking ? item?.doneWorkingTime : "hey", item?.cancelledAt)
+        let gotStage = getStage(item?.systemDate, item?.connectedVendorFully ? item?.connectedVendorFullyTime : "", item?.vendorMoved ? item.vendorMovedTime : "", item.vendorReached ? item?.vendorReachedTime : "", item.doneWorking ? item?.doneWorkingTime : "", item?.cancelledAt)
         console.log("GOTSTEAG", gotStage)
         setCurrentStage((prevStages) => [gotStage, ...prevStages]);
         setIsHistoryPage(true)
@@ -231,10 +231,11 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
         const value = inputValue?.toLowerCase() ?? searchValue.toLowerCase()
         setSearchValue(value);
         const newRows = filtering.filter((row) => {
+            console.log('red1231', row)
             const formattedId = String(row.id).padStart(4, '0').toLowerCase();
             const idValue = formattedId.includes(value);
-            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(value);
-            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(value);
+            const vehicleNoValue = (row.reg ?? '').toLowerCase().includes(value);
+            const chassisNoValue = (row.accidentFileNo ?? '').toLowerCase().includes(value);
             return idValue || vehicleNoValue || chassisNoValue;
         });
         setData(newRows);
@@ -268,7 +269,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
 
             {doneFetching && (
                 <div>
-                    <div style={{ position: "sticky", top: "50px", zIndex: "999", margin: "20px 20px", marginLeft: "40px" }}>
+                    <div style={{ position: "sticky", top: "60px", zIndex: "999", margin: "20px 20px", marginLeft: "20px", marginBottom: '40px' }}>
                         <div className="imageContainer" style={{ height: "0px" }}>
                             {["Pre Cancelled", "Post Cancelled"].map((text, index) => (
                                 <div
@@ -288,7 +289,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
                         <div className="container h-100">
                             <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px" }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={(e) => { handleSearch(e.target.value) }} />
                                     <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
                                 </div>
@@ -302,8 +303,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                         <div
                             style={{
                                 display: "grid",
-                                gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-                                
+                                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
                             }}
                         >
                             {data.map((item, dataIndex) => (
@@ -313,43 +313,54 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                         gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", // Adjusts number of columns dynamically
                                         gap: "20px", // Adds space between grid items
                                         background: "white",
-                                        border: "1px solid teal",
+                                        border: "1px solid red",
                                         margin: "10px",
                                         boxShadow: "rgba(0, 0, 0, 0.2) 3px 4px 12px 8px",
                                         padding: "10px",
                                         maxWidth: "400px",
-                                        borderRadius:'20px'
+                                        borderRadius: '20px',
+                                        backgroundImage: "url('https://st4.depositphotos.com/1020618/21492/i/450/depositphotos_214923090-stock-photo-truck-with-container-on-road.jpg')", // ✅ Corrected syntax
+                                        backgroundSize: "cover", // ✅ Ensures the image covers the container
+                                        backgroundPosition: "center", // ✅ Centers the image
+                                        backgroundRepeat: "no-repeat", // ✅ Prevents tiling  
                                     }}
                                     key={dataIndex} // Ensure `dataIndex` is unique or use a unique property from `item`
                                 >
-                                    <div style={{ background: "20px" }}>
+                                    <div className="bg-[#fff9f9] mt-3 mb-2 p-1" style={{borderRadius:'20px'}}>
+                                        {/* <img
+                                            // src="https://plus.unsplash.com/premium_photo-1663047256645-80b5bca88566?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dHJ1Y2slMjB3b3Jrc2hvcHxlbnwwfHwwfHx8MA%3D%3Dhttps://media.istockphoto.com/id/512043998/photo/mid-adult-mechanic-repairing-a-truck-in-auto-repair-shop.webp?a=1&b=1&s=612x612&w=0&k=20&c=LZTkIC7ccNYaY_ta8PhBW1uUlUy8ygr-Pok4kZhy4mg="
+                                            src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp24JZKVGQQuMEROCf08KODSeopoLYi3p7ls5HUjNiaUI674PMLPrPmwKu2ZRzuvaSGGM&usqp=CAU'
+                                            alt="Premium Workshop"
+                                            style={{ borderRadius: '20px 20px 0px 0px' }}
+                                            className="w-full h-32 object-none"
+                                        /> */}
                                         <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 2px' }}>
+                                            <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 2px' }}>
                                                 <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
                                                 <span className='text-s font-semibold' style={{ marginLeft: "5px" }}>{item.reg}</span>
                                             </div>
-                                            <div style={{ marginTop: "5px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow' , height:'30px'}}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
+                                            <div style={{ marginTop: "5px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow', height: '30px' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", width: "10px", marginLeft: '3px' }} /></div>
                                         </div>
 
-                                        <hr className="m-1 mb-3"/>
+                                        <hr className="mt-4 mb-3" />
 
                                         <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 10px 5px' }}>
                                             <p className="text-xs text-green-700 mr-1">Registered</p>
                                             <AppRegistrationIcon className='h-[30px] w-[30px]' />
-                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.filedCaseFullyTime.split("|")[0]}</span>
+                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.systemDate.split("T")[0]}</span>
                                             <AccessTimeIcon className='h-[30px] w-[30px] mr-[0px] ml-[15px]' />
-                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.filedCaseFullyTime.split("|")[1]}</span>
+                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.systemDate.split("T")[1]}</span>
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 10px 5px' }}>
-                                        <p className="text-xs text-red-700 mr-1">Cancelled</p>
+                                            <p className="text-xs text-red-700 mr-1">Cancelled</p>
                                             <CancelPresentationIcon className='h-[30px] w-[30px]' />
-                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.cancelledAt.split("|")[0]}</span>
+                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.cancelledAt.split("T")[0]}</span>
                                             <AccessTimeFilledIcon className='h-[30px] w-[30px] mr-[0px] ml-[15px]' />
-                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.cancelledAt.split("|")[1]}</span>
+                                            <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.cancelledAt.split("T")[1]}</span>
                                         </div>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                             <div style={{ display: "flex", alignItems: "center", margin: "0px 5px 10px 10px" }}>
-                                                <SignalWifiStatusbarNullIcon className='h-[30px] w-[30px]' />
+                                                <SignalWifiBadIcon className='h-[30px] w-[30px]' />
                                                 {selectedIndex === 0 && (
                                                     <span
                                                         style={{
@@ -390,8 +401,8 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                             alignItems: "center",
                                             border: "1px solid",
                                             padding: "7px 0px",
-                                            borderRadius: "0px 10px 30px 0px",
-                                            background: "lavender",
+                                            borderRadius: "5px 10px 30px 20px",
+                                            background: "rgb(227 138 138)",
                                             marginTop: "20px",
                                         }}>
                                             <p
@@ -410,9 +421,10 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                                     position: "relative",
                                                     cursor: "pointer",
                                                     maxWidth: "400px",
-                                                    minWidth: "150px",
+                                                    minWidth: "135px",
                                                     margin: "5px 5px 5px 5px",
                                                     height: "30px",
+                                                    borderRadius:'20px'
                                                 }}
                                                 onClick={(e) => getStageAndHistory(item, dataIndex)}
                                             >
@@ -431,12 +443,12 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
                                                 style={{
                                                     fontSize: "11px",
                                                     marginTop: "5px",
-                                                    background: "#0082cf7a",
+                                                    background: "#009a52",
                                                     border: "2px solid #000000",
                                                     textAlign: "center",
                                                     borderRadius: "5px 20px 120px 40px",
                                                     fontWeight: "bold",
-                                                    color: "black",
+                                                    color: "white",
                                                     display: "flex",
                                                     alignItems: "center",
                                                     justifyContent: "center",

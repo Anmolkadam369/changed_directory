@@ -15,7 +15,7 @@ import { Helmet } from 'react-helmet-async';
 import Header from '../Home/Header';
 import Footer from '../Home/Footer';
 
-const Login = () => {
+const ContactUs = () => {
     const navigate = useNavigate();
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [username, setUsername] = useState('');
@@ -253,4 +253,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default ContactUs;

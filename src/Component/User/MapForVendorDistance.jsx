@@ -9,12 +9,22 @@ const MapForVendorDistance = () => {
     const [map, setMap] = useState(null);
     const navigate = useNavigate();
     const { state } = useLocation();
-
+const [changeHeight, setChangeHeight] = useState(null)
     const [accidentLatitude, setAccidentLatitude] = useState(state?.accidentLatitude);
     const [accidentLongitude, setAccidentLongitude] = useState(state?.accidentLongitude);
     const [vendorLatitude, setVendorLatitude] = useState(state?.vendorLatitude);
     const [vendorLongitude, setVendorLongitude] = useState(state?.vendorLongitude);
     const [vehicleNo, setVehicleNo] = useState(state?.vehicleNo);
+    const [fromPage, setFromPage] = useState(state?.fromPage);
+    console.log('state?.fromPage',state?.fromPage )
+
+    useEffect(() => {
+        if (fromPage === 'statusTracking') {
+            setChangeHeight('100vh');
+        } else {
+            setChangeHeight('30vh');
+        }
+    }, [fromPage]);
 
     const [distance, setDistance] = useState(0.0);
     const [currentLocation, setCurrentLocation] = useState(null);
@@ -95,16 +105,16 @@ const MapForVendorDistance = () => {
     }, [map, currentLocation, accidentLatitude, accidentLongitude]);
 
     return (
-        <div style={{ height: "30vh" }}>
+        <div>
+        <div style={{ height: changeHeight }}>
             {currentLocation && (
-
                 <MapContainer
                     center={[
                         accidentLatitude || currentLocation.latitude,
                         accidentLongitude || currentLocation.longitude,
                     ]}
                     zoom={14}
-                    style={{ height: "100%", width: "100%" }}
+                    style={{ height: "100%", width: "100%",  }}
                 >
                     <TileLayer
                         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
@@ -125,8 +135,8 @@ const MapForVendorDistance = () => {
                         </Marker>
                     )}
                 </MapContainer>
-
             )}
+        </div>
         </div>
     );
 };

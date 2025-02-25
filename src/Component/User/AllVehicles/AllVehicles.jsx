@@ -11,6 +11,8 @@ import trucksImage4 from '../../../Assets/trucksImage6.png';
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import allAccidentVehicleImg from '../../../Assets/allAccidentVehicle.jpg'
 import fleetvehicles from '../../../Assets/fleetvehicles.jpg'
+import allvehiclestruck from '../../../Assets/allvehiclestruck.png'
+
 
 import repairingOnStand from '../../../Assets/repairingonstand.jpg'
 import advocateprotest from '../../../Assets/advocateprotest.png'
@@ -171,6 +173,7 @@ export default function AllVehicles() {
     }, [token, userId, navigate]);
 
     const goToNewCase = () => {
+
         navigate("/register-new-accidentvehicle", { state: { fromPageHere: "allVehicles", vehicleNo: currentItem.vehicleNo } })
     }
 
@@ -182,7 +185,7 @@ export default function AllVehicles() {
     const getData = async (e) => {
         console.log("userid", userId);
         let accidentVehicles = [], notAccidentVehicles = []
-        const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${userId}`);
+        const response = await axios.get(`${backendUrl}/api/getFilteredPersonalVehicle/${userId}`);
         if (response.data.message == "No accident vehicle data found.") {
             setData([])
             setDoneFetching(true)
@@ -204,10 +207,12 @@ export default function AllVehicles() {
     };
 
     const getAccidentData = async (e) => {
+        try {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/not_defined/not-completed`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
+        console.log('responsead', response)
         if (response.data.message == "No accident vehicle data found.") {
             setAccidentData([])
             setDoneFetching2(true)
@@ -218,7 +223,17 @@ export default function AllVehicles() {
             setDoneFetching2(true)
             console.log("ACcidenData", accidentData)
         }
-    };
+    }
+    catch(error){
+        if (error.response && error.response.status === 404 && error.response.data.message == "No accident vehicle data found.") {
+            console.log('cathc')
+            setAccidentData([]);
+            setDoneFetching2(true);
+        } else {
+            console.error("Unexpected error:", error);
+        }
+    }
+}
 
     // const getAccidentData = async (e) => {
     //     console.log("userid", userId);
@@ -257,22 +272,33 @@ export default function AllVehicles() {
 
     const setUpdateAccidentData = (item) => {
         setCaseDetailsHere(true)
-        console.log(item.vehicleNo)
         const gotItem = accidentData.find((accidentItem) => {
-            console.log(item.vehicleNo, accidentItem.reg)
-            return (accidentItem.reg == item.vehicleNo)
+        console.log('item',item)
+        console.log('accidentItem',accidentItem)
+            return (accidentItem?.vehicle?.AccidentVehicleCode == item.AccidentVehicleCode)
         })
         console.log("GOTITEM", gotItem)
-        setCurrentItem(gotItem)
+
+        let gotInfo = {
+            ...gotItem?.vehicle,
+            accidentImage1: gotItem?.vehicle?.accidentImage1,
+            accidentImage2: gotItem?.vehicle?.accidentImage2,
+            accidentImage3: gotItem?.vehicle?.accidentImage3,
+            accidentImage4: gotItem?.vehicle?.accidentImage4,
+          };
+          console.log('gotinfo', gotInfo)
+        setCurrentItem(gotInfo)
     }
 
     const setViewVendors = (item) => {
         setViewAllVendors(true)
         const gotItem = accidentData.find((accidentItem) => {
-            return (accidentItem.reg == item.vehicleNo)
+            return (accidentItem?.vehicle.AccidentVehicleCode == item.AccidentVehicleCode)
         })
-        console.log("hey", gotItem)
-        setCurrentItem(gotItem)
+        console.log("hey", gotItem.customer)
+        console.log("gotitemd12312312", gotItem)
+
+        setCurrentItem(gotItem.customer)
     }
 
     const handleUpdate = () => {
@@ -305,10 +331,10 @@ export default function AllVehicles() {
     };
 
     const getOnPage = (service) => {
-        console.log("SOME", service)
-        if (currentItem?.[`${service}Details`]?.customerAcceptedVendor == true && currentItem?.[`${service}Details`].confirmDoneWorking == false) navigate("/Crane-dashboard", { state: { indexFor: 0, service: service, vehicleNumber: currentItem.reg } })
-        else if (currentItem?.[`${service}Details`]?.customerAcceptedVendor == false) navigate("/Crane-dashboard", { state: { indexFor: 1, service: service, vehicleNumber: currentItem.reg } })
-        else if (currentItem?.[`${service}Details`]?.customerAcceptedVendor == true && currentItem?.[`${service}Details`].confirmDoneWorking == true) navigate("/Crane-dashboard", { state: { indexFor: 2, service: service, vehicleNumber: currentItem.reg } })
+        console.log("SOME", service, currentItem.customerAcceptedVendor )
+        if (currentItem?.customerAcceptedVendor == true && currentItem.confirmDoneWorking == false) navigate("/Crane-dashboard", { state: { indexFor: 0, service: service, vehicleNumber: currentItem.reg } })
+        else if (currentItem?.customerAcceptedVendor == false) navigate("/Crane-dashboard", { state: { indexFor: 1, service: service, vehicleNumber: currentItem.reg } })
+        else if (currentItem?.customerAcceptedVendor == true && currentItem.confirmDoneWorking == true) navigate("/Crane-dashboard", { state: { indexFor: 2, service: service, vehicleNumber: currentItem.reg } })
     }
 
     const settingFilter = (filter) => {
@@ -322,16 +348,28 @@ export default function AllVehicles() {
     }
 
     const navigateToPage=()=>{
-        
         selectedIndex==1?navigate("/add-new-vehicle-driver"):navigate('/register-new-accidentvehicle')
-
     }
+    const [updatedData,setUpdatedData]=useState(false);
+    console.log('updatedata123', updatedData)
+        useEffect(() => {
+            if (updatedData) {
+                console.log('setUpdatedDat123a', updatedData)
+                getData();
+                getAccidentData();
+                setCaseDetailsHere(false)
+                setUpdatedData(false)
+            }
+        }, [updatedData])
 
     return (
-        <div style={{ marginBottom: "60px", background: 'linear-gradient(rgb(223 255 222 / 0%), rgb(255, 255, 255), rgb(242, 242, 242))' }}>
+        <div style={{ marginBottom: "60px", 
+        background: 'linear-gradient(rgb(223 255 222 / 0%), rgb(255, 255, 255), rgb(242, 242, 242))'
+
+        }}>
             {doneFetching2 && doneFetching && (
                 <div style={{ marginBottom: "40px" }}>
-                    <div style={{ position: "sticky", top: "14px", zIndex: "1000" }}>
+                    <div style={{ position: "sticky", top: "9px", zIndex: "1000" }}>
                         <div className="imageContainer" style={{ height: "0px" }}>
                             {["Current Accident Vehicles", "Fleet List"].map((text, index) => (
                                 <div
@@ -362,17 +400,8 @@ export default function AllVehicles() {
                             // pointerEvents: isImageContainerVisible ? "none" : "auto", // Disable clicking
                         }}>
                             <div className="d-flex justify-content-center h-100">
-                                <div className="searchbar" style={{ border: '1px solid', minWidth: "100px",maxWidth: "150px", zIndex: "1" }}>
-                                    <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={handleSearch} />
-                                    <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-                                </div>
-                                {selectedIndex == 0 && (
-                                    <div style={{ margin: "23px 20px 0px", zIndex: "1" }}>
-                                        <FilterAltIcon style={{ height: '20px', width: "20px", color: "#ffffff" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
-                                    </div>
-                                )}
-                                {selectedIndex == 1 && (
-                                    <div  onClick={navigateToNewVehicle} className='flex px-4 mr-3 text-sm' style={{ position: 'fixed',background: 'slategrey',borderRadius:"20px", bottom:10, right:0 , marginBottom:"50px" , gap:'10px', zIndex:'1001' }}>
+                                
+                                    <div  onClick={navigateToNewVehicle} className='flex px-4 mr-3 text-sm' style={{ position: 'fixed',background: 'slategrey',borderRadius:"20px", bottom:10, right:0 , marginBottom:"50px" , gap:'10px', zIndex:'1000' }}>
                                         <p style={{ width: '100%', textAlign:'center',color:"white", height: 'auto', marginTop:"10px" }}>
                                             New Vehicles
                                         </p>
@@ -389,12 +418,12 @@ export default function AllVehicles() {
                                         </div>
                                     </div>
 
-                                )}
+                                
 
                             </div>
                         </div>
                         {selectedIndex == 0 && (
-                            <div style={{ position: "relative", textAlign: "center" }}>
+                            <div style={{ position: "relative", textAlign: "center" , marginTop:'45px'}}>
                                 <img
                                     src={allAccidentVehicleImg}
                                     alt="All Accident Vehicles"
@@ -402,7 +431,7 @@ export default function AllVehicles() {
                                         maxHeight: "200px",
                                         width: "100%",
                                         objectFit: "cover",
-                                        borderRadius: "10px"
+                                        // borderRadius: "10px"
                                     }}
                                 />
                                 <p
@@ -416,7 +445,7 @@ export default function AllVehicles() {
                                         padding: "5px 10px",
                                         borderRadius: "5px",
                                         fontStyle: "italic",
-                                        marginBottom:"50px"
+                                        // marginBottom:"50px"
                                     }}
                                 >
                                     All Accident Vehicles
@@ -425,7 +454,7 @@ export default function AllVehicles() {
 
                         )}
                         {selectedIndex == 1 && (
-                            <div style={{ position: "relative", textAlign: "center" }}>
+                            <div style={{ position: "relative", textAlign: "center" , marginTop:'45px'}}>
                                 <img
                                     src={fleetvehicles}
                                     alt="All Accident Vehicles"
@@ -433,7 +462,7 @@ export default function AllVehicles() {
                                         maxHeight: "200px",
                                         width: "100%",
                                         objectFit: "cover",
-                                        borderRadius: "10px"
+                                        // borderRadius: "10px"
                                     }}
                                 />
                                 <p
@@ -457,37 +486,54 @@ export default function AllVehicles() {
 
 
                         <div style={{ marginBottom: "30px" }}>
+                        <div className="d-flex justify-content-center h-100">
+                                <div className="searchbar" style={{ border: '1px solid #ff9090', minWidth: "100px",maxWidth: "300px", zIndex: "100",top:'35px', position:'sticky' }}>
+                                    <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px", color:'red' }} onChange={handleSearch} />
+                                    <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
+                                </div>
+                                {selectedIndex == 0 && (
+                                    <div style={{ margin: "23px 20px 0px",  zIndex: "1", color: "black"  }}>
+                                        <FilterAltIcon style={{ height: '20px', width: "20px", }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                                    </div>
+                                )}
+                        </div>
                             {data.length > 0 && (
                                 <div
                                     style={{
                                         display: "grid",
                                         gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-
+                                       
                                     }}
                                 >
                                     {data.map((item, index) => (
                                         <div key={index}>
-                                            <div style={{background:'linear-gradient(78deg, #d6d5d5, transparent)'}} className=' w-[90%]  border-[#4b6c6d] shadow-[rgba(75,_108,_109,_0.2)]  rounded-xl m-2'>
+                                            <div style={{
+                                                // background:'linear-gradient(78deg, rgb(28 91 63 / 78%), transparent)', 
+                                                backgroundImage: "url('https://www.shutterstock.com/shutterstock/videos/3633995/thumb/1.jpg?ip=x480')", // ✅ Corrected syntax
+                                                backgroundSize: "cover", // ✅ Ensures the image covers the container
+                                                backgroundPosition: "center", // ✅ Centers the image
+                                                backgroundRepeat: "no-repeat", // ✅ Prevents tiling  
+                                                border:'1px solid red', borderTop:'none', borderRight:'none'}} className=' w-[90%]  border-[#4b6c6d] shadow-[rgba(75,_108,_109,_0.2)]  rounded-xl m-2'>
                                                 <div className="relative ml-2 mr-2 mt-5 p-2 flex justify-between rounded-xl">
                                                     <img
                                                         className="h-[120px] w-[120px] mt-[-50px] "
-                                                        src="https://png.pngtree.com/png-clipart/20240308/original/pngtree-3d-free-cargo-delivery-truck-png-image_14540258.png"
+                                                        src={allvehiclestruck}
                                                         alt="Truck"
                                                     />
 
                                                     <div className="p-2 mt-1 flex flex-col text-white  md:static md:items-end  ">
                                                         <div className="flex">
                                                             <LocalShippingOutlinedIcon className="text-black h-[30px] w-[22px] m-2 mt-2" />
-                                                            <h1 className="font-semibold  text-[#4b6c6d] pb-1 text-xl mt-2 md:text-xl">{item.vehicleNo}</h1>
+                                                            <h1 className="font-semibold  text-black pb-1 text-xl mt-2 md:text-xl">{item.vehicleNo}</h1>
                                                         </div>
-                                                        <p className="opacity-50 pl-5 pb-1 text-[#4b6c6d]  text-xs  md:text-sm">{item.chassisNo}</p>
+                                                        <p className="opacity-50 pl-5 pb-1 text-black  text-xs  md:text-sm">{item.chassisNo}</p>
                                                     </div>
                                                 </div>
-                                                <div className="px-3 py-2 pb-3 mt-[-10px]  z-[1000] rounded-xl w-[90%] ml-auto mr-auto relative">
+                                                <div className="px-3 py-2 pb-3 mt-[-10px]  rounded-xl ml-auto mr-auto relative">
                                                     {selectedIndex == 1 && (
-                                                        <div className="flex justify-end">
+                                                        <div>
                                                             <p
-                                                                className="text-[11px] mt-[5px] bg-white p-2 border border-blue-500 text-center rounded-full font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[135px] min-w-[135px]"
+                                                                className="text-[11px] mt-[5px] bg-[#6d6d6d] p-2 border border-blue-500 text-center rounded-full font-bold text-white flex items-center justify-center relative cursor-pointer mx-[5px] min-w-[135px]"
                                                                 onClick={() => setDetails(item)}
                                                             >
                                                                 <KeyboardDoubleArrowRightIcon className="absolute right-[50px] left-[10px]" />
@@ -496,16 +542,16 @@ export default function AllVehicles() {
                                                         </div>
                                                     )}
                                                     {selectedIndex == 0 && (
-                                                        <div className="flex justify-center items-center">
+                                                        <div>
                                                             <p
-                                                                className="text-[11px] mt-[5px] bg-white p-2 border border-blue-500 rounded-xl text-center font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[400px] min-w-[135px]"
+                                                                className="text-[11px] mt-[5px] bg-white p-2 border border-blue-500 rounded-xl text-center font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[400px] min-w-[135px] mb-2"
                                                                 onClick={() => setUpdateAccidentData(item)}
                                                             >
                                                                 <KeyboardDoubleArrowRightIcon className="absolute left-[5px]" />
                                                                 Accident Detail
                                                             </p>
                                                             <p
-                                                                className="text-[11px] mt-[5px] py-2 px-3 border-black border border-blue-500 rounded-xl text-center font-bold text-black flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[400px] min-w-[128px]"
+                                                                className="text-[11px] mt-[5px] py-2 px-3 bg-red-400 border-black border border-blue-500 rounded-xl text-center font-bold text-white flex items-center justify-center relative cursor-pointer mx-[5px] max-w-[400px] min-w-[128px]"
                                                                 onClick={() => setViewVendors(item)}
                                                             >
                                                                 <KeyboardDoubleArrowRightIcon className="absolute left-[5px]" />
@@ -573,7 +619,8 @@ export default function AllVehicles() {
                                         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                                         margin: "30px 5px 30px 5px",
                                         boxShadow: "rgba(0, 0, 0, 0.1) -20px -18px 10px 0px",
-                                        borderRadius: "10px"
+                                        borderRadius: "10px",
+                                        marginBottom: "50px"
                                     }}>
 
                                         {[
@@ -614,7 +661,7 @@ export default function AllVehicles() {
                                             </div>
                                         ))}
                                     </div>
-                                    <div style={{ marginBottom: "50px", display: 'flex', alignItems: "center", justifyContent: "center" }}>
+                                    {/* <div style={{ marginBottom: "50px", display: 'flex', alignItems: "center", justifyContent: "center" }}>
                                         <p style={{
                                             fontSize: '13px',
                                             marginTop: "10px",
@@ -635,7 +682,7 @@ export default function AllVehicles() {
                                             Register as Accident
                                            
                                         </p>
-                                    </div>
+                                    </div> */}
                                 </div>
 
 
@@ -688,7 +735,7 @@ export default function AllVehicles() {
                                         }}
                                     />
 
-                                     <LookingForAccptance accidentData={currentItem?.[`${currentService}Details`]} fromPage="quotationUpdate" />
+                                     <LookingForAccptance accidentData={currentItem} setUpdatedData={setUpdatedData} fromPage="AllVehicles" />
                                 </div>
                             </div>
                         )}
@@ -740,9 +787,11 @@ export default function AllVehicles() {
                                     <div style={{ textAlign: "center", margin: "30px 0", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                                         {currentItem.selectedOptions.split(",").map((item) => {
                                             return (
-                                                <div key={item} onClick={() => { getOnPage(item) }} style={{ display: 'flex', justifyContent: 'space-between', color: "darkgreen", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>
+                                                <div>
+                                               {currentItem[`${item}Status`]!= 'cancelled' && ( <div key={item} onClick={() => { getOnPage(item) }} style={{ display: 'flex', justifyContent: 'space-between', color: "darkgreen", fontWeight: "bold", marginBottom: "20px", fontSize: "15px", border: "1px solid red", background: "#ffffffa6", minWidth: "200px", borderRadius: "20px", padding: "10px" }}>
                                                     <p style={{ marginTop: "3px" }}> {item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()}</p>
                                                     {currentItem?.[`${item}Details`]?.confirmDoneWorking == true ? (<img src={checksuccess} style={{ height: "20px", width: "20px" }} />) : (<img src={processImgUser} style={{ height: "20px", width: "20px" }} />)}
+                                                </div>)}
                                                 </div>
                                             )
                                         })}
@@ -782,7 +831,7 @@ export default function AllVehicles() {
                         style={{
                             display: "grid",
                             gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-
+                           
                         }}
                     >
                         {Array.from({ length: 5 }).map((_, i) => (

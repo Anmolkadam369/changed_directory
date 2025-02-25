@@ -12,6 +12,8 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 const VendorMoving = ({ item }) => {
     const navigate = useNavigate()
     console.log("itemfromvendormoving", item)
+    console.log("itemfromvendormoving", item.details[0].cancelOrder)
+
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     const [vendorCurrentLatitude, setVendorCurrentLatitude] = useState("")
@@ -74,7 +76,7 @@ const VendorMoving = ({ item }) => {
 
     const readyToGo = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/vendorMoved/${userId}/${item.AccidentVehicleCode}`, {
+            let response = await axios(`${backendUrl}/api/vendorMoved/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,
@@ -82,7 +84,6 @@ const VendorMoving = ({ item }) => {
                 },
             })
             if (response.data.status) {
-                // setIsStarted(true)
                 console.log('successfully updated status')
             }
             else console.log("there is some issue")
@@ -95,7 +96,7 @@ const VendorMoving = ({ item }) => {
 
     const reachedLocation = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}/${userId}`, {
+            let response = await axios(`${backendUrl}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}/${userId}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -122,7 +123,7 @@ const VendorMoving = ({ item }) => {
 
     const workDone = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
+            let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
                     Authorization:  `Bearer ${token}`,
@@ -180,7 +181,7 @@ const VendorMoving = ({ item }) => {
 
     return (
         <div>
-            {imageContainer && (
+            { (
 
 
 
@@ -194,7 +195,7 @@ const VendorMoving = ({ item }) => {
                         </MapContainer>
                     </div>
 
-                    <div className="text-overlay text-overlay2" style={{ height: "30%", padding:"10px 20px 20px 20px", zIndex:"1000" }}>
+                    <div className="text-overlay text-overlay2" style={{  padding:"10px 20px 20px 20px", zIndex:"1000" }}>
                         <div className="flex justify-between m-3">
 
                             <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>{item.reg}</h1>
@@ -202,7 +203,7 @@ const VendorMoving = ({ item }) => {
                         </div>
 
                         {/* <p style={{ fontSize: '11px', gap: "10px" }}>205 D/15, Indl Estate, L B S Marg, Opp I O L, Near Amrutnagar, Near Ayodhya Chowk, Rohini, K Marg, Lower Parel Mumbai Maharashtra 4000067</p> */}
-                        {item.details[0]?.vendorMoved == false && item.details[0].customerAcceptedVendor == true && item.details[0].closeCraneOrder == false && (<p style={{
+                        {item.details[0]?.vendorMoved == false && item.details[0].customerAcceptedVendor == true && item.details[0].closeOrder == false && (<p style={{
                             fontSize: '11px',
                             marginTop: "5px",
                             background: "green",
@@ -224,6 +225,7 @@ const VendorMoving = ({ item }) => {
                             }} />
                             Ready To Go
                         </p>)}
+
                         {item.details[0]?.vendorMoved == true && (<p style={{
                             fontSize: '12px',
                             marginTop: "10px",
@@ -271,7 +273,7 @@ const VendorMoving = ({ item }) => {
                             </div>
                         )}
 
-                        {item.details[0]?.acceptedByAdmin == 'accept' && item.details[0]?.cancelOrder == true && (
+                        {item.details[0]?.cancelOrder == true && (
                             <div>
                                 <textarea
                                     className="Registrationdetails-elem-9"

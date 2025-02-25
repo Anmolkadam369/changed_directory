@@ -65,56 +65,56 @@ function Home() {
             return false;
         }
     };
-    useEffect(() => {
-        const isValidUser = async () => {
-            const token = getCookie('token') || localStorage.getItem('token');
-            const userId = localStorage.getItem('userId')
-            if (token) {
-                // Optionally verify token validity
-                const isValid = checkTokenValidity(token); // Implement this function
-                if (isValid) {
-                    // User remains logged in
-                    const response = await axios.get(`${backendUrl}/api/typeofUser/${userId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                    if (response.status !== 200) {
-                        navigate('/LoginPage')
-                    }
-                    console.log("esponse.data.userType", response.data.data.userType)
-                    if (response.data.data.userType === "admin" ||
-                        response.data.data.userType === "Management") {
-                        navigate("../Admin");
-                    } else if (response.data.data.userType === "IT") {
-                        navigate("../Admin");
-                    }
-                    else if (response.data.data.userType === "advocate") {
-                        navigate("../advocateDashboard");
-                    } else if (response.data.data.userType === "mechanic") {
-                        navigate("../MechanicDashboard");
-                    } else if (response.data.data.userType === "crane") {
-                        navigate("../crane-user-dashboard");
-                    } else if (response.data.data.userType === "workshop") {
-                        navigate("../WorkshopDashboard");
-                    } else if (response.data.data.userType === "Administration") {
-                        navigate("../Admin");
-                    } else if (response.data.data.userType === "Sales") {
-                        navigate("../Salesteam");
-                    }
-                    else {
-                        localStorage.setItem("fromLogin", true)
-                        navigate('../user-landing-page');
-                    }
+    // useEffect(() => {
+    //     const isValidUser = async () => {
+    //         const token = getCookie('token') || localStorage.getItem('token');
+    //         const userId = localStorage.getItem('userId')
+    //         if (token) {
+    //             // Optionally verify token validity
+    //             const isValid = checkTokenValidity(token); // Implement this function
+    //             if (isValid) {
+    //                 // User remains logged in
+    //                 const response = await axios.get(`${backendUrl}/api/typeofUser/${userId}`, {
+    //                     headers: {
+    //                         'Authorization': `Bearer ${token}`
+    //                     }
+    //                 })
+    //                 if (response.status !== 200) {
+    //                     navigate('/LoginPage')
+    //                 }
+    //                 console.log("esponse.data.userType", response.data.data.userType)
+    //                 if (response.data.data.userType === "admin" ||
+    //                     response.data.data.userType === "Management") {
+    //                     navigate("../Admin");
+    //                 } else if (response.data.data.userType === "IT") {
+    //                     navigate("../Admin");
+    //                 }
+    //                 else if (response.data.data.userType === "advocate") {
+    //                     navigate("../advocateDashboard");
+    //                 } else if (response.data.data.userType === "mechanic") {
+    //                     navigate("../MechanicDashboard");
+    //                 } else if (response.data.data.userType === "crane") {
+    //                     navigate("../crane-user-dashboard");
+    //                 } else if (response.data.data.userType === "workshop") {
+    //                     navigate("../WorkshopDashboard");
+    //                 } else if (response.data.data.userType === "Administration") {
+    //                     navigate("../Admin");
+    //                 } else if (response.data.data.userType === "Sales") {
+    //                     navigate("../Salesteam");
+    //                 }
+    //                 else {
+    //                     localStorage.setItem("fromLogin", true)
+    //                     navigate('../user-landing-page');
+    //                 }
 
-                    console.log('Auto-login successful');
-                }
-            }
-            console.log('Token expired or missing, redirecting to login.');
-        }
+    //                 console.log('Auto-login successful');
+    //             }
+    //         }
+    //         console.log('Token expired or missing, redirecting to login.');
+    //     }
 
-        isValidUser()
-    }, [])
+    //     isValidUser()
+    // }, [])
 
     useEffect(() => {
         const expiryTime = 12 * 60 * 60 * 1000;
@@ -134,7 +134,7 @@ function Home() {
         localStorage.removeItem('token');
         document.cookie = 'token=; path=/; max-age=0; secure; samesite=strict';
         console.log('Logged out due to token expiry.');
-        window.location.href = '/loginPage'; // Redirect to login page
+        // window.location.href = '/loginPage'; // Redirect to login page
     };
 
 

@@ -339,14 +339,14 @@ const VendorMasterForm = () => {
     else if (name === "district") {
       console.log("vauel", value)
       const changedValue = value
-      .split(" ")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(" ");
 
-  setFormData({
-      ...formData,
-      [name]: changedValue
-  });
+      setFormData({
+        ...formData,
+        [name]: changedValue
+      });
     }
     else if (name === "vendorType") {
       setFormData({
@@ -647,14 +647,13 @@ const VendorMasterForm = () => {
   return (
     <div>
       {/* <Sidebar/> */}
-{/* <Admin/> */}
+      <Admin />
       <Helmet>
         <title>Vendor Details - Claimpro</title>
         <meta name="description" content="Vendor for BVC ClaimPro Assist and for vehicle accidents. Keep track of Vendors." />
         <meta name="keywords" content="Vehicle Accidents, vendor, vendor Information, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
         <link rel='canonical' href={`https://claimpro.in/VendorMaster`} />
       </Helmet>
-
       <div className='switchparent-container'>
         <div className="switch-container">
           <FormControlLabel

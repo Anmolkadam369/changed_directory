@@ -87,6 +87,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     const getAccidentDataById = async (AccidentVehicleCode) => {
         try {
+            console.log(`yes  , ${backendUrl}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`)
             const response = await axios.get(`${backendUrl}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`);
             console.log("getAccidentDataById", response.data.data)
 

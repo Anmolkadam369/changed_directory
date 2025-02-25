@@ -270,7 +270,7 @@ export default function CraneAllVehicles() {
         navigate("/add-new-vehicle-driver")
     }
     const navigateToPage=()=>{
-        selectedIndex==1?navigate("/add-new-vehicle-driver"):navigate('/register-new-accidentvehicle')
+        navigate('/add-new-vehicle-driver')
     }
 
 
@@ -482,7 +482,7 @@ export default function CraneAllVehicles() {
                             {data.length == 0 && (
                                 // <NoDataFound />
                                 <div onClick={navigateToPage}>
-                                <AddNewData index={selectedIndex}/>
+                                <AddNewData index={1}/>
                                 </div>
                             )}
                         </div>

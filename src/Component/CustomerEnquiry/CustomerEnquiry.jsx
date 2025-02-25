@@ -21,6 +21,7 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import DataTable from "react-data-table-component";
+import Admin from '../Admin/Admin';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -582,8 +583,9 @@ const CustomerEnquiry = () => {
     };
 
     return (
-
+        
         <div>
+            <Admin/>
             <Helmet>
                 <title>Customer Enquiry - Claimpro</title>
                 <meta name="description" content="Customer Enquiry for further collaboration with our partners." />

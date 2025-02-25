@@ -20,6 +20,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
+import Admin from '../Admin/Admin';
 
 
 const config = {
@@ -27,10 +28,11 @@ const config = {
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };;
 
-const EmployeeFormEdit = ({ id, onUpdate }) => {
+const EmployeeFormEdit = () => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const state = useLocation();
     const today = new Date().toISOString().split('T')[0];
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -152,7 +154,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
         // if (token === "" || userId === "") {
         //     navigate("/");
         // }
-        getDataById(id)
+        getDataById(state.id)
     }, [token, userId, navigate]);
 
 
@@ -568,7 +570,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/employeeUpdate/${id}/${userId}`,
+                url: `${backendUrl}/api/employeeUpdate/${state.id}/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -578,8 +580,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
             setIsLoading(false);
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
             setTimeout(() => {
-
-                onUpdate()
+                navigate(-1)
             })
         } catch (error) {
             console.error("Error during form submission:", error);
@@ -611,8 +612,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
         setIsReadOnly(!IsReadOnly)
     }
     const handleBack = () => {
-        // navigate("../Admin")
-        onUpdate()
+        navigate(-1)
     }
     const toggleDropdown = () => setShowDropdown(!showDropdown);
 
@@ -640,6 +640,7 @@ const EmployeeFormEdit = ({ id, onUpdate }) => {
     return (
 
         <div>
+            <Admin/>
             <Helmet>
                 <title>Employee Information Edit - Claimpro</title>
                 <meta name="description" content="Employee Information For Edit For BVC Claimpro Assist" />

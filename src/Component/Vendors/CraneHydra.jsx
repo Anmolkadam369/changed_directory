@@ -16,7 +16,6 @@ import { FaUserCircle } from 'react-icons/fa';
 import ConfirmationModal from '../ConfirmModel';
 import ImageUpload from '../ImageUpload/ImageUpload';
 import Registration from '../Registration/Registration';
-import Location from '../Location/Location';
 import Location1 from '../Location1/Location1';
 import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';

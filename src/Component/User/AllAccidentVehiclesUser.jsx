@@ -50,6 +50,9 @@ const AllAccidentVehiclesUser = () => {
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const currentService = localStorage.getItem("currentService")
+
+    
 
     useEffect(() => {
         if (currentData === 'fullyDone') {
@@ -77,7 +80,7 @@ const AllAccidentVehiclesUser = () => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         if (response.data.message == "No accident vehicle data found.") setData([])

@@ -128,8 +128,8 @@
 }
 
 .imageWrapper .top-scrolling {
-  background: white;
-  border: 1px solid;
+  background: #c6c6c6;
+  /* border: 1px solid; */
   /* border-top: none; */
   padding: 6px 15px;
   border-radius: 5px 5px 5px 5px;
@@ -147,7 +147,7 @@
 }
 
 .imageWrapper.selected .top-scrolling{
-  background-color: #8b8b8b;
+  background-color: #494949;
 }
 
 .imageWrapper.selected .top-scrolling p {

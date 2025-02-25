@@ -173,13 +173,15 @@ const HistoryReceipts = ({ vehicleNumber }) => {
     }
 
     useEffect(() => {
+        console.log('hey123323')
+        setDoneFetching(false)
         getData();
         getVendorRating()
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
         }
-    }, [token, userId, navigate]);
+    }, [token, userId, navigate, currentService]);
 
     
     useEffect(() => {
@@ -198,7 +200,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
     const getStageAndHistory = (item, index) => {
         setCurrentItemIndex(index)
         // setCurrentStage([])
-        let gotStage = getStage(item?.[`${currentService}Details`]?.filedCaseFullyTime, item?.[`${currentService}Details`]?.customerAcceptedVendorTime, item?.[`${currentService}Details`]?.vendorMovedTime, item?.[`${currentService}Details`]?.vendorReachedTime, item?.[`${currentService}Details`]?.doneWorkingTime)
+        let gotStage = getStage(item?.[`${currentService}Details`]?.systemDate, item?.[`${currentService}Details`]?.customerAcceptedVendorTime, item?.[`${currentService}Details`]?.vendorMovedTime, item?.[`${currentService}Details`]?.vendorReachedTime, item?.[`${currentService}Details`]?.doneWorkingTime)
         currentStage.unshift(gotStage)
         setIsHistoryPage(true)
     }
@@ -227,12 +229,14 @@ const HistoryReceipts = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/completed`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         if (response.data.message == "No accident vehicle data found.") {
+            setData([])
+            console.log('hellow not data')
             setDoneFetching(true)
-            setData([])}
+        }
         else {
             console.log("response123421", response.data.data);
             console.log("data2", response.data.data2);
@@ -252,6 +256,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
             setFilteredData(filteredData);
             setData(filteredData)
             setNotCompleted(notCompleted)
+            console.log('hellow not data2')
             setDoneFetching(true)
 
         }
@@ -298,8 +303,8 @@ const HistoryReceipts = ({ vehicleNumber }) => {
         const newRows = filtering.filter((row) => {
             const formattedId = String(row.id).padStart(4, '0').toLowerCase();
             const idValue = formattedId.includes(value);
-            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(value);
-            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(value);
+            const vehicleNoValue = (row?.[`${currentService}Details`]?.vehicleNo ?? '').toLowerCase().includes(value);
+            const chassisNoValue = (row?.[`${currentService}Details`]?.chassisNo ?? '').toLowerCase().includes(value);
             return idValue || vehicleNoValue || chassisNoValue;
         });
         setData(newRows);
@@ -323,6 +328,9 @@ const HistoryReceipts = ({ vehicleNumber }) => {
 
     return (
         <div style={{ marginBottom: "60px",overflowY:'auto', background: 'linear-gradient(rgba(223, 255, 222, 0), rgb(255, 255, 255), rgb(182 179 179 / 3%))'  }}>
+           {doneFetching == false && (
+                <Loading/>
+            )}
            {doneFetching == true && (
              <div>
             <div style={{ position: "sticky", top: "14px", zIndex: "999", margin: "20px 20px" }}>
@@ -341,11 +349,11 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                     ))}
                 </div>
             </div>
-            <div  style={{ height: '100vh', overflowY: 'auto' }}>
+            <div  style={{  overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
                 <div className="container h-100">
-                    <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
+                    <div className="d-flex justify-content-center h-100" style={{  position: 'sticky', top: "25px" }}>
+                        <div className="searchbar" style={{ border: '1px solid', minWidth: "130px"}}>
                             <input className="search_input" type="text" placeholder="Search..." style={{margin:"3px", paddingTop :"5px"}}   onChange={(e)=>{handleSearch(e.target.value)}} />
                             <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
                         </div>
@@ -361,7 +369,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                  <div
                  style={{
                      display: "grid",
-                     gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                     gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
                      
                      
                  }}
@@ -373,23 +381,32 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                             // filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
                             // opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
                             // pointerEvents: isImageContainerVisible ? "none" : "auto",
-                             background: "linear-gradient(233deg, rgb(89 88 88 / 67%), transparent)", border: "1px solid teal", maxWidth: "410px", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', padding: "10px"
+                             background: "linear-gradient(233deg, #8a8a8a, transparent)", border: "1px solid teal",borderRadius:'20px',
+                              maxWidth: "410px", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', 
+                              padding: "10px", marginTop:'25px'
                         }}>
                            <div style={{ background: "20px" }}>
+                           <img
+                            // src="https://plus.unsplash.com/premium_photo-1663047256645-80b5bca88566?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8dHJ1Y2slMjB3b3Jrc2hvcHxlbnwwfHwwfHx8MA%3D%3Dhttps://media.istockphoto.com/id/512043998/photo/mid-adult-mechanic-repairing-a-truck-in-auto-repair-shop.webp?a=1&b=1&s=612x612&w=0&k=20&c=LZTkIC7ccNYaY_ta8PhBW1uUlUy8ygr-Pok4kZhy4mg="
+                            src='https://media.istockphoto.com/id/512043998/photo/mid-adult-mechanic-repairing-a-truck-in-auto-repair-shop.webp?a=1&b=1&s=612x612&w=0&k=20&c=LZTkIC7ccNYaY_ta8PhBW1uUlUy8ygr-Pok4kZhy4mg='
+                            alt="Premium Workshop"
+                            style={{borderRadius:'20px 20px 0px 0px'}}
+                            className="w-full h-32 object-cover"
+                        />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                     <div style={{ display: "flex", alignItems: "center", margin: '20px 5px 0px 10px' }}>
                                         <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                        <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.vehicleNo}</span>
+                                        <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.vehicleNo}</span>
                                     </div>
 
 
                                     <div style={{ marginTop: "5px", marginRight: "10px", width: "35px", background: '#ccb300', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'black' }}>{avg[dataIndex]}</div>
                                 </div>
-                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
+                                <div style={{ display: "flex", alignItems: "center", margin: '7px 5px 0px 5px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 0px 5px" }}>Registered Date:</p>
-                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}</span>
+                                    <span style={{ color: "green", marginLeft: "5px", fontSize: "12px" }}>{item?.[`${currentService}Details`]?.systemDate.split("|")[0]}</span>
                                 </div>
-                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
+                                <div style={{ display: "flex", alignItems: "center", margin: '7px 5px 0px 10px' }}>
                                     <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vendor  : </p>
                                     <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', fontWeight: "bold" }}>{currentService.charAt(0).toUpperCase() + currentService.slice(1).toLowerCase()} Work</span>
                                 </div>
@@ -405,13 +422,13 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                                     <p style={{
                                         fontSize: '11px',
                                         marginTop: "5px",
-                                        background: "white",
+                                        background: "#ff1b1b",
                                         // padding: "10px",
                                         border: '2px solid #000000',
                                         textAlign: 'center',
                                         borderRadius: '30px',
                                         fontWeight: "bold",
-                                        color: "blue",
+                                        color: "white",
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: "center",
@@ -424,7 +441,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                                     }} onClick={(e) => getStageAndHistory(item, dataIndex)}>
                                         See History
                                         <img src={historyUser} style={{
-                                            position: "absolute",
+                                            position: "absolute",color:'white',
                                             left: '5px', height: "20px", width: "20px"
                                         }} />
                                     </p>
@@ -511,11 +528,11 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                                                 width: "30px",
                                                 height: "30px",
                                                 borderRadius: "50%",
-                                                backgroundColor: "rgb(255 225 6)",
+                                                backgroundColor: "rgb(255 255 255 / 84%)",
                                                 display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "center",
-                                                border: "2px solid #4CAF50",
+                                                border: "2px solid rgb(255 25 25)",
                                                 transition: "background-color 0.3s ease",
                                                 zIndex: 1, // **Changed: Make sure image is above the line**
                                             }}
@@ -596,9 +613,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                 <NoDataFound />
             )}
             </div>)}
-            {doneFetching == false && (
-                <Loading/>
-            )}
+            
         </div>
     )
 }

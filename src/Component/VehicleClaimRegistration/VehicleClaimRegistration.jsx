@@ -15,6 +15,7 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
+import Admin from '../Admin/Admin';
 
 
 const config = {
@@ -22,14 +23,14 @@ const config = {
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VehicleClaimRegistration = ({ id, onUpdate }) => {
+const VehicleClaimRegistration = () => {
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
-    const location = useLocation();
+    const {state,location} = useLocation();
     const [isHovered, setIsHovered] = useState(false);
 
     // const { id } = location.state || {};
-    console.log("Received IDssss:", id);
+    console.log("Received IDssss:", state.id);
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     const [IsReadOnly, setIsReadOnly] = useState(true);
@@ -120,11 +121,11 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
         // if (token === "" || userId === "") {
         //     navigate("/");
         // }
-        console.log("id", id)
-        getDataById(id);
+        console.log("id", state.id)
+        getDataById(state.id);
         getDataSurveyor()
-        setAccidentData({ accidentFileNo: id });
-    }, [token, userId, navigate, id]);
+        setAccidentData({ accidentFileNo: state.id });
+    }, [token, userId, navigate, state.id]);
 
     const getDataById = async (id) => {
         const response = await axios.get(`${backendUrl}/api/getAccidentVehicleData/${id}`);
@@ -141,7 +142,7 @@ const VehicleClaimRegistration = ({ id, onUpdate }) => {
 
 
     const [accidentData, setAccidentData] = useState({
-        accidentFileNo: id,
+        accidentFileNo: state.id,
         dateTime: today,
         systemGenerated: '',
         railwayTime: '',
@@ -530,7 +531,7 @@ console.log("accidentdata123456789", accidentData)
             setIsLoading(false);
             setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
             setTimeout(() => {
-                onUpdate();
+                navigate(-1);
             }, 2000);
         }
         catch (error) {
@@ -564,7 +565,7 @@ console.log("accidentdata123456789", accidentData)
     };
 
     const handleBack = () => {
-        onUpdate()
+        navigate(-1)
     }
 
 
@@ -648,6 +649,7 @@ console.log("accidentdata123456789", accidentData)
 
     return (
         <div className='container'>
+            <Admin/>
             <Helmet>
                 <title>Accident Vehicle Form - Claimpro</title>
                 <meta name="description" content="Accident Vehicle Form - BVC ClaimPro Assist" />

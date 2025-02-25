@@ -21,6 +21,7 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
 import VendorByMap from './VendorByMap';
+import Admin from '../Admin/Admin';
 
 
 const formatDate = (dateString) => {
@@ -441,6 +442,7 @@ const VendorSignUp = () => {
 
   return (
     <div>
+      <Admin/>
       {showVendorTable && (
         <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>

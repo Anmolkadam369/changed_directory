@@ -370,7 +370,7 @@ const CraneRejectedOrder = ({ data }) => {
                                     <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                         <div style={{ display: "flex", alignItems: "center" }}>
                                             <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
-                                            <span className='text-md font-semibold' style={{ marginLeft: "5px" }}>{item.reg}</span>
+                                            <span className='text-md font-semibold' style={{ marginLeft: "5px" }}>{item.details[0].reg}</span>
                                         </div>
                                         <div
                                             className="right-10  flex items-center mt-1"
@@ -378,7 +378,7 @@ const CraneRejectedOrder = ({ data }) => {
                                         >
                                             <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
                                             <span className="text-xs font-medium ml-2">
-                                                {item.craneAssignedOn?.split("|")[0]}
+                                                {item.details[0].closeWorkerAt?.split("|")[0]}
                                             </span>
                                         </div>
 
@@ -453,7 +453,7 @@ const CraneRejectedOrder = ({ data }) => {
                                         {item.details[0]?.acceptedByAdmin == 'reject' && (
                                             <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Admin Rejected</span>
                                         )}
-                                        {item.details[0]?.acceptedByAdmin == 'accept' && item.details[0]?.customerAcceptedVendor == false && item.details[0]?.closeCraneOrder==true && (
+                                        {item.details[0]?.acceptedByAdmin == 'accept' && item.details[0]?.customerAcceptedVendor == false && item.details[0]?.closeOrder==true && (
                                             <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 15px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer Rejected</span>
                                         )}
 

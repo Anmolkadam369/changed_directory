@@ -25,6 +25,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import CustomerPerformance from './CustomerPerformance';
+import Admin from '../Admin/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -231,6 +232,7 @@ const CustomerApproved = () => {
     setShowCustomerTable(false)
     setShowCustomerMasterEdit(true)
     setShowCustomerPerformance(false)
+    navigate('/customer-form-edit', {state:{id:id}})
   };
 
   const viewPerformance = (id) => {
@@ -238,6 +240,8 @@ const CustomerApproved = () => {
     setShowCustomerTable(false)
     setShowCustomerMasterEdit(false);
     setShowCustomerPerformance(true);
+    navigate('/customer-form-activity', {state:{customerId:id}})
+
   }
   const handleUpdate = () => {
     setShowCustomerTable(true)
@@ -421,6 +425,7 @@ const CustomerApproved = () => {
 
   return (
     <div>
+      <Admin/>
       {showCustomerTable && (<div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
         <Helmet>
           <title>Customer Table - Claimpro</title>
@@ -473,7 +478,7 @@ const CustomerApproved = () => {
         )}
 
         <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
-          <div className="container my-5">
+          <div className="container-for-tables my-5">
             <DataTable
               columns={columns}
               data={currentItems}
@@ -549,13 +554,13 @@ const CustomerApproved = () => {
         )}
       </div>)}
 
-      {showCustomerMasterEdit && (
+      {/* {showCustomerMasterEdit && (
         <CustomerMasterEdit id={selectedId} onUpdate={handleUpdate} />
-      )}
+      )} */}
 
-      {showCustomerPerformance && (
+      {/* {showCustomerPerformance && (
         <CustomerPerformance customerId={selectedId}  onUpdate={handleUpdate} />
-      )}
+      )} */}
     </div>
   );
 };

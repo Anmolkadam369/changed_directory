@@ -21,7 +21,7 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import DataTable from "react-data-table-component";
 import VendorByMap from './VendorByMap';
-
+import Admin from '../Admin/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -210,29 +210,32 @@ const VendorApproved = () => {
 
 
   const view = (id) => {
-    setSelectedId(id);
-    setShowVendorMasterEdit(true)
-    setShowPerformance(false)
-    setShowVendorTable(false)
-    setShowMap(false);
+    // setSelectedId(id);
+    // setShowVendorMasterEdit(true)
+    // setShowPerformance(false)
+    // setShowVendorTable(false)
+    // setShowMap(false);
+    navigate('/vendor-edit', {state:{id:id, pageFrom:'viewVendor' }})
 
   }
   const handleMap = () => {
-    setShowVendorMasterEdit(false)
-    setShowPerformance(false)
-    setShowVendorTable(false);
-    setShowMap(true);
+    // setShowVendorMasterEdit(false)
+    // setShowPerformance(false)
+    // setShowVendorTable(false);
+    // setShowMap(true);
+    navigate('/vendor-map-details')
   }
 
   const viewPerformance = (id, type) => {
-    setSelectedVendorCode(id);
-    setSelectedVendorType(type);
+    // setSelectedVendorCode(id);
+    // setSelectedVendorType(type);
 
-    console.log("DSFSDFFSDF")
-    setShowPerformance(true)
-    setShowVendorMasterEdit(false)
-    setShowVendorTable(false)
-    setShowMap(false);
+    // console.log("DSFSDFFSDF")
+    // setShowPerformance(true)
+    // setShowVendorMasterEdit(false)
+    // setShowVendorTable(false)
+    // setShowMap(false);
+    navigate('/vendor-performance-details', {state:{id:id, type:type}})
 
   }
 
@@ -452,6 +455,7 @@ const VendorApproved = () => {
 
   return (
     <div>
+      <Admin/> 
       {showVendorTable && (
         <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>
@@ -522,8 +526,8 @@ const VendorApproved = () => {
         >
           {sortDate == "asc" ? <UnfoldLessIcon /> : <UnfoldMoreIcon />}
         </p> */}
-          <div className="container sm:max-w-[340px] d-flex justify-content-center " style={{ marginTop: "10px" }}>
-            <div className="container my-5">
+          <div className="container  d-flex justify-content-center " style={{ marginTop: "10px" }}>
+            <div className="container-for-tables my-5">
               <DataTable
                 columns={columns}
                 data={currentItems}
@@ -555,15 +559,17 @@ const VendorApproved = () => {
           )}
 
         </div>)}
-      {showVendorMasterEdit && (
+      {/* {showVendorMasterEdit && (
+        <div>
         <VendorMasterEdit id={selectedId} onUpdate={handleUpdate} pageFrom = 'viewVendor'/>
-      )}
-      {showPerformance && (
+        </div>
+      )} */}
+      {/* {showPerformance && (
         <VendorPerformance id={selectedVendorCode} type={selectedVendorType} onUpdate={handleUpdate} />
-      )}
-      {showMap && (
+      )} */}
+      {/* {showMap && (
         <VendorByMap onUpdate={handleUpdate} />
-      )}
+      )} */}
     </div>
   );
 };

@@ -51,7 +51,7 @@ const VehicleImagePanel = (props) => {
 
     return (
         <div style={{ marginBottom: '50px' }}>
-            <div className='text-center top-0 mb-1'>
+            <div className='sticky text-center top-0 mb-1'>
                 <IconButton
                     onClick={() => {
                         props.setVehiclePanel(true)
@@ -65,7 +65,7 @@ const VehicleImagePanel = (props) => {
             <p className="text-sm font-semibold m-2">Add Vehicle Images</p>
             <div style={{ overflowY: 'auto' }} className=" flex flex-col items-center justify-center">
                 {/* Left side for images */}
-                <div className="absolute flex flex-wrap gap-2 top-[5.25rem] left-0 m-[2.5rem]">
+                <div className=" flex flex-wrap gap-2 top-[5.25rem] left-0 m-[2.5rem]">
                     {photos.map((photo, index) => (
                         <div key={index} className="relative">
                             <img
@@ -76,7 +76,7 @@ const VehicleImagePanel = (props) => {
                             />
                             <button
                                 onClick={() => handleRemoveImage(index)}
-                                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                                className="absolute top-0 right-[-10px] bg-red-500 text-white p-1 rounded-full"
                             >
                                 ✕
                             </button>
@@ -92,7 +92,7 @@ const VehicleImagePanel = (props) => {
                             <button
                                 type="button"
                                 style={{ background: 'rgb(140 140 140)' }}
-                                className="absolute center-button text-white p-2 rounded-full shadow-lg hover:bg-black focus:outline-none"
+                                className="relative center-button text-white p-2 rounded-full shadow-lg hover:bg-black focus:outline-none "
                                 onClick={() => document.getElementById("hiddenFileInput").click()} // Programmatically trigger the file input
                             >
                                 <AddIcon />
@@ -114,14 +114,14 @@ const VehicleImagePanel = (props) => {
                     <button onClick={() => {
                         props.setVehicleImagesPanel(false);
                         props.setConfirmVehicle(true);
-                    }} className="absolute bottom-4 right-4 left-2 w-[90%] mt-3 bg-green-900 text-white font-semibold p-3 rounded-lg">Skip</button>
+                    }} className="absolute bottom-4 right-4 left-2 mt-3 bg-green-900 text-white font-semibold p-3 rounded-lg">Skip</button>
                 )}
                 {photos.length > 0 && (
                     <button onClick={() => {
                         props.setImages(photos)
                         props.setVehicleImagesPanel(false);
                         props.setConfirmVehicle(true);
-                    }} className="absolute bottom-4 right-4 left-2 w-[90%] mt-3 bg-green-900 text-white font-semibold p-3 rounded-lg">Images Added</button>
+                    }} className=" bottom-4 right-4 left-2 w-[90%] mt-3 bg-green-900 text-white font-semibold p-3 rounded-lg">Images Added</button>
                 )}
 
                 {showEnlargedPhoto && (

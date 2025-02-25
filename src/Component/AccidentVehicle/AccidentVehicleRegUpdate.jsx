@@ -18,6 +18,7 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import DataTable from "react-data-table-component";
+import Admin from '../Admin/Admin';
 
 
 const formatDate = (dateString) => {
@@ -114,6 +115,7 @@ const AccidentVehicleRegUpdate = () => {
   useEffect(() => {
     if (selectedItem != null) {
       const getOptionsToShow = () => {
+        console.log('selectedItem', selectedItem)
         switch (selectedItem.choosenPlan) {
           case 'advanced':
             return allOptions;  // Show all options
@@ -122,7 +124,7 @@ const AccidentVehicleRegUpdate = () => {
           case 'pro':
             return allOptions.filter(option => option !== 'advocate' && option !== 'onsite temperory repair' && option !== 'crane');  // Remove 'advocate', 'onsite repair', 'crane'
           default:
-            return [];
+            return allOptions;
         }
       };
       const options = getOptionsToShow();
@@ -185,6 +187,8 @@ const AccidentVehicleRegUpdate = () => {
     setShowAccidentReg(true)
     setShowChooseOptions(false)
     setShowAccidentTable(false)
+    navigate('/vehicle-claim-registration', {state:{id}})
+
   }
 
   function chooseOptions(item) {
@@ -192,7 +196,6 @@ const AccidentVehicleRegUpdate = () => {
     setShowAccidentReg(false)
     setShowChooseOptions(true)
     setShowAccidentTable(false)
-
   }
   const handleUpdate = () => {
     getData();
@@ -343,6 +346,7 @@ const AccidentVehicleRegUpdate = () => {
   return (
 
     <div>
+      <Admin/>
       {showAccidentTable && (
         <div className="Customer-master-form" style={{ marginLeft: '10px', paddingLeft: '0px', marginRight: '10px', paddingRight: '0px' }}>
           <Helmet>
@@ -368,7 +372,7 @@ const AccidentVehicleRegUpdate = () => {
 
           </div>
           <div className="container d-flex justify-content-center " style={{ marginTop: "10px" }}>
-            <div className="container my-5">
+            <div className="container-for-tables my-5">
               <DataTable
                 columns={columns}
                 data={currentItems}
@@ -382,9 +386,9 @@ const AccidentVehicleRegUpdate = () => {
             </div>
           </div>
         </div>)}
-      {showAccidentReg && (
+      {/* {showAccidentReg && (
         <VehicleClaimRegistration id={selectedId} onUpdate={handleUpdate} />
-      )}
+      )} */}
       {showChooseOptions && (
         <div className="photo-upload-container">
           <div style={{ display: "flex", marginRight: '60px', marginBottom: '10px' }}>

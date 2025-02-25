@@ -80,7 +80,7 @@
       flex-grow: 1; /* Grow to absorb all additional space */
       padding: 20px;
       background-color: #f9f9f9; /* Light grey background */
-      min-height: 100vh; /* Minimum height is 100% of the viewport height */
+      /* min-height: 100vh; */
       box-sizing: border-box; /* Include padding and border in the width and height calculations */
       overflow-x: auto;
   }

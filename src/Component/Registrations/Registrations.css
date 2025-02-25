@@ -144,7 +144,7 @@
     top: -10px;
     left: 10px;
     font-size: 0.75rem;
-    color: #4835d4;
+    color: #ff0000;
     padding: 0 7px;
     background-color: #fff;
   }
@@ -176,7 +176,7 @@
     display: inline-block;
 }
 .custom-background {
-  background-color: #0f70e6 !important;
+  background-color: #34833f !important;
   border-radius: 15px 0px 0px 15px; /* You can move border-radius here too if you like */
 }
 

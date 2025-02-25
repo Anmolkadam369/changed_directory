@@ -10,6 +10,8 @@ import { FaClipboardCheck, FaTruck, FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import casefiled from '../../../Assets/casefiled.png'
 import telephonecall from '../../../Assets/telephonecall.png'
@@ -27,7 +29,8 @@ import Loading from '../Cards/Loading.jsx';
 import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
-import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
+import NetworkWifiIcon from '@mui/icons-material/NetworkWifi';
+import SignalWifi4BarIcon from '@mui/icons-material/SignalWifi4Bar';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import LookingForAccptance from '../../Registration/LookingForAcceptance.jsx';
@@ -203,7 +206,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
     const [isCancelSecondaryContainerVisible, setIsCancelSecondaryContainerVisible] = useState(false);
     const [selectedSecReasons, setSelectedSecReasons] = useState([]);
     const [otherSecReason, setOtherSecReason] = useState("");
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
+    const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
 
     const secReasons = [
         "Too much time taking",
@@ -227,9 +230,10 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             if (reasons.length === 0) {
                 return setAlertInfo({ show: true, message: 'Select Respective Reason', severity: 'error' });
             }
+            console.log(`${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem?.[`${currentService}Details`][`${currentService}`]}`)
             const response = await axios({
                 method: "PUT",
-                url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem.AccidentVehicleCode}/${currentService}/${userId}/${currentItem.crane}`,
+                url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem[`${currentService}Details`][`${currentService}`]}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -264,6 +268,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
     ];
 
     useEffect(() => {
+        console.log('hey123323')
         setDoneFetching(false)
 
         if (messages.length > 0) {
@@ -274,18 +279,20 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                 }
             })
         }
-        else getData();
         console.log("token", token, userId);
         if (token === "" || userId === "") {
             navigate("/");
         }
+        getData();
     }, [token, userId, navigate, currentService, messages]);
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
-          'Authorization': `Bearer ${token}`
-        }});
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (response.data.message == "No accident vehicle data found.") {
             setDoneFetching(true)
             setData([])
@@ -295,7 +302,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             console.log("data2", response.data.data2);
 
             let filteredData = response.data.data.filter((info) =>
-                info?.[`${currentService}Details`]?.filedCaseFully && !info?.[`${currentService}Details`]?.customerAcceptedVendor && !info?.[`${currentService}Details`]?.closeCraneOrder
+                 !info?.[`${currentService}Details`]?.customerAcceptedVendor && !info?.[`${currentService}Details`]?.closeOrder
             );
 
             let filteredImportant = filteredData.filter((info) =>
@@ -306,6 +313,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                 info?.[`${currentService}Details`]?.connectedVendorFully == false
             )
             filteredData = [...filteredImportant, ...filteredLessImportant]
+            console.log('filteredData', filteredData)
             setData(filteredData)
             setDummyData(filteredData)
 
@@ -341,7 +349,6 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             const setUpdatedData = data.map((item) => {
                 let gotStage = getStage(item?.[`${currentService}Details`]?.connectedVendorFully)
                 return gotStage;
-                // getData()
             })
             setCurrentStage(setUpdatedData)
         }
@@ -350,7 +357,17 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const connectCaseDetailsOnly = (item) => {
         console.log("DoDfasdf", item?.[`${currentService}Details`])
-        setCurrentItem(item?.[`${currentService}Details`])
+        console.log("DoDfasdf", item?.vehicle)
+
+        let gotData = {
+            ...item?.[`${currentService}Details`],
+            accidentImage1: item?.vehicle?.accidentImage1,
+            accidentImage2: item?.vehicle?.accidentImage2,
+            accidentImage3: item?.vehicle?.accidentImage3,
+            accidentImage4: item?.vehicle?.accidentImage4,
+          };
+          console.log('gotdata', gotData)
+        setCurrentItem(gotData)
         setCaseDetails(true)
     }
 
@@ -361,7 +378,8 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const getPaymentLink = async (item) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/sendPaymentLinkToCustomer/${userId}/${item.AccidentVehicleCode}/${item.crane}/${item.vehicleNo}`);
+            console.log('getpayemdafsd', `${backendUrl}/api/sendPaymentLinkToCustomer/${userId}/${item[`${currentService}Details`].AccidentVehicleCode}/${item[currentService]}/${item[`${currentService}Details`].vehicleNo}`)
+            const response = await axios.get(`${backendUrl}/api/sendPaymentLinkToCustomer/${userId}/${item[`${currentService}Details`].AccidentVehicleCode}/${item[currentService]}/${item[`${currentService}Details`].vehicleNo}`);
             if (response.data.status == true) {
                 let link = response.data.data;
                 console.log("link coming", link)
@@ -375,15 +393,16 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const cancelingOrder = async (currentItem) => {
         try {
+            console.log('insoidre', currentItem)
             const reasons = [...selectedReasons, otherReason].filter(Boolean);
-            if (reasons.length === 0) {console.log('insoidre')
+            if (reasons.length === 0) {
                 return setAlertInfo({ show: true, message: 'Select Respective Reason', severity: 'error' });
                 console.log('insoidre1')
             }
             console.log('i am here')
             const response = await axios({
                 method: "PUT",
-                url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/${currentService}/${userId}`,
+                url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -407,18 +426,18 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const getPaymentLinkPage = () => {
         console.log("curretnIte", currentItem)
-        console.log("craneishererererwrwer", currentItem.vehicleNo,
-            currentItem.AccidentVehicleCode,
-            currentItem.crane,
+        console.log("craneishererererwrwer", currentItem?.[`${currentService}Details`].vehicleNo,
+            currentItem?.[`${currentService}Details`].AccidentVehicleCode,
+            currentItem?.[`${currentService}Details`][`${currentService}`],
             userId,
-            'crane')
+            `${currentService}`)
         navigate(`${comingLink}`, {
             state: {
-                vehicleNo: currentItem.vehicleNo,
-                accidentVehicleCode: currentItem.AccidentVehicleCode,
-                vendorCode: currentItem.crane,
+                vehicleNo: currentItem?.[`${currentService}Details`].vehicleNo,
+                accidentVehicleCode:  currentItem?.[`${currentService}Details`].AccidentVehicleCode,
+                vendorCode:  currentItem?.[`${currentService}Details`][`${currentService}`],
                 customerCode: userId,
-                vendorType: 'crane',
+                vendorType: `${currentService}`,
             }
         })
     }
@@ -448,22 +467,24 @@ const QuotationUpdate = ({ vehicleNumber }) => {
     const assignedCaseViewVendor = (item) => {
         setCurrentItem(item)
         setIsImageContainerVisible(true)
-        getVendorRating(item.crane)
-        getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude)
+        getVendorRating(item?.[`${currentService}Details`].crane)
+        console.log('item', item?.[`${currentService}Details`].crane);
+        console.log('item.crane',item?.[`${currentService}Details`].crane,item?.[`${currentService}Details`].accidentLatitude,item?.[`${currentService}Details`].accidentLongitude);
+        getVendorLocation(item?.[`${currentService}Details`].crane,item?.[`${currentService}Details`].accidentLatitude,item?.[`${currentService}Details`].accidentLongitude)
     }
     const cancleCaseProcedureFunc = (item) => {
         setCurrentItem(item)
         setIsCancelContainerVisible(true)
         setReasonsForDrop(false)
-        getVendorRating(item.crane)
-        getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude)
+        getVendorRating(item?.[`${currentService}Details`].crane)
+        getVendorLocation(item?.[`${currentService}Details`].crane,item?.[`${currentService}Details`].accidentLatitude,item?.[`${currentService}Details`].accidentLongitude)
     }
     const cancleCaseSecondaryProcedureFunc = (item) => {
         setCurrentItem(item)
         setIsCancelSecondaryContainerVisible(true)
         setReasonsForDrop(false)
-        getVendorRating(item.crane)
-        getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude)
+        getVendorRating(item?.[`${currentService}Details`].crane)
+        getVendorLocation(item?.[`${currentService}Details`].crane,item?.[`${currentService}Details`].accidentLatitude,item?.[`${currentService}Details`].accidentLongitude)
     }
     const [average, setAverage] = useState(0)
     const [distance, setDistance] = useState(0)
@@ -478,9 +499,9 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             const response = await axios.get(`${backendUrl}/api/customersRating/${crane}`);
             if (response.data.status == true) {
                 let customerRating = response.data.data;
-                console.log("coming Customer Rating", customerRating)
+                console.log("coming Customer Rating", customerRating);
                 if (customerRating.length !== 0) {
-                    let average = customerRating.reduce((acc, item) => acc + parseInt(item.feedbackRatingCrane), 0);
+                    // let average = customerRating.reduce((acc, item) => acc + parseInt(item.feedbackRatingCrane), 0);
                     setAverage(average / customerRating.length);
                 }
             }
@@ -497,7 +518,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                 let vendorCurrentLongitude = response.data.data[0].longitude;
                 setVendorCurrentLatitude(vendorCurrentLatitude)
                 setVendorCurrentLongitude(vendorCurrentLongitude)
-
+                console.log('accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude', accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude)
                 setDistance(haversine(accidentLatitude, accidentLongitude, vendorCurrentLatitude, vendorCurrentLongitude))
             }
             else if (response.data.message == "User Not found take Location") {
@@ -524,12 +545,13 @@ const QuotationUpdate = ({ vehicleNumber }) => {
         const value = inputValue?.toLowerCase() ?? searchValue.toLowerCase()
         setSearchValue(value);
         const newRows = dummyData.filter((row) => {
+            console.log('row', row)
             const formattedId = String(row.id).padStart(4, '0').toLowerCase(); // Make sure the formatted ID is lowercase
             const searchLower = value; // Use the updated search value directly
 
             const idValue = formattedId.includes(searchLower);
-            const vehicleNoValue = (row.vehicleNo ?? '').toLowerCase().includes(searchLower);
-            const chassisNoValue = (row.chassisNo ?? '').toLowerCase().includes(searchLower);
+            const vehicleNoValue = (row?.[`${currentService}Details`]?.vehicleNo ?? '').toLowerCase().includes(searchLower);
+            const chassisNoValue = (row?.[`${currentService}Details`]?.chassisNo ?? '').toLowerCase().includes(searchLower);
 
             return vehicleNoValue || chassisNoValue;
         });
@@ -542,20 +564,17 @@ const QuotationUpdate = ({ vehicleNumber }) => {
     return (
         <div style={{ marginBottom: "60px" }}>
 
-            {doneFetching && (<div>
+            {doneFetching && (
+            <div>
                 <div style={{ display: 'flex', justifyContent: "space-between" }}>
-
-                    <div className="container " >
-                        <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }} >
-                            <div className="searchbar" style={{ border: '1px solid', minWidth: "130px", maxWidth:'250px' }}>
+                    <div className="container ">
+                        <div className="d-flex justify-content-center h-100" style={{ marginTop: '-113px', position: 'sticky', top: "25px" }}>
+                            <div className="searchbar" style={{ border: '1px solid', minWidth: "130px" }}>
                                 <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
-                                {/* <a href="#" className="search_icon">
-            <i className="fas fa-search"></i>
-        </a> */}
                                 <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
                             </div>
-                            <div style={{ margin: "23px 20px 0px", zIndex: "1000", width: "70px", background: 'linear-gradient(45deg, white, transparent)', borderRadius: "10px", paddingTop: "4px", paddingLeft: "3px", paddingRight: "3px", }}>
-                                <img src={filterUser} style={{ height: "20px", width: '20px' }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                            <div style={{ margin: "23px 20px 0px" }}>
+                                <img src={filterUser} style={{ height: '20px', width: "20px", background: 'linear-gradient(45deg, white, transparent)', borderRadius: "10px", }} onClick={() => setOpenFilterModal(!openFilterModal)} />
                             </div>
                         </div>
                     </div>
@@ -563,183 +582,204 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
 
                 {data.length > 0 && (
-                    <div
-                        style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-                        }}
-                    >
-                        {data.map((item, dataIndex) => (
-                            <div style={{
-                                filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
-                                opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
-                                pointerEvents: isImageContainerVisible ? "none" : "auto",
-                                border: "1px solid teal",
-                                minWidth: "280px",
-                                maxWidth: "410px", minWidth: "280px", margin: '10px',
-                                boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
-                                borderRadius: "5px", padding: "10px",
-                                background: "#ffffff",
-                                borderRadius:"20px"
+                    <div>
+                        <div
+                            style={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+                                
+                            }}
+                        >
+                            {data.map((item, dataIndex) => (
+                                <div style={{
+                                    filter: isImageContainerVisible ? "blur(3px)" : "none", // Apply blur effect
+                                    opacity: isImageContainerVisible ? 0.9 : 1, // Reduce opacity if blurred
+                                    pointerEvents: isImageContainerVisible ? "none" : "auto",
+                                    border: "1px solid red",
+                                    minWidth: "280px",
+                                    maxWidth: "410px", minWidth: "280px", margin: '10px',
+                                    boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px',
+                                    borderRadius: "5px", padding: "10px",
+                                    // background: "#ffffff",
+                                    borderRadius: "20px",
+                                    
+                                    backgroundImage: "url('https://media.istockphoto.com/id/1465157700/photo/brightly-red-colored-semi-truck-speeding-on-a-two-lane-highway-with-cars-in-background-under.jpg?s=612x612&w=0&k=20&c=cfbbPy2ylvFGRULNLGO_Ucm-C5DsOJMFHiZBdKGsq3c=')", // ✅ Corrected syntax
+                                    backgroundSize: "cover", // ✅ Ensures the image covers the container
+                                    backgroundPosition: "center", // ✅ Centers the image
+                                    backgroundRepeat: "no-repeat", // ✅ Prevents tiling  
 
-                            }}>
+                                }}>
 
-                                <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
-                                    {stages.map((stage, index) => (
-
-                                        <div
-                                            key={index}
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                alignItems: "center",
-                                                textAlign: "center",
-                                                position: "relative",
-                                                flex: 1,
-                                            }}
-                                        >
+                                    <div style={{ display: "flex", alignItems: "center", margin: "20px 0px 0px 0px" }}>
+                                        {stages.map((stage, index) => (
 
                                             <div
+                                                key={index}
                                                 style={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    borderRadius: "50%",
-                                                    backgroundColor: currentStage[dataIndex] == index ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
                                                     display: "flex",
+                                                    flexDirection: "column",
                                                     alignItems: "center",
-                                                    justifyContent: "center",
-                                                    border: currentStage[dataIndex] == index ? "2px solid #4CAF50" : "none",
-                                                    transition: "background-color 0.3s ease",
-                                                    zIndex: 1,
-                                                    marginTop: "-5px"
+                                                    textAlign: "center",
+                                                    position: "relative",
+                                                    flex: 1,
                                                 }}
                                             >
 
-                                                <img
-                                                    src={stage.img}
-                                                    alt={stage.label}
-                                                    style={{
-                                                        width: "20px",
-                                                        height: "20px",
-                                                        opacity: currentStage[dataIndex] <= index ? 1 : 0.5,
-                                                    }}
-                                                />
-                                            </div>
-
-                                            <p
-                                                style={{
-                                                    marginTop: "5px",
-                                                    color: currentStage[dataIndex] <= index ? "black" : "#aaa",
-                                                    fontWeight: currentStage[dataIndex] == index ? "bold" : "normal",
-                                                    fontSize: "12px",
-                                                }}
-                                            >
-                                                {stage.label}
-                                            </p>
-
-                                            {index < stages.length - 1 && (
                                                 <div
                                                     style={{
-                                                        position: "absolute",
-                                                        top: "10px", // Aligns with the center of the icon
-                                                        left: "50%",
-                                                        right: "-50%",
-                                                        width: "100%",
-                                                        height: "2px",
-                                                        backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
-                                                        zIndex: 0,
+                                                        width: "30px",
+                                                        height: "30px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: currentStage[dataIndex] == index ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        border: currentStage[dataIndex] == index ? "2px solid #4CAF50" : "none",
+                                                        transition: "background-color 0.3s ease",
+                                                        zIndex: 1,
+                                                        marginTop: "-5px"
                                                     }}
-                                                ></div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
+                                                >
 
-                                {item?.[`${currentService}Details`]?.filedCaseFully && (
-                                    <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
-                                        <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                                    <img
+                                                        src={stage.img}
+                                                        alt={stage.label}
+                                                        style={{
+                                                            width: "20px",
+                                                            height: "20px",
+                                                            opacity: currentStage[dataIndex] <= index ? 1 : 0.5,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <p
+                                                    style={{
+                                                        marginTop: "5px",
+                                                        color: currentStage[dataIndex] <= index ? "black" : "#aaa",
+                                                        fontWeight: currentStage[dataIndex] == index ? "bold" : "normal",
+                                                        fontSize: "12px",
+                                                    }}
+                                                >
+                                                    {stage.label}
+                                                </p>
+
+                                                {index < stages.length - 1 && (
+                                                    <div
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "10px", // Aligns with the center of the icon
+                                                            left: "50%",
+                                                            right: "-50%",
+                                                            width: "100%",
+                                                            height: "2px",
+                                                            backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
+                                                            zIndex: 0,
+                                                        }}
+                                                    ></div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {item?.[`${currentService}Details`] && (
+                                        <div style={{ marginTop: '20px', borderTop: '1px solid grey',background: '#dededee6',
+                                            borderRadius: "20px",
+                                            padding: '1px' }}>
+                                            <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+
+                                                <div>
+                                        {/* <img src='https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg'/> */}
+                                                </div>
+                                                <div
+                                                    className="right-10  flex items-center mt-1"
+                                                    style={{ margin: '5px 5px 0 5px' }}
+                                                >
+                                                    <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
+                                                    <span className="text-xs font-medium ml-2">
+                                                        {item?.[`${currentService}Details`]?.systemDate.split("T")[0]}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className='px-2  ' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
+                                                    <LocalShippingOutlinedIcon className='h-[30px] w-[30px] text-red-600' />
+                                                    <span className='text-s font-semibold' style={{ marginLeft: "5px" }}>{item?.[`${currentService}Details`].reg}</span>
+                                                </div>
+
+                                                <div className="flex items-center m-1">
+                                                    {item?.[`${currentService}Details`]?.connectedVendorFully ? (
+                                                        < SignalWifi4BarIcon className="h-8 w-8 text-green-600" />
+                                                    ) : (
+                                                        <NetworkWifiIcon className="h-8 w-8 text-green-400" />
+                                                    )}
+                                                    <span
+                                                        className="text-xs font-bold flex items-center justify-center ml-1 px-1 py-0.5 rounded-lg text-blue-600"
+                                                    >
+                                                        {item?.[`${currentService}Details`]?.connectedVendorFully ? "Assigned" : "Connecting..."}
+                                                    </span>
+                                                </div>
+
+
+                                            </div>
+                                            <div className='px-2  flex-col'>
+                                                <div class='flex'>
+                                                    <MyLocationIcon className='m-1 ' />
+                                                    <div className='px-2 py-2 flex-col'>
+                                                        <h4 className='text-xs font-base'>{item?.[`${currentService}Details`]?.pickupLocation} </h4>
+                                                    </div>
+                                                </div>
+                                                <div class='flex'>
+                                                    <PinDropIcon className='m-1' />
+                                                    <div className='px-1 py-1 flex-col'>
+                                                        <p className='text-xs font-base'>{item?.[`${currentService}Details`]?.dropLocation}</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
 
                                             <div>
-
-                                            </div>
-                                            <div
-                                                className="right-10  flex items-center mt-1"
-                                                style={{ margin: '5px 5px 0 5px' }}
-                                            >
-                                                <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
-                                                <span className="text-xs font-medium ml-2">
-                                                    {item?.[`${currentService}Details`]?.filedCaseFullyTime.split("|")[0]}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className='px-2  ' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 2px' }}>
-                                                <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
-                                                <span className='text-s font-semibold' style={{ marginLeft: "5px" }}>{item.vehicleNo}</span>
-                                            </div>
-
-                                            <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 1px' }}>
-                                                <SignalWifiStatusbarNullIcon className='h-[30px] w-[30px] text-red' />
-                                                <span className='text-s font-base' style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "3px 0px 5px 1px", fontSize: "12px", borderRadius: "10px", color: 'blue', fontWeight: 'bold' }}>
-                                                    {item?.[`${currentService}Details`]?.connectedVendorFully ? "Assigned" : "Connecting..."}</span>
-                                            </div>
-
-                                        </div>
-                                        <div className='px-2  flex-col'>
-                                            <div class='flex'>
-                                                <MyLocationIcon className='m-1 ' />
-                                                <div className='px-2 py-2 flex-col'>
-                                                    <h4 className='text-xs font-base'>{item?.[`${currentService}Details`]?.pickupLocation} </h4>
-                                                </div>
-                                            </div>
-                                            <div class='flex'>
-                                                <PinDropIcon className='m-1' />
-                                                <div className='px-1 py-1 flex-col'>
-                                                    <p className='text-xs font-base'>{item?.[`${currentService}Details`]?.dropLocation}</p>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-
-                                        <div>
-                                            <div className="flex justify-between m-3" >
-                                                {!item?.[`${currentService}Details`]?.connectedVendorFully && (<div className="flex items-center">
-                                                    <div
-                                                        className="bg-green-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
-                                                        onClick={(e) => connectCaseDetailsOnly(item)}
-                                                    >
-                                                        <p className="text-white font-semibold text-xs text-center">View </p>
-                                                    </div>
-
-                                                    {userId.startsWith('CC-') && (
+                                                <div className="flex justify-between m-3" >
+                                                    {!item?.[`${currentService}Details`]?.connectedVendorFully && (
+                                                        <div className="flex items-center">
                                                         <div
-                                                            className="bg-red-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
-                                                            onClick={() => cancleCaseProcedureFunc(item)}
+                                                            className="bg-green-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
+                                                            onClick={(e) => connectCaseDetailsOnly(item)}
                                                         >
-                                                            <p className="text-white font-semibold text-xs text-center">Reject</p>
-                                                        </div>)}
-                                                </div>)}
+                                                            <p className="text-white font-semibold text-xs text-center">View </p>
+                                                        </div>
 
-                                                {item?.[`${currentService}Details`]?.connectedVendorFully == true && userId.startsWith('CC-') && (
-                                                    <div
-                                                        className="bg-green-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
-                                                        onClick={(e) => assignedCaseViewVendor(item)}
-                                                    >
-                                                        <p className="text-white font-semibold text-xs text-center">View Case </p>
+                                                        {userId.startsWith('CC-') && (
+                                                            <div
+                                                                className="bg-red-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
+                                                                onClick={() => cancleCaseProcedureFunc(item)}
+                                                            >
+                                                                <p className="text-white font-semibold text-xs text-center">Reject</p>
+                                                            </div>)}
                                                     </div>
                                                 )}
-                                                <div className="flex flex-col items-center justify-center px-4 py-2">
-                                                    <img src={telephonecall} className="h-[30px] w-[30px]" alt="call for help" />
-                                                </div>
-                                            </div>
 
-                                        </div>
-                                    </div>)}
-                            </div>
-                        ))}
+                                                    {item?.[`${currentService}Details`]?.connectedVendorFully == true && userId.startsWith('CC-') && (
+                                                        <div
+                                                            className="bg-green-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
+                                                            onClick={(e) => assignedCaseViewVendor(item)}
+                                                        >
+                                                            <p className="text-white font-semibold text-xs text-center">View Case </p>
+                                                        </div>
+                                                    )}
+                                                    <div onClick={() => (window.location.href = 'tel: +91 7800 78 4700')} className="flex flex-col items-center justify-center px-4 py-2">
+                                                        <img src={telephonecall} className="h-[30px] w-[30px]" alt="call for help" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>)}
+                                </div>
+                            ))}
+                        </div>
                     </div>
+
                 )}
 
                 {isImageContainerVisible && (
@@ -823,12 +863,12 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                             <div className='px-4 py-3 flex-col'>
                                                 <div className='flex'>
                                                     <PersonIcon className='mt-1 mr-1 mb-1 h-[40px] w-[40px]' />
-                                                    <h4 className='text-xl font-semibold mt-0.3'>{currentItem.reg} </h4>
+                                                    <h4 className='text-xl font-semibold mt-0.3'>{currentItem?.[`${currentService}Details`].reg} </h4>
                                                 </div>
-                                                <div className='flex'>
-                                                    <p className='text-xs font-semibold mt-2'>crane.</p>
-                                                    <div className='bg-yellow-500 rounded-xl p-1 mt-1'>
-                                                        <p className='font-xs font-semibold px-2'>{average}</p>
+                                                <div className='flex gap-2'>
+                                                    <div className='flex gap-2 bg-yellow-500 rounded-xl p-2 mt-1'>
+                                                    <p className='text-sm '>crane</p>
+                                                    {average != 0 && (<p className='font-xs font-semibold px-2 mt-0.5'>{average}</p>)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -872,7 +912,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                                         <p className='text-white font-semibold text-xs'> Reject Case</p>
                                                     </div>
                                                 </div>
-                                                <div className='flex flex-col items-center justify-center px-4 py-2'>
+                                                <div onClick={() => (window.location.href = 'tel: +91 7800 78 4700')} className='flex flex-col items-center justify-center px-4 py-3'>
                                                     <img src={telephonecall} className='h-[30px] w-[30px]' alt="call for help" />
                                                     <p className='text-black font-semibold text-xs text-center'> call for help</p>
 
@@ -915,8 +955,8 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                     position: "absolute",
                                     top: "-20px", // Position slightly above the container
                                     left: "50%",
-                                    width: '25px',
-                                    height: '25px',
+                                    width: '35px',
+                                    height: '35px',
                                     cursor: "pointer",
                                     zIndex: 1001, // Ensure it’s above other elements
                                     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))"
@@ -934,7 +974,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                             maxWidth: "600px",
                             width: "97%",
                             marginBottom: "20px",
-                            overflowY:'auto'
+                            overflowY: 'auto'
                         }}>
 
                             <div className="background-image"></div>
@@ -1066,9 +1106,9 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                                         You have already Cancelled Case !!!
                                                     </div>)}
                                                     {alertInfo.show && (
-                                                                <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                                                                  {alertInfo.message}
-                                                                </Alert>
+                                                        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
+                                                            {alertInfo.message}
+                                                        </Alert>
                                                     )}
                                                     <p type="submit"
                                                         style={{
@@ -1356,8 +1396,8 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                                     position: "fixed",
                                     // top: "-10px",
                                     left: "calc(100% - 45px)",
-                                    width: "25px",
-                                    height: "25px",
+                                    width: "35px",
+                                    height: "35px",
                                     cursor: "pointer",
                                     zIndex: 1001,
                                     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
@@ -1426,14 +1466,14 @@ const QuotationUpdate = ({ vehicleNumber }) => {
                 }
             </div>)}
 
-            {doneFetching ==false  && (
+            {doneFetching == false && (
                 // <Loading />
                 <div>
 
                     <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
 
                         }}
                     >

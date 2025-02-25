@@ -44,7 +44,7 @@ export default function BottomNavigationBar() {
                 // position: isSmallScreen ? 'fixed' : 'relative',
                 minWidth: "60px",
                 position: 'fixed',
-                bottom: isSmallScreen ? 0 : 'auto',
+                bottom: isSmallScreen ? -1 : 'auto',
                 height: "45px",
                 left: 0,
                 right: 0,
@@ -56,7 +56,8 @@ export default function BottomNavigationBar() {
             value={value}
             onChange={handleChange}
         >
-            {userId.startsWith("CC-") && (<BottomNavigationAction
+            {userId.startsWith("CC-") && (
+                <BottomNavigationAction
                 sx={{
                     '& .MuiBottomNavigationAction-label': {
                         fontSize: '0.75rem', // Adjust font size
@@ -70,8 +71,9 @@ export default function BottomNavigationBar() {
                 value="home"
                 onClick={() => { navigate("/user-landing-page") }}
                 icon={<HomeIcon />}
-            />)}
-s
+            />
+            )}
+
 
           {userId.startsWith("CC-") && (  <BottomNavigationAction
                 sx={{
@@ -153,7 +155,7 @@ s
                             fontSize: '1.1rem', // Adjust icon size
                         },
                     }}
-                    label="Vehicles"
+                    label="Details"
                     value="vehicles"
                     onClick={() => { navigate('/all-accident-vehicles') }}
                     icon={<LocalShippingIcon />}

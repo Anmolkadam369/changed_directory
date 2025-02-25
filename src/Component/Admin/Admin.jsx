@@ -61,84 +61,149 @@ const Admin = () => {
     const [userImage, setUserImage] = useState(true);
 
     const [getData, setGetData] = useState({});
-    console.log("getData12309", getData)
+    // console.log("getData12309", getData)
     const [highlightData, setHighlightData] = useState(false);
 
     let navigate = useNavigate();
 
 
-    const [showVendorOptions, setShowVendorOptions] = useState(false);
-    const [showCustomerOptions, setShowCustomerOptions] = useState(false);
-    const [showVehicleInfo, setShowVehicleInfo] = useState(false);
-    const [showReportsOptions, setShowReportsOptions] = useState(false);
-    const [showEmployeeOptions, setShowEmployeeOptions] = useState(false);
+    // const [showVendorOptions, setShowVendorOptions] = useState(false);
+    // const [showCustomerOptions, setShowCustomerOptions] = useState(false);
+    // const [showVehicleInfo, setShowVehicleInfo] = useState(false);
+    // const [showReportsOptions, setShowReportsOptions] = useState(false);
+    // const [showEmployeeOptions, setShowEmployeeOptions] = useState(false);
 
-    const [showAssignedVehicleReport, setShowAssignedVehicleReport] = useState(false);
+    // const [showAssignedVehicleReport, setShowAssignedVehicleReport] = useState(false);
 
-    const [showAddVendor, setShowAddVendor] = useState(false);
-    const [addSurveyor, setAddSurveyor] = useState(false);
-    const [viewSurveyor, setViewSurveyor] = useState(false);
-    const [startingPage, setStartingPage] = useState(true);
-    const [showViewVendor, setShowViewVendor] = useState(false);
-    const [showAddCustomer, setShowAddCustomer] = useState(false);
-    const [showViewCustomer, setShowViewCustomer] = useState(false);
-    console.log("showViewCustomer", showViewCustomer)
-    const [showVehicleClaim, setShowVehicleClaim] = useState(false);
-    const [showAddEmployee, setShowAddEmployee] = useState(false);
-    const [showVehicleClaimView, setShowVehicleClaimView] = useState(false);
-    const [addImages, setaddImages] = useState(false);
-    const [accidendVehicle, setaccidendVehicle] = useState(false);
-    const [vendorResponsing, setVendorResponsing] = useState(false);
-    const [showEmployeeView, setShowEmployeeView] = useState(false);
-    const [visitorForm, setVisitorForm] = useState(false);
-    const [customerEnquiryForm, setCustomerEnquiryForm] = useState(false);
-    const [showPotentialVendor, setShowPotentialVendor] = useState(false);
-    const [showInitialReg, setShowInitialReg] = useState(false);
+    // const [showAddVendor, setShowAddVendor] = useState(false);
+    // const [addSurveyor, setAddSurveyor] = useState(false);
+    // const [viewSurveyor, setViewSurveyor] = useState(false);
+    // const [startingPage, setStartingPage] = useState(true);
+    // const [showViewVendor, setShowViewVendor] = useState(false);
+    // const [showAddCustomer, setShowAddCustomer] = useState(false);
+    // const [showViewCustomer, setShowViewCustomer] = useState(false);
+    // console.log("showViewCustomer", showViewCustomer)
+    // const [showVehicleClaim, setShowVehicleClaim] = useState(false);
+    // const [showAddEmployee, setShowAddEmployee] = useState(false);
+    // const [showVehicleClaimView, setShowVehicleClaimView] = useState(false);
+    // const [addImages, setaddImages] = useState(false);
+    // const [accidendVehicle, setaccidendVehicle] = useState(false);
+    // const [vendorResponsing, setVendorResponsing] = useState(false);
+    // const [showEmployeeView, setShowEmployeeView] = useState(false);
+    // const [visitorForm, setVisitorForm] = useState(false);
+    // const [customerEnquiryForm, setCustomerEnquiryForm] = useState(false);
+    // const [showPotentialVendor, setShowPotentialVendor] = useState(false);
+    // const [showInitialReg, setShowInitialReg] = useState(false);
 
 
-    const [showVisitorForm, setShowVisitorForm] = useState(false);
+    // const [showVisitorForm, setShowVisitorForm] = useState(false);
     const dropdownRef = useRef(null);
     const [isModalOpen, setModalOpen] = useState(false);
 
     const resetStates = () => {
-        setShowAddVendor(false);
-        setShowViewVendor(false);
-        setAddSurveyor(false);
-        setViewSurveyor(false);
-        setShowViewCustomer(false);
-        setShowAddCustomer(false);
-        setStartingPage(false);
-        setShowVehicleClaim(false);
-        setShowVehicleClaimView(false);
-        setaddImages(false);
-        setaccidendVehicle(false);
-        setVendorResponsing(false);
-        setShowAddEmployee(false)
-        setShowEmployeeView(false);
-        setVisitorForm(false);
-        setCustomerEnquiryForm(false)
-        setShowPotentialVendor(false);
-        setShowInitialReg(false)
+        // setShowAddVendor(false);
+        // setShowViewVendor(false);
+        // setAddSurveyor(false);
+        // setViewSurveyor(false);
+        // setShowViewCustomer(false);
+        // setShowAddCustomer(false);
+        // setStartingPage(false);
+        // setShowVehicleClaim(false);
+        // setShowVehicleClaimView(false);
+        // setaddImages(false);
+        // setaccidendVehicle(false);
+        // setVendorResponsing(false);
+        // setShowAddEmployee(false);
+        // setShowEmployeeView(false);
+        // setVisitorForm(false);
+        // setCustomerEnquiryForm(false);
+        // setShowPotentialVendor(false);
+        // setShowInitialReg(false);
+    
+        // // Preserve any state passed as an exception
+        // Object.entries(exceptionState).forEach(([key, value]) => {
+        //     if (typeof value === "boolean") {
+        //         eval(`set${key.charAt(0).toUpperCase() + key.slice(1)}(${value})`);
+        //     }
+        // });
     };
+    
 
-    // if(startingPage) navigate('/admin-dashboard-vendor-customer')
-    // if(showAddVendor) navigate('/vendor-form')
-    // if(showViewVendor) navigate('/vendor-view-form')
-    // if(showAddCustomer) navigate('/customer-form')
-    // if(visitorForm) navigate('/visitors-form')
-    // if(customerEnquiryForm) navigate('/visitors-form')
-    // if(showPotentialVendor) navigate('/signup-form-submissions')
-    // if(showInitialReg) navigate('/signup-form-view')
-    // if(showAddEmployee) navigate('/employee-form')
-    // if(showViewCustomer) navigate('/customer-view-form')
-    // if(showVehicleClaim) navigate('/accident-vehicle-register-update')
-    // if(showVehicleClaimView) navigate('/view-accident-vehicle-register-details')
-    // if(showEmployeeView) navigate('/view-employee')
-    // if(accidendVehicle) navigate('/accident-vehicle')
-    // if(addImages) navigate('/daily-image-upload')
-    // if(vendorResponsing) navigate('/vendor-response')
-    // if(addSurveyor) navigate('/add-surveyor')
-    // if(viewSurveyor) navigate('/add-surveyor')
+// useEffect(() => {
+//     console.log('Navigating...', { showAddVendor, startingPage });
+
+//     if (showAddVendor) {
+//         navigate('/vendor-form');
+//         return;
+//     }
+//     if (showViewVendor) {
+//         navigate('/vendor-view-form');
+//         return;
+//     }
+//     if (showPotentialVendor) {
+//         navigate('/signup-form-submissions');
+//         return;
+//     }
+//     if (showAddCustomer) {
+//         navigate('/customer-form');
+//         return;
+//     }
+//     if (showViewCustomer) {
+//         navigate('/customer-view-form');
+//         return;
+//     }
+//     if (showAddEmployee) {
+//         navigate('/employee-form');
+//         return;
+//     }
+//     if (showEmployeeView) {
+//         navigate('/view-employee');
+//         return;
+//     }
+//     if (showInitialReg) {
+//         navigate('/signup-form-view');
+//         return;
+//     }
+//     if (showVehicleClaim) {
+//         navigate('/accident-vehicle-register-update');
+//         return;
+//     }
+//     if (showVehicleClaimView) {
+//         navigate('/view-accident-vehicle-register-details');
+//         return;
+//     }
+//     if (accidendVehicle) {
+//         navigate('/accident-vehicle');
+//         return;
+//     }
+//     if (vendorResponsing) {
+//         navigate('/vendor-response');
+//         return;
+//     }
+//     if (addSurveyor) {
+//         navigate('/add-surveyor');
+//         return;
+//     }
+//     if (viewSurveyor) {
+//         navigate('/add-surveyor');
+//         return;
+//     }
+//     if (addImages) {
+//         navigate('/daily-image-upload');
+//         return;
+//     }
+    
+
+//     if (startingPage) {
+//         navigate('/admin-dashboard-vendor-customer');
+//     }
+// }, [
+//     startingPage, showAddVendor, showViewVendor, showPotentialVendor,
+//     showAddCustomer, showViewCustomer, showAddEmployee, showEmployeeView,
+//     showInitialReg, showVehicleClaim, showVehicleClaimView, accidendVehicle,
+//     vendorResponsing, addSurveyor, viewSurveyor, addImages, customerEnquiryForm, visitorForm
+// ]);
+
 
     const vendorData = [10, 5, 15, 20];
     const vendorLabels = ['Advocate', 'Crane', 'Mechanic', 'Workshops'];
@@ -161,38 +226,38 @@ const Admin = () => {
 
     const handleSignOutClick = () => { setModalOpen(true) };
 
-    useEffect(() => {
-        const handleBeforeUnload = (event) => {
-            event.preventDefault(); // Prevent the default behavior
-            event.returnValue = ''; // Display confirmation dialog
-        };
+    // useEffect(() => {
+    //     const handleBeforeUnload = (event) => {
+    //         event.preventDefault(); // Prevent the default behavior
+    //         event.returnValue = ''; // Display confirmation dialog
+    //     };
 
-        const handlePopState = (event) => {
-            // Call sign-out logic for back navigation
-            const confirmSignOut = window.confirm('Do you want to sign out?');
-            if (confirmSignOut) {
-                handleSignOutClick(); // Call your sign-out logic
-            } else {
-                // Optionally, push the state back to prevent navigating away
-                window.history.pushState(null, null, window.location.pathname);
-            }
-        };
+    //     const handlePopState = (event) => {
+    //         // Call sign-out logic for back navigation
+    //         const confirmSignOut = window.confirm('Do you want to sign out?');
+    //         if (confirmSignOut) {
+    //             handleSignOutClick(); // Call your sign-out logic
+    //         } else {
+    //             // Optionally, push the state back to prevent navigating away
+    //             window.history.pushState(null, null, window.location.pathname);
+    //         }
+    //     };
 
-        // Push a new state to ensure popstate event is triggered on back navigation
-        window.history.pushState(null, null, window.location.pathname);
+    //     // Push a new state to ensure popstate event is triggered on back navigation
+    //     window.history.pushState(null, null, window.location.pathname);
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        window.addEventListener('popstate', handlePopState);
+    //     window.addEventListener('beforeunload', handleBeforeUnload);
+    //     window.addEventListener('popstate', handlePopState);
 
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener('beforeunload', handleBeforeUnload);
+    //         window.removeEventListener('popstate', handlePopState);
+    //     };
+    // }, []);
 
     const handleConfirmSignOut = async () => {
-        const response = await axios.put(`${backendUrl}/api/logout/${userId}`, {loginId},{
-            headers:{ 'Authorization': `Bearer ${token}`}
+        const response = await axios.put(`${backendUrl}/api/logout/${userId}`, { loginId }, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.status === 200) {
             localStorage.setItem("token", "");
@@ -212,16 +277,16 @@ const Admin = () => {
 
 
 
-    useEffect(() => {
-        const handleResize = () => {
-            console.log("size", window.innerWidth)
-            if (window.innerWidth > 768) setIsSidebarOpen(true);
-            else setIsSidebarOpen(false);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         console.log("size", window.innerWidth)
+    //         if (window.innerWidth > 768) setIsSidebarOpen(true);
+    //         else setIsSidebarOpen(false);
+    //     };
+    //     handleResize();
+    //     window.addEventListener('resize', handleResize);
+    //     return () => window.removeEventListener('resize', handleResize);
+    // }, []);
 
     const tokenRef = useRef(null);
     const [lastMessageId, setLastMessageId] = useState(null);
@@ -237,7 +302,7 @@ const Admin = () => {
 
 
     const handleSearchClick = () => {
-        setHighlightData(true);
+        // setHighlightData(true);
         setTimeout(() => setHighlightData(false), 2000); // Highlight for 2 seconds
     };
 
@@ -325,7 +390,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                
+
                 const response = await axios.get(`${backendUrl}/api/rightPerson/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -342,7 +407,7 @@ const Admin = () => {
             }
         };
 
-        if(userId != "") fetchData();
+        if (userId != "") fetchData();
     }, [userId, token])
 
     console.log("isfirscalling", isFirstCallComplete)
@@ -355,14 +420,14 @@ const Admin = () => {
                     console.log('Registering service worker...');
                     const registration = await navigator.serviceWorker.register('/service-worker.js');
                     console.log('Service worker registered:', registration);
-                    
+
                     const subscription = await registration.pushManager.subscribe({
                         userVisibleOnly: true,
                         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
+                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription, { headers: { Authorization: `Bearer ${token}` } });
                     await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
 
                 } catch (error) {
@@ -374,18 +439,46 @@ const Admin = () => {
             effectRan.current = true;
         }
     }, [isFirstCallComplete]);
+    
+    function showOfflineAlert() {
+        const alertBox = document.createElement("div");
+        alertBox.id = "offlineAlert";
+        alertBox.innerText = "No internet connection. Please turn on WiFi.";
+        alertBox.style.position = "fixed";
+        alertBox.style.top = "10px";
+        alertBox.style.left = "50%";
+        alertBox.style.transform = "translateX(-50%)";
+        alertBox.style.background = "red";
+        alertBox.style.color = "white";
+        alertBox.style.padding = "10px 20px";
+        alertBox.style.borderRadius = "5px";
+        alertBox.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+        alertBox.style.zIndex = "1000";
+        document.body.appendChild(alertBox);
+    }
+    
+    function removeOfflineAlert() {
+        const alertBox = document.getElementById("offlineAlert");
+        if (alertBox) {
+            alertBox.remove();
+        }
+    }
+    
+    window.addEventListener("offline", showOfflineAlert);
+    window.addEventListener("online", removeOfflineAlert);
+    
 
 
     useEffect(() => {
         if (isFirstCallComplete) {
             const findUserById = async (userId) => {
                 try {
-                    let response = await axios.get(`${backendUrl}/api/findById/${userId}`,{
-                        headers:{ 'Authorization': `Bearer ${token}`}
+                    let response = await axios.get(`${backendUrl}/api/findById/${userId}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
                     console.log("daa", response.data)
                     if (response.data.message == "No user found") {
-                        response = await axios.get(`${backendUrl}/api/findByIdEmployee/${userId}`);
+                        response = await axios.get(`${backendUrl}/api/getEmployee/${userId}/${userId}`);
                     }
                     console.log("daa2", response.data)
 
@@ -396,13 +489,14 @@ const Admin = () => {
                     console.log("error", error.message)
                 }
             }
-            if(userId != ""){
+            if (userId != "") {
                 findUserById(userId)
 
             }
         }
     }, [isFirstCallComplete, userId]);
 
+    
 
     function toggleSidebar() {
         setIsSidebarOpen(!isSidebarOpen);
@@ -447,340 +541,344 @@ const Admin = () => {
 
     const showDashboard = () => {
         resetStates()
-        startingPage(true);
+        // startingPage(true);
     }
 
     console.log("getData.randomId", getData)
 
     return (
         <div>
-            {getData.randomId || (getData.department === "IT" || getData.department === "Management" || getData.department === "Administration") ? (
-                <div className="admin-page">
-                    <Helmet>
-                        <title>Admin Page - Claimpro</title>
-                        <meta name="description" content="Admin Page." />
-                        <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
-                        <link rel='canonical' href={`https://claimpro.in/Admin`} />
-                    </Helmet>
-                    {isSidebarOpen ? (
-                        <aside ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
-                            {window.innerWidth < 768 && (
-                                <div></div>
-                            )}
+
+            {/* {getData.randomId || (getData.department === "IT" || getData.department === "Management" || getData.department === "Administration") ? ( */}
+            <div className="admin-page" style={{ height: '70px' }} >
+                <Helmet>
+                    <title>Admin Page - Claimpro</title>
+                    <meta name="description" content="Admin Page." />
+                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                    <link rel='canonical' href={`https://claimpro.in/Admin`} /> 
+                </Helmet>
+                {isSidebarOpen ? (
+                    <aside ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ paddingLeft: "0px" }}>
+                        <ul>
+                            <img src={claimproassist}
+                                onClick={() => {
+                                    navigate('/admin-dashboard-vendor-customer');
+                                }}
+                                alt="Dashboard Icon" className='company-img' style={{ cursor: 'pointer' }} />
+
+                            <li className='li-class' onClick={() => {
+                               navigate('/admin-dashboard-vendor-customer');
+                            }}>
+                                <SpaceDashboardIcon className="icon" />
+                                Dashboard</li>
                             <ul>
-                                <img src={claimproassist}
-                                    onClick={() => {
-                                        setShowCustomerOptions(!showCustomerOptions);
-                                        resetStates();
-                                        setStartingPage(true);
-                                    }}
-                                    alt="Dashboard Icon" className='company-img' style={{ cursor: 'pointer' }} />
-
-                                <li className='li-class' onClick={() => {
-                                    setShowCustomerOptions(!showCustomerOptions);
-                                    resetStates();
-                                    setStartingPage(true);
+                                <li classname="li-class" onClick={(e) => {
+                                    //  navigate('/vendor-form');
                                 }}>
-                                    <SpaceDashboardIcon className="icon" />
-                                    Dashboard</li>
-                                <ul>
-                                    <li classname="li-class" onClick={(e) => {
-                                        setShowVendorOptions(!showVendorOptions);
-                                        resetStates();
-                                        setShowAddVendor(true);
-                                        e.stopPropagation();
-                                    }}>
-                                        <StoreIcon className="icon" />
-                                        Vendor
-                                        {showVendorOptions && (
-                                            <ul className='submenu'>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    resetStates();
-                                                    setShowAddVendor(true);
-                                                    e.stopPropagation();
-                                                }}>
-                                                    <AddBusinessIcon className="icon" />
-                                                    Add Vendor</li>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowViewVendor(true);
-                                                }}>
-                                                    <StoreIcon className="icon" />
-                                                    View Vendor</li>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowPotentialVendor(true);
-                                                }}>
-                                                    <StoreIcon className="icon" />
-                                                    Sign-up</li>
-                                            </ul>
-                                        )}
-                                    </li>
-                                </ul>
-                                <ul>
-                                    <li classname="li-class" onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowCustomerOptions(!showCustomerOptions);
-                                        resetStates();
-                                        setShowAddCustomer(true);
-                                    }}>
-                                        <PersonOutlineIcon className="icon" />
-                                        Customer
-                                        {showCustomerOptions && (
-                                            <ul className='submenu'>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    resetStates();
-                                                    e.stopPropagation();
-                                                    setShowAddCustomer(true);
-                                                }}>
-                                                    <PersonAddAltIcon className="icon" />
-                                                    Add </li>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowViewCustomer(true);
-                                                }}>
-                                                    <PersonOutlineIcon className="icon" />
-                                                    View </li>
-                                            </ul>
-                                        )}
-                                    </li>
-                                </ul>
-                                <ul>
-                                    <li classname="li-class" onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowEmployeeOptions(!showEmployeeOptions);
-                                        resetStates();
-                                        setShowAddEmployee(true);
-                                    }}>
-                                        <BadgeIcon className="icon" />
-                                        Employee
-                                        {showEmployeeOptions && (
-                                            <ul className='submenu'>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    resetStates();
-                                                    e.stopPropagation();
-                                                    setShowAddEmployee(true);
-                                                }}>
-                                                    <PersonAddAltIcon className="icon" />
-                                                    Add </li>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowEmployeeView(true);
-                                                }}>
-                                                    <BadgeIcon className="icon" />
-                                                    View </li>
-                                            </ul>
-                                        )}
-                                    </li>
-                                </ul>
-                                <ul>
-                                    <li classname="li-class" onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowVehicleInfo(!showVehicleInfo);
-                                        resetStates();
-                                        setShowVehicleClaim(true);
-                                    }}>
-
-                                        <ReportIcon className="icon" />
-                                        Vehicle Reported
-                                        {showVehicleInfo && (
-                                            <ul className='submenu'>
-                                                  <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowInitialReg(true);
-                                                }}>
-                                                    <AppRegistrationIcon className="icon" />
-                                                    Initial Reg</li>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowVehicleClaim(true);
-                                                }}>
-                                                    <AppRegistrationIcon className="icon" />
-                                                    Register</li>
-                                                <li classname="li-class" onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setShowVehicleClaimView(true);
-                                                }}>
-                                                    <ReportIcon className="icon" />
-                                                    View Register</li>
-                                            </ul>
-                                        )}
-                                    </li>
-                                </ul>
-
-
-
-
-                                <ul>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowAssignedVehicleReport(!showAssignedVehicleReport);
-                                        resetStates();
-                                        setaccidendVehicle(true);
-                                    }}>
-                                        <LocalShippingIcon className="icon" />
-                                        Assigned Vehicle
-                                        {showAssignedVehicleReport && (
-                                            <div className='submenu'>
-                                                <li onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setaccidendVehicle(true);
-                                                }}>
-                                                    <AddBusinessIcon className="icon" />
-                                                    Vendors</li>
-                                                <li onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setVendorResponsing(true);
-                                                }}>
-                                                    <SensorOccupiedIcon className="icon" />
-                                                    Response</li>
-                                            </div>
-                                        )}
-                                    </li>
-                                </ul>
-
-
-                                <ul>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowVisitorForm(!showVisitorForm);
-                                        resetStates();
-                                        setVisitorForm(true);
-                                    }}>
-                                        <HailIcon className="icon" />
-                                        Other Form
-                                        {showVisitorForm && (
-                                            <div className='submenu' style={{ width: '200px' }}>
-                                                <li onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setVisitorForm(true);
-                                                }}>
-                                                    <HailIcon className="icon" />
-                                                    Visitor Form</li>
-                                                <li onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setCustomerEnquiryForm(true);
-                                                }}>
-                                                    <HailIcon className="icon" />
-                                                    Customer Enquiry</li>
-                                            </div>
-                                        )}
-                                    </li>
-                                </ul>
-
-                                <ul>
-                                    <li onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowVisitorForm(!showVisitorForm);
-                                        // resetStates();
-                                        // setVisitorForm(true);
-                                    }}>
-                                        <HailIcon className="icon" />
-                                        Surveryor
-                                        {showVisitorForm && (
-                                            <div className='submenu' style={{ width: '200px' }}>
-                                                <li onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setAddSurveyor(true);
-                                                }}>
-                                                    <HailIcon className="icon" />
-                                                    Add Surveyor</li>
-                                                <li onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetStates();
-                                                    setViewSurveyor(true);
-                                                }}>
-                                                    <HailIcon className="icon" />
-                                                    View Surveyor</li>
-                                            </div>
-                                        )}
-                                    </li>
-                                </ul>
-
-                            </ul>
-                        </aside>
-                    ) : (
-                        <div>
-                            {window.innerWidth < 768 && (
-                                <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
-                            )}
-                        </div>
-                    )}
-
-                    <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' }}>
-                        <div className='first-container'>
-                            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
-
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
-                                <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
-                                    {userImage ? (
-                                        <img
-                                            src={userImg}
-                                            alt="User"
-                                            style={{ width: '30px', height: '30px', borderRadius: '50%' }}
-                                        />
-                                    ) : (
-                                        <FaUserCircle size={30} />
-                                    )}
-                                </div>
-
-                                {showUserId && (
-                                    <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
-                                        <div style={{
-                                            marginBottom: '10px',
-                                            fontSize: '16px',
-                                            fontWeight: 'bold',
-                                            color: '#333',
-                                            marginTop: "15px"
-                                        }}>
-                                            User Information
-                                        </div>
-                                        <span style={{
-                                            fontSize: '14px',
-                                            color: '#555',
-                                            marginBottom: '10px'
-                                        }}>
-                                            User Name: {getData.username || getData.name} <br />
-                                            User Id: {getData.randomId || getData.id}
-                                        </span>
-                                        <button
-                                            onClick={handleSignOutClick}
-                                            style={{
-                                                padding: '10px 20px',
-                                                fontSize: '14px',
-                                                color: '#fff',
-                                                backgroundColor: '#007bff',
-                                                border: 'none',
-                                                borderRadius: '5px',
-                                                cursor: 'pointer',
-                                                outline: 'none',
-                                                width: '100%',
-                                                textAlign: 'center',
-                                                marginTop: "15px",
+                                    <StoreIcon className="icon" />
+                                    Vendor
+                                    {/* {showVendorOptions && ( */}
+                                        <ul className='submenu'>
+                                            <li classname="li-class" onClick={(e) => {
+                                                 navigate('/vendor-form');
                                             }}>
-                                            Sign Out
-                                        </button>
-                                    </div>
+                                                <AddBusinessIcon className="icon" />
+                                                Add Vendor</li>
+                                            <li classname="li-class" onClick={(e) => {
+                                                navigate('/vendor-view-form');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowViewVendor(true);
+                                            }}>
+                                                <StoreIcon className="icon" />
+                                                View Vendor</li>
+                                            <li classname="li-class" onClick={(e) => {
+                                                navigate('/signup-form-submissions');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowPotentialVendor(true);
+                                            }}>
+                                                <StoreIcon className="icon" />
+                                                Sign-up</li>
+                                        </ul>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li classname="li-class" onClick={(e) => {
+                                    // e.stopPropagation();
+                                    // setShowCustomerOptions(!showCustomerOptions);
+                                    // resetStates();
+                                    // setShowAddCustomer(true);
+                                }}>
+                                    <PersonOutlineIcon className="icon" />
+                                    Customer
+                                    {/* {showCustomerOptions && ( */}
+                                        <ul className='submenu'>
+                                            <li classname="li-class" onClick={(e) => {
+                                                navigate('/customer-form');
+                                                // resetStates();
+                                                // e.stopPropagation();
+                                                // setShowAddCustomer(true);
+                                            }}>
+                                                <PersonAddAltIcon className="icon" />
+                                                Add </li>
+                                            <li classname="li-class" onClick={(e) => {
+                                                 navigate('/customer-view-form');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowViewCustomer(true);
+                                            }}>
+                                                <PersonOutlineIcon className="icon" />
+                                                View </li>
+                                        </ul>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li classname="li-class" onClick={(e) => {
+                                    // e.stopPropagation();
+                                    // setShowEmployeeOptions(!showEmployeeOptions);
+                                    // resetStates();
+                                    // setShowAddEmployee(true);
+                                }}>
+                                    <BadgeIcon className="icon" />
+                                    Employee
+                                    {/* {showEmployeeOptions && ( */}
+                                        <ul className='submenu'>
+                                            <li classname="li-class" onClick={(e) => {
+                                                navigate('/employee-form');
+                                                // resetStates();
+                                                // e.stopPropagation();
+                                                // setShowAddEmployee(true);
+                                            }}>
+                                                <PersonAddAltIcon className="icon" />
+                                                Add </li>
+                                            <li classname="li-class" onClick={(e) => {
+                                            navigate('/view-employee');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowEmployeeView(true);
+                                            }}>
+                                                <BadgeIcon className="icon" />
+                                                View </li>
+                                        </ul>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+                            <ul>
+                                <li classname="li-class" onClick={(e) => {
+                                    // e.stopPropagation();
+                                    // setShowVehicleInfo(!showVehicleInfo);
+                                    // resetStates();
+                                    // setShowVehicleClaim(true);
+                                }}>
+
+                                    <ReportIcon className="icon" />
+                                    Vehicle Reported
+                                    {/* {showVehicleInfo && ( */}
+                                        <ul className='submenu'>
+                                            <li classname="li-class" onClick={(e) => {
+                                                 navigate('/signup-form-view');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowInitialReg(true);
+                                            }}>
+                                                <AppRegistrationIcon className="icon" />
+                                                Initial Reg</li>
+                                            <li classname="li-class" onClick={(e) => {
+                                                navigate('/accident-vehicle-register-update');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowVehicleClaim(true);
+                                            }}>
+                                                <AppRegistrationIcon className="icon" />
+                                                Register</li>
+                                            <li classname="li-class" onClick={(e) => {
+                                                navigate('/view-accident-vehicle-register-details');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setShowVehicleClaimView(true);
+                                            }}>
+                                                <ReportIcon className="icon" />
+                                                View Register</li>
+                                        </ul>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+
+
+
+
+                            <ul>
+                                <li onClick={(e) => {
+                                    // e.stopPropagation();
+                                    // setShowAssignedVehicleReport(!showAssignedVehicleReport);
+                                    // resetStates();
+                                    // setaccidendVehicle(true);
+                                }}>
+                                    <LocalShippingIcon className="icon" />
+                                    Assigned Vehicle
+                                    {/* {showAssignedVehicleReport && ( */}
+                                        <div className='submenu'>
+                                            <li onClick={(e) => {
+                                                 navigate('/accident-vehicle');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setaccidendVehicle(true);
+                                            }}>
+                                                <AddBusinessIcon className="icon" />
+                                                Vendors</li>
+                                            <li onClick={(e) => {
+                                                 navigate('/vendor-response');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setVendorResponsing(true);
+                                            }}>
+                                                <SensorOccupiedIcon className="icon" />
+                                                Response</li>
+                                        </div>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+
+
+                            <ul>
+                                <li onClick={(e) => {
+                                    // e.stopPropagation();
+                                    // setShowVisitorForm(!showVisitorForm);
+                                    // resetStates();
+                                    // setVisitorForm(true);
+                                }}>
+                                    <HailIcon className="icon" />
+                                    Other Form
+                                    {/* {showVisitorForm && ( */}
+                                        <div className='submenu' style={{ width: '200px' }}>
+                                            <li onClick={(e) => {
+                                                 navigate('/Visitors-form');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setVisitorForm(true);
+                                            }}>
+                                                <HailIcon className="icon" />
+                                                Visitor Form</li>
+                                            <li onClick={(e) => {
+                                             navigate('/customer-enquiry-form');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setCustomerEnquiryForm(true);
+                                            }}>
+                                                <HailIcon className="icon" />
+                                                Customer Enquiry</li>
+                                        </div>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+
+                            <ul>
+                                <li onClick={(e) => {
+                                    // e.stopPropagation();
+                                    // setShowVisitorForm(!showVisitorForm);
+                                    // resetStates();
+                                    // setVisitorForm(true);
+                                }}>
+                                    <HailIcon className="icon" />
+                                    Surveryor
+                                    {/* {showVisitorForm && ( */}
+                                        <div className='submenu' style={{ width: '200px' }}>
+                                            <li onClick={(e) => {
+                                                 navigate('/add-surveyor');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setAddSurveyor(true);
+                                            }}>
+                                                <HailIcon className="icon" />
+                                                Add Surveyor</li>
+                                            <li onClick={(e) => {
+                                                 navigate('/view-surveyor');
+                                                // e.stopPropagation();
+                                                // resetStates();
+                                                // setViewSurveyor(true);
+                                            }}>
+                                                <HailIcon className="icon" />
+                                                View Surveyor</li>
+                                        </div>
+                                    {/* )} */}
+                                </li>
+                            </ul>
+
+                        </ul>  
+                    </aside>
+                ) : (
+                    <div>
+                        {window.innerWidth < 768 && (
+                            <div className="menu-btn show" onClick={toggleSidebar}><MenuIcon /></div>
+                        )}
+                    </div>
+                )}
+
+                <main className="content" style={{ paddingLeft: "0px", marginLeft: '0px' , background:'#f4f4f4'}}>
+                    <div className='first-container'>
+                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
+
+                        </div>
+                        <div style={{ position:'fixed',display: 'flex', alignItems: 'center', marginTop:'-40px' , zIndex:'1000' ,top:'50px',  right:'20px' }}>
+                            <CenterFocusWeakIcon className="icon" onClick={handleFullScreenToggle} style={{ cursor: 'pointer', marginRight: '20px', marginLeft: '20px', marginBottom: '0px' }} />
+                            <div onClick={() => setShowUserId(!showUserId)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+                                {userImage ? (
+                                    <img
+                                        src={userImg}
+                                        alt="User"
+                                        style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                                    />
+                                ) : (
+                                    <FaUserCircle size={30} />
                                 )}
                             </div>
+
+                            {showUserId && (
+                                <div ref={dropdownRef} className={`dropdown-container ${showUserId ? 'show' : ''}`}>
+                                    <div style={{
+                                        marginBottom: '10px',
+                                        fontSize: '16px',
+                                        fontWeight: 'bold',
+                                        color: '#333',
+                                        marginTop: "15px"
+                                    }}>
+                                        User Information
+                                    </div>
+                                    <span style={{
+                                        fontSize: '14px',
+                                        color: '#555',
+                                        marginBottom: '10px'
+                                    }}>
+                                        User Name: {getData.username || getData.name} <br />
+                                        User Id: {getData.randomId || getData.id}
+                                    </span>
+                                    <button
+                                        onClick={handleSignOutClick}
+                                        style={{
+                                            padding: '10px 20px',
+                                            fontSize: '14px',
+                                            color: '#fff',
+                                            backgroundColor: '#007bff',
+                                            border: 'none',
+                                            borderRadius: '5px',
+                                            cursor: 'pointer',
+                                            outline: 'none',
+                                            width: '100%',
+                                            textAlign: 'center',
+                                            marginTop: "15px",
+                                        }}>
+                                        Sign Out
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                        <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
+                    </div>
+                    <ConfirmationModal isOpen={isModalOpen} onConfirm={handleConfirmSignOut} onCancel={handleCancelSignOut} />
 
-
+                    {/* 
                         {
                             startingPage &&
                             <DummyDashboard />
@@ -861,16 +959,16 @@ const Admin = () => {
                         {
                             viewSurveyor &&
                             <SurveyorApproved />
-                        }
+                        } */}
 
 
-                    </main>
-                </div>
-            ) : (
+                </main>
+            </div>
+            {/* ) : (
                 <div>
                     <Login />
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

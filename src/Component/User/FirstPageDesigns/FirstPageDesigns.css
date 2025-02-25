@@ -119,3 +119,18 @@
     }
   }
   
+
+
+
+  .newfirstpage-container {
+    max-width: 411px;
+    min-width: 300px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: white;
+
+  }
+  
+  .newfirstpage-status-bar {
+    background: linear-gradient(to right, rgb(239, 68, 68), rgb(220, 38, 38));
+  }

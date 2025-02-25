@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import ScaleIcon from '@mui/icons-material/Scale';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
@@ -8,6 +8,10 @@ import telephonecall from '../../Assets/telephonecall.png'
 import PersonIcon from '@mui/icons-material/Person';
 
 const FirstCardPage = (props) => {
+    console.log('proisadasfdafdasfd', props)
+    const [type, setType] = useState(props.accidentData.vendorType.replace(/([a-z])([A-Z])/g, '$1 $2'))
+    console.log('setType', type)                                         
+
     return (
         <div>
             <div className='h-1/2'>
@@ -43,7 +47,7 @@ const FirstCardPage = (props) => {
                                 <h4 className='text-xl font-semibold mt-0.3'>{props.accidentData.reg} </h4>
                             </div>
                             <div className='flex'>
-                                <p className='text-xs font-semibold mt-2'>crane service required</p>
+                                <p className='text-xs font-semibold mt-2'>{type} service required</p>
                                 {/* <div className='bg-yellow-500 rounded-xl p-1 mt-1'>
                                     <p className='font-xs font-semibold px-2'>4.5</p>
                                 </div> */}
@@ -56,15 +60,15 @@ const FirstCardPage = (props) => {
                             <div class='flex'>
                                 <MyLocationIcon className='m-1 mt-2' />
                                 <div className='px-2 py-2 flex-col'>
-                                    <h4 className='text-xs font-base'>start location </h4>
+                                    <h4 className='text-xs font-base'>{props.accidentData.pickupLocation} </h4>
                                     <p className='text-xs font-semibold'>Accident Location</p>
                                 </div>
                             </div>
                             <div class='flex'>
                                 <PinDropIcon className='m-1 mt-2' />
                                 <div className='px-1 py-1 flex-col'>
-                                    <p className='text-xs font-base'>drop location</p>
-                                    <h4 className='text-xs font-semibold'> Location </h4>
+                                    <p className='text-xs font-base'>{props.accidentData.dropLocation}</p>
+                                    <h4 className='text-xs font-semibold'>Drop Location </h4>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +103,7 @@ const FirstCardPage = (props) => {
                                     <p className='text-white font-semibold text-xs'> Reject Case</p>
                                 </div>
                             </div>
-                            <div className='flex flex-col items-center justify-center px-4 py-2'>
+                            <div onClick={() => (window.location.href = 'tel: +91 7800 78 4700')} className='flex flex-col items-center justify-center px-4 py-2'>
                                 <img src={telephonecall} className='h-[30px] w-[30px]' alt="call for help" />
                                 <p className='text-black font-semibold text-xs text-center'> call for help</p>
 

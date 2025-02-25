@@ -11,10 +11,12 @@ import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Admin from '../Admin/Admin';
 
-function ImageUpload({ id, onUpdate }) {
-    const location = useLocation();
-    // const { id } = location.state || {};
+function ImageUpload() {
+    const {state, location} = useLocation();
+    
+    const { id } = state.id;
     console.log("Received ID:", id);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -139,7 +141,7 @@ function ImageUpload({ id, onUpdate }) {
                 setSnackbarMessage("Photos uploaded successfully!");
                 setTimeout(() => {
                     // navigate("../Admin");
-                    onUpdate();
+                  navigate(-1);
                 }, 2000);
             } else {
                 setSnackbarMessage("Failed to upload photos.");
@@ -173,11 +175,12 @@ function ImageUpload({ id, onUpdate }) {
 
     const handleBack = () => {
         // navigate("../Admin");
-        onUpdate()
+      navigate(-1)
     };
 
     return (
         <div className="Customer-master-form">
+            <Admin/>
             <Helmet>
                 <title>Accident Images Upload - Claimpro</title>
                 <meta name="description" content="Upload Accident Images" />

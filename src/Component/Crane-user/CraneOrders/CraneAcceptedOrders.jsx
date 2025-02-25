@@ -104,14 +104,11 @@ const CraneAcceptedOrders = ({ data }) => {
     }
     useEffect(() => {
 
-        if (totalAcceptedCases.length > 0 && totalAcceptedCases.length) {
-            totalAcceptedCases.map((item) => {
-                avg.push(0)
-            })
-            totalAcceptedCases.map((item) => {
+        if (totalAcceptedCases.length) {
+            const avg = new Array(totalAcceptedCases.length).fill(0);
+            const currentStage = totalAcceptedCases.map((item) => {
                 console.log("tem.details[0]?.customerAcceptedVendor", item.details[0]?.customerAcceptedVendor)
-                let gotStage = getStage(item.details[0]?.customerAcceptedVendor, item.details[0]?.acceptedByAdmin)
-                currentStage.push(gotStage)
+                return getStage(item.details[0]?.customerAcceptedVendor, item.details[0]?.acceptedByAdmin)
             })
             totalAcceptedCases.forEach((item, index) => {
                 getVendorLocation(item.crane, item.accidentLatitude, item.accidentLongitude, index);
@@ -267,7 +264,10 @@ const CraneAcceptedOrders = ({ data }) => {
     };
 
     return (
-        <div>
+        <div style={{
+            // height:'100vh',
+            // background:'radial-gradient(#1e4b1b00,transparent, transparent,transparent, #276c50)',
+        }}>
             <div style={{
                 marginBottom: "100px"
             }}>
@@ -283,20 +283,21 @@ const CraneAcceptedOrders = ({ data }) => {
 
 
                 }}>
-                    <div className="d-flex justify-content-center h-100"  >
-                        <div className="searchbar" style={{ border: '1px solid', minWidth: "250px" }}>
-                            <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} onChange={handleSearch} />
-                            {/* <a href="#" className="search_icon">
-                            <i className="fas fa-search"></i>
-                        </a> */}
-                            <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
-                        </div>
-                        <div style={{ margin: "23px 20px 0px" }}>
-                            <img src={filterUser} style={{ height: '20px', width: "20px" }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                    <div style={{ display: 'flex', justifyContent: "space-between" }}>
+                        <div className="container fixed " style={{zIndex:'1001'}}>
+                            <div className="d-flex justify-content-center h-100" style={{  position: 'sticky', top: "25px" }}>
+                                <div className="searchbar" style={{ border: '1px solid', minWidth: "130px" }}>
+                                    <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
+                                    <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
+                                </div>
+                                <div style={{ margin: "23px 20px 0px" }}>
+                                    <img src={filterUser} style={{ height: '20px', width: "20px", background: 'linear-gradient(45deg, white, transparent)', borderRadius: "10px", }} onClick={() => setOpenFilterModal(!openFilterModal)} />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {totalAcceptedCases.length > 0 && currentStage.length > 0 && (
+                {totalAcceptedCases.length > 0 && (
                     <div
                         style={{
                             display: "grid",
@@ -304,160 +305,140 @@ const CraneAcceptedOrders = ({ data }) => {
 
                         }}>
                         {totalAcceptedCases.map((item, dataIndex) => (
-                            <div style={{ border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "20px", padding: "10px", marginTop:"30px" }}>
-                                <div className="flex justify-between">
-                                    <img
-                                        className="h-[105px] w-[105px] mt-[-50px] "
-                                        src="https://png.pngtree.com/png-clipart/20240308/original/pngtree-3d-free-cargo-delivery-truck-png-image_14540258.png"
-                                        alt="Truck"
-                                    />
-                                    <div style={{ marginTop: "10px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow', maxHeight: '30px' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", maxHeight: "10px", width: "10px", marginLeft: '3px' }} /></div>
-                                </div>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    {stages.map((stage, index) => (
-                                        <div
-                                            key={index}
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                alignItems: "center",
-                                                textAlign: "center",
-                                                position: "relative",
-                                                flex: 1,
-                                            }}
-                                        >
-                                            {/* Icon/Image for each stage */}
+                            <div style={{
+                                border: "1px solid teal", minWidth: "280px", margin: '10px', boxShadow: 'rgba(0, 0, 0, 0.2) 3px 4px 12px 8px', borderRadius: "20px", padding: "10px", marginTop: "30px",
+                                backgroundImage: "url('https://media.istockphoto.com/id/1465157700/photo/brightly-red-colored-semi-truck-speeding-on-a-two-lane-highway-with-cars-in-background-under.jpg?s=612x612&w=0&k=20&c=cfbbPy2ylvFGRULNLGO_Ucm-C5DsOJMFHiZBdKGsq3c=')", // ✅ Corrected syntax
+                                backgroundSize: "cover", // ✅ Ensures the image covers the container
+                                backgroundPosition: "center", // ✅ Centers the image
+                                backgroundRepeat: "no-repeat", // ✅ Prevents tiling  
+                            }}>
+                                <div className="bg-white p-1" style={{ borderRadius: '10px', opacity: '0.9' }}>
+                                    <div className="flex justify-between">
+                                        <img
+                                            className="h-[105px] w-[105px] mt-[-50px] "
+                                            src="https://png.pngtree.com/png-clipart/20240308/original/pngtree-3d-free-cargo-delivery-truck-png-image_14540258.png"
+                                            alt="Truck"
+                                        />
+                                        <div style={{ marginTop: "10px", marginRight: "10px", width: "45px", background: '#0e4823', border: "1px solid red", borderRadius: "5px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: 'center', color: 'yellow', maxHeight: '30px' }}>{avg[dataIndex]} <img src={ratingStar} style={{ height: "10px", maxHeight: "10px", width: "10px", marginLeft: '3px' }} /></div>
+                                    </div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        {stages.map((stage, index) => (
                                             <div
+                                                key={index}
                                                 style={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    borderRadius: "50%",
-                                                    backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
                                                     display: "flex",
+                                                    flexDirection: "column",
                                                     alignItems: "center",
-                                                    justifyContent: "center",
-                                                    border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
-                                                    transition: "background-color 0.3s ease",
-                                                    zIndex: 1,
+                                                    textAlign: "center",
+                                                    position: "relative",
+                                                    flex: 1,
                                                 }}
                                             >
-                                                <img
-                                                    src={stage.img}
-                                                    alt={stage.label}
-                                                    style={{
-                                                        width: "20px",
-                                                        height: "20px",
-                                                        opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
-                                                    }}
-                                                />
-                                            </div>
-
-                                            {/* Stage Label */}
-                                            <p
-                                                style={{
-                                                    marginTop: "5px",
-                                                    color: index <= currentStage[dataIndex] ? "black" : "#aaa",
-                                                    fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
-                                                    fontSize: "12px",
-                                                }}
-                                            >
-                                                {stage.label}
-                                            </p>
-
-                                            {/* Connecting Line */}
-                                            {index < stages.length - 1 && (
+                                                {/* Icon/Image for each stage */}
                                                 <div
                                                     style={{
-                                                        position: "absolute",
-                                                        top: "15px", // Aligns with the center of the icon
-                                                        left: "50%",
-                                                        right: "-50%",
-                                                        width: "100%",
-                                                        height: "2px",
-                                                        backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
-                                                        zIndex: 0,
+                                                        width: "30px",
+                                                        height: "30px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: index == currentStage[dataIndex] ? index == 2 ? "rgb(11 219 255)" : "#4CAF50" : "#ccc",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        border: index === currentStage[dataIndex] ? "2px solid #4CAF50" : "none",
+                                                        transition: "background-color 0.3s ease",
+                                                        zIndex: 1,
                                                     }}
-                                                ></div>
-                                            )}
+                                                >
+                                                    <img
+                                                        src={stage.img}
+                                                        alt={stage.label}
+                                                        style={{
+                                                            width: "20px",
+                                                            height: "20px",
+                                                            opacity: index <= currentStage[dataIndex] ? 1 : 0.5,
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                {/* Stage Label */}
+                                                <p
+                                                    style={{
+                                                        marginTop: "5px",
+                                                        color: index <= currentStage[dataIndex] ? "black" : "#aaa",
+                                                        fontWeight: index === currentStage[dataIndex] ? "bold" : "normal",
+                                                        fontSize: "12px",
+                                                    }}
+                                                >
+                                                    {stage.label}
+                                                </p>
+
+                                                {/* Connecting Line */}
+                                                {index < stages.length - 1 && (
+                                                    <div
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "15px", // Aligns with the center of the icon
+                                                            left: "50%",
+                                                            right: "-50%",
+                                                            width: "100%",
+                                                            height: "2px",
+                                                            backgroundColor: index < currentStage[dataIndex] ? "#4CAF50" : "#ccc",
+                                                            zIndex: 0,
+                                                        }}
+                                                    ></div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div style={{ marginTop: "20px" }}>
+                                        <hr className="text-black" />
+                                        {/* <hr className="color-black m-0" /> */}
+
+                                        <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                                <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
+                                                <span className='text-md font-semibold' style={{ marginLeft: "5px" }}>{item.reg}</span>
+                                            </div>
+                                            <div
+                                                className="right-10  flex items-center mt-1"
+                                                style={{ margin: '0px 5px 0 5px' }}
+                                            >
+                                                <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
+                                                <span className="text-xs font-medium ml-2">
+                                                    {item.details[0].connectedVendorFullyTime?.split("T")[0]}
+                                                </span>
+                                            </div>
+
                                         </div>
-                                    ))}
+
+                                        <div style={{ borderTop: '1px solid gray', borderRadius: "10px 0px 0px 10px", borderBottom: "1px solid", padding: '4px 5px 9px 5px', display: 'inline-block', background: "linear-gradient(42deg, #e7fae8, transparent)", margin: '10px' }}>
+                                            <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 15px' }}>
+                                                <LibraryAddCheckIcon className='h-[30px] w-[30px] text-red-500' />
+                                                <span className="text-sm font-semibold" style={{ marginLeft: "5px" }}> {item.details[0].vendorType} Accepted</span>
+                                            </div>
+
+                                            <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 15px' }}>
+                                                <DateRangeOutlinedIcon className='h-[30px] w-[30px]  text-red-500' />
+                                                <p className="text-sm ml-2 text-green-700">Date</p>
+                                                <span className="text-sm" style={{ marginLeft: "5px" }}> {item.details[0].systemDate?.split("T")[0]}</span>
+
+                                                <AccessTimeOutlinedIcon className='h-[30px] w-[30px] text-red-500 ml-5' />
+                                                <span className="text-sm" style={{ marginLeft: "5px" }}>{item.details[0].systemDate?.split("T")[1]}</span>
+                                            </div>
+                                        </div>
+
+
+
+
+                                    </div>
+
                                 </div>
-                                {/* <div style={{ background: "white", marginTop: "30px", borderRadius: "20px 20px 0px 0px", boxShadow: "#808080 1px -4px 0px 0px" }}>
-
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 10px' }}>
-                                            <p style={{ fontSize: "13px", fontWeight: "bold", marginTop: "30px" }}>File No: </p>
-                                            <span style={{ marginLeft: "5px", fontSize: "12px", color: 'darkblue', marginTop: "30px" }} >{item.accidentFileNo}</span>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 10px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: 0 }}>Vehicle No:</p>
-                                        <span style={{ color: "blue", marginLeft: "5px", fontSize: "12px" }}>{item.reg}</span>
-                                    </div>
-
-
-                                    <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 5px' }}>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Assigned Date:</p>
-                                        <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn?.split("|")[0]}</span>
-                                        <p style={{ fontSize: "13px", fontWeight: "bold", margin: "0px 0px 20px 5px" }}>Time:</p>
-                                        <span style={{ color: "green", marginLeft: "5px", marginBottom: "20px", fontSize: "12px" }}>{item.craneAssignedOn?.split("|")[1]}</span>
-                                    </div>
-
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                                        <div style={{ display: "flex", alignItems: "center", margin: '0px 0px 20px 5px' }}>
-
-                                            {item.details[0]?.acceptedByAdmin !== null && item.details[0]?.customerAcceptedVendor == false && (
-                                                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 10px", fontSize: "12px", borderRadius: "5px", color: 'black', border: "2px solid #8d65bd", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>Customer permission pending</span>
-                                            )}
-                                            {item.details[0]?.customerAcceptedVendor == true && (
-                                                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "5px", padding: "7px 3px", fontSize: "12px", borderRadius: "5px", color: 'green', border: "1px solid green", background: '#dadada', fontWeight: "bold", boxShadow: 'none' }}>You may move</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div> */}
-                                <div style={{ marginTop: "20px" }}>
-                                    <hr className="text-black" />
-                                    {/* <hr className="color-black m-0" /> */}
-
-                                    <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                            <LocalShippingOutlinedIcon className='h-[30px] w-[30px]' />
-                                            <span className='text-md font-semibold' style={{ marginLeft: "5px" }}>{item.reg}</span>
-                                        </div>
-                                        <div
-                                            className="right-10  flex items-center mt-1"
-                                            style={{ margin: '0px 5px 0 5px' }}
-                                        >
-                                            <ArticleIcon className="h-[30px] w-[30px] text-red-500" />
-                                            <span className="text-xs font-medium ml-2">
-                                                {item.craneAssignedOn?.split("|")[0]}
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-                                    <div style={{ borderTop: '1px solid gray', borderRadius: "10px 0px 0px 10px", borderBottom: "1px solid", padding: '4px 5px 9px 5px', display: 'inline-block', background: "linear-gradient(42deg, #e7fae8, transparent)", margin: '10px' }}>
-                                        <div style={{ display: "flex", alignItems: "center", margin: '10px 5px 0px 15px' }}>
-                                            <LibraryAddCheckIcon className='h-[30px] w-[30px] text-red-500' />
-                                            <span className="text-sm font-semibold" style={{ marginLeft: "5px" }}>Accepted</span>
-                                        </div>
-
-                                        <div style={{ display: "flex", alignItems: "center", margin: '5px 5px 0px 15px' }}>
-                                            <DateRangeOutlinedIcon className='h-[30px] w-[30px]  text-red-500' />
-                                            <p className="text-sm ml-2 text-green-700">Date</p>
-                                            <span className="text-sm" style={{ marginLeft: "5px" }}>{item.craneAssignedOn?.split("|")[0]}</span>
-
-                                            <AccessTimeOutlinedIcon className='h-[30px] w-[30px] text-red-500 ml-5' />
-                                            <span className="text-sm" style={{ marginLeft: "5px" }}>{item.craneAssignedOn?.split("|")[1]}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-2 ml-auto flex justify-end mb-2">
+                                <div style={{ minWidth: '400px' }}>
+                                    <div className="mt-2 mr-auto ml-auto flex justify-center">
                                         <p
-                                            className="text-xs mt-1 font-semibold   text-center rounded-full  flex items-center justify-center relative cursor-pointer max-w-[200px] min-w-[150px] h-[30px]"
-                                            style={{ paddingLeft: "10px", background: "#ff7676", color: "white", border: '2px solid #000000', }}
+                                            className="text-sm mt-1 font-semibold bg-red-600 text-white rounded-full   text-center   flex items-center justify-center relative cursor-pointer max-w-[200px] min-w-[150px] h-[30px]"
+                                            style={{  border: '1px solid', paddingLeft: "10px", fontSize: "13px" }}
                                             onClick={() => handleChoosenCase(item)}
                                         >
                                             View Case
@@ -468,12 +449,7 @@ const CraneAcceptedOrders = ({ data }) => {
                                             />
                                         </p>
                                     </div>
-
-
                                 </div>
-
-
-
                             </div>
                         ))}
                     </div>
@@ -493,7 +469,7 @@ const CraneAcceptedOrders = ({ data }) => {
                         justifyContent: "center",
                         animation: "slideUp 0.5s ease-out",
                     }}>
-                        <div style={{right:0}}>
+                        <div style={{ right: 0 }}>
 
                             <img
                                 src={crossUser}
@@ -508,12 +484,12 @@ const CraneAcceptedOrders = ({ data }) => {
                                     zIndex: 1001,
                                     filter: "drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))",
                                     bottom: "360px",
-                                    margin:'20px 0px 0px 50px'
+                                    margin: '20px 0px 0px 50px'
                                 }}
-                                />
-                                </div>
-                              
-                        <div className="image-container" style={{position:"static",boxShadow:"none", borderRadius:"10px 10px 0px 0px"}}>
+                            />
+                        </div>
+
+                        <div className="image-container" style={{ position: "static", boxShadow: "none", borderRadius: "10px 10px 0px 0px" }}>
                             <VendorMoving item={choosenCase[0]} />
                         </div>
                     </div>

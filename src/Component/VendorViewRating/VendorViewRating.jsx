@@ -63,7 +63,7 @@ const VendorViewRating = () => {
 
   useEffect(() => {
     if (customerRating.length !== 0) {
-      let avg = customerRating.reduce((acc, item) => acc + parseInt(item.feedbackRatingCrane), 0);
+      let avg = customerRating.reduce((acc, item) => acc + parseInt(item.feedbackRatingCrane), 0);   
       setAverage(avg / customerRating.length);
     }
   }, [customerRating]);

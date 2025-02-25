@@ -2,13 +2,15 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const webSocketContext = createContext(null);
 
-export const WebSocketProvider = ({ children }) => {
+export const WebSocketProvider = ({ children }) => { 
     const [messages, setMessages] = useState([]);
     const isSocketOpenRef = useRef(false); // Ref to track the connection state
     const socketRef = useRef(null); // Ref to store the WebSocket instance
 
     useEffect(() => {
-        const ws = new WebSocket("wss://claimpro.in/ws/");
+        // const ws = new WebSocket("wss://claimpro.in/ws/");
+        const ws = new WebSocket("ws://localhost:3001");
+
         socketRef.current = ws; // Store the WebSocket instance in the ref
 
         ws.onopen = () => {

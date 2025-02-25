@@ -166,18 +166,18 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         let notAccidentVehicles = []
         const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${userId}`);
         if (response.data.message == "No accident vehicle data found.") {
-            setAllVehicleNumbers([])
-            setDoneFetching(true)
+            setAllVehicleNumbers([]);
+            setDoneFetching(true);
         }
         else {
             console.log("response123421", response.data.data);
             response.data.data.map((item) => {
-                if (item.alreadyAccidentVehicle == false) notAccidentVehicles.push(item)
+                if (item.availableOptions.length !== 0) notAccidentVehicles.push(item)
 
             })
             console.log("seTDATIOATN", response.data.data);
-            setAllVehicleNumbers(notAccidentVehicles)
-            setDoneFetching(true)
+            setAllVehicleNumbers(notAccidentVehicles);
+            setDoneFetching(true);
         }
     }
 
@@ -200,24 +200,30 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         setGetData(response.data.data[0])
     }
 
-    async function getVehicleData() {
-        try {
-            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` } });
-            if (getData.data.message === 'Vehicle found') {
-                setVehicleInfo([getData.data]);
-                setComingVehicle(getData.data);
-                setIsModalOpen(true); // Open the modal when data is found
-            } else {
-                setAlertInfo({ show: true, message: getData.data.message, severity: 'success' });
-            }
-        } catch (error) {
-            setAlertInfo({ show: true, message: error.response?.data?.message || 'An error occurred', severity: 'error' });
-        }
-    }
-
-    const handleChange = (event) => {
+    // async function getVehicleData() {
+    //     try {
+    //         const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` } });
+    //         if (getData.data.message === 'Vehicle found') {
+    //             setVehicleInfo([getData.data]);
+    //             setComingVehicle(getData.data);
+    //             setIsModalOpen(true); // Open the modal when data is found
+    //         } else {
+    //             setAlertInfo({ show: true, message: getData.data.message, severity: 'success' });
+    //         }
+    //     } catch (error) {
+    //         setAlertInfo({ show: true, message: error.response?.data?.message || 'An error occurred', severity: 'error' });
+    //     }
+    // }
+    const [selectedVehicleData, setSelectedVehicleData] = useState([]);
+    console.log('MH0412322', selectedVehicleData)
+    const handleChange = (event, selectedVehicle) => {
+        console.log('selectedVehicle', selectedVehicle)
         setRegNo(event.target.value);
-        localStorage.setItem('regNo', event.target.value);
+        let option = selectedVehicle.availableOptions.length ? selectedVehicle.availableOptions : [];
+        console.log('optionoptionoptionoptionoption', option)
+        setSelectedVehicleData(option)
+
+        // localStorage.setItem('regNo', event.target.value);
     };
 
     // useEffect(() => {
@@ -233,7 +239,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const handleNext = () => {
         // onVehicleData(comingVehicle);
         setIsVerified(true)
-        localStorage.setItem('isVerified', "true");
+        // localStorage.setItem('isVerified', "true");
         closeModal()
     };
 
@@ -262,6 +268,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     const photoRefs = {
 
+
         MajorDamages1: useRef(null),
         MajorDamages2: useRef(null),
         MajorDamages3: useRef(null),
@@ -289,9 +296,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
 
 
-    useEffect(() => {
-        if (vehicleFound) handleSubmit()
-    }, [vehicleFound])
+    // useEffect(() => {
+    //     if (vehicleFound) handleSubmit()
+    // }, [vehicleFound])
 
     console.log("vehiclePanel123", vehicleType)
 
@@ -524,7 +531,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     let accidentDataObject
 
 
-    accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget,...images, ...photos, ...comingVehicle, ...getData, latitude, longitude, pickupLocation, dropLocation, dropLatitude, dropLongitude, selectedOptions: finalSelectedService };
+    accidentDataObject = { regNo, fullAddress, states, district, pincode, onSpotContact, onSpotName, isRecoveryVan, isMaterialLoaded, quantity, budget, ...images, ...photos, ...comingVehicle, ...getData, latitude, longitude, pickupLocation, dropLocation, dropLatitude, dropLongitude, selectedOptions: vehicleType };
     console.log("accidentDataObject123445", accidentDataObject)
 
     useGSAP(function () {
@@ -554,14 +561,16 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 duration: 1,
                 ease: 'power-3.inOut',
                 zIndex: '1001',
-                boxShadow:'inset -1px -6px 20px 0px #020202'
+                boxShadow: 'inset -1px -6px 20px 0px #020202',
+                height: '300px',
+                overflowY: 'auto'
             });
         } else {
             gsap.to(vehiclePanelRef.current, {
                 transform: 'translateY(100%)',
                 opacity: 0,
                 duration: 0,
-                zIndex: '-1',
+                zIndex: '1001',
             });
         }
     }, [vehiclePanel]);
@@ -574,9 +583,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 duration: 1,
                 ease: 'power-3.inOut',
                 zIndex: '1001',
-                boxShadow:'inset -1px -6px 20px 0px #020202',
-                height:'400px',
-                overflowY:'auto'
+                boxShadow: 'inset -1px -6px 20px 0px #020202',
+                height: '400px',
+                overflowY: 'auto'
 
             });
         } else {
@@ -584,12 +593,12 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 transform: 'translateY(100%)',
                 opacity: 0,
                 duration: 0,
-                zIndex: '-1',
-                height:'0px'
+                zIndex: '1000',
+                height: '0px'
             });
         }
     }, [vehicleImagesPanel]);
-    
+
     useGSAP(function () {
         if (confirmVehicle) {
             gsap.to(confirmVehicleRef.current, {
@@ -597,10 +606,10 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 opacity: 1,
                 duration: 1,
                 ease: 'power-3.inOut',
-                width: '100%',
-                height: '95vh',
                 zIndex: '1001', // Higher zIndex to appear above vehiclePanel
-                overflowY:'auto'
+                boxShadow: 'inset -1px -6px 20px 0px #020202',
+                height: '95vh',
+                overflowY: 'auto'
             });
         } else {
             gsap.to(confirmVehicleRef.current, {
@@ -609,13 +618,16 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 duration: 1,
                 ease: 'power-3.inOut',
                 width: '100%',
-                zIndex: '-1', // Lower zIndex when closed
+                zIndex: '1000', // Lower zIndex when closed
             });
         }
     }, [confirmVehicle]);
-    
 
-    useGSAP(function () {
+
+    useGSAP(async function () {
+        console.log('helywerewrwer', successDone)
+        await handleSubmit()
+
         if (vehicleFound) {
             gsap.to(vehicleFoundRef.current, {
                 transform: 'translateY(0%)',
@@ -625,7 +637,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 width: '100%',
                 height: "95vh",
                 zIndex: '1001',
-                overflowY:'auto'
+                overflowY: 'auto'
 
 
             })
@@ -638,7 +650,9 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 ease: 'power-3.inOut',
                 padding: '0px',
                 height: "0vh",
+                zIndex: '1001',
                 padding: '20px'
+
             })
         }
     }, [vehicleFound])
@@ -660,7 +674,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addVehicleInfo/${userId}`,
+                url: `${backendUrl}/addAccidentDetails/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -669,6 +683,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
             console.log("response.data.message", response.data.message)
             if (response.data.message == "Data Successfully Inserted.") {
                 setSuccessDone(true)
+                setConfirmVehicle(false);
+                setVehicleFound(true);
                 setIsVerified(false)
                 setLatitude(null)
                 setLongitude(null)
@@ -677,6 +693,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                 localStorage.setItem('regNo', '');
                 setAlertInfo({ show: true, message: "Data Successfully Added!!!", severity: 'success' });
                 navigate('/user-landing-page', { replace: true, state: null })
+                return;
             }
         } catch (error) {
             setIsLoading(false);
@@ -761,11 +778,11 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         setPanelOpen(false)
         setVehiclePanel(true)
     }
-    const navigateTo = ()=>{
+    const navigateTo = () => {
         console.log("userId123", userId)
-        userId.startsWith('CUD-')? navigate('/all-accident-vehicles'):navigate('/add-new-vehicle-driver')
+        userId.startsWith('CUD-') ? navigate('/all-accident-vehicles') : navigate('/add-new-vehicle-driver')
     }
-    
+
 
     return (
         <div>
@@ -776,7 +793,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
             {doneFetching == true && allVehicleNumbers.length == 0 && (
                 <div>
                     <div onClick={(navigateTo)}>
-                        <AddNewData  index={userId.startsWith('CUD-')?2:1} />
+                        <AddNewData index={userId.startsWith('CUD-') ? 2 : 1} />
                     </div>
                 </div>
             )}
@@ -831,7 +848,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                     {/* <span className="cd-paragraph-clean Registrationdetails-elem-8"> */}
 
                                     <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No </p>
-                                    
+
                                     {/* </span> */}
                                     <div style={{ display: "flex", marginBottom: "20px" }}>
 
@@ -840,12 +857,15 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                         <select
                                             name="regNo"
                                             className={`w-full text-sm h-[30px] p-0 m-[10px] Registrationdetails-elem-9 
-                                                        border border-black rounded-md focus:outline-none focus:ring-2 
-                                                        focus:ring-blue-500 focus:border-blue-500 
-                                                    ${getData.isActive === "false" ? "bg-gray-500 cursor-not-allowed" : ""}`}
+                border border-black rounded-md focus:outline-none focus:ring-2 
+                focus:ring-blue-500 focus:border-blue-500 
+            ${getData.isActive === "false" ? "bg-gray-500 cursor-not-allowed" : ""}`}
                                             style={{ fontSize: "13px", height: "30px", padding: '0px', margin: "10px 10px 0px 10px" }}
                                             value={regNo}
-                                            onChange={!item?.reg ? handleChange : undefined}
+                                            onChange={(e) => {
+                                                const selectedVehicle = allVehicleNumbers.find(vehicle => vehicle.vehicleNo == e.target.value)
+                                                handleChange(e, selectedVehicle)
+                                            }}  // Pass vehicle object with event
                                             disabled={getData.isActive === "false"}
                                         >
                                             <option className='text-sm font-semibold text-center' value="">Select Vehicle</option>
@@ -868,7 +888,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                         <div>
                                             <div className='flex'>
                                                 <div>
-                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Spot Person Name</p>
+                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Spot Person</p>
 
                                                     <input
                                                         type="text"
@@ -939,7 +959,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                 {/* Input Panel */}
                                                 <div
                                                     style={{
-                                                        paddingTop: panelOpen ?'70px':'20px',
+                                                        paddingTop: panelOpen ? '70px' : '20px',
                                                         transform: panelOpen ? 'translateY(0)' : 'translateY(100%)',
                                                         position: panelOpen ? 'fixed' : 'absolute',
                                                         zIndex: panelOpen ? '100' : '1000',
@@ -947,7 +967,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                         left: 0,
                                                         width: '100%',
                                                         transition: panelOpen ? 'transform 0.3s ease-in-out, opacity 0s' : 'none', // Apply instant opacity change when not open
-                                                      }}
+                                                    }}
                                                     className={`bg-white   pl-4 pr-4 pb-4 rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
                                                 >
                                                     <h5 className="text-sm text-black font-semibold mb-3 text-left">Book Vehicle Now</h5>
@@ -958,7 +978,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                         }}
                                                     >
                                                         <input
-                                                        
+
                                                             type="text"
                                                             onClick={() => {
                                                                 setPanelOpen(true)
@@ -996,7 +1016,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     ref={panelRef}
                                                     className="bg-white w-full transition-all duration-500 ease-in-out absolute bottom-0 left-0"
                                                     style={{
-                                                        height: panelOpen ? '100%' : '0%', 
+                                                        height: panelOpen ? '100%' : '0%',
                                                         opacity: panelOpen ? 1 : 1,
                                                         paddingTop: panelOpen ? '20px' : '0',
 
@@ -1006,33 +1026,33 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     <div className='text-center top-0 mb-1'>
                                                         <IconButton
                                                             onClick={() => setPanelOpen(false)}
-                                                            className="absolute"    
+                                                            className="absolute"
                                                         >
-                                                            <ExpandMoreIcon  className='fixed'/>
+                                                            <ExpandMoreIcon className='fixed' />
                                                         </IconButton>
                                                     </div>
 
                                                     {/* Panel content */}
 
 
-                                                    <div className='position max-h-[500px] overflow-y-auto'> 
-                                                    <LocationSearchPanel
-                                                        suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
-                                                        setPanelOpen={setPanelOpen}
-                                                        setVehiclePanel={setVehiclePanel}
-                                                        setPickupLocation={setPickupLocation}
-                                                        setDropLocation={setDropLocation}
-                                                        activeField={activeField}
-                                                    />
+                                                    <div className='position max-h-[500px] overflow-y-auto'>
+                                                        <LocationSearchPanel
+                                                            suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
+                                                            setPanelOpen={setPanelOpen}
+                                                            setVehiclePanel={setVehiclePanel}
+                                                            setPickupLocation={setPickupLocation}
+                                                            setDropLocation={setDropLocation}
+                                                            activeField={activeField}
+                                                        />
                                                     </div>
                                                 </div>
-                                                <div ref={vehiclePanelRef} style={{zIndex:"1001"}}  className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
-                                                    <VehiclePanel setVehicleType={setVehicleType} setVehicleImagesPanel={setVehicleImagesPanel} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
+                                                <div ref={vehiclePanelRef} style={{ zIndex: "1001" }} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
+                                                    <VehiclePanel selectedVehicleData={selectedVehicleData} setVehicleType={setVehicleType} setVehicleImagesPanel={setVehicleImagesPanel} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
                                                 </div>
-                                                <div ref={vehicleImagesPanelRef} style={{zIndex:"1001"}}  className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
-                                                    <VehicleImagePanel setImages={setImages} setConfirmVehicle={setConfirmVehicle}  setVehicleImagesPanel={setVehicleImagesPanel} setVehiclePanel={setVehiclePanel}/>
+                                                <div ref={vehicleImagesPanelRef} style={{ zIndex: "1001" }} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
+                                                    <VehicleImagePanel setImages={setImages} setConfirmVehicle={setConfirmVehicle} setVehicleImagesPanel={setVehicleImagesPanel} setVehiclePanel={setVehiclePanel} />
                                                 </div>
-                                                <div ref={confirmVehicleRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
+                                                <div ref={confirmVehicleRef} style={{ zIndex: "1001" }} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
                                                     <ConfirmedRide vehicleType={vehicleType} accidentData={accidentDataObject} setConfirmVehicle={setConfirmVehicle} setVehicleImagesPanel={setVehicleImagesPanel} setVehicleFound={setVehicleFound} />
                                                 </div>
                                                 <div ref={vehicleFoundRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>

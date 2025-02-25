@@ -19,6 +19,7 @@ import { Helmet } from 'react-helmet-async';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import Admin from '../Admin/Admin';
 
 
 const config = {
@@ -26,11 +27,11 @@ const config = {
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const CustomerMasterEdit = ({ id, onUpdate }) => {
+const CustomerMasterEdit = () => {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
-  const location = useLocation();
+  const {location, state} = useLocation();
   // const { id } = location.state || {};
-  console.log("Received IDssssssssssssssssssssss:", id);
+  console.log("Received IDssssssssssssssssssssss:", state.id);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
@@ -104,8 +105,8 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     if (token === "" || userId === "") {
       navigate("/");
     }
-    getDataById(id);
-  }, [token, userId, navigate, id]);
+    getDataById(state.id);
+  }, [token, userId, navigate, state.id]);
 
   const openPANModal = () => {
     setIsPANModalOpen(true);
@@ -304,7 +305,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
 
   const getDataById = async (id) => {
-    const response = await axios.get(`${backendUrl}/api/getCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${backendUrl}/api/getCustomerById/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("daa", response.data.data)
     console.log("response123", response.data.data[0]);
     setComingData(response.data.data[0])
@@ -519,8 +520,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     setIsReadOnly(!IsReadOnly)
   }
   const handleBack = () => {
-    // navigate("../Admin")
-    onUpdate()
+    navigate(-1)
   }
 
 
@@ -576,7 +576,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
     try {
       const response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/customerUpdate/${id}/${userId}`,
+        url: `${backendUrl}/api/customerUpdate/${state.id}/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -586,8 +586,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
       setIsLoading(false);
       setAlertInfo({ show: true, message: response.data.message, severity: 'success' })
       setTimeout(() => {
-        // navigate("../Admin");
-        onUpdate();
+        navigate(-1);
       }, 2000);
     }
     catch (error) {
@@ -607,6 +606,7 @@ const CustomerMasterEdit = ({ id, onUpdate }) => {
 
   return (
     <div >
+      <Admin/>
       <Helmet>
         <title>Customer Info Edit - Claimpro</title>
         <meta name="description" content="Edit the Customer Information." />

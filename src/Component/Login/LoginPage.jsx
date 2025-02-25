@@ -132,17 +132,20 @@ const Login = () => {
       console.log("email", encryptedEmail)
       console.log("password", encryptedPassword)
 
-console.log({email :  encryptedEmail.encryptedData,
-  emailIv : encryptedEmail.iv,
-   password: encryptedPassword.encryptedData,
-  passwordIv : encryptedPassword.iv,})
-      const response = await axios.post(`${backendUrl}/api/login`, {
-       email :  encryptedEmail.encryptedData,
-       emailIv : encryptedEmail.iv,
+      console.log({
+        email: encryptedEmail.encryptedData,
+        emailIv: encryptedEmail.iv,
         password: encryptedPassword.encryptedData,
-       passwordIv : encryptedPassword.iv,
+        passwordIv: encryptedPassword.iv,
+      })
+      const response = await axios.post(`${backendUrl}/api/login`, {
+        email: encryptedEmail.encryptedData,
+        emailIv: encryptedEmail.iv,
+        password: encryptedPassword.encryptedData,
+        passwordIv: encryptedPassword.iv,
       });
       if (response.status === 200) {
+        console.log('some', response.data)
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
         localStorage.setItem("loginId", response.data.loginId);
@@ -158,13 +161,13 @@ console.log({email :  encryptedEmail.encryptedData,
         dispatch(login({ userId, token }));
         console.log("I AM TOKEN MASTER222222")
 
-  
-          // Save in cookies (accessible from the backend)
+
+        // Save in cookies (accessible from the backend)
 
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
           localStorage.setItem("rememberedPassword", password);
-          
+
           localStorage.setItem("rememberMe", true);
         } else {
           localStorage.removeItem("rememberedaEmail");
@@ -175,15 +178,15 @@ console.log({email :  encryptedEmail.encryptedData,
 
         setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
 
-        console.log("RESPONSEONDSTS", response.data.data.userType )
+        console.log("RESPONSEONDSTS", response.data.data.userType)
         if (response.data.data?.userType === "admin" ||
           response.data.data.department?.trim() === "Management") {
           localStorage.setItem("userRole", "Management");
-            navigate("../Admin");
+          navigate("../admin-dashboard-vendor-customer");
         } else if (response.data.data.department?.trim() === "IT") {
           console.log("trim department", response.data.data.department)
           localStorage.setItem("userRole", "IT");
-          navigate("../Admin");
+          navigate("../admin-dashboard-vendor-customer");
         }
         else if (response.data.data.vendorType === "advocate") {
           localStorage.setItem("userRole", "advocate");
@@ -193,10 +196,11 @@ console.log({email :  encryptedEmail.encryptedData,
           navigate("../MechanicDashboard");
         } else if (response.data.data.vendorType === "crane") {
           localStorage.setItem("userRole", "crane");
-          setTimeout(()=>{
             navigate("../crane-user-dashboard");
-          },2000)
-        } else if (response.data.data.vendorType === "workshop") {
+        }else if (response.data.data.vendorType === "recoveryVan") {
+          localStorage.setItem("userRole", "recoveryVan");
+            navigate("../crane-user-dashboard");
+        }else if (response.data.data.vendorType === "workshop") {
           localStorage.setItem("userRole", "workshop");
           navigate("../WorkshopDashboard");
         } else if (response.data.data.department === "Administration") {
@@ -215,8 +219,8 @@ console.log({email :  encryptedEmail.encryptedData,
         }
         else if (response.data.data.vendorDriverCode) {
           console.log("userRole", "vendorDriver");
-
           localStorage.setItem("userRole", "vendorDriver");
+          localStorage.setItem("userType", response.data.data.type);
           navigate("../crane-driver-home");
         }
         else {
@@ -317,7 +321,7 @@ console.log({email :  encryptedEmail.encryptedData,
   };
 
   const headerStyle = {
-    fontSize:"25px",
+    fontSize: "25px",
     color: "#0e4823ff",
     textAlign: "center",
     marginLeft: "5px"
@@ -353,7 +357,7 @@ console.log({email :  encryptedEmail.encryptedData,
   return (
     <div>
       {/* <Header /> */}
-      <div  style={backgroundStyle}>
+      <div style={backgroundStyle}>
         <Helmet>
           <title>BVC claimPro assist Login - Claimpro</title>
           <meta name="description" content="login for BVC ClaimPro Assist." />
@@ -363,7 +367,7 @@ console.log({email :  encryptedEmail.encryptedData,
         <div className="slide-in" style={loginContainerStyle}>
           <div style={headerContainerStyle}>
             <img src={claimproassist} style={imgStyle} alt="company logo" />
-            <h1 className='text-base'  style={headerStyle}>BVC ClaimPro Assist</h1>
+            <h1 className='text-base' style={headerStyle}>BVC ClaimPro Assist</h1>
           </div>
 
           <div className="selecting-container">
@@ -385,7 +389,7 @@ console.log({email :  encryptedEmail.encryptedData,
             padding: "5px",
             borderRadius: "10px",
             // ...getStyles()
-          border: '1px solid green',
+            border: '1px solid green',
           }}>
             <div style={formGroupStyle}>
               <label htmlFor="email" style={labelStyle}>Email : </label>

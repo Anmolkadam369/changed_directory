@@ -26,6 +26,7 @@ import { styled } from '@mui/material/styles';
 
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Admin from '../Admin/Admin';
 
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -66,10 +67,11 @@ const config = {
   ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
-  const location = useLocation();
+const VendorMasterEdit = () => {
+  const {state,location} = useLocation();
+  
   // const { id } = location.state || {};
-  console.log("Received ID:", id);
+  console.log("Received ID:", state.id);
   const navigate = useNavigate();
   const today = new Date().toISOString().split('T')[0];
   const token = localStorage.getItem("token");
@@ -138,8 +140,8 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
     if (token === "" || userId === "") {
       navigate("/");
     }
-    getDataById(id);
-  }, [token, userId, navigate, id]); // Removed comingData from dependencies
+    getDataById(state.id);
+  }, [token, userId, navigate, state.id]); // Removed comingData from dependencies
 
   const openPANModal = () => {
     setIsPANModalOpen(true);
@@ -374,11 +376,11 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
 
   const getDataById = async (id) => {
     let response;
-    if (pageFrom == "VendorSignUp") {
+    if (state.pageFrom == "VendorSignUp") {
       response = await axios.get(`${backendUrl}/api/getPotentialVendorById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     }
     else {
-      response = await axios.get(`${backendUrl}/api/getVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+      response = await axios.get(`${backendUrl}/api/getVendor/${state.id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     }
     console.log("daa", response.data.data)
     console.log("response", response.data.data[0]);
@@ -412,7 +414,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         setOpenSnackbar(true);
         setIsLoading(false);
         setTimeout(() => {
-          onUpdate();
+         navigate(-1)
         }, 2000);
       }
     } catch (error) {
@@ -456,7 +458,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
         setOpenSnackbar(true);
         setIsLoading(false);
         setTimeout(() => {
-          onUpdate();
+          navigate(-1)
         }, 2000);
       }
     } catch (error) {
@@ -680,7 +682,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
     try {
       response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
+        url: `${backendUrl}/api/venderUpdate/${state.id}/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -691,7 +693,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
       setOpenSnackbar(true);
       setIsLoading(false);
       setTimeout(() => {
-        onUpdate();
+        navigate(-1)
       }, 2000);
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -713,12 +715,13 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
     setIsReadOnly(!IsReadOnly)
   }
   const handleBack = () => {
-    onUpdate();
+    navigate(-1)
   }
 
 
   return (
     <div>
+      <Admin/>
       <Helmet>
         <title>Vendor Info Edit - Claimpro</title>
         <meta name="description" content="Edit the Vendor Information." />
@@ -1414,7 +1417,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
               <label className="form-field"></label>
             )
           }
-          {pageFrom == "VendorSignUp" &&
+          {state.pageFrom == "VendorSignUp" &&
           (
             <div>
             {userId === "EMPID-94cda3d2-a317-49f5-8faf-f59cf18906e2" && (
@@ -1762,7 +1765,7 @@ const VendorMasterEdit = ({ id, onUpdate, pageFrom }) => {
 
 
 
-        {pageFrom == "viewVendor" && (
+        {state.pageFrom == "viewVendor" && (
           <div style={{ textAlign: 'center' }}>
             {!IsReadOnly && (
               <div>

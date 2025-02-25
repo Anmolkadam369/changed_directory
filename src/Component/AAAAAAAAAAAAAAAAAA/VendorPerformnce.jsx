@@ -5,7 +5,7 @@ import backendUrl from '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import craneadvocatemechanic from '../../Assets/camw.webp'; // Correct import path
 import customerImage from '../../Assets/customer.webp'; // Correct import path
 import complaints from '../../Assets/complaints.webp'; // Correct import path
@@ -22,10 +22,13 @@ import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurned
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Admin from '../Admin/Admin';
 
-const VendorPerformance = ({ id, type, onUpdate }) => {
+const VendorPerformance = () => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [responseDate, setResponseDate] = useState([]);
+      const {state} = useLocation();
+    
     console.log("responseDate", responseDate);
     const [vendorData, setVendorData] = useState([])
     const [gotResponse, setGotResponse] = useState([]);
@@ -43,7 +46,7 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
         const gettingResponseDate = async () => {
             try {
                 const promises = totalAssignedCases.map(async (item) => {
-                    const response = await axios.get(`${backendUrl}/api/gettingResponseDate/${id}/${type}/${item.AccidentVehicleCode}`);
+                    const response = await axios.get(`${backendUrl}/api/gettingResponseDate/${state.id}/${state.type}/${item.AccidentVehicleCode}`);
                     return response.data.data[0];
                 });
                 const results = await Promise.all(promises);
@@ -208,7 +211,7 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
 
     const getGotResponseVehicle = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${id}`);
+            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${state.id}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
             setGotResponse(response.data.data);
         } catch (error) {
@@ -226,10 +229,10 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
     const fetchAssignedCases = async () => {
         try {
             let response;
-            if (type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
-            if (type == "mechanic") response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
-            if (type == "advocate") response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
-            if (type == "workshop") response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "mechanic") response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "advocate") response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "workshop") response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
 
             console.log("Total", response.data.data);
             setTotalAssignedCases(response.data.data);
@@ -287,7 +290,7 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${id}`,{        headers: {
+            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${state.id}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)
@@ -299,7 +302,7 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
     const hasData = (data) => data.some((value) => value !== 0);
 
     const handleBack = () => {
-        onUpdate();
+        navigate(-1);
     }
 
     const getAssignedDate = (item, type) => {
@@ -342,6 +345,7 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
 
     return (
         <div className='dashboard'>
+            <Admin/>
             <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "#077ede" }} onClick={handleBack} />
             </div>
@@ -575,7 +579,7 @@ const VendorPerformance = ({ id, type, onUpdate }) => {
                                                         {item.details.length > 0 && item.details[0].acceptedByAdmin ? item.details[0].acceptedByAdmin : "Pending"}
                                                     </td>
                                                 )}
-                                                <td>{getAssignedDate(item, type)}</td>
+                                                <td>{getAssignedDate(item, state.type)}</td>
                                                 <td>{responseItem.firstResponseOn || "__"}</td>
                                                 <td>{responseItem.updateResponseOn || "__"}</td>
                                             </tr>

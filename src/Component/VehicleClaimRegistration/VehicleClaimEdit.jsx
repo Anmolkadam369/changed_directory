@@ -19,17 +19,18 @@ import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import Admin from '../Admin/Admin';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-const VehicleClaimEdit = ({ id, onUpdate }) => {
+const VehicleClaimEdit = () => {
     const [isHovered, setIsHovered] = useState(false);
-    const location = useLocation();
+    const {state, location} = useLocation();
     // const { id } = location.state || {};
-    console.log("Received IDssss:", id);
+    console.log("Received IDssss:", state.id);
     const [comingData, setComingData] = useState([]);
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const [isLoading, setIsLoading] = useState(false);
@@ -108,7 +109,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
 
     useEffect(() => {
         loadStates();
-        getDataById(id);
+        getDataById(state.id);
         getDataSurveyor()
         console.log("token", token, userId);
         // if (token === "" || userId === "") {
@@ -713,7 +714,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/updateVehicleClaim/${id}/${userId}`,
+                url: `${backendUrl}/api/updateVehicleClaim/${state.id}/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -724,7 +725,7 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setIsLoading(false);
                 setTimeout(() => {
-                    onUpdate()
+                   navigate(-1)
                 }, 2000)
             }
         }
@@ -859,11 +860,12 @@ const VehicleClaimEdit = ({ id, onUpdate }) => {
         setIsReadOnly(!IsReadOnly)
     }
     const handleBack = () => {
-        onUpdate()
+       navigate(-1)
     }
 
     return (
         <div className='container'>
+            <Admin/>
             <Helmet>
                 <title>Accident Vehicle Info Edit - Claimpro</title>
                 <meta name="description" content="Edit the Accident Vehicle Information." />

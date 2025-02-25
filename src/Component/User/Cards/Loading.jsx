@@ -8,7 +8,8 @@ const Loading = () => {
             alignItems: 'center',
             height: '82vh',
             flexDirection:"column",
-            textAlign: 'center'
+            textAlign: 'center',
+            background:'white'
         }}>
             <img src={loadingGif} alt="Loading..." style={{ height: "60px", width: "60px" }} />
             <p style={{color:"red", fontSize:"13px"}}>All services at fingertips</p>

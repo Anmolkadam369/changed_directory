@@ -18,6 +18,7 @@ import repairingonstand from '../../Assets/repairingonstand.jpg'
 
 import checksuccess from '../../Assets/checksuccess.png'
 import SuccessIcon from '../CaseFirstCard/SuccessIcon';
+import Admin from './Admin';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -334,6 +335,7 @@ function InitialRegistration() {
 
     return (
         <div>
+            <Admin/>
             <div className="Registrationdetails-elem-16">
                 <Helmet>
                     <title>Customer Service Vehicle Number - Claimpro</title>

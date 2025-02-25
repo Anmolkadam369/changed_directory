@@ -14,6 +14,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import backendUrl from '../../environment';
 import { ClipLoader } from 'react-spinners'
 import { Helmet } from 'react-helmet-async';
+import Admin from '../Admin/Admin';
 
 
 const config = {
@@ -430,6 +431,7 @@ const EmployeeForm = () => {
     return (
 
         <div>
+            <Admin/>
             <Helmet>
                 <title>Employee Information - Claimpro</title>
                 <meta name="description" content="Employee Information - BVC Claimpro Assist" />

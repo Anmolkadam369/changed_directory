@@ -18,6 +18,7 @@ const CraneDriverHome = () => {
     const { sendMessage } = useWebSocket();
     const { messages } = useWebSocket()
     const [isNewCase, setNewCase] = useState(false)
+    console.log('isnewcaser',isNewCase)
     const [newCasesItems, setNewCasesItems] = useState([])
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);
     const [approvedCase, setApprovedCase] = useState([])
@@ -147,7 +148,7 @@ const CraneDriverHome = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${backendUrl}/api/assignedTasks/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'

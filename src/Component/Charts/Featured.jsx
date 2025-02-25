@@ -222,16 +222,9 @@ const Featured = () => {
       })
 
     }
-
-
-
     getParticularData()
 
   }, [getFilteredDailyData, getFilteredMonthlyData, getFilteredWeeklyData])
-
-
-
-
 
   useEffect(() => {
     getVendorWholeDetails()
@@ -241,18 +234,6 @@ const Featured = () => {
     const response = await axios.get(`${backendUrl}/api/getVendorWholeDetails/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
     setData(response.data.data);
   };
-
-  // for (let i = 0; i < data.length; i++) {
-  //   for (let j = 0; j < data[i].vendorDetails.length; j++) {
-  //     console.log("data.vendorDetails-only", data[i].vendorDetails[j])
-  //     console.log("data[i].vendorDetails[j].advancedPayment", data[i].vendorDetails[j].advancedPayment)
-  //     console.log("data[i].vendorDetails[j].balancePayment", data[i].vendorDetails[j].balancePayment)
-  //     console.log("data[i].vendorDetails[j].commisionAmount", data[i].vendorDetails[j].commisionAmount)
-  //   }
-  // }
-
-
-
   return (
     <div className="featured" style={{ maxWidth: "400px", minWidth: '300px' }}>
       <div className="top" style={{ marginBottom: "20px" }}>
@@ -302,29 +283,7 @@ const Featured = () => {
         </div>
         </div>
 
-        {/* <p style={{
-          fontSize: '11px',
-          marginTop: "5px",
-          background: "#4b6174",
-          padding: "10px",
-          border: '1px solid blue',
-          textAlign: 'center',
-          borderRadius: '30px',
-          fontWeight: "bold",
-          color: "white",
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: "center",
-          position: "relative",
-          cursor: "pointer",
-          width: '200px'
-        }}>
-          <KeyboardDoubleArrowRightIcon style={{
-            position: "absolute",
-            left: '10px'
-          }} />
-          View More
-        </p> */}
+      
       </div>
     </div>
   );

@@ -286,7 +286,7 @@ const Dashboard = () => {
         });
         console.log("daa", response.data)
         if (response.data.message == "No user found") {
-            response = await axios.get(`${backendUrl}/api/findByIdEmployee/${id}`);
+            response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${id}`);
         }
         console.log("daa2", response.data)
 
