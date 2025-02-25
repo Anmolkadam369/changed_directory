@@ -5,11 +5,14 @@ import './UserProfileDetials.css';
 import axios from 'axios';
 import backendUrl from '../../../environment';
 import { Button } from '@mui/material';
+import { motion } from "framer-motion";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
-import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
-import BusinessIcon from '@mui/icons-material/Business';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import BusinessIcon from "@mui/icons-material/Business";
+import CorporateFareIcon from "@mui/icons-material/CorporateFare";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import { FaIdCard, FaEnvelope, FaMobile, FaCreditCard } from "react-icons/fa";
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
@@ -152,14 +155,17 @@ const UserProfileDetails = () => {
         CustomerType: '',
         choosenPlan: "",
         vendorType: '',
+
         panNo: '',
+        GSTNo: '',
         adharNo: '',
         adharCard: '',
         panCard: '',
+        GST: '',
 
 
         vendorName: '',
-        CustomerName:'',
+        CustomerName: '',
         driverName: "",
         driverNumber: "",
         driverEmail: "",
@@ -306,6 +312,7 @@ const UserProfileDetails = () => {
 
     const [isUpdatePan, setIsUpdatePan] = useState(false)
     const [isUpdateAdhar, setIsUpdateAdhar] = useState(false)
+    const [isUpdateGST, setIsUpdateGST] = useState(false)
     const [isUpdateDL, setIsUpdateDL] = useState(false)
     console.log('formData.DLCard', formData.DLCard)
 
@@ -547,7 +554,7 @@ const UserProfileDetails = () => {
                 </form>)}
 
             {userId.startsWith("CUD-") && (
-                
+
                 <form className="user-form" onSubmit={handleSubmit}>
                     <p style={{ marginTop: "10px", marginBottom: '50px', fontSize: "14px", fontWeight: "bold", color: "#538553b3" }}>Personal Details</p>
                     <div className="user-form-group">
@@ -801,137 +808,179 @@ const UserProfileDetails = () => {
             )}
 
             {userId.startsWith("VC-") && (
-                <form className="user-form" onSubmit={handleSubmit}>
-                    <div className="user-form-group">
-                        <i class="fa fa-user user-icon" aria-hidden="true"></i>
-                        <input
-                            className='input-profile'
-                            type="text"
-                            name="vendorName"
-                            placeholder="Enter your company name"
-                            value={formData.vendorName}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                <motion.form
+                    className="mt-5 mb-5 bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg mx-auto space-y-6"
+                    onSubmit={handleSubmit}
+                    style={{ borderRadius: '50px 50px 0px 0px ' }}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    exit={{ opacity: 0, y: 20 }} // Smooth exit animation if needed
+                >
+                    <h2
+                        className="text-lg mt-5 font-bold text-center text-green-700"
+                        as={motion.h2}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        Company Details
+                    </h2>
 
-                    <div className="user-form-group">
-                        <i className="fa fa-envelope-o user-icon" aria-hidden="true"></i>
-                        <input
-                            style={{ fontSize: '0.8rem' }}
-                            className='input-profile'
-                            type="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="user-form-group">
-                        <i className="fa fa-mobile user-icon" aria-hidden="true"></i>
-                        <input
-                            style={{ fontSize: '0.8rem' }}
-                            className='input-profile'
-                            type="tel"
-                            name="contactPersonNum"
-                            placeholder="Enter your mobile number"
-                            value={formData.contactPersonNum}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <hr className='text-red-700' />
-
-                    <p style={{ marginTop: "10px", marginBottom: '50px', fontSize: "14px", fontWeight: "bold", color: "#538553b3" }}>Company Address</p>
-
-                    <div className="user-form-group">
-                        <CorporateFareIcon className='user-icon' />
-                        <select
-                            style={{ fontSize: '0.8rem', }}
-                            className='input-profile w-[100%]'
-                            name="state"
-                            onChange={handleChange}
-                            value={formData.state}>
-                            <option value="">Select State</option>
-                            {states.map(state => (
-                                <option key={state.iso2} value={state.iso2}>{state.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="user-form-group">
-                        <LocationCityIcon className='user-icon' />
-                        <select
-                            style={{ fontSize: '0.8rem' }}
-                            className='input-profile w-[100%]'
-                            name="district"
-                            value={formData.district} // This should match city.iso2
-                            onChange={handleChange}
-                            disabled={isLoadingCities || !formData.state}
+                    {/* Vendor Name */}
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <AccountCircleIcon className="text-green-700   mt-2 pl-2" />
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            whileFocus={{ scale: 1.02, borderColor: "#16a34a" }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
                         >
-                            <option value="">Select City</option>
-                            {!cities.error && cities.map(city => (
-                                <option key={city.iso2} value={city.name}>
-                                    {city.name}
-                                </option>
-                            ))}
-                        </select>
+                            <motion.input
+                                className="w-full bg-transparent focus:outline-none"
+                                type="text"
+                                name="vendorName"
+                                placeholder="Enter vendor name"
+                                value={formData.vendorName}
+                                onChange={handleChange}
+                                required
+                                whileFocus={{ scale: 1.05 }} // Slight zoom on focus
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.2 }}
+                            />
+                        </motion.div>
                     </div>
-                    <div className="user-form-group">
-                        <BusinessIcon className='user-icon' />
-                        <input
-                            className='input-profile'
-                            type="text"
-                            name="address"
-                            placeholder="Address"
-                            value={formData.address}
-                            onChange={handleChange}
-                        />
+
+                    {/* Company Name */}
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <BusinessIcon className="text-green-700  mt-2 pl-2 " />
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            // style={{border:'1px solid grey'}}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                        >
+                            <motion.input
+                                className="w-full bg-transparent focus:outline-none"
+                                type="text"
+                                name="companyName"
+                                placeholder="Enter your company name"
+                                value={formData.companyName}
+                                onChange={handleChange}
+                                required
+                                whileFocus={{ scale: 1.05 }}
+                            />
+                        </motion.div>
+                    </div>
+
+                    {/* State Selection */}
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <CorporateFareIcon className="text-green-700  mt-2 pl-2 " />
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.2 }}
+                        >
+                            <motion.select
+                                className="w-full bg-transparent text-sm focus:outline-none"
+                                name="state"
+                                onChange={handleChange}
+                                value={formData.state}
+                                whileFocus={{ scale: 1.05 }}
+                            >
+                                <option value="">Select State</option>
+                                {states.map(state => (
+                                    <option key={state.iso2} value={state.iso2}>{state.name}</option>
+                                ))}
+                            </motion.select>
+                        </motion.div>
+                    </div>
+
+                    {/* City Selection */}
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <LocationCityIcon className="text-green-700  mt-2 pl-2 " />
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.3 }}
+                        >
+                            <motion.select
+                                className="w-full bg-transparent  text-sm focus:outline-none"
+                                name="district"
+                                value={formData.district}
+                                onChange={handleChange}
+                                disabled={isLoadingCities || !formData.state}
+                                whileFocus={{ scale: 1.05 }}
+                            >
+                                <option className='text-sm' value="">Select City</option>
+                                {!cities.error && cities.map(city => (
+                                    <option key={city.iso2} value={city.name}>{city.name}</option>
+                                ))}
+                            </motion.select>
+                        </motion.div>
+                    </div>
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <BusinessIcon className='text-green-700  mt-2 pl-2' />
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            whileFocus={{ scale: 1.02, borderColor: "#16a34a" }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <motion.input
+                                className="w-full bg-transparent focus:outline-none"
+                                type="text"
+                                name="address"
+                                placeholder="Address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }} // Slight zoom on focus
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.2 }}
+                            />
+                        </motion.div>
                     </div>
 
 
-                    <hr className='text-red-700' />
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
 
-                    <p style={{ marginTop: "10px", marginBottom: '50px', fontSize: "14px", fontWeight: "bold", color: "#538553b3" }}>Personal Details</p>
-                    <div className="user-form-group">
-                        <i class="fa fa-user user-icon" aria-hidden="true"></i>
-                        <input
-                            className='input-profile'
-                            type="text"
-                            name="contactPerson"
-                            placeholder="Enter your name"
-                            value={formData.contactPerson}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="user-form-group">
-                        <i class="fa fa-id-card-o user-icon" aria-hidden="true"></i>
-                        <input
-                            className='input-profile'
-                            type="text"
-                            name="panNo"
-                            placeholder="Enter Pan Number"
-                            value={formData.panNo}
-                            onChange={handleChange}
-                        // pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-                        // title="Please enter a valid PAN number (e.g., ABCDE1234F)."
-                        />
-                    </div>
-                    <div className="user-form-group">
-                        <i class="fa fa-id-card-o user-icon" aria-hidden="true"></i>
-                        <input
-                            className='input-profile'
-                            type="text"
-                            name="adharNo"
-                            placeholder="Enter Adhar Number"
-                            value={formData.adharNo}
-                            onChange={handleChange}
-                        // pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-                        // title="Please enter a valid PAN number (e.g., ABCDE1234F)."
-                        />
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="panNo"
+                                placeholder="Enter Pan Number"
+                                value={formData.panNo}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }} // Slight zoom on focus
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.2 }}
+                            // pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                            // title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+                            />
+                        </motion.div>
                     </div>
 
                     <div className='flex items-center'>
@@ -944,7 +993,7 @@ const UserProfileDetails = () => {
                                 </div>
                             )}
                             {isUpdatePan && (
-                                <input
+                                <motion.input
                                     style={{ fontSize: '0.5rem' }}
                                     type="file"
                                     name="panCard"
@@ -958,18 +1007,202 @@ const UserProfileDetails = () => {
                             <i className='fa fa-pencil user-icon text-red-500' style={{ marginRight: '5px' }} ></i> <p className='text-xs text-red-500'>Pan</p>
                         </button>
                     </div>
+
+
+
+                    <h2
+                        className="text-lg  mt-5 font-bold text-center text-green-700"
+                        as={motion.h2}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        Personal Details
+                    </h2>
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.3 }}
+                        >
+                            <i class="fa fa-user text-green-700" aria-hidden="true"></i>
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="contactPerson"
+                                placeholder="Enter your name"
+                                value={formData.contactPerson}
+                                onChange={handleChange}
+                                required
+                            />
+                        </motion.div>
+                    </div>
+
+
+                    {/* Email */}
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.4 }}
+                        >
+                            <FaEnvelope className="text-green-700" />
+                            <motion.input
+                                className="w-full bg-transparent focus:outline-none"
+                                type="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                whileFocus={{ scale: 1.05 }}
+                            />
+                        </motion.div>
+                    </div>
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        {/* Mobile */}
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <FaMobile className="text-green-700" />
+                            <motion.input
+                                className="w-full bg-transparent focus:outline-none"
+                                type="tel"
+                                name="contactPersonNum"
+                                placeholder="Enter your mobile number"
+                                value={formData.contactPersonNum}
+                                onChange={handleChange}
+                                required
+                                whileFocus={{ scale: 1.05 }}
+                            />
+                        </motion.div>
+                    </div>
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.3 }}
+                        >
+                            <BusinessIcon className='text-green-700' />
+                            <motion.input
+                                className="w-full bg-transparent focus:outline-none"
+                                type="text"
+                                name="typeOfOwnership"
+                                placeholder="Type Of Ownership"
+                                value={formData.typeOfOwnership}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            />
+                        </motion.div>
+                    </div>
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="panNo"
+                                placeholder="Enter Pan Number"
+                                value={formData.panNo}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            // pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                            // title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+                            />
+                        </motion.div>
+                    </div>
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="adharNo"
+                                placeholder="Enter Adhar Number"
+                                value={formData.adharNo}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            // pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                            // title="Please enter a valid PAN number (e.g., ABCDE1234F)."
+                            />
+                        </motion.div>
+                    </div>
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            {/* <i  class="user-icon" aria-hidden="true"></i> */}
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="GSTNo"
+                                placeholder="Enter GST Number"
+                                value={formData.GSTNo}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            />
+                        </motion.div>
+                    </div>
+
+
                     <div className='flex'>
-                        <div className="user-form-group">
+                        <div className="user-form-group  m-0">
                             <i class="fa fa-picture-o user-icon" aria-hidden="true"></i>
                             {!isUpdateAdhar && (
                                 <div>
-                                    {formData.adharCard == 'Adhar Value' && (<p className='text-xs'>No Adhar uploaded</p>)}
+                                    {formData.adharCard == 'Adhar Value' && (<p className='text-xs text-red-400'>No Adhar uploaded</p>)}
                                     {formData.adharCard !== 'Adhar Value' && (<img className='text-sm mt-1 text-gray-600' src={formData.adharCard} alt="Adhar Card" style={{ width: '125px', borderRadius: '20px', height: '200px' }} />)}
                                 </div>
                             )}
 
                             {isUpdateAdhar && (
-                                <input
+                                <motion.input
                                     style={{ fontSize: '0.5rem' }}
                                     type="file"
                                     name="adharCard"
@@ -983,22 +1216,45 @@ const UserProfileDetails = () => {
                             </button>
                         </div>
                     </div>
-
-
-
-                    {alertInfo && (
-                        <div className={`alert alert-${alertInfo.type}`}>
-                            {alertInfo.message}
+                    <div className='flex items-center'>
+                        <div className="user-form-group  m-0">
+                            <i class="fa fa-picture-o user-icon" aria-hidden="true"></i>
+                            {!isUpdateGST && (
+                                <div>
+                                    {formData.GST == 'default-GST-value' && (<p className='text-xs text-red-400' >No GST uploaded</p>)}
+                                    {formData.GST !== 'default-GST-value' && (<img className='text-sm mt-1 text-gray-600' src={formData.GST} alt="PAN Card" style={{ width: '125px', borderRadius: '20px', height: '200px' }} />)}
+                                </div>
+                            )}
+                            {isUpdateGST && (
+                                <motion.input
+                                    style={{ fontSize: '0.5rem' }}
+                                    type="file"
+                                    name="panCard"
+                                    onChange={handleChange}
+                                    accept="image/*"
+                                    className="form-control"
+                                    required
+                                />)}
                         </div>
-                    )}
-
-                    <div className='flex gap-2'>
-
-                        <button type="submit" style={{ borderRadius: '20px', paddingLeft: '5px' }} className="user-submit-button p-2  bg-[#515355] ">
-                            <i className='fa fa-paper-plane user-icon text-white' style={{ marginRight: '10px' }}></i> Update
+                        <button onClick={() => { setIsUpdateGST(!isUpdateGST) }} style={{ borderRadius: '20px', marginLeft: '20px', marginRight: '-60px', paddingLeft: '5px', background: 'white', color: 'black', display: "flex" }} >
+                            <i className='fa fa-pencil user-icon text-red-500' style={{ marginRight: '5px' }} ></i> <p className='text-xs text-red-500'>GST</p>
                         </button>
                     </div>
-                </form>
+
+
+
+                    {/* Submit Button */}
+                        <motion.button
+                            type="submit"
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }} // Shrinks when clicked
+                        >
+                            Submit
+                        </motion.button>
+
+                </motion.form>
+
             )}
 
             {userId.startsWith("VED-") && (

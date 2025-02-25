@@ -340,7 +340,7 @@ const VendorApproved = () => {
         const addedBy = row.addedBy ? String(row.addedBy) : "";
         return (
           <span style={{ color: "green" }}>
-            {addedBy.charAt(0).toUpperCase() + addedBy.slice(1).toLowerCase()}
+            {addedBy.charAt(0).toUpperCase() + addedBy.slice(1).toLowerCase()};
           </span>
         );
       },
@@ -353,7 +353,7 @@ const VendorApproved = () => {
         const EditedBy = row.EditedBy ? String(row.EditedBy) : "";
         return (
           <span style={{ color: "green" }}>
-            {EditedBy.charAt(0).toUpperCase() + EditedBy.slice(1).toLowerCase()}
+            {EditedBy.charAt(0).toUpperCase() + EditedBy.slice(1).toLowerCase()};
           </span>
         );
       },

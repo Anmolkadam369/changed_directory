@@ -240,7 +240,7 @@ const WorkshopDashboard = ({ getData }) => {
 
     return (
         <div className="dashboard">
-            <Helmet>a
+            <Helmet>
                 <title>Workshop Dashboard - Claimpro</title>
                 <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Mechanic Dashboard." />
                 <meta name="keywords" content="Workshop Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />

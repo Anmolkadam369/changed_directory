@@ -25,6 +25,8 @@ import craneadvocatemechanic from '../../Assets/camw.webp';
 import Featured from '../Charts/Featured';
 import VendorViewRating from '../VendorViewRating/VendorViewRating';
 import { useWebSocket } from '../ContexAPIS/WebSocketContext';
+import Modal from '../Location1/Modal';
+import UserProfileDetails from '../User/UserProfile/UserProfileDetails';
 
 
 const CraneUserDashboard = () => {
@@ -424,9 +426,15 @@ const CraneUserDashboard = () => {
             default:
         }
     };
+        const [openServiceModal, setOpenServiceModal] = useState(true)
+    
 
     return (
         <div style={{ height: "100%" }}>
+
+            <Modal style={{height:'100vh'}} isOpen={openServiceModal} onClose={() => setOpenServiceModal(!openServiceModal)}>
+                <UserProfileDetails/>
+            </Modal>
 
             <div style={{ marginTop: '10px' }}>
                 <div style={{ background: "transperant", padding: '8px', marginBottom: "8px", borderRadius: "5px" }}>
