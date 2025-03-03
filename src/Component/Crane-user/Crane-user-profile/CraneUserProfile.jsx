@@ -7,6 +7,7 @@ import BottomNavigationVendor from '../BottomNavigationVendor/BottomNavigationVe
 
 const CraneUserProfile = () => {
   const navigate =  useNavigate() 
+  // const state 
   const [openLogoutModal, setOpenLogoutModal] = useState(false)
     const handleShare = async () => {
         if (navigator.share) {
@@ -26,7 +27,7 @@ const CraneUserProfile = () => {
       };
 
       const navigateToProfile = ()=>{
-       navigate('/user-profile-details')
+       navigate('/user-profile-details', {state:{frompage:'craneuserprofile'}})
       }
 
       const logoutUser=()=>{

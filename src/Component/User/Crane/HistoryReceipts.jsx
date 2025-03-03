@@ -209,16 +209,16 @@ const HistoryReceipts = ({ vehicleNumber }) => {
     console.log("stages123456789", stages)
 
     useEffect(() => {
-        console.log("hello", currentStage);
+        console.log("hello currentStage", currentStage);
         if (currentStage[0]) {
             console.log("helasdfasdflo");
             console.log("currentStage[0][0] ", currentStage[0])
             setStages([
-                { label: "Filed", img: assignedTask, date: currentStage[0][0] },
-                { label: "Vendor Assigned", img: checksuccess, date: currentStage[0][1] },
-                { label: "Accepted & Moved", img: comingCrane, date: currentStage[0][2] },
-                { label: "Reached", img: reachedUser, date: currentStage[0][3] },
-                { label: "Work Done", img: workDoneUser, date: currentStage[0][4] },
+                { label: "Filed", img: assignedTask, date: currentStage[0][0].split('T')[0]+' | '+ currentStage[0][0].split('T')[1].split('.')[0] },
+                { label: "Vendor Assigned", img: checksuccess, date: currentStage[0][1].split('T')[0]+' | '+ currentStage[0][1].split('T')[1].split('.')[0]  },
+                { label: "Accepted & Moved", img: comingCrane, date: currentStage[0][2].split('T')[0]+' | '+ currentStage[0][2].split('T')[1].split('.')[0]  },
+                { label: "Reached", img: reachedUser, date: currentStage[0][3].split('T')[0]+' | '+ currentStage[0][3].split('T')[1].split('.')[0]  },
+                { label: "Work Done", img: workDoneUser, date: currentStage[0][4].split('T')[0]+' | '+ currentStage[0][4].split('T')[1].split('.')[0] },
             ]);
         }
     }, [currentStage[0]]); // Dependency array

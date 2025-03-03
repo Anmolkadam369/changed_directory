@@ -1,12 +1,12 @@
 import React from 'react';
 import './Modal.css';
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({ isOpen, onClose, children, customStyle }) => {
     if (!isOpen) return null;
-
+console.log('customstyle', customStyle)
     return (
         <div className="modal-overlay">
-            <div className="modal-content" style={{height:"200px"}}>
+            <div className="modal-content" style={customStyle ? { ...customStyle } : { height: "200px" }}>
                 <button className="modal-close" style={{color:'red'}} onClick={onClose}>
                     &times;
                 </button>

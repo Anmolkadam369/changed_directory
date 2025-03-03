@@ -69,6 +69,7 @@ const CraneUserDashboard = () => {
         }
         fetchAssignedCases();
         getGotResponseVehicle()
+        getDataById()
     }, [token, userId, navigate]);
 
 
@@ -254,7 +255,7 @@ const CraneUserDashboard = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${backendUrl}/api/assignedTasks/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'
@@ -426,200 +427,243 @@ const CraneUserDashboard = () => {
             default:
         }
     };
-        const [openServiceModal, setOpenServiceModal] = useState(true)
+    const [openServiceModal, setOpenServiceModal] = useState(true)
+    const [comingData, setComingData] = useState({})
+    console.log('comingdata', Object.keys(comingData).length )
+    console.log('comingdata123', comingData.firstView)
     
+
+    const getDataById = async () => {
+        try {
+            console.log('helloe i got coalled')
+            let response;
+            if (userId.startsWith("CUD-")) response = await axios.get(`${backendUrl}/api/getDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("CC-")) response = await axios.get(`${backendUrl}/api/getCustomerById/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("VC-")) response = await axios.get(`${backendUrl}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("VED-")) response = await axios.get(`${backendUrl}/api/getVendorDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+    
+            console.log("daa", response.data.data);
+            console.log("response123", response.data.data[0]);
+    
+            setComingData(response.data.data[0] || {}); // Ensure it's always an object
+        } catch (error) { 
+            console.error("Error fetching data:", error);
+        }
+    };
+   
+    let urlPart;
+    if (userId.startsWith("VC-")) urlPart = 'venderUpdate';
+    if (userId.startsWith("VED-")) urlPart = 'updateDriverInfoVendor';
+    const closeModal = async () => {
+        setOpenServiceModal(!openServiceModal)
+        const formDataObj = new FormData();
+        formDataObj.append('firstView', true);
+        formDataObj.append('vendorType', localStorage.getItem('userRole'));
+
+        const response = await axios({
+            method: 'PUT',
+            url: `${backendUrl}/api/${urlPart}/${userId}/${userId}`,
+            data: formDataObj,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+    }
+
 
     return (
         <div style={{ height: "100%" }}>
 
-            <Modal style={{height:'100vh'}} isOpen={openServiceModal} onClose={() => setOpenServiceModal(!openServiceModal)}>
-                <UserProfileDetails/>
-            </Modal>
+            {Object.keys(comingData).length !== 0  && (
+                <div>
+                    {!comingData.firstView && (
+                        <Modal isOpen={openServiceModal} onClose={closeModal}
+                            customStyle={{ height: '100vh', padding:'5px', maxWidth: '100%', maxHeight: '100%' }}>
+                            <UserProfileDetails />
+                        </Modal>)}
 
-            <div style={{ marginTop: '10px' }}>
-                <div style={{ background: "transperant", padding: '8px', marginBottom: "8px", borderRadius: "5px" }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <i class="fa fa-location-arrow" style={{ fontSize: "20px", color: "rgb(0 0 0)", marginRight: "10px" }}></i>
-                        <p style={{ color: 'red', fontSize: "13px", margin: "5px 5px", color: "#555" }}>
-                            {pickupLocation}
-                        </p>
+                    <div style={{ marginTop: '10px' }}>
+                        <div style={{ background: "transperant", padding: '8px', marginBottom: "8px", borderRadius: "5px" }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <i class="fa fa-location-arrow" style={{ fontSize: "20px", color: "rgb(0 0 0)", marginRight: "10px" }}></i>
+                                <p style={{ color: 'red', fontSize: "13px", margin: "5px 5px", color: "#555" }}>
+                                    {pickupLocation}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div className="stat-container">
+                    <div className="stat-container">
 
-                <div
-                    className="stat-item"
-                    onClick={() => casesFilterForVehicleCrane('getAll')}
-                    style={{
-                        margin: "20px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected === "getAll" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                        display: "flex", // Add flexbox
-                        flexDirection: "column", // Ensure vertical alignment
-                        alignItems: "center", // Horizontally center all children
-                        justifyContent: "center", // Vertically center the image
-                    }}
-                >
-                    <img
-                        src={craneadvocatemechanic}
-                        className="small-image"
-                        alt="Vendor Types"
-                        style={{
-                            marginBottom: "10px", // Add spacing below the image if needed
-                        }}
-                    />
-                    <h3 style={{ fontSize: "0.6rem" }}>Total Cases Assigned</h3>
-                    <p>{totalAssignedCases.length}</p>
-                </div>
-
-
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Accepted Vehicles')}
-                    style={{
-                        margin: "20px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Accepted Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <ThumbUpAltOutlinedIcon className="small-image" />
-                    {/* <img src={SwipeRightAltOutlinedIcon}  className="small-image" alt="accpeted By Admin" /> */}
-                    <h3 style={{ fontSize: "0.6rem" }}>Accepted By Admin</h3>
-                    <p>{adminAccepted}</p>
-                </div>
-
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Rejected Vehicles')}
-                    style={{
-                        margin: "20px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Rejected Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <ThumbDownOutlinedIcon className="small-image" />
-                    <h3 style={{ fontSize: "0.6rem" }}>Rejected By Admin</h3>
-                    <p>{adminRejected}</p>
-                </div>
-
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Pending Vehicles')}
-                    style={{
-                        margin: "20px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Pending Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <PendingActionsOutlinedIcon className="small-image" />
-                    <h3 style={{ fontSize: "0.6rem" }}>Pending (Admin and Not Requested)</h3>
-                    <p>{adminPending}</p>
-                </div>
-
-            </div>
-
-            <div className="stat-container">
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Response given')}
-                    style={{
-                        margin: "10px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Response given" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                        display: "flex", // Add flexbox
-                        flexDirection: "column", // Ensure vertical alignment
-                        alignItems: "center", // Horizontally center all children
-                        justifyContent: "center", // Vertically center the image
-                    }}>
-                    <img src={vehicleIcon} className="small-image" alt="Vendor Types" style={{
-                        marginBottom: "10px", // Add spacing below the image if needed
-                    }} />
-                    <h3 style={{ fontSize: "0.6rem" }}>Response Given by admin</h3>
-                    <p>{gotResponse.length}</p>
-                </div>
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Completed Cases')}
-                    style={{
-                        margin: "10px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Completed Cases" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <AssignmentTurnedInOutlinedIcon className="small-image" />
-                    <h3 style={{ fontSize: "0.6rem" }}>Fully Closed Cases</h3>
-                    <p>{fullyClosedCases + adminRejected}</p>
-                </div>
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
-                    style={{
-                        margin: "10px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Working Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <PendingActionsOutlinedIcon className="small-image" />
-                    <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
-                    <p>{workingCases > adminRejected ? workingCases - adminRejected : workingCases}</p>
-                </div>
-
-
-                <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
-                    style={{
-                        margin: "10px 5px 5px 5px",
-                        boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
-                        borderLeft: "2px solid darkgreen",
-                        borderTop: "1px solid darkgreen",
-                        cursor: "pointer",
-                        backgroundColor: isSelected == "Working Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
-                    }}>
-                    <PendingActionsOutlinedIcon className="small-image" />
-                    <h3 style={{ fontSize: "0.6rem" }} >Rejected By You</h3>
-                    <p>{rejectedByVendor}</p>
-                </div>
-
-
-            </div>
-
-                <div className="statistics">
-                    <div className="charts">
-
-                        <div className="chart-item" style={{ background: "radial-gradient(rgb(171 221 193), rgba(245, 245, 245, 0))" }}>
-                            <h3 className="chart-title"> Vehicle Working Status</h3>
-                            <Doughnut data={doughnutData} />
+                        <div
+                            className="stat-item"
+                            onClick={() => casesFilterForVehicleCrane('getAll')}
+                            style={{
+                                margin: "20px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected === "getAll" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                                display: "flex", // Add flexbox
+                                flexDirection: "column", // Ensure vertical alignment
+                                alignItems: "center", // Horizontally center all children
+                                justifyContent: "center", // Vertically center the image
+                            }}
+                        >
+                            <img
+                                src={craneadvocatemechanic}
+                                className="small-image"
+                                alt="Vendor Types"
+                                style={{
+                                    marginBottom: "10px", // Add spacing below the image if needed
+                                }}
+                            />
+                            <h3 style={{ fontSize: "0.6rem" }}>Total Cases Assigned</h3>
+                            <p>{totalAssignedCases.length}</p>
                         </div>
 
-                        <div className="chart-item" style={{ background: "radial-gradient(rgb(81 ,191, 213), rgba(245, 245, 245, 0))" }}>
-                            <h3 className="chart-title"> Admin Cases Status</h3>
-                            <Doughnut data={doughnutData2} />
+
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Accepted Vehicles')}
+                            style={{
+                                margin: "20px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Accepted Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                            }}>
+                            <ThumbUpAltOutlinedIcon className="small-image" />
+                            {/* <img src={SwipeRightAltOutlinedIcon}  className="small-image" alt="accpeted By Admin" /> */}
+                            <h3 style={{ fontSize: "0.6rem" }}>Accepted By Admin</h3>
+                            <p>{adminAccepted}</p>
                         </div>
-                        <Featured />
-                        <VendorViewRating />
+
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Rejected Vehicles')}
+                            style={{
+                                margin: "20px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Rejected Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                            }}>
+                            <ThumbDownOutlinedIcon className="small-image" />
+                            <h3 style={{ fontSize: "0.6rem" }}>Rejected By Admin</h3>
+                            <p>{adminRejected}</p>
+                        </div>
+
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Pending Vehicles')}
+                            style={{
+                                margin: "20px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Pending Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                            }}>
+                            <PendingActionsOutlinedIcon className="small-image" />
+                            <h3 style={{ fontSize: "0.6rem" }}>Pending (Admin and Not Requested)</h3>
+                            <p>{adminPending}</p>
+                        </div>
 
                     </div>
-            </div>
 
-            {isNewCase && (
-                <div style={{ marginTop: "-500px" }}>
-                    {/* <p >hello</p> */}
-                    <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
+                    <div className="stat-container">
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Response given')}
+                            style={{
+                                margin: "10px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Response given" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                                display: "flex", // Add flexbox
+                                flexDirection: "column", // Ensure vertical alignment
+                                alignItems: "center", // Horizontally center all children
+                                justifyContent: "center", // Vertically center the image
+                            }}>
+                            <img src={vehicleIcon} className="small-image" alt="Vendor Types" style={{
+                                marginBottom: "10px", // Add spacing below the image if needed
+                            }} />
+                            <h3 style={{ fontSize: "0.6rem" }}>Response Given by admin</h3>
+                            <p>{gotResponse.length}</p>
+                        </div>
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Completed Cases')}
+                            style={{
+                                margin: "10px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Completed Cases" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                            }}>
+                            <AssignmentTurnedInOutlinedIcon className="small-image" />
+                            <h3 style={{ fontSize: "0.6rem" }}>Fully Closed Cases</h3>
+                            <p>{fullyClosedCases + adminRejected}</p>
+                        </div>
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
+                            style={{
+                                margin: "10px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Working Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                            }}>
+                            <PendingActionsOutlinedIcon className="small-image" />
+                            <h3 style={{ fontSize: "0.6rem" }} >Working Cases</h3>
+                            <p>{workingCases > adminRejected ? workingCases - adminRejected : workingCases}</p>
+                        </div>
+
+
+                        <div className="stat-item" onClick={() => casesFilterForVehicleCrane('Working Vehicles')}
+                            style={{
+                                margin: "10px 5px 5px 5px",
+                                boxShadow: "rgba(137, 137, 137, 0.47) 2px 3px 4px 1px",
+                                borderLeft: "2px solid darkgreen",
+                                borderTop: "1px solid darkgreen",
+                                cursor: "pointer",
+                                backgroundColor: isSelected == "Working Vehicles" ? 'rgb(239 236 186 / 75%)' : 'transparent', // Change background color on selection
+                            }}>
+                            <PendingActionsOutlinedIcon className="small-image" />
+                            <h3 style={{ fontSize: "0.6rem" }} >Rejected By You</h3>
+                            <p>{rejectedByVendor}</p>
+                        </div>
+
+
+                    </div>
+
+                    <div className="statistics">
+                        <div className="charts">
+
+                            <div className="chart-item" style={{ background: "radial-gradient(rgb(171 221 193), rgba(245, 245, 245, 0))" }}>
+                                <h3 className="chart-title"> Vehicle Working Status</h3>
+                                <Doughnut data={doughnutData} />
+                            </div>
+
+                            <div className="chart-item" style={{ background: "radial-gradient(rgb(81 ,191, 213), rgba(245, 245, 245, 0))" }}>
+                                <h3 className="chart-title"> Admin Cases Status</h3>
+                                <Doughnut data={doughnutData2} />
+                            </div>
+                            <Featured />
+                            <VendorViewRating />
+
+                        </div>
+                    </div>
+
+                    {isNewCase && (
+                        <div style={{ marginTop: "-500px" }}>
+                            {/* <p >hello</p> */}
+                            <CaseFirstCard data={newCasesItems} getBackPage={handleBack} />
+                        </div>
+                    )}
+
+                    <div style={{ zIndex: 1 }}>
+                        <BottomNavigationVendor />
+                    </div>
                 </div>
             )}
-
-
-
-            {/* Black Bottom Section */}
-
-            <div style={{ zIndex: 1 }}>
-                <BottomNavigationVendor />
-            </div>
         </div>
 
 

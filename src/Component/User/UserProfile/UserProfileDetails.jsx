@@ -7,7 +7,7 @@ import backendUrl from '../../../environment';
 import { Button } from '@mui/material';
 import { motion } from "framer-motion";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import BusinessIcon from "@mui/icons-material/Business";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
@@ -26,6 +26,8 @@ const UserProfileDetails = () => {
     const userId = localStorage.getItem("userId");
     const [alertInfo, setAlertInfo] = useState(null);
     const [comingData, setComingData] = useState([]);
+    const { state } = useLocation();
+    console.log('state', state)
     console.log('comingdata', comingData)
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -114,6 +116,7 @@ const UserProfileDetails = () => {
                 InsuranceName: comingData.InsuranceName || "",
                 GSTNo: comingData.GSTNo || "",
                 GST: comingData.GST || "",
+                businessRegistration:comingData.businessRegistration||"",
                 longitude: comingData.longitude !== null ? comingData.longitude : "",
                 latitude: comingData.latitude !== null ? comingData.latitude : "",
                 id: comingData.id,
@@ -123,6 +126,8 @@ const UserProfileDetails = () => {
 
                 vendorName: comingData.vendorName || "",
                 CustomerName: comingData.CustomerName || "",
+                companyName: comingData.companyName || "",
+
 
                 vehicleNo: comingData.vehicleNo || '',
                 chassisNo: comingData.chassisNo || '',
@@ -136,7 +141,13 @@ const UserProfileDetails = () => {
                 ULW: comingData.ULW || '',
                 DLCard: comingData.DLCard || '',
                 DLNo: comingData.DLNo || '',
-                year: comingData.year || ''
+                year: comingData.year || '',
+
+                bankName: comingData.bankName || '',
+                bankAccount: comingData.bankAccount  || '',
+                ifscCode: comingData.ifscCode  || '',
+                branchName: comingData.branchName  ||'',
+                cancelledCheque: comingData.cancelledCheque  ||''
             }));
         }
     }, [comingData]);
@@ -162,7 +173,8 @@ const UserProfileDetails = () => {
         adharCard: '',
         panCard: '',
         GST: '',
-
+        businessRegistration:'',
+        firstView: true,
 
         vendorName: '',
         CustomerName: '',
@@ -181,10 +193,17 @@ const UserProfileDetails = () => {
         ULW: '',
         DLCard: '',
         DLNo: '',
-        year: ''
+        year: '',
+
+        bankName: '',
+        bankAccount: '',
+        ifscCode: '',
+        branchName: '',
+        cancelledCheque:''
+
 
     });
-    console.log('formdata', formData)
+    console.log('formdata123', formData)
     useEffect(() => {
         getDataById();
     }, [userId, token])
@@ -206,7 +225,7 @@ const UserProfileDetails = () => {
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         if (type === 'file') {
-            if (files[0] && files[0].size > 2097152) {
+            if (files[0] && files[0].size > 2097152) { 
                 setAlertInfo({ show: true, message: 'File size should be less than 2 MB!', severity: 'error' });
             }
             setFormData(prevState => ({
@@ -224,6 +243,13 @@ const UserProfileDetails = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form Data Submitted:', formData);
+        console.log("formData.address ==", formData.address == "" || formData.vendorName == "" || formData.state == "" || formData.district == "")
+        if (formData.address == "" || formData.vendorName == "" || formData.state == "" || formData.district == "") {
+            setAlertInfo({
+                type: 'error',
+                message: 'Please fill the required fields '
+            });
+        }
         const formDataObj = new FormData();
         for (const key in formData) {
             if (formData[key] !== undefined && formData[key] !== null && formData[key] !== "") {
@@ -311,6 +337,9 @@ const UserProfileDetails = () => {
     }
 
     const [isUpdatePan, setIsUpdatePan] = useState(false)
+    const [isUpdateBussinessReg, setIsUpdateBussinessReg] = useState(false)
+    const [isUpdateCancelledCheque, setIsUpdateCancelledCheque] = useState(false)
+    const [isBusinessRegistrationDoc, setIsBusinessRegistrationDoc] = useState(false)
     const [isUpdateAdhar, setIsUpdateAdhar] = useState(false)
     const [isUpdateGST, setIsUpdateGST] = useState(false)
     const [isUpdateDL, setIsUpdateDL] = useState(false)
@@ -320,19 +349,15 @@ const UserProfileDetails = () => {
     return (
         <div className="user-form-container">
             <div className='flex'>
-
-                <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px', marginTop: '15px', position: 'fixed', background: '#b2b2b2', padding: '5px 3px 5px 0px', marginLeft: '20px', borderRadius: '30px' }}>
-                    <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "black" }} onClick={handleBack} />
-                </div>
-                {/* <p style={{ textAlign: "center", marginTop: "30px", fontSize: "20px", fontWeight: "bold", color: "green" }}>Profile Details</p> */}
-
+                {state?.frompage == 'craneuserprofile' && (
+                    <div style={{ display: "flex", marginRight: '10px', marginBottom: '10px', marginTop: '15px', position: 'fixed', background: '#b2b2b2', padding: '5px 3px 5px 0px', marginLeft: '20px', borderRadius: '30px' }}>
+                        <Button startIcon={<ArrowBackIcon />} style={{ background: "none", color: "black" }} onClick={handleBack} />
+                    </div>
+                )}
             </div>
             {userId.startsWith("CC-") && (
                 <form className="user-form" onSubmit={handleSubmit}>
-
                     <p style={{ marginTop: "10px", marginBottom: '50px', fontSize: "16px", fontWeight: "bold", color: "#538553b3" }}>Company Details</p>
-
-
                     <div className="user-form-group">
                         <i className="fa fa-building user-icon" aria-hidden="true"></i>
                         <input
@@ -487,6 +512,7 @@ const UserProfileDetails = () => {
                         />
                     </div>
 
+
                     <div className='flex items-center'>
                         <div className="user-form-group">
                             <i class="fa fa-picture-o user-icon" aria-hidden="true"></i>
@@ -551,7 +577,8 @@ const UserProfileDetails = () => {
                             <i className='fa fa-paper-plane user-icon text-white' style={{ marginRight: '10px' }}></i> Update
                         </button>
                     </div>
-                </form>)}
+                </form>
+            )}
 
             {userId.startsWith("CUD-") && (
 
@@ -811,7 +838,7 @@ const UserProfileDetails = () => {
                 <motion.form
                     className="mt-5 mb-5 bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg mx-auto space-y-6"
                     onSubmit={handleSubmit}
-                    style={{ borderRadius: '50px 50px 0px 0px ' }}
+                    style={{ borderRadius: '10px 10px 10px 10px ' }}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -872,7 +899,6 @@ const UserProfileDetails = () => {
                                 placeholder="Enter your company name"
                                 value={formData.companyName}
                                 onChange={handleChange}
-                                required
                                 whileFocus={{ scale: 1.05 }}
                             />
                         </motion.div>
@@ -895,6 +921,8 @@ const UserProfileDetails = () => {
                                 onChange={handleChange}
                                 value={formData.state}
                                 whileFocus={{ scale: 1.05 }}
+                                required
+
                             >
                                 <option value="">Select State</option>
                                 {states.map(state => (
@@ -922,6 +950,8 @@ const UserProfileDetails = () => {
                                 onChange={handleChange}
                                 disabled={isLoadingCities || !formData.state}
                                 whileFocus={{ scale: 1.05 }}
+                                required
+
                             >
                                 <option className='text-sm' value="">Select City</option>
                                 {!cities.error && cities.map(city => (
@@ -951,9 +981,39 @@ const UserProfileDetails = () => {
                                 whileFocus={{ scale: 1.05 }} // Slight zoom on focus
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.2 }}
+                                required
                             />
                         </motion.div>
                     </div>
+
+                    <p className='text-sm opacity-[0.5] '>Business Registration Certificate (if applicable)</p>
+
+                    <div className='mt-1 flex items-center'>
+                        <div className="user-form-group m-0">
+                            {/* <i class="fa fa-picture-o user-icon" aria-hidden="true"></i> */}
+                            {!isUpdateBussinessReg && (
+                                <div className='max-w-[200px]'>
+                                    {formData.businessRegistration == '' && (<p className='text-xs text-red-400' >No business registration uploaded</p>)}
+                                    {formData.businessRegistration !== '' && (<img className='w-[80%] max-w-[200px] h-auto rounded-xl' src={formData.businessRegistration} alt="PAN Card" />)}
+                                </div>
+                            )}
+                            {isUpdateBussinessReg && (
+                                <motion.input
+                                    style={{ fontSize: '0.5rem' }}
+                                    type="file"
+                                    name="businessRegistration"
+                                    onChange={handleChange}
+                                    accept="image/*"
+                                    className="form-control"
+                                    required
+                                />)}
+                        </div>
+                        <button onClick={() => { setIsUpdateBussinessReg(!isUpdateBussinessReg) }} style={{ borderRadius: '20px', marginLeft: '20px', marginRight: '-60px', paddingLeft: '5px', background: 'white', color: 'black', display: "flex" }} >
+                            <i className='fa fa-pencil user-icon text-red-500' style={{ marginRight: '5px' }} ></i> <p className='text-xs text-red-500'>Business Registration</p>
+                        </button>
+                    </div>
+
+
 
 
                     <div className='flex space-x-3 rounded-lg p-1'
@@ -983,13 +1043,17 @@ const UserProfileDetails = () => {
                         </motion.div>
                     </div>
 
-                    <div className='flex items-center'>
-                        <div className="user-form-group">
-                            <i class="fa fa-picture-o user-icon" aria-hidden="true"></i>
+
+
+                    <p className='text-sm opacity-[0.5] '>Company Pan Card</p>
+
+                    <div className='mt-1 flex items-center'>
+                        <div className="user-form-group m-0">
+                            {/* <i class="fa fa-picture-o user-icon" aria-hidden="true"></i> */}
                             {!isUpdatePan && (
-                                <div>
+                                <div className='max-w-[200px]'>
                                     {formData.panCard == 'Pan Value' && (<p className='text-xs' >No pan uploaded</p>)}
-                                    {formData.panCard !== 'Pan Value' && (<img className='text-sm mt-1 text-gray-600' src={formData.panCard} alt="PAN Card" style={{ width: '125px', borderRadius: '20px', height: '200px' }} />)}
+                                    {formData.panCard !== 'Pan Value' && (<img className='w-[80%] max-w-[200px] h-auto rounded-xl' src={formData.panCard} alt="PAN Card" />)}
                                 </div>
                             )}
                             {isUpdatePan && (
@@ -1007,6 +1071,7 @@ const UserProfileDetails = () => {
                             <i className='fa fa-pencil user-icon text-red-500' style={{ marginRight: '5px' }} ></i> <p className='text-xs text-red-500'>Pan</p>
                         </button>
                     </div>
+
 
 
 
@@ -1104,44 +1169,22 @@ const UserProfileDetails = () => {
                             transition={{ duration: 0.4, delay: 0.3 }}
                         >
                             <BusinessIcon className='text-green-700' />
-                            <motion.input
-                                className="w-full bg-transparent focus:outline-none"
-                                type="text"
+                            <motion.select
+                                className="w-full bg-transparent text-sm  focus:outline-none"
                                 name="typeOfOwnership"
-                                placeholder="Type Of Ownership"
                                 value={formData.typeOfOwnership}
                                 onChange={handleChange}
                                 whileFocus={{ scale: 1.05 }}
-
-                            />
+                            >
+                                <option className='text-sm' value="">Select Type</option>
+                                <option key="Sole_Proprietor" value="Sole_Proprietor">Sole_Proprietor</option>
+                                <option key="Partnership" value="Partnership">Partnership</option>
+                                <option key="Company" value="Company">Company</option>
+                            </motion.select>
                         </motion.div>
                     </div>
 
-                    <div className='flex space-x-3 rounded-lg p-1'
-                        style={{ border: '1px solid grey' }}
-                    >
-                        <motion.div
-                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.5 }}
-                        >
-                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
-                            <motion.input
-                                className='w-full bg-transparent focus:outline-none'
-                                type="text"
-                                name="panNo"
-                                placeholder="Enter Pan Number"
-                                value={formData.panNo}
-                                onChange={handleChange}
-                                whileFocus={{ scale: 1.05 }}
-
-                            // pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-                            // title="Please enter a valid PAN number (e.g., ABCDE1234F)."
-                            />
-                        </motion.div>
-                    </div>
                     <div className='flex space-x-3 rounded-lg p-1'
                         style={{ border: '1px solid grey' }}
                     >
@@ -1193,11 +1236,11 @@ const UserProfileDetails = () => {
 
                     <div className='flex'>
                         <div className="user-form-group  m-0">
-                            <i class="fa fa-picture-o user-icon" aria-hidden="true"></i>
+                            {/* <i class="fa fa-picture-o user-icon" aria-hidden="true"></i> */}
                             {!isUpdateAdhar && (
-                                <div>
+                                <div className='max-w-[200px]'>
                                     {formData.adharCard == 'Adhar Value' && (<p className='text-xs text-red-400'>No Adhar uploaded</p>)}
-                                    {formData.adharCard !== 'Adhar Value' && (<img className='text-sm mt-1 text-gray-600' src={formData.adharCard} alt="Adhar Card" style={{ width: '125px', borderRadius: '20px', height: '200px' }} />)}
+                                    {formData.adharCard !== 'Adhar Value' && (<img className='w-[80%] max-w-[200px] h-auto rounded-xl' src={formData.adharCard} alt="Adhar Card" />)}
                                 </div>
                             )}
 
@@ -1218,11 +1261,11 @@ const UserProfileDetails = () => {
                     </div>
                     <div className='flex items-center'>
                         <div className="user-form-group  m-0">
-                            <i class="fa fa-picture-o user-icon" aria-hidden="true"></i>
+                            {/* <i class="fa fa-picture-o user-icon" aria-hidden="true"></i> */}
                             {!isUpdateGST && (
-                                <div>
+                                <div className='max-w-[200px]'>
                                     {formData.GST == 'default-GST-value' && (<p className='text-xs text-red-400' >No GST uploaded</p>)}
-                                    {formData.GST !== 'default-GST-value' && (<img className='text-sm mt-1 text-gray-600' src={formData.GST} alt="PAN Card" style={{ width: '125px', borderRadius: '20px', height: '200px' }} />)}
+                                    {formData.GST !== 'default-GST-value' && (<img className='w-[80%] max-w-[200px] h-auto rounded-xl' src={formData.GST} alt="PAN Card" />)}
                                 </div>
                             )}
                             {isUpdateGST && (
@@ -1241,20 +1284,152 @@ const UserProfileDetails = () => {
                         </button>
                     </div>
 
+                    <h2
+                        className="text-lg  mt-5 font-bold text-center text-green-700"
+                        as={motion.h2}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        Payment Details
+                    </h2>
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            {/* <i  class="user-icon" aria-hidden="true"></i> */}
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="bankName"
+                                placeholder="Enter Bank Name"
+                                value={formData.bankName}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
 
+                            />
+                        </motion.div>
+                    </div>
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            {/* <i  class="user-icon" aria-hidden="true"></i> */}
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="bankAccount"
+                                placeholder="Enter Bank Account Number"
+                                value={formData.bankAccount}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            />
+                        </motion.div>
+                    </div>
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            {/* <i  class="user-icon" aria-hidden="true"></i> */}
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="ifscCode"
+                                placeholder="Enter IFSC Code"
+                                value={formData.ifscCode}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            />
+                        </motion.div>
+                    </div>
+
+                    <div className='flex space-x-3 rounded-lg p-1'
+                        style={{ border: '1px solid grey' }}
+                    >
+                        <motion.div
+                            className="flex w-full items-center space-x-3 bg-gray-100 p-2 rounded-lg"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                        >
+                            <i class="fa fa-id-card-o text-green-700" aria-hidden="true"></i>
+                            {/* <i  class="user-icon" aria-hidden="true"></i> */}
+                            <motion.input
+                                className='w-full bg-transparent focus:outline-none'
+                                type="text"
+                                name="branchName"
+                                placeholder="Branch Name"
+                                value={formData.branchName}
+                                onChange={handleChange}
+                                whileFocus={{ scale: 1.05 }}
+
+                            />
+                        </motion.div>
+                    </div>
+
+                    <div className='flex items-center'>
+                        <div className="user-form-group  m-0">
+                            {/* <i class="fa fa-picture-o user-icon" aria-hidden="true"></i> */}
+                            {!isUpdateCancelledCheque && (
+                                <div className='max-w-[200px]'>
+                                    {formData.cancelledCheque == '' && (<p className='text-xs text-red-400' >No cancelled cheque uploaded</p>)}
+                                    {formData.cancelledCheque !== '' && (<img className='w-[80%] max-w-[200px] h-auto rounded-xl' src={formData.cancelledCheque} alt="PAN Card" />)}
+                                </div>
+                            )}
+                            {isUpdateCancelledCheque && (
+                                <motion.input
+                                    style={{ fontSize: '0.5rem' }}
+                                    type="file"
+                                    name="cancelledCheque"
+                                    onChange={handleChange}
+                                    accept="image/*"
+                                    className="form-control"
+                                    required
+                                />)}
+                        </div>
+                        <button onClick={() => { setIsUpdateCancelledCheque(!isUpdateCancelledCheque) }} style={{ borderRadius: '20px', marginLeft: '20px', marginRight: '-60px', paddingLeft: '5px', background: 'white', color: 'black', display: "flex" }} >
+                            <i className='fa fa-pencil user-icon text-red-500' style={{ marginRight: '5px' }} ></i> <p className='text-xs text-red-500'>Cancelled Cheque</p>
+                        </button>
+                    </div>
+
+
+                    {alertInfo && (
+                        <div className={`alert alert-${alertInfo.type}`}>
+                            {alertInfo.message}
+                        </div>
+                    )}
 
                     {/* Submit Button */}
-                        <motion.button
-                            type="submit"
-                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }} // Shrinks when clicked
-                        >
-                            Submit
-                        </motion.button>
+                    <motion.button
+                        type="submit"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }} // Shrinks when clicked
+                    >
+                        Submit
+                    </motion.button>
 
                 </motion.form>
-
             )}
 
             {userId.startsWith("VED-") && (

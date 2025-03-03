@@ -52,6 +52,8 @@ export default function CraneAllVehicles() {
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const userRole = localStorage.getItem("userRole");
+
     const navigate = useNavigate()
 
     const getFilteredData = (filter) => {
@@ -183,7 +185,7 @@ export default function CraneAllVehicles() {
 
     const getAccidentData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoByIdForVendors/${userId}/${userRole}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         if (response.data.message == "No accident vehicle data found.") {

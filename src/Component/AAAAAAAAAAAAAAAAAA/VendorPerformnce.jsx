@@ -229,7 +229,7 @@ const VendorPerformance = () => {
     const fetchAssignedCases = async () => {
         try {
             let response;
-            if (state.type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasks/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (state.type == "mechanic") response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (state.type == "advocate") response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (state.type == "workshop") response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
