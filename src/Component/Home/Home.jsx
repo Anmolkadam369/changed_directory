@@ -14,26 +14,13 @@ import onsiterepair from '../../Assets/onsiterepair.jpg';
 import cranefrontpage from '../../Assets/cranefrontpage.jpg';
 import workshopfirstpage from '../../Assets/workshopfirstpage.jpg';
 import advocatefirstpage from '../../Assets/advoatefirstpage.jpeg';
-import homepage1st from "../../Assets/homepage1st.jpg"
-import homepage2nd from "../../Assets/homepage2nd.jpg"
-import homepage3rd from "../../Assets/homepage3rd.jpg"
-import craneadvocatemechanic from '../../Assets/camw.webp'; // Correct import path
 import ConstructionIcon from '@mui/icons-material/Construction';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import GavelIcon from '@mui/icons-material/Gavel';
 import CarRepairIcon from '@mui/icons-material/CarRepair';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
-import customerImage from '../../Assets/customer.webp'; // Correct import path
-import complaints from '../../Assets/complaints.webp'; // Correct import path
 import registerComplaints from '../../Assets/registeredComplaints.webp'; // Correct import path
-import remainingComplaints from '../../Assets/remainingComplaints.webp'; // Correct import path
-import vehicleIcon from '../../Assets/vehicleIcon.webp'; // Correct import path
-import vendorResponseImg from '../../Assets/vendorResponse.webp';
-import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
-import ListIcon from '@mui/icons-material/List';
-import { FaFacebook, FaLinkedin, FaInstagramSquare, FaWhatsapp } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
-import { height } from '@mui/system';
 import RotatingBoard from '../AAAAAAAAAAAAAAAAAA/RotatingBoard';
 import Header from './Header';
 import Footer from './Footer';
@@ -41,6 +28,7 @@ import axios from 'axios';
 
 
 function Home() {
+
     const navigate = useNavigate();
     const openInNewTab = (url) => {
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -58,7 +46,7 @@ function Home() {
     const checkTokenValidity = async (token) => {
         try {
             const response = await axios.post(`${backendUrl}/api/verifyToken/isValid`, {}
-                , { headers: { Authorization: `Bearer ${token}` }});
+                , { headers: { Authorization: `Bearer ${token}` } });
             return response.status === 200; // Backend will return 200 if valid
         } catch (error) {
             console.error('Token validation failed:', error);
@@ -136,8 +124,6 @@ function Home() {
         console.log('Logged out due to token expiry.');
         // window.location.href = '/loginPage'; // Redirect to login page
     };
-
-
 
     function navigateToContactUs() {
         navigate('./ContactUs');
@@ -315,7 +301,6 @@ function Home() {
         };
     }, []);
 
-
     const leftSecondRef = useRef(null);
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -383,6 +368,7 @@ function Home() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
     const goBlog = () => {
         console.log('Navigating to Blogs');
         navigate('/Blogs')
@@ -407,7 +393,8 @@ function Home() {
                     <div className="home-elem-20" style={{ paddingTop: "20px" }}>
                         <div className="home-elem-21">
                             <span className="home-elem-25">
-                                <h1>Professional Assistance for <span style={{ color: currentColor }}>{displayText}</span></h1>
+                                <h1>Professional Assistance for </h1>
+                                <span style={{ color: currentColor, height: '50px' }}>{displayText}</span>
                             </span>
                             <span className="home-elem-26">
                                 <p>BVC ClaimPro Assist provides easy access to cranes, advocates, workshops, and immediate vehicle repairs for all your commercial vehicles during accidents.</p>

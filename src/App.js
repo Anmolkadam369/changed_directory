@@ -137,6 +137,8 @@ import VendorByMap from './Component/VendorApproved/VendorByMap';
 import VendorPerformance from './Component/AAAAAAAAAAAAAAAAAA/VendorPerformnce';
 import CustomerPerformance from './Component/CustomerApporoved/CustomerPerformance';
 
+import WorkshopVendorRegistrationForm from './Component/WorkshopVendorRegisterationForm/WorkshopVendorRegisterationForm.jsx';
+
 function App() {
   return (
     <Provider store={store}>
@@ -144,19 +146,20 @@ function App() {
         <Router>
           <Routes>
             <Route exact path='/' element={<Home />} />
-            <Route path='/ContactUs' element={<ContactUs />} />
+            {/* <Route path='/ContactUs' element={<ContactUs />} /> */}
+            <Route path='/ContactUs' element={<WorkshopVendorRegistrationForm />} />
             <Route path='/Blogs' element={<Blogs />} />
             <Route path='/CaseFirstCard' element={<CaseFirstCard />} />
             <Route path='/SuccessIcon' element={<SuccessIcon />} />
             <Route path='/ErrorIcon' element={<ErrorIcon />} />
-            <Route path='/FirstPage'element={<FirstPage/>}/>
+            <Route path='/FirstPage' element={<FirstPage />} />
 
-            <Route path='/Admin' element={<ProtectedRoute element={<Admin />}  />} />
+            <Route path='/Admin' element={<ProtectedRoute element={<Admin />} />} />
 
             <Route path='/moving-vehicle' element={<ProtectedRoute element={<MovingVehicles />} />} />
-            <Route path='/crane-driver-home' element={<ProtectedRoute element={<CraneDriverHome/>}/>}/>
-            <Route path='/ride-popup' element={<ProtectedRoute element={<RidePopUp/>}/>}/>
-            
+            <Route path='/crane-driver-home' element={<ProtectedRoute element={<CraneDriverHome />} />} />
+            <Route path='/ride-popup' element={<ProtectedRoute element={<RidePopUp />} />} />
+
             <Route path='/CompletePayment' element={<CompletePayment />} requiredRole="customer" />
             <Route path='/User-landing-page' element={<ProtectedRoute element={<NewFirstPage />} requiredRole="customer" />} />
             <Route path='/all-vehicles-registered' element={<ProtectedRoute element={<AllVehicles />} requiredRole="customer" />} />
@@ -167,8 +170,7 @@ function App() {
 
             <Route path='/Crane-dashboard' element={<ProtectedRoute element={<CraneFirstPage />} requiredRole="customer" />} />
 
-
-            <Route path='/vehicleimagepanel' element ={<VehicleImagePanel/>}/>
+            <Route path='/vehicleimagepanel' element={<VehicleImagePanel />} />
 
             {/* Crane Dashboard */}
             <Route path='/crane-user-landing-page' element={<ProtectedRoute element={<CraneUserLanding />} requiredRole="crane" />} />
@@ -179,44 +181,36 @@ function App() {
             <Route path='/crane-user-dashboard' element={<ProtectedRoute element={<CraneUserDashboard />} requiredRole="crane" />} />
             <Route path='/crane-user-all-cases' element={<ProtectedRoute element={<CraneOrders />} />} />
             <Route path="/crane-vehicle-information" element={<ProtectedRoute element={<CraneVehicleData />} />} />
-            <Route path='/crane-user-profile' element={<ProtectedRoute element={<CraneUserProfile/>}/>} requiredRole='crane'/>
-            <Route path='/crane-all-vehicles' element={<ProtectedRoute element={<CraneAllVehicles/>}/>} requiredRole = 'crane'/>
+            <Route path='/crane-user-profile' element={<ProtectedRoute element={<CraneUserProfile />} />} requiredRole='crane' />
+            <Route path='/crane-all-vehicles' element={<ProtectedRoute element={<CraneAllVehicles />} />} requiredRole='crane' />
 
             <Route path='/UserSideBar' element={<UserSideBar />} />
             <Route path='/SelectLocationOnMap' element={<SelectLocationOnMap />} />
 
             <Route path='/new-vehicle-registration' element={<NewAccidentVehicle />} />
-
-
             <Route path='/ProductDetailsSeller' element={<ProductDetailsSeller />} />
-
-            
             <Route path='/SidebarWithSubmenus' element={<SidebarWithSubmenus />} />
             <Route path='/ProductRegister' element={<ProductRegister />} />
             <Route path='/Sidebar' element={<Sidebar />} />
-
             <Route exact path='/LoginPage' element={<LoginPage />} />
             <Route path='/register-new-accidentvehicle' element={<Registration />} />
-            <Route path='/vendor-form' element={<ProtectedRoute element={<VendorMasterForm />} />} />
+
+            <Route path='/vendor-form' element={<ProtectedRoute element={<VendorMasterForm />} />} />            
             <Route path='/vendor-view-form' element={<ProtectedRoute element={<VendorApporoved />} />} />
-            <Route path='/vendor-edit' element={<VendorMasterEdit/>}/>
-            <Route path='/vendor-map-details' element={<VendorByMap/>}/>
-            <Route path='/vendor-performance-details' element={<VendorPerformance/>}/>
-
-
+            <Route path='/vendor-edit' element={<VendorMasterEdit />} />
+            <Route path='/vendor-map-details' element={<VendorByMap />} />
+            <Route path='/vendor-performance-details' element={<VendorPerformance />} />
 
             <Route path='/customer-form' element={<ProtectedRoute element={<CustomerMasterForm />} />} />
             <Route path='/customer-form-edit' element={<ProtectedRoute element={<CustomerMasterEdit />} />} />
-            <Route path='/customer-form-activity' element={<ProtectedRoute element={< CustomerPerformance/>} />} />
-
+            <Route path='/customer-form-activity' element={<ProtectedRoute element={< CustomerPerformance />} />} />
 
             <Route path='/employee-form' element={<ProtectedRoute element={<EmployeeForm />} />} />
             <Route path='/view-employee' element={<ProtectedRoute element={<EmployeeApproved />} />} />
             <Route path='/edit-employee' element={<ProtectedRoute element={<EmployeeFormEdit />} />} />
-            
+
             <Route path='/vehicle-claim-registration' element={<ProtectedRoute element={<VehicleClaimRegistration />} />} />
             <Route path='/vehicle-claim-edit' element={<ProtectedRoute element={<VehicleClaimEdit />} />} />
-
 
             <Route path='/Visitors-form' element={<ProtectedRoute element={<Visitors />} />} />
             <Route path='/customer-enquiry-form' element={<ProtectedRoute element={<CustomerEnquiry />} />} />
@@ -238,22 +232,12 @@ function App() {
             <Route path='/CraneDashboard' element={<ProtectedRoute element={<CraneHydra />} />} />
             <Route path='/AddedDataByCrane' element={<ProtectedRoute element={<AddedDataByCrane />} />} />
 
-
-
             <Route path='/WorkshopDashboard' element={<ProtectedRoute element={<Workshop />} />} />
-
 
             <Route path='/DailyWorkshop' element={<ProtectedRoute element={<DailyWorkshop />} />} />
 
-
             <Route path='/Payment/:token' element={<Payment />} />
             <Route path='/vendor-comission/:token' element={<VendorPayment />} />
-
-
-
-
-
-            <Route path="*" element={<NotFoundPage />} />
 
             <Route path='/MechanicDashboard' element={<ProtectedRoute element={<MechanicDashboard />} />} />
             <Route path='/CreatePassword/:userType' element={<CreatePassword />} />
@@ -262,13 +246,11 @@ function App() {
             <Route path='/Registration' element={<Registrations />} />
 
             <Route path='/ImageViewer' element={<ImageViewer />} />
-
             <Route path='/ImageDetails' element={<ImageDetails />} />
-
-
 
             <Route path='/admin-dashboard-vendor-customer' element={<ProtectedRoute element={<DummyDashboard />} requiredRole={['Management', "IT"]} />} />
 
+            <Route path="*" element={<NotFoundPage />} />
 
           </Routes>
         </Router>
