@@ -743,7 +743,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
   const fetchAssignedCases = async (vendorCode) => {
     console.log("randomId", GetDataOfUser.randomId);
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${backendUrl}/api/assignedTasks/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("accident vehicle table", response.data.data);
       setData(response.data.data);
       setCurrentItems(response.data.data)

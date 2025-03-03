@@ -218,8 +218,14 @@ export default function AllVehicles() {
             setDoneFetching2(true)
         }
         else {
-            setAccidentData(response.data.data)
-
+            console.log('response.data.data', response.data.data)
+            response.data.data.map((item)=>{
+                console.log("item.customer.confirmDoneWorking", item.customer.confirmDoneWorking)
+                if(!item.customer.confirmDoneWorking){
+                    setAccidentData((prev)=>[...prev, item])
+                }
+            })
+            // setAccidentData(response.data.data)
             setDoneFetching2(true)
             console.log("ACcidenData", accidentData)
         }
