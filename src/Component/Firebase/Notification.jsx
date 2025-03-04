@@ -3,7 +3,7 @@ import { getToken, onMessage } from 'firebase/messaging';
 import { messaging } from './Firebase';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
-import backendUrl from '../../environment';
+// '../../environment';
 
 const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
 
@@ -29,8 +29,8 @@ const NotificationComponent = () => {
       });
       console.log('Push Manager subscription:', subscription);
 
-      await axios.post(`${backendUrl}/api/subscription`, subscription);
-      await axios.post(`${backendUrl}/api/notification`, { message });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/subscription`, subscription);
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/notification`, { message });
 
       alert('Notification sent successfully');
     } catch (error) {

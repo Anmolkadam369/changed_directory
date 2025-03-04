@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { selector, useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import UploadDocAdvocate from './UploadDocAdvocate';
 import DataTable from "react-data-table-component";
@@ -87,7 +87,7 @@ const AssignedVehicleAdvocate = () => {
 
   const fetchAssignedCases = async (vendorCode) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedCasesAdvocate/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("DATA RESPONESSSS", response.data.data)
       setData(response.data.data);
       setCurrentItems(response.data.data);
@@ -97,7 +97,7 @@ const AssignedVehicleAdvocate = () => {
   };
 
   const findUserById = async (id) => {
-    const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     setGetDataOfUser(response.data.data[0]);
   };
 

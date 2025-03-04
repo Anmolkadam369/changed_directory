@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import VehicleClaimRegistration from '../VehicleClaimRegistration/VehicleClaimRegistration';
 import { Button } from '@mui/material';
@@ -168,7 +168,7 @@ const AccidentVehicleRegUpdate = () => {
   };
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
     const fetchedData = response.data.data;
@@ -224,7 +224,7 @@ const AccidentVehicleRegUpdate = () => {
       console.log("selectedOption", selectedOptions)
       const response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/updateSelectedOptions/${selectedItem.AccidentVehicleCode}/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/updateSelectedOptions/${selectedItem.AccidentVehicleCode}/${userId}`,
         data: selectedOptions,
         headers: {
           'Authorization': `Bearer ${token}`

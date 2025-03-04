@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
@@ -110,7 +110,7 @@ const tableCustomStyles = {
   const deactive = async (id, isActivate) => {
     const response = await axios({
       method: 'PUT',
-      url: `${backendUrl}/api/changeActivationEmployee/${userId}/${id}/${isActivate}`,
+      url: `${process.env.REACT_APP_BACKEND_URL}/api/changeActivationEmployee/${userId}/${id}/${isActivate}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -131,7 +131,7 @@ const tableCustomStyles = {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/employeeDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/employeeDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       console.log("daa", response.data.data)
       console.log("response", response.data.data);
       setGeneratedExcel(response.data.data)
@@ -153,7 +153,7 @@ const tableCustomStyles = {
     setShowEmployeeMasterEdit(false); // Hide VendorMasterEdit
   };
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/getEmployee/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getEmployee/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
     const formattedData = fetchedData.map(item => ({
       ...item,
@@ -167,7 +167,7 @@ const tableCustomStyles = {
   const deleteEmployee = async (id) => {
     const response = await axios({
       method: 'DELETE',
-      url: `${backendUrl}/api/deleteEmployee/${userId}/${id}`,
+      url: `${process.env.REACT_APP_BACKEND_URL}/api/deleteEmployee/${userId}/${id}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }

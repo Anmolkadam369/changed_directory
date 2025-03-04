@@ -7,7 +7,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { FaClipboardCheck, FaTruck, FaCheckCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import backendUrl from './../../environment';
+// './../../environment';
 
 import assignedTask from './../../Assets/assignedTask.png'
 import comingCrane from './../../Assets/comingCrane.png'
@@ -80,7 +80,7 @@ const AllAccidentVehiclesUser = () => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`,{        headers: {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         if (response.data.message == "No accident vehicle data found.") setData([])
@@ -166,7 +166,7 @@ const AllAccidentVehiclesUser = () => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -186,7 +186,7 @@ const AllAccidentVehiclesUser = () => {
     }
     const getVendorRating = async (crane) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/customersRating/${crane}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customersRating/${crane}`);
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")
@@ -208,7 +208,7 @@ const AllAccidentVehiclesUser = () => {
     const vendorReached = async (item, action) => {
         try {
 
-            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${userId}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/vendorReachedConfirmation/${userId}/${item.AccidentVehicleCode}/${action}/${userId}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,
@@ -237,7 +237,7 @@ const AllAccidentVehiclesUser = () => {
     const workDoneConfirmation = async (item, action) => {
         try {
             setCurrentltem(item)
-            let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item.AccidentVehicleCode}/${action}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/workDoneConfirmation/${userId}/${item.AccidentVehicleCode}/${action}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,
@@ -261,9 +261,9 @@ const AllAccidentVehiclesUser = () => {
 
     const submitNow = async (event, item) => {
         event.preventDefault();
-        console.log("asdadfasdfasdf", `${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`)
+        console.log("asdadfasdfasdf", `${process.env.REACT_APP_BACKEND_URL}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`)
         try {
-            const response = await axios.put(`${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`, JSON.stringify(formData), {
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`, JSON.stringify(formData), {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

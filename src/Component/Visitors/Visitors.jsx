@@ -9,7 +9,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -274,7 +274,7 @@ const Visitors = () => {
 
     const getVisitor = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/visitors/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/visitors/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             const fetchedData = response.data.data;
 
             const formattedData = fetchedData.map(item => ({
@@ -344,7 +344,7 @@ const Visitors = () => {
         console.log('Form data submitted:', formData);
 
         try {
-            const response = await axios.post(`${backendUrl}/api/visitors/${userId}`, formData, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/visitors/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -398,7 +398,7 @@ const Visitors = () => {
         console.log('Form data submitted:', editedFormData);
 
         try {
-            const response = await axios.put(`${backendUrl}/api/visitors/${userId}/${editedFormData.visitorId}`, editedFormData, {
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/visitors/${userId}/${editedFormData.visitorId}`, editedFormData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -453,7 +453,7 @@ const Visitors = () => {
 
     const view = async (id) => {
         console.log("id", id);
-        const response = await axios.get(`${backendUrl}/api/visitors/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/visitors/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])

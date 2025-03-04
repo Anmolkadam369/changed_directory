@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import '../FirstPage.css'
 import axios, { isCancel } from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -230,10 +230,10 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             if (reasons.length === 0) {
                 return setAlertInfo({ show: true, message: 'Select Respective Reason', severity: 'error' });
             }
-            console.log(`${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem?.[`${currentService}Details`][`${currentService}`]}`)
+            console.log(`${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem?.[`${currentService}Details`][`${currentService}`]}`)
             const response = await axios({
                 method: "PUT",
-                url: `${backendUrl}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem[`${currentService}Details`][`${currentService}`]}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem[`${currentService}Details`][`${currentService}`]}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -288,7 +288,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -378,8 +378,8 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const getPaymentLink = async (item) => {
         try {
-            console.log('getpayemdafsd', `${backendUrl}/api/sendPaymentLinkToCustomer/${userId}/${item[`${currentService}Details`].AccidentVehicleCode}/${item[currentService]}/${item[`${currentService}Details`].vehicleNo}`)
-            const response = await axios.get(`${backendUrl}/api/sendPaymentLinkToCustomer/${userId}/${item[`${currentService}Details`].AccidentVehicleCode}/${item[currentService]}/${item[`${currentService}Details`].vehicleNo}`);
+            console.log('getpayemdafsd', `${process.env.REACT_APP_BACKEND_URL}/api/sendPaymentLinkToCustomer/${userId}/${item[`${currentService}Details`].AccidentVehicleCode}/${item[currentService]}/${item[`${currentService}Details`].vehicleNo}`)
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/sendPaymentLinkToCustomer/${userId}/${item[`${currentService}Details`].AccidentVehicleCode}/${item[currentService]}/${item[`${currentService}Details`].vehicleNo}`);
             if (response.data.status == true) {
                 let link = response.data.data;
                 console.log("link coming", link)
@@ -402,7 +402,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             console.log('i am here')
             const response = await axios({
                 method: "PUT",
-                url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderPrimaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -496,7 +496,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const getVendorRating = async (crane) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/customersRating/${crane}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customersRating/${crane}`);
             if (response.data.status == true) {
                 let customerRating = response.data.data;
                 console.log("coming Customer Rating", customerRating);
@@ -512,7 +512,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
 
     const getVendorLocation = async (crane, accidentLatitude, accidentLongitude) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorCurrentLocation/${crane}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;

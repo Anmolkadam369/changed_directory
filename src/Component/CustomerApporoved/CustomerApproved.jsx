@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
@@ -141,7 +141,7 @@ const CustomerApproved = () => {
   const deleteCustomer = async (id) => {
     const response = await axios({
       method: 'DELETE',
-      url: `${backendUrl}/api/deleteCustomer/${userId}/${id}`,
+      url: `${process.env.REACT_APP_BACKEND_URL}/api/deleteCustomer/${userId}/${id}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -153,7 +153,7 @@ const CustomerApproved = () => {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/customerDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customerDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       setGeneratedExcel(response.data.data);
       setIsLoading(false);
       setIsGenerated(true);
@@ -204,7 +204,7 @@ const CustomerApproved = () => {
     try {
       const response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/changeActivationForCustomer/${userId}/${id}/${isActivate}`,
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -250,7 +250,7 @@ const CustomerApproved = () => {
   };
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
 
     const formattedData = fetchedData.map(item => ({

@@ -7,7 +7,7 @@ import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutl
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import rupeesymbol  from '../../Assets/rupeesymbol.png'
 
 const CompletePayment = () => {
@@ -191,7 +191,7 @@ const CompletePayment = () => {
   }, [userId])
 
   const getVendorWholeDetails = async () => {
-    const response = await axios.get(`${backendUrl}/api/getVendorWholeDetails/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorWholeDetails/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     setData(response.data.data);
     console.log("VENDORDETAILSFEATURES", response.data.data)
   };

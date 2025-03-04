@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
@@ -256,7 +256,7 @@ function CraneResponse({ data, onUpdate }) {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
-            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}/${formData.commisionAmount}/crane`);
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}/${formData.commisionAmount}/crane`);
             if (response.data.message === "send successfully !!!.") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setTimeout(() => {
@@ -300,10 +300,10 @@ function CraneResponse({ data, onUpdate }) {
             }
             console.log("299")
             console.log("firstlyCame Data", firstlyCameData[0].AccidentVehicleCode)
-            console.log( `${backendUrl}/api/vendorOnAssignedVehicle/admin`)
+            console.log( `${process.env.REACT_APP_BACKEND_URL}/api/vendorOnAssignedVehicle/admin`)
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/adminOnAssignedVehicle/${firstlyCameData[0].AccidentVehicleCode}/${userId}/${firstlyCameData[0].VendorCode}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/adminOnAssignedVehicle/${firstlyCameData[0].AccidentVehicleCode}/${userId}/${firstlyCameData[0].VendorCode}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -336,7 +336,7 @@ function CraneResponse({ data, onUpdate }) {
         const id = data[0].crane;// added
         try {
             setIsLoading(true);
-            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${userId}/${id}`);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createLinkForPayment/${userId}/${id}`);
             console.log("handlepayment", response.data)
             if (response.data.message === "successfully created") {
                 setFullInfomation(false)
@@ -412,8 +412,8 @@ function CraneResponse({ data, onUpdate }) {
     const [comingLinkHere, setComingLinkHere] = useState("");
     const getPaymentLink = async (item) => {
         try {
-            console.log(`${backendUrl}/api/sendPaymentLinkToVendor/${userId}/${formData.AccidentVehicleCode}/${formData.VendorCode}`)
-            const response = await axios.get(`${backendUrl}/api/sendPaymentLinkToVendor/${userId}/${formData.AccidentVehicleCode}/${formData.VendorCode}`);
+            console.log(`${process.env.REACT_APP_BACKEND_URL}/api/sendPaymentLinkToVendor/${userId}/${formData.AccidentVehicleCode}/${formData.VendorCode}`)
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/sendPaymentLinkToVendor/${userId}/${formData.AccidentVehicleCode}/${formData.VendorCode}`);
             if (response.data.status == true) {
                 let link = response.data.data;
                 console.log("link coming", link)

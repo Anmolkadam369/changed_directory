@@ -8,7 +8,7 @@ import nearbyPetrolPump from '../../../Assets/nearbyPetrolPump.png'
 import nearbyParking from '../../../Assets/nearbyParking.png'
 import nearbytoll from '../../../Assets/nearbytoll.png'
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import { useNavigate } from "react-router-dom"
 import VendorMoving from '../../Vendors/VendorMoving';
 import CaseFirstCard from '../../CaseFirstCard/CaseFirstCard';
@@ -71,7 +71,7 @@ const CraneOrders = () => {
     const fetchAssignedCases = async () => {
         try {
             let apiDetail = userId.startsWith('VC-') ? 'assignedTasksCraneForVendor' : 'assignedTasksUnfiltered';
-            const response = await axios.get(`${backendUrl}/api/${apiDetail}/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/${apiDetail}/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
 

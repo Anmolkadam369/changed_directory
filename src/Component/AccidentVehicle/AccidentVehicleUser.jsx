@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import '../CustomerMaster/CustomerMaster.css'
 import SeeUpdatedPics from '../SeeUpdatedPics/SeeUpdatedPics'
@@ -106,7 +106,7 @@ const AccidentVehicleUser = () => {
 
   const getData = async (e) => {
     console.log("userid", userId);
-    const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
     if (response.data.message == "No accident vehicle data found.") setData([])

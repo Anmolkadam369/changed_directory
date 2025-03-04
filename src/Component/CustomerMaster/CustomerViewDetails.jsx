@@ -7,7 +7,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
@@ -170,20 +170,20 @@ function CustomerViewDetails({ id, onUpdate }) {
 
     const getAccidentDataById = async (id) => {
         console.log("getdatabyid", id)
-        const response = await axios.get(`${backendUrl}/api/getVehicleAccidentById/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicleAccidentById/${id}`);
         console.log("response1", response.data.data[0]);
         setAccidentVehicleData(response.data.data[0])
     }
 
     const getDataById = async (id) => {
         console.log("getdatabyid", id)
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getDataByID", response)
         console.log("response2", response.data.data[0]);
         setComingData(response.data.data[0])
     }
     const getVendorInfo = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getActiveVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getActiveVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("vendorInfo2", response)
         console.log("response3", response.data);
         setVendorData(response.data)
@@ -295,9 +295,9 @@ function CustomerViewDetails({ id, onUpdate }) {
         console.log('Form data submitted:', userId);
         setAlertInfo({ ...alertInfo, show: false });
         console.log('myformdataformData123456789', formData);
-        console.log("asdadfasdfasdf", `${backendUrl}/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "None"}/${selectedWorkshopId != "" ? selectedWorkshopId : "None"}/${selectedCraneId != "" ? selectedCraneId : "None"}/${selectedAdvocateId != "" ? selectedAdvocateId : "None"}`)
+        console.log("asdadfasdfasdf", `${process.env.REACT_APP_BACKEND_URL}/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "None"}/${selectedWorkshopId != "" ? selectedWorkshopId : "None"}/${selectedCraneId != "" ? selectedCraneId : "None"}/${selectedAdvocateId != "" ? selectedAdvocateId : "None"}`)
         try {
-            const response = await axios.put(`${backendUrl}/api/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "Not_added"}/${selectedWorkshopId != "" ? selectedWorkshopId : "Not_added"}/${selectedCraneId != "" ? selectedCraneId : "Not_added"}/${selectedAdvocateId != "" ? selectedAdvocateId : "Not_added"}`, JSON.stringify(formData), {
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/customersRating/${formData.accidentFileNo}/${userId}/${selectedMechanicId != "" ? selectedMechanicId : "Not_added"}/${selectedWorkshopId != "" ? selectedWorkshopId : "Not_added"}/${selectedCraneId != "" ? selectedCraneId : "Not_added"}/${selectedAdvocateId != "" ? selectedAdvocateId : "Not_added"}`, JSON.stringify(formData), {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import backendUrl from '../../environment';
+// '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -377,10 +377,10 @@ const VendorMasterEdit = () => {
   const getDataById = async (id) => {
     let response;
     if (state.pageFrom == "VendorSignUp") {
-      response = await axios.get(`${backendUrl}/api/getPotentialVendorById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+      response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPotentialVendorById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     }
     else {
-      response = await axios.get(`${backendUrl}/api/getVendor/${state.id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+      response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${state.id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     }
     console.log("daa", response.data.data)
     console.log("response", response.data.data[0]);
@@ -391,12 +391,12 @@ const VendorMasterEdit = () => {
   const approvalFunc1 = async (action) => {
     let response;
     console.log("userId:", userId);
-    console.log(`${backendUrl}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`);
+    console.log(`${process.env.REACT_APP_BACKEND_URL}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`);
 
     try {
       response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorApproval1/${action}/${formData.vendorCode}/${userId}`,
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -435,12 +435,12 @@ const VendorMasterEdit = () => {
   const approvalFunc = async (action) => {
     let response;
     console.log("userId:", userId);
-    console.log(`${backendUrl}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`);
+    console.log(`${process.env.REACT_APP_BACKEND_URL}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`);
 
     try {
       response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorApproval/${action}/${formData.vendorCode}/${userId}`,
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -682,7 +682,7 @@ const VendorMasterEdit = () => {
     try {
       response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/venderUpdate/${state.id}/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/venderUpdate/${state.id}/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`

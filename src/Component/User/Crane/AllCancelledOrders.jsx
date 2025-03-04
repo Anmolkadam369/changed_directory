@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Loading from "../Cards/Loading";
 import NoDataFound from "../Cards/NoDataFound";
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import reachedUser from '../../../Assets/reachedUser.png'
 import filterUser from '../../../Assets/filterUser.png'
 import Modal from '../../Location1/Modal.jsx';
@@ -54,7 +54,7 @@ const AllCancelledOrders = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getCancelledOrdersByCustomers/${userId}/${currentService}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCancelledOrdersByCustomers/${userId}/${currentService}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         if (response.data.message == "No accident vehicle data found.") {
             setPreCancelledOrders([])
             setPostCancelledOrders([])

@@ -11,7 +11,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Close as CloseIcon, LocationSearchingSharp } from '@mui/icons-material';
-import backendUrl from '../../environment';
+// '../../environment';
 import Modal from '../Location1/Modal'; // Import the modal component
 import { Helmet } from 'react-helmet-async';
 import crossUser from '../../Assets/crossUser.png'
@@ -151,7 +151,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     }, [token, userId, navigate]);
 
     const getCustomerDriver = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomerDriver/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdCustomerDriver/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         console.log("daa", response.data)
         if (response.data.message == "data found") {
             setRegNo(response.data.data[0].vehicleNo)
@@ -164,7 +164,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     const getVehicleNumbers = async () => {
         console.log("userid", userId);
         let notAccidentVehicles = []
-        const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${userId}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicleInfoById/${userId}`);
         if (response.data.message == "No accident vehicle data found.") {
             setAllVehicleNumbers([]);
             setDoneFetching(true);
@@ -185,7 +185,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         console.log("daa", response.data)
         response.data.data = response.data.data.filter((individualResponse) => {
             if (individualResponse.latitude !== null && individualResponse.longitude !== null) {
@@ -202,7 +202,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     // async function getVehicleData() {
     //     try {
-    //         const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` } });
+    //         const getData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` } });
     //         if (getData.data.message === 'Vehicle found') {
     //             setVehicleInfo([getData.data]);
     //             setComingVehicle(getData.data);
@@ -352,7 +352,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         if (latitude && longitude && dropLatitude && dropLongitude) {
             const getNearByVendor = async () => {
                 try {
-                    const response = await axios.post(`${backendUrl}/api/findNearbyLocation/${userId}`, {
+                    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/findNearbyLocation/${userId}`, {
                         pickuplatitude: latitude,
                         pickuplongitude: longitude,
                         dropLatitude: dropLatitude,
@@ -674,7 +674,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addAccidentDetails/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/addAccidentDetails/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -730,7 +730,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         }
         try {
             console.log('latitudedsss', longitude, latitude)
-            const response = await axios.post(`${backendUrl}/api/get-nearby-places`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/get-nearby-places`, {
                 data: { lat: latitude, lon: longitude, radius: 1000 },
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -760,7 +760,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         if (dropLatitude != "" && dropLongitude != '') {
             try {
                 console.log('latitudedsss', longitude, latitude)
-                const response = await axios.post(`${backendUrl}/api/get-nearby-places`, {
+                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/get-nearby-places`, {
                     data: { lat: dropLatitude, lon: dropLongitude, radius: 1000 },
                     headers: {
                         Authorization: `Bearer ${token}`

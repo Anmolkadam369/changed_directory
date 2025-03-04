@@ -14,7 +14,7 @@ import CallIcon from '@mui/icons-material/Call';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import axios from "axios";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import backendUrl from "../../environment";
+// "../../environment";
 
 const LookingForAccptance = (props) => {
     const navigate = useNavigate()
@@ -77,7 +77,7 @@ const LookingForAccptance = (props) => {
         try {
             response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/updateAccidentData/${props.accidentData.AccidentVehicleCode}/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/updateAccidentData/${props.accidentData.AccidentVehicleCode}/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

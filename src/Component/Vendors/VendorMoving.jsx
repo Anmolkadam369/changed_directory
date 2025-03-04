@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import backendUrl from '../../environment';
+
 import crossUser from '../../Assets/crossUser.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -55,7 +55,7 @@ const VendorMoving = ({ item }) => {
 
     const getCurrentLocation = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorCurrentLocation/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -76,7 +76,7 @@ const VendorMoving = ({ item }) => {
 
     const readyToGo = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/vendorMoved/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/vendorMoved/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,
@@ -96,7 +96,7 @@ const VendorMoving = ({ item }) => {
 
     const reachedLocation = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}/${userId}/${item.details[0].vendorType}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/vendorReachedLocation/${userId}/${item.AccidentVehicleCode}/${userId}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -123,7 +123,7 @@ const VendorMoving = ({ item }) => {
 
     const workDone = async () => {
         try {
-            let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
                     Authorization:  `Bearer ${token}`,

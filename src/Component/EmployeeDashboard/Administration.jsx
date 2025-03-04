@@ -18,7 +18,7 @@ import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
 import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
 import VendorResponse from '../Vendors/VendorsResponse';
 import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
-import backendUrl from "../../environment";
+// "../../environment";
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -203,7 +203,7 @@ const Administration = () => {
     //     console.log("Sending notification with payload:", payload);
 
     //     try {
-    //         const response = await axios.post(`${backendUrl}/api/sendNotification`, payload, {
+    //         const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/sendNotification`, payload, {
     //             headers: {
     //                 'Content-Type': 'application/json',
     //             },
@@ -257,8 +257,8 @@ const Administration = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
-                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
+                    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
+                    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/notification`, { message: 'You have logged in right now' });
 
                     // alert('Login notification sent successfully');
                 } catch (error) {
@@ -273,10 +273,10 @@ const Administration = () => {
 
 
     const findUserById = async (id) => {
-        console.log("HEY", `${backendUrl}/api/findById/${id}`,{
+        console.log("HEY", `${process.env.REACT_APP_BACKEND_URL}/api/findById/${id}`,{
             headers:{ 'Authorization': `Bearer ${token}`}
         })
-        const response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getEmployee/${id}/${id}`);
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);
         setGetData(response.data.data[0])

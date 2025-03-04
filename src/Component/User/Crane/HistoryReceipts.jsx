@@ -17,7 +17,7 @@ import historyUser from '../../../Assets/historyUser.png'
 import ReceiptsUser from './ReceiptsUser';
 
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import { ClipLoader } from 'react-spinners';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
@@ -229,7 +229,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
 
     const getData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/completed`,{        headers: {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/completed`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         if (response.data.message == "No accident vehicle data found.") {
@@ -264,7 +264,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
 
     const getVendorRating = async (crane) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/customersRating/${crane}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customersRating/${crane}`);
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")

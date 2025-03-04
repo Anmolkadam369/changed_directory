@@ -114,7 +114,26 @@ function NewFirstPage() {
             default:
                 setError("An unknown error occurred.");
         }
+
+        showNotification()
     };
+
+    function showNotification() {
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notifications.");
+            return;
+        }
+    
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                new Notification("Location Access Needed", {
+                    body: "Please enable location services to continue.",
+                    // icon: "your-icon.png", // Change this to your icon path
+                });
+            }
+        });
+    }
+    
 
     const refreshLocation = () => {
          getLocation();

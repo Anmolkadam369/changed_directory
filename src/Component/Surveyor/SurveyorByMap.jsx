@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import backendUrl from '../../environment';
+// '../../environment';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -102,7 +102,7 @@ const SurveyorByMap = ({ onUpdate }) => {
 
     const surveyorsData = async (surveyorType) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getSurveyorMap/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getSurveyorMap/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("response1234567890", response.data);
             setSurveyorLocationData(response.data.data);
         } catch (error) {

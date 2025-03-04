@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert, Checkbox } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
@@ -202,7 +202,7 @@ function AddedDataByCrane() {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getAccidentVehicleInfo", response)
         console.log("getAccidentVehicleInfo", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -210,7 +210,7 @@ function AddedDataByCrane() {
 
     const getExistingData = async (id, userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             console.log("getExistingData success", response.data.data);
             setExistingData(response.data.data[0]);
         } catch (error) {
@@ -312,7 +312,7 @@ function AddedDataByCrane() {
             }
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -422,7 +422,7 @@ function AddedDataByCrane() {
         const id = userId;// added
         try {
             setIsLoading(true);
-            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${id}`);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createLinkForPayment/${id}`);
             console.log("handlepayment", response.data)
             if (response.data.message === "successfully created") {
                 setNotRequestedLink(false)
@@ -465,7 +465,7 @@ function AddedDataByCrane() {
 
     const workDone = async()=>{
         try {
-            let response = await axios(`${backendUrl}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: token,

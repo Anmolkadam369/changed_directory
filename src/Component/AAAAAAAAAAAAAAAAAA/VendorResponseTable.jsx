@@ -4,7 +4,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import "./Table.css"; // Ensure this path is correct
 
 const VendorResponseTable = () => {
@@ -21,7 +21,7 @@ const VendorResponseTable = () => {
   }, []);
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/allVendorDataWithCustomerName/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/allVendorDataWithCustomerName/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     if (response && response.message !== "No accident vehicle data found.") {
       setData(response.data.data);
     }

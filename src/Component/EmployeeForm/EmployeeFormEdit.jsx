@@ -11,7 +11,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners'
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -438,7 +438,7 @@ const EmployeeFormEdit = () => {
     const cancelledChequeRef = useRef(null);
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getEmployee/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daaemployee", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -543,7 +543,7 @@ const EmployeeFormEdit = () => {
         return '';
     };
     // console.log("userid", userId)
-    // console.log("link", `${backendUrl}/api/createNewEmployee/${userId}`)
+    // console.log("link", `${process.env.REACT_APP_BACKEND_URL}/api/createNewEmployee/${userId}`)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -570,7 +570,7 @@ const EmployeeFormEdit = () => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/employeeUpdate/${state.id}/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/employeeUpdate/${state.id}/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

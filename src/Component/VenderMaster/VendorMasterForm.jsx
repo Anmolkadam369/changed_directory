@@ -11,7 +11,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import VendorPaymentDetail from '../PaymentPage/VendorPaymentDetail';
@@ -535,7 +535,7 @@ const VendorMasterForm = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `${backendUrl}/api/venderInfo/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/venderInfo/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -576,7 +576,7 @@ const VendorMasterForm = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `${backendUrl}/api/venderInfoExcel/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/venderInfoExcel/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`

@@ -9,7 +9,7 @@ import nearbyPetrolPump from '../../Assets/nearbyPetrolPump.png'
 import nearbyParking from '../../Assets/nearbyParking.png'
 import nearbytoll from '../../Assets/nearbytoll.png'
 import axios from 'axios';
-import backendUrl from "../../environment"
+// "../../environment"
 import { useNavigate } from "react-router-dom"
 import VendorMoving from '../Vendors/VendorMoving';
 import CaseFirstCard from '../CaseFirstCard/CaseFirstCard';
@@ -255,7 +255,7 @@ const CraneUserDashboard = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasks/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasks/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'
@@ -275,7 +275,7 @@ const CraneUserDashboard = () => {
 
     const getGotResponseVehicle = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAssignedVehicleForDashboard/${userId}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
             const filteredResponse = [];
             for (let i = 0; i < response.data.data.length; i++) {
@@ -322,7 +322,7 @@ const CraneUserDashboard = () => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorCurrentLocation/${crane}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -437,10 +437,10 @@ const CraneUserDashboard = () => {
         try {
             console.log('helloe i got coalled')
             let response;
-            if (userId.startsWith("CUD-")) response = await axios.get(`${backendUrl}/api/getDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (userId.startsWith("CC-")) response = await axios.get(`${backendUrl}/api/getCustomerById/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (userId.startsWith("VC-")) response = await axios.get(`${backendUrl}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (userId.startsWith("VED-")) response = await axios.get(`${backendUrl}/api/getVendorDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("CUD-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("CC-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomerById/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("VC-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (userId.startsWith("VED-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
     
             console.log("daa", response.data.data);
             console.log("response123", response.data.data[0]);
@@ -462,7 +462,7 @@ const CraneUserDashboard = () => {
 
         const response = await axios({
             method: 'PUT',
-            url: `${backendUrl}/api/${urlPart}/${userId}/${userId}`,
+            url: `${process.env.REACT_APP_BACKEND_URL}/api/${urlPart}/${userId}/${userId}`,
             data: formDataObj,
             headers: {
                 'Authorization': `Bearer ${token}`

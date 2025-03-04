@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../../environment';
+// '../../environment';
 import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
@@ -116,7 +116,7 @@ const ViewVehicleInfo = () => {
     try {
       setIsLoading(true);
       console.log(userId)
-      const response = await axios.get(`${backendUrl}/api/registerDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/registerDBToExcel/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       console.log("daa", response.data.data)
       console.log("response", response.data.data);
       setGeneratedExcel(response.data.data)
@@ -188,7 +188,7 @@ const ViewVehicleInfo = () => {
   }
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/vehicleClaim`);
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vehicleClaim`);
     const fetchedData = response.data.data;
     const formattedData = fetchedData.map(item => ({
       ...item,

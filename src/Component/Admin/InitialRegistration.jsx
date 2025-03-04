@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import Modal from '../Location1/Modal'; // Import the modal component
 import { Helmet } from 'react-helmet-async';
 import crossUser from '../../Assets/crossUser.png'
@@ -69,7 +69,7 @@ function InitialRegistration() {
 
     async function getVehicleData() {
         try {
-            const getData = await axios.get(`${backendUrl}/api/VehicleDetails/${regNo}/crane/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+            const getData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/VehicleDetails/${regNo}/crane/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             if (getData.data.message === 'Vehicle found') {
                 setVehicleInfo([getData.data]);
                 setComingVehicle(getData.data);
@@ -290,7 +290,7 @@ function InitialRegistration() {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addVehicleInfo`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

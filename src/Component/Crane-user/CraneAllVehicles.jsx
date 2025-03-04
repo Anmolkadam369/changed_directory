@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import backendUrl from '../../environment.js';
+// '../../environment.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import searchinterfacesymbol from '../../Assets/search-interface-symbol.png'
@@ -162,7 +162,7 @@ export default function CraneAllVehicles() {
     const getData = async (e) => {
         console.log("userid", userId);
         let accidentVehicles = [], notAccidentVehicles = []
-        const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoForVendor/${userId}`, {headers: {Authorization : `Bearer ${token}`}});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicleInfoForVendor/${userId}`, {headers: {Authorization : `Bearer ${token}`}});
         if (response.data.message == "No accident vehicle data found.") {
             setData([])
             setDoneFetching(true)
@@ -185,7 +185,7 @@ export default function CraneAllVehicles() {
 
     const getAccidentData = async (e) => {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoByIdForVendors/${userId}/${userRole}`,{        headers: {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoByIdForVendors/${userId}/${userRole}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         if (response.data.message == "No accident vehicle data found.") {

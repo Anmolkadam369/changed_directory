@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../../environment';
+// '../../environment';
 import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
@@ -135,7 +135,7 @@ const VendorSignUp = () => {
   const generateFile = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backendUrl}/api/vendorDBToExcel/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vendorDBToExcel/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       setGeneratedExcel(response.data.data);
       console.log("resoponse", response.data.data)
       setIsLoading(false);
@@ -173,7 +173,7 @@ const VendorSignUp = () => {
   const deactive = async (id, isActivate) => {
     const response = await axios({
       method: 'PUT',
-      url: `${backendUrl}/api/changeActivation/${userId}/${id}/${isActivate}`,
+      url: `${process.env.REACT_APP_BACKEND_URL}/api/changeActivation/${userId}/${id}/${isActivate}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -185,7 +185,7 @@ const VendorSignUp = () => {
   const deleteVendor = async (id) => {
     const response = await axios({
       method: 'DELETE',
-      url: `${backendUrl}/api/deletePotentialVendor/${userId}/${id}`,
+      url: `${process.env.REACT_APP_BACKEND_URL}/api/deletePotentialVendor/${userId}/${id}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -197,7 +197,7 @@ const VendorSignUp = () => {
 
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/getPotentialVendor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPotentialVendor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
 
     const formattedData = fetchedData.map(item => ({

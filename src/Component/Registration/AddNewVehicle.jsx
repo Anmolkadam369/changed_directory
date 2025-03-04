@@ -18,7 +18,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BuildIcon from '@mui/icons-material/Build';
 import AdjustIcon from '@mui/icons-material/Adjust';
 import BottomNavigationBar from "../User/BottomNavigationBar";
-import backendUrl from "../../environment";
+// "../../environment";
 import EmailIcon from '@mui/icons-material/Email';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from "react-router-dom";
@@ -309,7 +309,7 @@ export default function AddNewVehicle() {
     
         try {
             const response = await axios.post(
-                `${backendUrl}/api/${path}/${userId}`, 
+                `${process.env.REACT_APP_BACKEND_URL}/api/${path}/${userId}`, 
                 formDataObj,
                 {
                     headers: {

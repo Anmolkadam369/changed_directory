@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import '../Login/LoginPage.css';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import trucks1 from "../../Assets/logintime_truck.webp";
 // import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -70,7 +70,7 @@ const ContactUs = () => {
         console.log('Form data submitted:', formData);
 
         try {
-            const response = await axios.post(`${backendUrl}/api/contactUs`, formData, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/contactUs`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

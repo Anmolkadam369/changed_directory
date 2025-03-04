@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import EditAccidentVehicle from "../EditAccidentVehicle/EditAccidentVehicle"
 import { Button } from '@mui/material';
@@ -103,7 +103,7 @@ const AccidentVehicle = () => {
   }, [token, userId, navigate, showEditAccidentVehicle]);
 
   const getData = async (getFilteredData) => {
-    const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     const fetchedData = response.data.data;
     const formattedData = fetchedData.map(item => ({
       ...item,

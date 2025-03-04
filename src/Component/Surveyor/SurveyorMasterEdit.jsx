@@ -11,7 +11,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import VendorPaymentDetail from '../PaymentPage/VendorPaymentDetail';
@@ -124,7 +124,7 @@ const SurveyorMasterEdit = ({ id, onUpdate }) => {
     }, [id])
     const getDataById = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getSurveyById/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getSurveyById/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
             console.log("daa", response.data.data)
             console.log("response", response.data.data[0]);
             setComingData(response.data.data[0])
@@ -469,7 +469,7 @@ const SurveyorMasterEdit = ({ id, onUpdate }) => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/surveyorDataUpdate/${userId}/${formData.surveyorCode}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/surveyorDataUpdate/${userId}/${formData.surveyorCode}`,
                 data: formData,
                 headers: {
                     'Authorization': `Bearer ${token}`

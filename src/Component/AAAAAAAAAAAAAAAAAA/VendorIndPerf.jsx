@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../../environment';
+// '../../environment';
 import DataTable from 'react-data-table-component';
 import Button from '@mui/material/Button';
 import ArrowBack from '@mui/icons-material/ArrowBack';
@@ -29,7 +29,7 @@ const VendorIndPerf = () => {
       }, []);
 
     const getData = async () => {
-        const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setData(response.data.data);
         setCurrentItems(response.data.data)
     };

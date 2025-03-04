@@ -3,7 +3,7 @@
 
 // import React, { useEffect, useRef, useState } from 'react';
 // import axios from 'axios';
-// import backendUrl from '../../environment';
+// // '../../environment';
 // import { Container, Row, Col, Image } from 'react-bootstrap';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -107,7 +107,7 @@
 //                     });
 //                     console.log('Push Manager subscription:', subscription);
 
-//                     await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription, { headers: { Authorization: `Bearer ${token}` } });
+//                     await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/subscription/${userId}`, subscription, { headers: { Authorization: `Bearer ${token}` } });
 
 //                 } catch (error) {
 //                     console.error('Error sending login notification:', error);
@@ -154,7 +154,7 @@
 
 //     const getData = async (e) => {
 //         // console.log("userid", userId);
-//         // const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+//         // const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
 //         //   'Authorization': `Bearer ${token}`
 //         // }});
 //         // if (response.data.message == "No accident vehicle data found.") setData([])
@@ -216,7 +216,7 @@
 //         try {
 //             const response = await axios({
 //                 method: "PUT",
-//                 url: `${backendUrl}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}`,
+//                 url: `${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderPrimaryStage/${currentItem.AccidentVehicleCode}/crane/${userId}`,
 //                 headers: {
 //                     'Authorization': `Bearer ${token}`
 //                 },

@@ -6,7 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@mui/material';
@@ -128,14 +128,14 @@ const VehicleClaimRegistration = () => {
     }, [token, userId, navigate, state.id]);
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleData/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleData/${id}`);
         console.log("daa", response.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
     }
 
     const getDataSurveyor = async () => {
-        const response = await axios.get(`${backendUrl}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         setSurveyorData(fetchedData);
       };
@@ -521,7 +521,7 @@ console.log("accidentdata123456789", accidentData)
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/addVehicleClaim/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/addVehicleClaim/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

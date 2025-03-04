@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import 'font-awesome/css/font-awesome.min.css'; // Make sure to install this package
 import './Profiles.css'
-import backendUrl from '../../environment';
+// '../../environment';
 import axios from 'axios';
 import { Alert } from '@mui/material';
 import { Button } from '@mui/material';
@@ -98,7 +98,7 @@ const Profiles = ({ id, onUpdate }) => {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data)
         console.log("data12345", response.data.data[0]);
         setGetData(response.data.data[0]);
@@ -200,7 +200,7 @@ const Profiles = ({ id, onUpdate }) => {
         try {
           response = await axios({
             method: 'PUT',
-            url: `${backendUrl}/api/venderUpdate/${id}/${userId}`,
+            url: `${process.env.REACT_APP_BACKEND_URL}/api/venderUpdate/${id}/${userId}`,
             data: editProfileObj,
             headers: {
               'Authorization': `Bearer ${token}`

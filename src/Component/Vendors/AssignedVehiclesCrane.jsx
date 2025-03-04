@@ -7,7 +7,7 @@
 // import { useNavigate } from 'react-router-dom';
 // import { useRecoilValue } from 'recoil';
 // import { tokenState, userIdState } from '../Auth/Atoms';
-// import backendUrl from '../../environment';
+// // '../../environment';
 // import { Helmet } from 'react-helmet-async';
 // import AddedDataByCrane from './AddedDataByCrane';
 // import DataTable from "react-data-table-component";
@@ -180,7 +180,7 @@
 //   const fetchAssignedCases = async (vendorCode) => {
 //     console.log("randomId", GetDataOfUser.randomId);
 //     try {
-//       const response = await axios.get(`${backendUrl}/api/assignedTasksCrane/${vendorCode}`);
+//       const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasksCrane/${vendorCode}`);
 //       console.log("accident vehicle table", response.data.data);
 //       setData(response.data.data);
 //       setCurrentItems(response.data.data)
@@ -191,7 +191,7 @@
 
 //   const findUserById = async (id) => {
 //     console.log("HEY", id)
-//     const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+//     const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
 //     console.log("findByIdForVendor", response.data)
 //     console.log("findByIdForVendor", response.data.data[0]);
 //     setGetDataOfUser(response.data.data[0])
@@ -414,7 +414,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import AddedDataByCrane from './AddedDataByCrane';
 import DataTable from "react-data-table-component";
@@ -743,7 +743,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
   const fetchAssignedCases = async (vendorCode) => {
     console.log("randomId", GetDataOfUser.randomId);
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasks/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasks/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("accident vehicle table", response.data.data);
       setData(response.data.data);
       setCurrentItems(response.data.data)
@@ -754,7 +754,7 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
 
   const findUserById = async (id) => {
     console.log("HEY", id)
-    const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("findByIdForVendor", response.data)
     console.log("findByIdForVendor", response.data.data[0]);
     setGetDataOfUser(response.data.data[0])

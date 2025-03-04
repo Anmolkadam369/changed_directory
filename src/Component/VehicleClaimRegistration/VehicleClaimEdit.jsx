@@ -6,7 +6,7 @@ import { tokenState, userIdState } from '../Auth/Atoms';
 import axios from 'axios';
 import { loadStates, loadCities } from '../StateAPI';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Button } from '@mui/material';
@@ -575,7 +575,7 @@ const VehicleClaimEdit = () => {
     console.log("setAccidentData", accidentData)
 
     const getDataSurveyor = async () => {
-        const response = await axios.get(`${backendUrl}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getSurveyor/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         setSurveyorData(fetchedData);
       };
@@ -613,7 +613,7 @@ const VehicleClaimEdit = () => {
     };
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getVehicle/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicle/${id}`);
         console.log("getDataById", response.data.data)
         setComingData(response.data.data[0])
     }
@@ -714,7 +714,7 @@ const VehicleClaimEdit = () => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/updateVehicleClaim/${state.id}/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/updateVehicleClaim/${state.id}/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

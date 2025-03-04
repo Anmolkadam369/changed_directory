@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Table.css";
 import "../VenderMaster/VendorMasterForm.css"
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
@@ -24,7 +24,7 @@ const VendorRating = () => {
 
   const getData = async (e) => {
     try {
-        const response = await axios.get(`${backendUrl}/api/getVendorRating/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorRating/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("responsevendorRating", response);
         if (response && response.data) {
             const filteredData = response.data.data.

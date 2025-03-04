@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Doughnut } from "react-chartjs-2";
-import backendUrl from '../../environment';
+// '../../environment';
 
 const VendorAccpetedDoughnut = () => {
   const token = localStorage.getItem("token");
@@ -40,7 +40,7 @@ const VendorAccpetedDoughnut = () => {
   }, [newResponseData, selectedType]);
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/allVendorDataWithCustomerName/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/allVendorDataWithCustomerName/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     if (response && response.data.message !== "No accident vehicle data found.") {
       setNewResponseData(response.data.data);
     }

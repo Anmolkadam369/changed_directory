@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Input from '@mui/material/Input';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import Snackbar from '@mui/material/Snackbar';
 import { Helmet } from 'react-helmet-async';
 import { ClipLoader } from 'react-spinners';
@@ -122,7 +122,7 @@ function Location1({ vehicleData }) {
     }, [token, userId, navigate]);
 
     const findUserById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setGetData(response.data.data[0]);
         console.log(getData);
     };
@@ -241,7 +241,7 @@ function Location1({ vehicleData }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addVehicleInfo`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

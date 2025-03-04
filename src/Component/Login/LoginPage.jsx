@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { tokenState, userIdState, typeState } from '../Auth/Atoms';
 import './LoginPage.css';
 import { Alert, Checkbox, FormControlLabel } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import trucks1 from "../../Assets/trucks1.jpg";
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -138,7 +138,10 @@ const Login = () => {
         password: encryptedPassword.encryptedData,
         passwordIv: encryptedPassword.iv,
       })
-      const response = await axios.post(`${backendUrl}/api/login`, {
+
+      console.log(process.env.REACT_APP_BACKEND_URL);
+
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login`, {
         email: encryptedEmail.encryptedData,
         emailIv: encryptedEmail.iv,
         password: encryptedPassword.encryptedData,

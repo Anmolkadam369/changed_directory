@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
@@ -16,7 +16,7 @@ const CustomerRatings = () => {
   }, [])
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/customerRating/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customerRating/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
   };

@@ -1,7 +1,7 @@
 import './Payment.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import backendUrl from '../../environment';
+// '../../environment';
 import onlinePaymentImage from "../../Assets/onlinePaymentImage.png"
 import { useParams , useLocation, useNavigate} from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -47,7 +47,7 @@ function Payment() {
 
   const checkTokenExpired = async (token) => {
     try {
-      const response = await axios.post(`${backendUrl}/api/checkTokenExpired/${token}`);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/checkTokenExpired/${token}`);
       setIsTokenValid(response.data.status)
     } catch (error) {
       console.log(error)
@@ -65,7 +65,7 @@ function Payment() {
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = `${backendUrl}/api/verify/${token}/${accidentVehicleCode}/${customerCode}/${vendorType}`;
+          const verifyUrl = `${process.env.REACT_APP_BACKEND_URL}/api/verify/${token}/${accidentVehicleCode}/${customerCode}/${vendorType}`;
           const { data } = await axios.post(verifyUrl, response);
           console.log("verifyData", data);
           navigate('/Crane-dashboard')
@@ -83,8 +83,8 @@ function Payment() {
 
   const handlePayment = async () => {
     try {
-      console.log('hellow', `${backendUrl}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`)
-      const orderUrl = `${backendUrl}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`;
+      console.log('hellow', `${process.env.REACT_APP_BACKEND_URL}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`)
+      const orderUrl = `${process.env.REACT_APP_BACKEND_URL}/api/orders/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`;
       const { data } = await axios.post(orderUrl);
       console.log("orderData", data);
       // is token valid  checkTokenExpired(data.token) it will check token time is done or not

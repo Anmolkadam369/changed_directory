@@ -7,7 +7,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { constSelector, useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import demoexcel from '../../Assets/demoexcel.png'
 import { ClipLoader } from 'react-spinners';
@@ -484,7 +484,7 @@ const CustomerMaster = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `${backendUrl}/api/customerInfo/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/customerInfo/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -522,7 +522,7 @@ const CustomerMaster = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: `${backendUrl}/api/customerInfoExcel/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/customerInfoExcel/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`

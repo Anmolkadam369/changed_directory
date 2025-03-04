@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faMobileAlt, faClipboardList, faCar, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import './UserProfileDetials.css';
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import { Button } from '@mui/material';
 import { motion } from "framer-motion";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -210,10 +210,10 @@ const UserProfileDetails = () => {
 
     const getDataById = async (id) => {
         let response;
-        if (userId.startsWith("CUD-")) response = await axios.get(`${backendUrl}/api/getDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (userId.startsWith("CC-")) response = await axios.get(`${backendUrl}/api/getCustomerById/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (userId.startsWith("VC-")) response = await axios.get(`${backendUrl}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (userId.startsWith("VED-")) response = await axios.get(`${backendUrl}/api/getVendorDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("CUD-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("CC-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomerById/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("VC-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (userId.startsWith("VED-")) response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorDriverInfo/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
 
 
         console.log("daa", response.data.data)
@@ -271,7 +271,7 @@ const UserProfileDetails = () => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/${urlPart}/${userId}/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/${urlPart}/${userId}/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

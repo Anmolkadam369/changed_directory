@@ -7,7 +7,7 @@ import './responsive-bp_1440.css'
 import './responsive-bp_1920.css'
 
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../../environment';
+// '../../environment';
 import trucks1 from '../../Assets/trucks1.jpg';
 import trucks2 from '../../Assets/trucks2.jpg';
 import onsiterepair from '../../Assets/onsiterepair.jpg';
@@ -45,7 +45,7 @@ function Home() {
 
     const checkTokenValidity = async (token) => {
         try {
-            const response = await axios.post(`${backendUrl}/api/verifyToken/isValid`, {}
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/verifyToken/isValid`, {}
                 , { headers: { Authorization: `Bearer ${token}` } });
             return response.status === 200; // Backend will return 200 if valid
         } catch (error) {
@@ -62,7 +62,7 @@ function Home() {
     //             const isValid = checkTokenValidity(token); // Implement this function
     //             if (isValid) {
     //                 // User remains logged in
-    //                 const response = await axios.get(`${backendUrl}/api/typeofUser/${userId}`, {
+    //                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/typeofUser/${userId}`, {
     //                     headers: {
     //                         'Authorization': `Bearer ${token}`
     //                     }

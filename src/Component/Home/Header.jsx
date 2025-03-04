@@ -8,7 +8,7 @@ import './responsive-bp_1920.css'
 
 
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../../environment';
+// '../../environment';
 import trucks1 from '../../Assets/trucks1.jpg';
 import trucks2 from '../../Assets/trucks2.jpg';
 import onsiterepair from '../../Assets/onsiterepair.jpg';

@@ -2056,7 +2056,7 @@
 
 
 // import { useEffect, useState } from 'react';
-// import backendUrl from '../../environment';
+// // '../../environment';
 // import axios from 'axios';
 // import { Alert } from '@mui/material';
 // import './VendorMasterViewOnly.css'
@@ -2082,7 +2082,7 @@ const VendorMasterViewOnly = () => {
 
     // const getData=async()=>{
     //     try {
-    //         const response = await (`${backendUrl}/getVendor`)
+    //         const response = await (`${process.env.REACT_APP_BACKEND_URL}/getVendor`)
     //         if(response.data.status == 200){
     //             setData(response.data.data)
     //         }
@@ -2096,7 +2096,7 @@ const VendorMasterViewOnly = () => {
 
     // const getData= async ()=>{
     //     try {
-    //         const rawData = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
+    //         const rawData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
     //         let fetchedData = rawData.data.data;
     //         fetchedData = fetchedData.map((dataStrip)=>({
     //             ...dataStrip,
@@ -2110,7 +2110,7 @@ const VendorMasterViewOnly = () => {
 
     const getData = async () => {
         try {
-            // const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
+            // const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }})
             // let fetchedData = response.data.data
             // fetchedData = fetchedData.map((datastrip) => ({
             //     ...datastrip,
@@ -2128,7 +2128,7 @@ const VendorMasterViewOnly = () => {
     //     try {
     //     const response = await axios({
     //         method:'post',
-    //         url:`${backendUrl}/api/senddata`,
+    //         url:`${process.env.REACT_APP_BACKEND_URL}/api/senddata`,
     //         data:formdata,
     //         headers:{
     //             'Authorization':token

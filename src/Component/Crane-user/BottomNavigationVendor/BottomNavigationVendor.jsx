@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
