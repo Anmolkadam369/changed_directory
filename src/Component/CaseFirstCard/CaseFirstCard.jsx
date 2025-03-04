@@ -11,7 +11,7 @@ import SuccessIcon from './SuccessIcon';
 import { useNavigate } from 'react-router-dom';
 import { use } from 'echarts';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import Button from '@mui/material/Button';
 import Modal from '../Location1/Modal';
 import crossUser from '../../Assets/crossUser.png'
@@ -77,7 +77,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     const getVendorById = async (userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
             console.log("caseFirstCardhser", response.data.data)
             setGetVendorData(response.data.data);
         } catch (error) {
@@ -87,8 +87,8 @@ const CaseFirstCard = ({ data, getBackPage }) => {
 
     const getAccidentDataById = async (AccidentVehicleCode) => {
         try {
-            console.log(`yes  , ${backendUrl}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`)
-            const response = await axios.get(`${backendUrl}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`);
+            console.log(`yes  , ${process.env.REACT_APP_BACKEND_URL}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`)
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicleAccidentById/${AccidentVehicleCode}/${userId}`);
             console.log("getAccidentDataById", response.data.data)
 
             setAccidentDataById(response.data.data);
@@ -319,7 +319,7 @@ const CaseFirstCard = ({ data, getBackPage }) => {
             // Submit data via axios
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${data[0].AccidentVehicleCode}/${userId}/admin`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorOnAssignedVehicle/${data[0].AccidentVehicleCode}/${userId}/admin`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

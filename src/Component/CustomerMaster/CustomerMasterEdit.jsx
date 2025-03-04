@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Modal from 'react-modal';
@@ -305,7 +305,7 @@ const CustomerMasterEdit = () => {
 
 
   const getDataById = async (id) => {
-    const response = await axios.get(`${backendUrl}/api/getCustomerById/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomerById/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("daa", response.data.data)
     console.log("response123", response.data.data[0]);
     setComingData(response.data.data[0])
@@ -576,7 +576,7 @@ const CustomerMasterEdit = () => {
     try {
       const response = await axios({
         method: 'PUT',
-        url: `${backendUrl}/api/customerUpdate/${state.id}/${userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/api/customerUpdate/${state.id}/${userId}`,
         data: formDataObj,
         headers: {
           'Authorization': `Bearer ${token}`

@@ -4,7 +4,7 @@ import '../AAAAAAAAAAAAAAAAAA/Table.css'
 import { Line, Doughnut, Bar } from 'react-chartjs-2'; // For the line, doughnut, and bar charts
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -338,12 +338,12 @@ const DummyDashboard = () => {
 
     const findUserById = async (id) => {
         try {
-            let response = await axios.get(`${backendUrl}/api/findById/${id}`,{
+            let response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findById/${id}`,{
                 headers:{ 'Authorization': `Bearer ${token}`}
             });
             console.log("daa", response.data)
             if (response.data.message == "No user found") {
-                response = await axios.get(`${backendUrl}/api/getEmployee/${id}/${id}`);
+                response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getEmployee/${id}/${id}`);
             }
             console.log("daa2", response.data)
 
@@ -356,46 +356,46 @@ const DummyDashboard = () => {
     }
 
     const getVendorData = async () => {
-        const response = await axios.get(`${backendUrl}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setVendorData(response.data.data);
         console.log("vendor", response.data.data)
     };
 
     const getCustomerData = async () => {
-        const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setCustomerData(response.data.data)
     };
 
     const getAccidentVehicleData = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         if (response && response.message !== "No accident vehicle data found.") setAccidentVehicleData(response.data.data)
     };
 
     const getAllAccidentVehicleData = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getAllAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAllAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         setAllAccidentVehicleData(response.data.data)
     };
 
     const reportedRegistersComplaints = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/vehicleClaim`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vehicleClaim`);
         setRegisteredAccidentVehicleData(response.data.data)
     };
 
     const AssignedVendorsRemaining = async (e) => {
         const getFilteredData = "partiallyAssigned"
-        const response = await axios.get(`${backendUrl}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicleToAssignVendor/${getFilteredData}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         setRemainingAssignedVendors(response.data.data)
         console.log("Remaikindasdfa", response.data.data)
     };
 
     const FullyAssignedVendors = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getFullyAssigedVehicles`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getFullyAssigedVehicles`);
         setGetFullyAssignedVendors(response.data.data)
         console.log("Remaikindasdfa", response.data.data)
     };
 
     const getNotAssigedVehicles = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getNotAssigedVehicles`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getNotAssigedVehicles`);
         setGetNotAssigedVehiclesVendor(response.data.data)
         console.log("setGetNotAssigedVehiclesVendor", response.data.data)
     };
@@ -403,7 +403,7 @@ const DummyDashboard = () => {
     const allVendorResponse = async (e) => {
         const response = await axios({
             method: "GET",
-            url: `${backendUrl}/api/vendorResponse/${userId}`,
+            url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorResponse/${userId}`,
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -412,18 +412,18 @@ const DummyDashboard = () => {
     };
 
     const allVisitors = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/visitors/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/visitors/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         setVisitors(response.data.data)
     };
 
     const allEmployees = async (e) => {
-        const response = await axios.get(`${backendUrl}/api/getEmployee/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getEmployee/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         setGetEmployees(response.data.data)
     };
     const getPersonalAccidentVehicle = async () => {
         try {
             console.log("TRUEMEN")
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfo`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfo`);
             console.log("mesagesamay", response.data.status)
             console.log("mesage123", response.message)
             if (response.data.message == "No accident vehicle data found.") setPersonalAccidentVehicle([])
@@ -436,7 +436,7 @@ const DummyDashboard = () => {
     const getPersonalVehicleInfo = async () => {
         try {
             console.log("getPersonalVehicleInfo")
-            const response = await axios.get(`${backendUrl}/api/getPersonalVehicle`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicle`);
             console.log("RESONPSDFSDFSDF")
             setPersonalVehicleInfo(response.data.data);
         } catch (error) {
@@ -448,7 +448,7 @@ const DummyDashboard = () => {
     const generateFile = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`${backendUrl}/api/getWeeklyReports//${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getWeeklyReports//${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             setGeneratedExcel(response.data.data);
             setIsLoading(false);
             setIsGenerated(true);
@@ -511,7 +511,7 @@ const DummyDashboard = () => {
         try {
             const response = await axios({
                 method: "GET",
-                url: `${backendUrl}/api/vendorResponse/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorResponse/${userId}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

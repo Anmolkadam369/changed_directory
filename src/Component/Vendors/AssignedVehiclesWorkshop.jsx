@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import AddedDataByWorkshop from './AddedDataByWorkshop';
 import DataTable from "react-data-table-component";
@@ -94,7 +94,7 @@ const AssignedVehicleWorkshop = () => {
 
   const fetchAssignedCases = async (vendorCode) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasksWorkshop/${vendorCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
       console.log("accident vehicle table", response.data.data);
       setData(response.data.data);
     } catch (error) {
@@ -105,7 +105,7 @@ const AssignedVehicleWorkshop = () => {
 
   const fetchVendor = async (vendorCode) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/getVendor/${vendorCode}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${vendorCode}`);
       console.log("response", response.data.data);
       setVendorPersonal(response.data.data);
     } catch (error) {
@@ -116,7 +116,7 @@ const AssignedVehicleWorkshop = () => {
   const findUserById = async (id) => {
     try {
       console.log("HEY", id)
-      const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
       console.log("daa", response.data)
       console.log("data", response.data.data[0]);
       setGetDataOfUser(response.data.data[0])

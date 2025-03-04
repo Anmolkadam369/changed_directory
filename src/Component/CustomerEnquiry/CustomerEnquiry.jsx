@@ -12,7 +12,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@mui/material';
@@ -303,7 +303,7 @@ const CustomerEnquiry = () => {
 
     const getCustomerEnquiry = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getCustomerEnquiry/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomerEnquiry/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             const fetchedData = response.data.data;
             const formattedData = fetchedData.map(item => ({
                 ...item,
@@ -350,7 +350,7 @@ const CustomerEnquiry = () => {
     const view = async (id) => {
         console.log("VIEW", id)
         setCustomerEnquiryId(id);
-        const response = await axios.get(`${backendUrl}/api/getCustomerEnquiryById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomerEnquiryById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -494,7 +494,7 @@ const CustomerEnquiry = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/customerEnquiry/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/customerEnquiry/${userId}`,
                 data: formData,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -541,7 +541,7 @@ const CustomerEnquiry = () => {
         try {
             const response = await axios({
                 method: 'PUT',
-                url: `${backendUrl}/api/updateCustomerEnquiry/${userId}/${customerEnquiryId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/updateCustomerEnquiry/${userId}/${customerEnquiryId}`,
                 data: editedFormData,
                 headers: {
                     'Authorization': `Bearer ${token}`

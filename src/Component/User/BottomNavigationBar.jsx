@@ -13,7 +13,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 
 
 export default function BottomNavigationBar() {

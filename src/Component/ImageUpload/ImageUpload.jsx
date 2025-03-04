@@ -3,7 +3,7 @@ import axios from 'axios';
 import "./ImageUpload.css";
 import '../Location1/Location1.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import backendUrl from '../../environment';
+// '../../environment';
 import Snackbar from '@mui/material/Snackbar';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -126,10 +126,10 @@ function ImageUpload() {
         for (let [key, value] of formData.entries()) {
             console.log(`${key}:`, value);
         }
-        console.log(`${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${id}`)
+        console.log(`${process.env.REACT_APP_BACKEND_URL}/api/DialyAccidentVehicleImage/${userId}/${id}`)
 
         try {
-            const response = await axios.post(`${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${id}`, formData, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/DialyAccidentVehicleImage/${userId}/${id}`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

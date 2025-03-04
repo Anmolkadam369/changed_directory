@@ -7,7 +7,7 @@ import { useNavigate, useLocation, json } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
@@ -159,7 +159,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getDataById", response)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -167,7 +167,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
 
     const getExistingData = async (id, userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             console.log("getExistingData success", response.data.data);
             setExistingData(response.data.data[0]);
         } catch (error) {
@@ -285,7 +285,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
             }
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -378,7 +378,7 @@ function AddedDataByMechanic({ id, item, onUpdate }) {
         const id = userId;// added
         try {
             setIsLoading(true);
-            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${id}`);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createLinkForPayment/${id}`);
             console.log("handlepayment", response.data)
             if (response.data.message === "successfully created") {
                 setNotRequestedLink(false)

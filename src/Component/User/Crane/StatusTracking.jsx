@@ -7,7 +7,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { FaClipboardCheck, FaTruck, FaCheckCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 
 import assignedTask from '../../../Assets/assignedTask.png'
 import comingCrane from '../../../Assets/comingCrane.png'
@@ -198,7 +198,7 @@ const StatusTracking = ({ vehicleNumber }) => {
         console.log("userid", userId, currentService);
         console.log('currentService1234123', currentService.length, doneFetching)
     if(currentService !== ''){
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -307,7 +307,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", currentServiceId, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${currentServiceId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorCurrentLocation/${currentServiceId}`, { headers: { Authorization: `Bearer ${token}` } });
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -327,7 +327,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     }
     const getVendorRating = async (crane) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/customersRating/${crane}/${crane}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customersRating/${crane}/${crane}`);
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")
@@ -350,11 +350,11 @@ const StatusTracking = ({ vehicleNumber }) => {
         console.log('items', item)
         console.log('items', `${item[`${currentService}Details`]?.AccidentVehicleCode}`)
 
-        console.log('items2', `${backendUrl}/api/vendorReachedConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${userId}/${currentService}`)
+        console.log('items2', `${process.env.REACT_APP_BACKEND_URL}/api/vendorReachedConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${userId}/${currentService}`)
 
         try {
 
-            let response = await axios(`${backendUrl}/api/vendorReachedConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${userId}/${currentService}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/vendorReachedConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${userId}/${currentService}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -384,7 +384,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     const workDoneConfirmation = async (item, action) => {
         try {
             setCurrentltem(item)
-            let response = await axios(`${backendUrl}/api/workDoneConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${currentService}`, {
+            let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/workDoneConfirmation/${userId}/${item[`${currentService}Details`]?.AccidentVehicleCode}/${action}/${currentService}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -409,9 +409,9 @@ const StatusTracking = ({ vehicleNumber }) => {
 
     const submitNow = async (event, item) => {
         event.preventDefault();
-        console.log("asdadfasdfasdf", `${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`)
+        console.log("asdadfasdfasdf", `${process.env.REACT_APP_BACKEND_URL}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem.crane}`)
         try {
-            const response = await axios.put(`${backendUrl}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem?.[`${currentService}`]}`, JSON.stringify(formData), {
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/customersRating/${currentItem.accidentFileNo}/${userId}/${currentItem?.[`${currentService}`]}`, JSON.stringify(formData), {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

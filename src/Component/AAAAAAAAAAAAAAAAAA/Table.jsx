@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Table.css";
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 
 const Table = () => {
   const token = localStorage.getItem("token");
@@ -48,7 +48,7 @@ const Table = () => {
   }, [])
 
   const getData = async (e) => {
-    const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
   };

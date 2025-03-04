@@ -19,7 +19,7 @@ import Location1 from '../Location1/Location1';
 import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
 import VehicleClaimEdit from '../VehicleClaimRegistration/VehicleClaimEdit';
 import AssignedVehicleAdvocate from './AssignedVehiclesAdvocate';
-import backendUrl from '../../environment';
+// '../../environment';
 import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
@@ -101,8 +101,8 @@ const Advocate = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription);
-                    await axios.post(`${backendUrl}/api/notification`, { message: 'You have logged in right now' });
+                    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/subscription/${userId}`, subscription);
+                    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/notification`, { message: 'You have logged in right now' });
 
                     // alert('Login notification sent successfully');
                 } catch (error) {
@@ -145,7 +145,7 @@ const Advocate = () => {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}}/api/findByIdForVendor/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data)
         console.log("data", response.data.data[0]);
         setGetData(response.data.data[0])

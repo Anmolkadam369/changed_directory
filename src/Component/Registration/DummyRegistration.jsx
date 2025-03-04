@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import Modal from '../Location1/Modal'; // Import the modal component
 import { Helmet } from 'react-helmet-async';
 import crossUser from '../../Assets/crossUser.png'
@@ -81,7 +81,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     const findUserById = async (id) => {
         console.log("HEY", id)
-        const response = await axios.get(`${backendUrl}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdCustomer/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data)
         response.data.data = response.data.data.filter((individualResponse) => {
             if (individualResponse.latitude !== null && individualResponse.longitude !== null) {
@@ -98,7 +98,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
 
     async function getVehicleData() {
         try {
-            const getData = await axios.get(`${backendUrl}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` }});
+            const getData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vehicle/${regNo}/${userId}/crane`, { headers: { Authorization: `Bearer ${token}` }});
             if (getData.data.message === 'Vehicle found') {
                 setVehicleInfo([getData.data]);
                 setComingVehicle(getData.data);
@@ -406,7 +406,7 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/addVehicleInfo`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/addVehicleInfo`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

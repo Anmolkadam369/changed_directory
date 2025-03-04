@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './vendorResponse.css';
@@ -165,8 +165,8 @@ function AdvocateResponse({ data, onUpdate }) {
         try {
             console.log(`Action is: ${action}`);
             console.log('Submitting with action:', action, formData.AccidentVehicleCode, formData.VendorCode);
-            console.log("url", `${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`)
-            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
+            console.log("url", `${process.env.REACT_APP_BACKEND_URL}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`)
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
                 setTimeout(() => {
@@ -195,7 +195,7 @@ function AdvocateResponse({ data, onUpdate }) {
         const id = data.advocate;
         try {
             setIsLoading(true);
-            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${userId}/${id}`);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createLinkForPayment/${userId}/${id}`);
             console.log("handlepayment", response.data)
             if (response.data.message === "successfully created") {
                 setFullInfomation(false)

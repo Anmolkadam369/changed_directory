@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../Dashboard/Dashboard.css'; // Ensure you create this CSS file for styling
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -133,7 +133,7 @@ const WorkshopDashboard = ({ getData }) => {
 
     const getGotResponseVehicle = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAssignedVehicleForDashboard/${userId}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
             const filteredResponse = [];
             for (let i = 0; i < response.data.data.length; i++) {
@@ -157,7 +157,7 @@ const WorkshopDashboard = ({ getData }) => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasksWorkshop/${userId}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
         } catch (error) {
@@ -217,7 +217,7 @@ const WorkshopDashboard = ({ getData }) => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)

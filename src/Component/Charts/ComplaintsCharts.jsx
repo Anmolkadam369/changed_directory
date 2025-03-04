@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Chart.css";
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import {
   AreaChart,
   Area,
@@ -39,7 +39,7 @@ const ComplaintsCharts = ({ aspect, title }) => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAllAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAllAccidentVehicleInfo/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);

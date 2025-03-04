@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -92,7 +92,7 @@ const CustomerPerformance = () => {
 
     const getAccidentData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
@@ -104,7 +104,7 @@ const CustomerPerformance = () => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${state.customerId}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicleInfoById/${state.customerId}`);
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);
@@ -113,7 +113,7 @@ const CustomerPerformance = () => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)

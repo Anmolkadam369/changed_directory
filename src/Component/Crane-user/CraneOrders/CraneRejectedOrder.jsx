@@ -7,7 +7,7 @@ import checksuccess from '../../../Assets/checksuccess.png'
 import ratingStar from '../../../Assets/ratingStar.png'
 import NoDataFound from '../../User/Cards/NoDataFound';
 import axios from "axios";
-import backendUrl from "../../../environment";
+// "../../../environment";
 import crossUser from '../../../Assets/crossUser.png'
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import filterUser from '../../../Assets/filterUser.png'
@@ -207,7 +207,7 @@ const CraneRejectedOrder = ({ data }) => {
             console.log("disntaceadfafdaf", distance)
             console.log("craninging", crane, accidentLatitude, accidentLongitude, index)
 
-            const response = await axios.get(`${backendUrl}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorCurrentLocation/${crane}`,{ headers: { Authorization: `Bearer ${token}` }});
             if (response.data.status == true) {
                 let vendorCurrentLatitude = response.data.data[0].latitude;
                 let vendorCurrentLongitude = response.data.data[0].longitude;
@@ -226,7 +226,7 @@ const CraneRejectedOrder = ({ data }) => {
 
     const getCustomerRating = async (customerCode) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/vendorRatingToCustomer/${customerCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vendorRatingToCustomer/${customerCode}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("coming Customer Rating", response.data)
             if (response.data.status == 404) {
                 console.log("Not Found")

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 import ActualVendorResponse from './ActualVendorResponse';
 import ArrowBack from '@mui/icons-material/ArrowBack';
@@ -116,7 +116,7 @@ const VendorResponse = () => {
     try {
       const response = await axios ({
         method : "GET",
-        url : `${backendUrl}/api/vendorResponse/${userId}`,
+        url : `${process.env.REACT_APP_BACKEND_URL}/api/vendorResponse/${userId}`,
         headers: {
           'Authorization': `Bearer ${token}`
         }

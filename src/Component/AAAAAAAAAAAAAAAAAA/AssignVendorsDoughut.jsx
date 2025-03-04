@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import axios from "axios";
-import backendUrl from "../../environment";
+// "../../environment";
 
 const countVendors = (data) => {
   const vendorCounts = {};
@@ -66,7 +66,7 @@ const AssignVendorsDoughnut = () => {
   const getData = async () => {
     const response = await axios ({
       method : "GET",
-      url : `${backendUrl}/api/vendorResponse/${userId}`,
+      url : `${process.env.REACT_APP_BACKEND_URL}/api/vendorResponse/${userId}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }

@@ -11,7 +11,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners'
 import { Helmet } from 'react-helmet-async';
 import Admin from '../Admin/Admin';
@@ -315,7 +315,7 @@ const EmployeeForm = () => {
         return '';
     };
     console.log("userid", userId)
-    console.log("link", `${backendUrl}/api/createNewEmployee/${userId}`)
+    console.log("link", `${process.env.REACT_APP_BACKEND_URL}/api/createNewEmployee/${userId}`)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -347,7 +347,7 @@ const EmployeeForm = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/createNewEmployee/${userId}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/createNewEmployee/${userId}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

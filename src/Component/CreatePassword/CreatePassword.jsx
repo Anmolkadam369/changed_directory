@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import '../Login/LoginPage.css';
 import { Alert, Checkbox, FormControlLabel } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import trucks1 from "../../Assets/trucks1.jpg";
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -78,7 +78,7 @@ const CreatePassword = () => {
 
     console.log("email", email, "password", password, "confirmPassword", confirmPassword)
     try {
-      const response = await axios.put(`${backendUrl}/api/changePassword/${userType}`, {
+      const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/changePassword/${userType}`, {
        email,password,confirmPassword
       });
       if (response.status === 200) {

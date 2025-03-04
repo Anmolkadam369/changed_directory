@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import locationiconforlocation from '../../Assets/locationiconforlocation.png'
 import mapimage from '../../Assets/mapimage.jpg'
-import backendUrl from '../../environment';
+// '../../environment';
 
 const LocationAccessModal = ({ triggerModel, onSuccess }) => {
     const [isVisible, setIsVisible] = useState(triggerModel);
@@ -28,7 +28,7 @@ const LocationAccessModal = ({ triggerModel, onSuccess }) => {
                     let type = 'vendor';
 
                     // Send location to server
-                    const response = await fetch(`${backendUrl}/api/update-location/${type}/${userId}`, {
+                    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-location/${type}/${userId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ lat, lon })

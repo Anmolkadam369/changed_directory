@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import backendUrl from '../../environment';
+// '../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -168,7 +168,7 @@ const SeeUpdatedPics = ({ id, onUpdate }) => {
         setComingData([]);
         console.log("ID", id)
         console.log("Fetching data for date:", date);
-        const response = await axios.get(`${backendUrl}/api/getDataByDate/${id}/${date}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getDataByDate/${id}/${date}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("daa", response.data.data)
         console.log("length", response.data.data.length)
         if (response.data.data.length === 0) {

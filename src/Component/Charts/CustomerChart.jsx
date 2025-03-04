@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Chart.css";
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import {
   AreaChart,
   Area,
@@ -39,7 +39,7 @@ const CustomerChart = ({ aspect, title }) => {
 
     const getCustomerData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getCustomer/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             setCustomerData(response.data.data);
         } catch (error) {
             console.error("Error fetching customer data", error);

@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import trucksImage2 from '../../../Assets/trucksImage3.jpg';
@@ -178,14 +178,14 @@ export default function AllVehicles() {
     }
 
     const getSomeInfo = async () => {
-        const response = await axios.get(`${backendUrl}/api/testing-websocket`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/testing-websocket`);
         console.log("responsefrom", response.data)
     }
 
     const getData = async (e) => {
         console.log("userid", userId);
         let accidentVehicles = [], notAccidentVehicles = []
-        const response = await axios.get(`${backendUrl}/api/getFilteredPersonalVehicle/${userId}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getFilteredPersonalVehicle/${userId}`);
         if (response.data.message == "No accident vehicle data found.") {
             setData([])
             setDoneFetching(true)
@@ -209,7 +209,7 @@ export default function AllVehicles() {
     const getAccidentData = async (e) => {
         try {
         console.log("userid", userId);
-        const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}/not_defined/not-completed`,{        headers: {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/not_defined/not-completed`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
         console.log('responsead', response)
@@ -243,7 +243,7 @@ export default function AllVehicles() {
 
     // const getAccidentData = async (e) => {
     //     console.log("userid", userId);
-    //     const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+    //     const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
         //   'Authorization': `Bearer ${token}`
         // }});
     //     if (response.data.message == "No accident vehicle data found.") {

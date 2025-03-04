@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Helmet } from 'react-helmet-async';
 
 
@@ -44,7 +44,7 @@ const HandoverToWorkshop = () => {
     }, [token, userId, navigate, id]);
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleData/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleData/${id}`);
         console.log("daa", response.data)
         console.log("response", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -197,7 +197,7 @@ const HandoverToWorkshop = () => {
         // try {
         //     const response = await axios({
         //         method: 'POST',
-        //         url: `${backendUrl}/api/addVehicleClaim/${userId}`,
+        //         url: `${process.env.REACT_APP_BACKEND_URL}/api/addVehicleClaim/${userId}`,
         //         data: formDataObj,
         //         headers: {
         //             'Authorization': `Bearer ${token}`

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
@@ -337,7 +337,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
                 for (const ven of vendors) {
                     try {
-                        const response = await axios.get(`${backendUrl}/api/findByIdForVendor/${ven}`);
+                        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdForVendor/${ven}`);
                         setComingVendorData(prevData => [...prevData, response.data.data[0]]);
                     } catch (error) {
                         console.error("Error fetching vendor data:", error);

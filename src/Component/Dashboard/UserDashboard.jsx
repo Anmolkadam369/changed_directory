@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Dashboard.css'; // Ensure you create this CSS file for styling
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -46,7 +46,7 @@ const UserDashboard = () => {
                     });
                     console.log('Push Manager subscription:', subscription);
 
-                    await axios.post(`${backendUrl}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
+                    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
 
                 } catch (error) {
                     console.error('Error sending login notification:', error);
@@ -114,7 +114,7 @@ const UserDashboard = () => {
 
     const getAccidentData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("mesage123" ,response.message)
@@ -128,7 +128,7 @@ const UserDashboard = () => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalVehicleInfoById/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicleInfoById/${userId}`);
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);
@@ -137,7 +137,7 @@ const UserDashboard = () => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)
@@ -161,7 +161,7 @@ const UserDashboard = () => {
     // const generateFile = async () => {
     //     try {
     //         setIsLoading(true);
-    //         const response = await axios.get(`${backendUrl}/api/getWeeklyReports/${userId}`);
+    //         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getWeeklyReports/${userId}`);
     //         setGeneratedExcel(response.data.data);
     //         setIsLoading(false);
     //         setIsGenerated(true);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { useRecoilValue } from 'recoil';
 import { Helmet } from 'react-helmet-async';
 import { tokenState, userIdState } from '../Auth/Atoms';
@@ -46,7 +46,7 @@ const VendorPerformance = () => {
         const gettingResponseDate = async () => {
             try {
                 const promises = totalAssignedCases.map(async (item) => {
-                    const response = await axios.get(`${backendUrl}/api/gettingResponseDate/${state.id}/${state.type}/${item.AccidentVehicleCode}`);
+                    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/gettingResponseDate/${state.id}/${state.type}/${item.AccidentVehicleCode}`);
                     return response.data.data[0];
                 });
                 const results = await Promise.all(promises);
@@ -211,7 +211,7 @@ const VendorPerformance = () => {
 
     const getGotResponseVehicle = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${state.id}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAssignedVehicleForDashboard/${state.id}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
             setGotResponse(response.data.data);
         } catch (error) {
@@ -229,10 +229,10 @@ const VendorPerformance = () => {
     const fetchAssignedCases = async () => {
         try {
             let response;
-            if (state.type == "crane") response = await axios.get(`${backendUrl}/api/assignedTasks/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
-            if (state.type == "mechanic") response = await axios.get(`${backendUrl}/api/assignedTasksMechanic/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
-            if (state.type == "advocate") response = await axios.get(`${backendUrl}/api/assignedCasesAdvocate/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
-            if (state.type == "workshop") response = await axios.get(`${backendUrl}/api/assignedTasksWorkshop/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "crane") response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasks/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "mechanic") response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasksMechanic/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "advocate") response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedCasesAdvocate/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            if (state.type == "workshop") response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasksWorkshop/${state.id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
 
             console.log("Total", response.data.data);
             setTotalAssignedCases(response.data.data);
@@ -290,7 +290,7 @@ const VendorPerformance = () => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getPersonalAccidentVehicleInfoById/${state.id}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.id}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)

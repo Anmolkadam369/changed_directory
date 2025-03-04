@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import backendUrl from '../../environment';
+// '../../environment';
 import axios from 'axios';
 import iarkerIcon from '../../Assets/markerIcon1.png'
 
@@ -81,7 +81,7 @@ const MapComponent = ({ accidentLocation1, additionalInfo }) => {
   }, [map, additionalInfo.vendorType]);
 
   const vendorsData = async (vendorType) => {
-    const response = await axios.get(`${backendUrl}/api/vendorByType/${vendorType}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vendorByType/${vendorType}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response.data);
     setVendorLocationData(response.data.data)
   }

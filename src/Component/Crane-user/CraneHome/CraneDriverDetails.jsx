@@ -4,7 +4,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import axios from 'axios';
 
 const CraneDriverDetails = (props) => {
@@ -13,7 +13,7 @@ const CraneDriverDetails = (props) => {
     const [isActive, setIsActive] = useState(true)
 
     const changeActivation = async () => {
-        let response = await axios.put(`${backendUrl}/api/changeVendorActivation/${!isActive}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        let response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/changeVendorActivation/${!isActive}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         console.log("respo", response)
         if (response.data.message == 'changed successfully') {
             setIsActive(!isActive)

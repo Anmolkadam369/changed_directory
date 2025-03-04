@@ -192,7 +192,7 @@ import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert, Button } from '@mui/material';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
 import ActivationModel from '../Visitors/ActivationModel';
@@ -319,8 +319,8 @@ function MechanicResponse({ data, onUpdate }) {
         // event.preventDefault();
         try {
             console.log(`Action is: ${action}`);
-            console.log('Submitting with action:', `${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
-            const response = await axios.put(`${backendUrl}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
+            console.log('Submitting with action:', `${process.env.REACT_APP_BACKEND_URL}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
+            const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/vendorAcceptedOrRejected/${action}/${formData.AccidentVehicleCode}/${formData.VendorCode}/${userId}/${formData.reasonOfReject}`);
             console.log("some data", response);
             if (response.data.message === "Updated successfully") {
                 setAlertInfo({ show: true, message: response.data.message, severity: 'success' });
@@ -350,7 +350,7 @@ function MechanicResponse({ data, onUpdate }) {
         const id = data.mechanic;// added
         try {
             setIsLoading(true);
-            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${userId}/${id}`);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createLinkForPayment/${userId}/${id}`);
             console.log("handlepayment", response.data)
             if (response.data.message === "successfully created") {
                 setFullInfomation(false)

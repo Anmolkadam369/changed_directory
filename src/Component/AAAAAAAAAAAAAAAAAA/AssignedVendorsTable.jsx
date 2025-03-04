@@ -2,7 +2,7 @@
 // import "./Table.css";
 // import "../VenderMaster/VendorMasterForm.css"
 // import axios from 'axios';
-// import backendUrl from '../../environment';
+// // '../../environment';
 // import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 // import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 // import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
@@ -41,7 +41,7 @@
 //   }, [])
 
 //   const getData = async (e) => {
-//     const response = await axios.get(`${backendUrl}/api/vendorResponse`);
+//     const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vendorResponse`);
 //     console.log("response", response);
 //     if (response && response.message !== "No accident vehicle data found.") setData(response.data.data)
 //   };
@@ -120,7 +120,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
-import backendUrl from '../../environment';
+// '../../environment';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -166,7 +166,7 @@ const AssignedVendorsTable = () => {
   const getData = async () => {
     const response = await axios ({
       method : "GET",
-      url : `${backendUrl}/api/vendorResponse/${userId}`,
+      url : `${process.env.REACT_APP_BACKEND_URL}/api/vendorResponse/${userId}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }

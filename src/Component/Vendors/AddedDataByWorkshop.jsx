@@ -6,7 +6,7 @@ import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Alert } from '@mui/material';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -219,7 +219,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
     }, [comingData])
 
     const getDataById = async (id) => {
-        const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
         console.log("getAccidentVehicleInfo", response)
         console.log("getAccidentVehicleInfo", response.data.data[0]);
         setComingData(response.data.data[0])
@@ -227,7 +227,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
 
     const getExistingData = async (id, userId) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorOnAssignedVehicle/${id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
             setExistingData(response.data.data[0]);
             console.log("getExistingData success", response);
         } catch (error) {
@@ -388,7 +388,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/vendorOnAssignedVehicle/${id}/${userId}/${item.assignedBy}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -479,7 +479,7 @@ function AddedDataByWorkshop({ id, item, onUpdate }) {
         const id = userId;// added
         try {
             setIsLoading(true);
-            const response = await axios.post(`${backendUrl}/api/createLinkForPayment/${id}`);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createLinkForPayment/${id}`);
             console.log("handlepayment", response.data)
             if (response.data.message === "successfully created") {
                 setNotRequestedLink(false)

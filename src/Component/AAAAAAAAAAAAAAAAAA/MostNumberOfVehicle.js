@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
-import backendUrl from '../../environment';
+// '../../environment';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -22,7 +22,7 @@ const MostNumberOfVehicle = () => {
   }, [])
 
   const getData = async () => {
-    const response = await axios.get(`${backendUrl}/api/mostNumberOfVehicle/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/mostNumberOfVehicle/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     console.log("response", response);
     const sortedData = response.data.data.sort((a,b) => b.NumberOfVehicles - a.NumberOfVehicles);
     if (response && response.message !== "No accident vehicle data found.") setData(sortedData);

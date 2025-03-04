@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
@@ -132,7 +132,7 @@ function DailyWorkshop() {
 
     const getPreviousImages = async (accidentFileNo) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getImagesByAccidentFile/${accidentFileNo}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getImagesByAccidentFile/${accidentFileNo}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("getImagesByAccidentFile", response)
             // setComingData(response.data.data[0])
 
@@ -143,7 +143,7 @@ function DailyWorkshop() {
 
     const getDataById = async (id) => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAccidentVehicleInfo/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
             console.log("getAccidentVehicleInfo", response)
             console.log("getAccidentVehicleInfo", response.data.data[0]);
             setComingData(response.data.data[0])
@@ -229,13 +229,13 @@ function DailyWorkshop() {
         for (let pair of formDataObj.entries()) {
             console.log(`${pair[0]}:`, pair[1]);
         }
-        console.log(`${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`)
+        console.log(`${process.env.REACT_APP_BACKEND_URL}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`)
 
 
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/DialyAccidentVehicleImage/${userId}/${accidendFileNo}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`

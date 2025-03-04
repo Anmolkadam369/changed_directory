@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -389,7 +389,7 @@ const Registrations = () => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/signupByUser`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/signupByUser`,
                 data: formData,
             });
             setIsLoading(false);

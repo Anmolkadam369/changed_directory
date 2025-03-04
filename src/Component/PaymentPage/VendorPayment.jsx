@@ -1,7 +1,7 @@
 import './Payment.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import backendUrl from '../../environment';
+// '../../environment';
 import onlinePaymentImage from "../../Assets/onlinePaymentImage.png"
 import { useParams , useLocation, useNavigate} from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -42,7 +42,7 @@ function VendorPayment() {
 
   const checkTokenExpired = async (token) => {
     try {
-      const response = await axios.post(`${backendUrl}/api/checkTokenExpiredForVendor/${token}`);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/checkTokenExpiredForVendor/${token}`);
       setIsTokenValid(response.data.status)
     } catch (error) {
       console.log(error)
@@ -60,7 +60,7 @@ function VendorPayment() {
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = `${backendUrl}/api/verifyComission/${token}/${accidentVehicleCode}/${vendorType}`;
+          const verifyUrl = `${process.env.REACT_APP_BACKEND_URL}/api/verifyComission/${token}/${accidentVehicleCode}/${vendorType}`;
           const { data } = await axios.post(verifyUrl, response);
           console.log("verifyData", data);
           navigate('/Admin')
@@ -78,7 +78,7 @@ function VendorPayment() {
 
   const handlePayment = async () => {
     try {
-      const orderUrl = `${backendUrl}/api/comissionPayment/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`;
+      const orderUrl = `${process.env.REACT_APP_BACKEND_URL}/api/comissionPayment/${token}/${accidentVehicleCode}/${vendorCode}/${vendorType}`;
       const { data } = await axios.put(orderUrl);
       console.log("orderData", data);
       // is token valid  checkTokenExpired(data.token) it will check token time is done or not

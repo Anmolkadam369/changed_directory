@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './VendorViewRating.css'
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
@@ -74,7 +74,7 @@ const VendorViewRating = () => {
 
   const FetchedRatingCases = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/customersRating/${userId}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customersRating/${userId}`);
       setCustomerRating(response.data.data);
     } catch (error) {
       console.error("Failed to fetch assigned cases:", error);

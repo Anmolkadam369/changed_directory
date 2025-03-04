@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import backendUrl from '../../environment';
+// '../../environment';
 import { useRecoilValue } from 'recoil';
 import { tokenState, userIdState } from '../Auth/Atoms';
 import { Alert } from '@mui/material';
@@ -106,7 +106,7 @@ const VendorPaymentDetail = () => {
             }
 
             try {
-                const response = await axios.post(`${backendUrl}/api/VendorPaymentDetails`, sendData, {
+                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/VendorPaymentDetails`, sendData, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`

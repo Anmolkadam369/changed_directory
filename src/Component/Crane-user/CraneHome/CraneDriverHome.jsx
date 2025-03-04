@@ -9,7 +9,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import CraneDriverDetails from './CraneDriverDetails';
 import RidePopUp from './RidePopUp';
 import BottomNavigationVendor from '../BottomNavigationVendor/BottomNavigationVendor';
-import backendUrl from '../../../environment';
+// '../../../environment';
 import CaseFirstCard from '../../CaseFirstCard/CaseFirstCard';
 import { useWebSocket } from '../../ContexAPIS/WebSocketContext';
 
@@ -148,7 +148,7 @@ const CraneDriverHome = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/assignedTasks/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasks/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
             //totalAssignedCases[i].details[0].vendorDecision != 'reject'
@@ -166,7 +166,7 @@ const CraneDriverHome = () => {
     };
     const getGotResponseVehicle = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/getAssignedVehicleForDashboard/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getAssignedVehicleForDashboard/${userId}`);
             console.log("getAssignedVehicleForDashboard success", response.data.data);
             const filteredResponse = [];
             for (let i = 0; i < response.data.data.length; i++) {
@@ -188,13 +188,13 @@ const CraneDriverHome = () => {
         }
     };
     const getVendorWholeDetails = async () => {
-        const response = await axios.get(`${backendUrl}/api/getDriverWholeDetails/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getDriverWholeDetails/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
         setData(response.data.data);
     };
     const getVendorById = async (userId) => {
         try {
             console.log("yeser")
-            const response = await axios.get(`${backendUrl}/api/getVendorDriver/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendorDriver/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
             console.log("caseFirstCardhser", response.data.data)
             setGetVendorData(response.data.data);
         } catch (error) {

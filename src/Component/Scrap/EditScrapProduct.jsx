@@ -16,7 +16,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/
 import AdapterDateFns from '@date-io/date-fns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import backendUrl from '../../environment';
+// '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import VendorPaymentDetail from '../PaymentPage/VendorPaymentDetail';
@@ -389,7 +389,7 @@ const EditScrapProduct = ({ code, onUpdate }) => {
     console.log("FORMDATA123456789", formData)
 
     const getDataById = async () => {
-        const response = await axios.get(`${backendUrl}/api/scrapProductByIdUser/${userId}/${code}`,{ headers: { Authorization: `Bearer ${token}` }});
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/scrapProductByIdUser/${userId}/${code}`,{ headers: { Authorization: `Bearer ${token}` }});
         const fetchedData = response.data.data;
         console.log("fetchedData", fetchedData)
         setData(fetchedData[0]);
@@ -474,7 +474,7 @@ const EditScrapProduct = ({ code, onUpdate }) => {
         try {
             const response = await axios({
                 method: 'POST',
-                url: `${backendUrl}/api/scrapProductEdit/${userId}/${data.scrapCode}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/scrapProductEdit/${userId}/${data.scrapCode}`,
                 data: formDataObj,
                 headers: {
                     'Authorization': `Bearer ${token}`
