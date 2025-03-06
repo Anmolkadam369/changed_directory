@@ -4,6 +4,10 @@ import { Truck, Plane, Scale, Wrench, Building2, Search, MapPin, Star, Clock, Sh
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import BottomNavigationBar from '../BottomNavigationBar';
 
+
+import PermissionCheck from './PermissionCheck';
+
+
 function ServiceCard({ icon: Icon, title, description, imageUrl, rating, eta }) {
     return (
         <div className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-red-100 transition-all">
@@ -58,20 +62,35 @@ function NewFirstPage() {
     const [loading, setLoading] = useState(false);
 
     const getLocation = () => {
-        setLoading(true);
-        setError(null);
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError,);
-        } else {
-            setError("Geolocation is not supported by this browser.");
-            setLoading(false);
-        }
+        Notification.requestPermission().then((data) => {
+            console.log(data);
+
+            if (data === 'granted') {
+                setLoading(true);
+                setError(null);
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition, showError,);
+                } else {
+                    setError("Geolocation is not supported by this browser.");
+                    setLoading(false);
+                }
+            }
+            else {
+                // alert('Notifications are turned off.')
+            }
+        }, (error) => {
+            console.log(error);
+        })
+
+
     };
 
     useEffect(() => {
-        // console.log("Checking location...");
+
         getLocation();
+
     }, []);
 
     const showPosition = async (position) => {
@@ -103,7 +122,7 @@ function NewFirstPage() {
         setLoading(false);
         switch (error.code) {
             case error.PERMISSION_DENIED:
-                setError("Please enable location services to access the dashboard.");
+                // setError("Please enable location services to access the dashboard.");
                 break;
             case error.POSITION_UNAVAILABLE:
                 setError("Location information is unavailable.");
@@ -123,7 +142,7 @@ function NewFirstPage() {
             alert("This browser does not support desktop notifications.");
             return;
         }
-    
+
         Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
                 new Notification("Location Access Needed", {
@@ -132,12 +151,14 @@ function NewFirstPage() {
                 });
             }
         });
+
+
     }
-    
+
 
     const refreshLocation = () => {
-         getLocation();
-      
+        getLocation();
+
         setTimeout(() => {
             getLocation();
         }, 2000);
@@ -515,8 +536,14 @@ function NewFirstPage() {
                     </div>
                 </div>
             ) : (
-                <div>{loading ? "Fetching location..." : "Waiting for location..."}</div>
+
+                <>
+                    <div >  <PermissionCheck /> </div>
+                </>
+
             )}
+
+
         </div>
 
     );
