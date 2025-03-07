@@ -88,8 +88,43 @@ function NewFirstPage() {
     };
 
     useEffect(() => {
+        let locationEnabled = null;
+        let notificationPermission = null;
 
-        getLocation();
+        function checkPermissions() {
+            // Check Location Permission
+            navigator.geolocation.getCurrentPosition(
+                () => {
+                    if (locationEnabled === false) {
+                        console.log("Location turned ON. Reloading...");
+                        window.location.reload();
+                    }
+                    locationEnabled = true;
+                },
+                (error) => {
+                    if (error.code === error.PERMISSION_DENIED) {
+                        if (locationEnabled === true) {
+                            console.log("Location turned OFF. Reloading...");
+                            window.location.reload();
+                        }
+                        locationEnabled = false;
+                    }
+                }
+            );
+
+            // Check Notification Permission
+            let currentNotificationPermission = Notification.permission;
+            if (notificationPermission !== null && notificationPermission !== currentNotificationPermission) {
+                console.log("Notification permission changed. Reloading...");
+                window.location.reload();
+            }
+            notificationPermission = currentNotificationPermission;
+        }
+
+        getLocation()
+
+        const interval = setInterval(checkPermissions, 1000);
+        return () => clearInterval(interval);
 
     }, []);
 
