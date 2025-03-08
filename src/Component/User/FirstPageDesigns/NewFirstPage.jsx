@@ -273,8 +273,6 @@ function NewFirstPage() {
             ) : location ? (
                 <div>
 
-
-
                     <div>
                         <div className="w-full">
                             {/* Status Bar */}

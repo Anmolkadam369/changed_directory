@@ -98,7 +98,7 @@ const HistoryReceipts = ({ vehicleNumber }) => {
 
         for (let i = 0; i < filtering.length; i++) {
             
-            let getTime = filtering[i]?.[`${currentService}Details`]?.filedCaseFullyTime.split('|');
+            let getTime = filtering[i]?.[`${currentService}Details`]?.systemDate.split('|');
             let assignedDate = getTime[0];
             let assignedTime = getTime[1];
             let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
@@ -139,17 +139,17 @@ const HistoryReceipts = ({ vehicleNumber }) => {
             console.log("Sorting by newest to oldest");
             console.log("filtering", filtering[0])
             filtering.sort((a, b) => {
-                console.log("a?.[`${currentService}Details`]?.filedCaseFullyTime",a?.[`${currentService}Details`]?.filedCaseFullyTime)
-                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
-                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                console.log("a?.[`${currentService}Details`]?.systemDate",a?.[`${currentService}Details`]?.systemDate)
+                const dateA = new Date(a?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
                 return dateB - dateA; // Descending order
             });
             setData([...filtering]);
         } else if (filter === 'oldest') {
             console.log("Sorting by oldest to newest");
             filtering.sort((a, b) => {
-                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
-                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateA = new Date(a?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
                 return dateA - dateB; // Ascending order
             });
             setData([...filtering]);
@@ -194,8 +194,8 @@ const HistoryReceipts = ({ vehicleNumber }) => {
         
     }, [data])
     
-    const getStage = (filedCaseFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime) => {
-        return [filedCaseFullyTime, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime]
+    const getStage = (systemDate, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime) => {
+        return [systemDate, customerAcceptedVendorTime, vendorMovedTime, vendorReachedTime, doneWorkingTime]
     }
     const getStageAndHistory = (item, index) => {
         setCurrentItemIndex(index)
