@@ -6,7 +6,10 @@ import BottomNavigationBar from '../BottomNavigationBar';
 
 
 import PermissionCheck from './PermissionCheck';
-
+import PhotoUploader from './PhotoUploader';
+import { Input } from '@mui/material';
+import PhotoAndDetailUploader from './PhotoAndDetailUploader';
+import ModalButton from "./ModalButton";
 
 function ServiceCard({ icon: Icon, title, description, imageUrl, rating, eta }) {
     return (
@@ -254,6 +257,7 @@ function NewFirstPage() {
         return matchesSearch && matchesCategory;
     });
 
+
     return (
 
         <div>
@@ -268,6 +272,9 @@ function NewFirstPage() {
                 </div>
             ) : location ? (
                 <div>
+
+
+
                     <div>
                         <div className="w-full">
                             {/* Status Bar */}
@@ -332,8 +339,10 @@ function NewFirstPage() {
                                     </div>
                                 </div>
                             </div>
-
-
+                          
+                            <div className="text-center mt-5">
+                                <ModalButton />
+                            </div>
 
                             <div className="px-4 mb-6">
                                 <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide max-w-[300px]">
@@ -382,7 +391,6 @@ function NewFirstPage() {
                                 </div>
 
                             </div>
-
 
                             {/* Enhanced Service Details */}
                             <div className="px-4 pb-6">
@@ -569,6 +577,9 @@ function NewFirstPage() {
                             <BottomNavigationBar />
                         </div>
                     </div>
+
+
+
                 </div>
             ) : (
 
