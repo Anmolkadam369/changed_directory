@@ -85,10 +85,10 @@ const StatusTracking = ({ vehicleNumber }) => {
                 }
             })
         }
-        else{
+        else {
             console.log('currentService12345', currentService)
-        if(currentService != null ){
-             getData();
+            if (currentService != null) {
+                getData();
             }
         }
         console.log("token", token, userId);
@@ -101,6 +101,7 @@ const StatusTracking = ({ vehicleNumber }) => {
 
     const getFilteredData = (filter) => {
         console.log("data is here");
+     
         const filteredData = [];
 
         const now = new Date();  // Current date and time
@@ -108,9 +109,6 @@ const StatusTracking = ({ vehicleNumber }) => {
         const yesterday = new Date(now.getTime() - oneDay); // Yesterday's date and time
         const weekBefore = new Date(now.getTime() - (oneDay * 7));
         const monthBefore = new Date(now.getTime() - (oneDay * 30));
-
-
-
 
         const formatDate = (date) => {
             const year = date.getFullYear();
@@ -129,7 +127,11 @@ const StatusTracking = ({ vehicleNumber }) => {
 
 
         for (let i = 0; i < dummyData.length; i++) {
-            let getTime = dummyData[i]?.[`${currentService}Details`]?.filedCaseFullyTime.split('|');
+
+            console.log(dummyData[i]);
+            console.log(currentService);
+            // return
+            let getTime = dummyData[i]?.[`${currentService}Details`]?.systemDate?.split('|');
             let assignedDate = getTime[0];
             let assignedTime = getTime[1];
             let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
@@ -168,16 +170,16 @@ const StatusTracking = ({ vehicleNumber }) => {
         if (filter === 'newest') {
             console.log("Sorting by newest to oldest");
             dummyData.sort((a, b) => {
-                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
-                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateA = new Date(a?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
                 return dateB - dateA; // Descending order
             });
             setData([...dummyData]);
         } else if (filter === 'oldest') {
             console.log("Sorting by oldest to newest");
             dummyData.sort((a, b) => {
-                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
-                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateA = new Date(a?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.systemDate.split('|').join(' '));
                 return dateA - dateB; // Ascending order
             });
             setData([...dummyData]);
@@ -188,6 +190,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     };
 
     const settingFilter = (filter) => {
+        console.log('settingFilter calling: ');
         console.log("filter", filter)
         setFilter(filter)
         getFilteredData(filter)
@@ -197,41 +200,41 @@ const StatusTracking = ({ vehicleNumber }) => {
     const getData = async (e) => {
         console.log("userid", userId, currentService);
         console.log('currentService1234123', currentService.length, doneFetching)
-    if(currentService !== ''){
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        if (currentService !== '') {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${userId}/${currentService}/not-completed`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.data.message == "No accident vehicle data found.") {
+                setData([])
+                setDoneFetching(true)
             }
-        });
-        if (response.data.message == "No accident vehicle data found.") {
-            setData([])
-            setDoneFetching(true)
+            else {
+                console.log("response123421", response.data.data);
+                console.log("data2", response.data.data2);
+
+                let filteredData = response.data.data.filter((info) =>
+                    info?.[`${currentService}Details`]?.customerAcceptedVendor && info?.[`${currentService}Details`]?.confirmDoneWorking == false
+                );
+
+                let filteredImportant = filteredData.filter((info) =>
+                    info?.[`${currentService}Details`]?.vendorMoved == false
+                )
+
+                let filteredLessImportant = filteredData.filter((info) =>
+                    info?.[`${currentService}Details`]?.vendorMoved == true
+                )
+                filteredData = [...filteredImportant, ...filteredLessImportant]
+                setData(filteredData)
+
+                setDummyData(filteredData)
+                console.log("seTDATIOATN", filteredData);
+                setDoneFetching(true)
+
+                setCurrentItems(response.data.data);
+            }
         }
-        else {
-            console.log("response123421", response.data.data);
-            console.log("data2", response.data.data2);
-
-            let filteredData = response.data.data.filter((info) =>
-                info?.[`${currentService}Details`]?.customerAcceptedVendor && info?.[`${currentService}Details`]?.confirmDoneWorking == false
-            );
-
-            let filteredImportant = filteredData.filter((info) =>
-                info?.[`${currentService}Details`]?.vendorMoved == false
-            )
-
-            let filteredLessImportant = filteredData.filter((info) =>
-                info?.[`${currentService}Details`]?.vendorMoved == true
-            )
-            filteredData = [...filteredImportant, ...filteredLessImportant]
-            setData(filteredData)
-
-            setDummyData(filteredData)
-            console.log("seTDATIOATN", filteredData);
-            setDoneFetching(true)
-
-            setCurrentItems(response.data.data);
-        }
-    }
     };
 
     const goToMap = (item) => {
@@ -256,7 +259,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     useEffect(() => {
         console.log('data changes', data.length, currentStage.length)
         console.log('curren4123', doneFetching)
-        if (data.length > 0 && currentService && doneFetching==true) {
+        if (data.length > 0 && currentService && doneFetching == true) {
             console.log("push avg")
 
             const newAvg = Array(data.length).fill(0);
@@ -269,7 +272,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             })
             setAvg(newAvg);
             setCurrentStage(newCurrentStage);
-            console.log('currentService1231231231231',currentService )
+            console.log('currentService1231231231231', currentService)
             // data.forEach((item, index) => {
             //     console.log("push currentService", `${item?.[`${currentService}Details`][`${currentService}`]}`)
             //     // console.log("push currentService", `${item?.[`${currentService}Details`].accidentLongitude})
@@ -720,7 +723,7 @@ const StatusTracking = ({ vehicleNumber }) => {
                                     </div>
                                     {item?.[`${currentService}Details`]?.customerAcceptedVendor == true && (
 
-                                        <div style={{ background: "#d3d3d3d9", borderRadius:'20px', paddingBottom:'1px' }}>
+                                        <div style={{ background: "#d3d3d3d9", borderRadius: '20px', paddingBottom: '1px' }}>
                                             <div style={{ marginTop: '20px', borderTop: '1px solid grey' }}>
                                                 <div className='px-2 py-1 ' style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
 
