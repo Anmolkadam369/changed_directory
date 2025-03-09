@@ -214,7 +214,7 @@ function NewFirstPage() {
         },
         {
             icon: Plane,
-            title: "Heavy Crane Services",
+            title: "Heavy Hydra Crane Services",
             description: "50-ton capacity cranes for heavy vehicle recovery. Expert operators available 24/7.",
             imageUrl: "https://media.istockphoto.com/id/179218482/photo/mobile-crane-white-truck.jpg?s=1024x1024&w=is&k=20&c=NZZD3wUhuDn2vuc45Zkg45RjVb1ZwtngkA816a70NEc=",
             rating: "4.9",
@@ -521,11 +521,11 @@ function NewFirstPage() {
                                     <div className="min-w-[280px] bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
                                         <img
                                             src="https://media.istockphoto.com/id/179218482/photo/mobile-crane-white-truck.jpg?s=1024x1024&w=is&k=20&c=NZZD3wUhuDn2vuc45Zkg45RjVb1ZwtngkA816a70NEc="
-                                            alt="Heavy Crane Services"
+                                            alt="Heavy Hydra Crane Services"
                                             className="w-full h-32 object-cover"
                                         />
                                         <div className="p-4">
-                                            <h3 className="text-lg font-bold text-gray-800">Heavy Crane</h3>
+                                            <h3 className="text-lg font-bold text-gray-800">Heavy Hydra Crane</h3>
                                             <p className="text-sm text-gray-600 mt-2">50-ton capacity cranes for lifting and recovery operations.</p>
                                         </div>
                                     </div>

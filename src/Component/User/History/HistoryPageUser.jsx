@@ -219,7 +219,7 @@ const HistoryPageUser = () => {
                         </li>
                         <li>
                             <a className="dropdown-item">
-                                Crane
+                                Hydra Crane
                             </a>
                         </li>
                         <li>

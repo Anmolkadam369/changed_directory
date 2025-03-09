@@ -28,7 +28,7 @@ const VehiclePanel = (props) => {
             }} className='flex bg-[#f5f5f5] rounded-xl active:border-green p-3 w-full items-center justify-between ' style={{ border: "3px solid black" }}>
                 <img className='h-20 w-20 p-2' src="https://toppng.com/uploads/preview/crane-png-indo-power-crane-11563243373unjn5iufbu.png" alt="crane" />
                 <div className=' p-2 w-1/2'>
-                    <h4 className='font-medium text-base font-semibold'>Crane</h4>
+                    <h4 className='font-medium text-base font-semibold'>Hydra Crane</h4>
                     <h5 className='font-medium text-xs'>Get the quick service</h5>
                     <p className='font-medium text-xs text-grey-400'>get best service </p>
                 </div>
@@ -60,7 +60,7 @@ const VehiclePanel = (props) => {
                 <img className='h-20 w-20 p-2' src="https://toppng.com/uploads/preview/crane-png-indo-power-crane-11563243373unjn5iufbu.png" alt="crane" />
                 
                 <div className=' p-2 w-1/2'>
-                    <h4 className='font-medium text-sm font-semibold'>Mobile Van + Crane</h4>
+                    <h4 className='font-medium text-sm font-semibold'>Mobile Van + Hydra Crane</h4>
                     <h5 className='font-medium text-xs'>catch up quickly  </h5>
                     <p className='font-medium text-xs text-grey-400'>get cran and Mobile van</p>
                 </div>

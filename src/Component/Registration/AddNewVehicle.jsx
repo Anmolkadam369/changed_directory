@@ -397,7 +397,7 @@ export default function AddNewVehicle() {
                                             </div>
                                             <select
                                                 name="craneType"
-                                                placeholder="Type of Crane"
+                                                placeholder="Type of Hydra Crane"
                                                 value={formData.craneType}
                                                 onChange={handleChange}
                                                 className={`text-sm w-full max-w-lg p-3 border rounded-lg shadow-sm focus:outline-none ${errors.craneType
@@ -405,7 +405,7 @@ export default function AddNewVehicle() {
                                                     : 'border-gray-300 focus:ring-2 focus:ring-blue-500'
                                                     }`}
                                             >
-                                                <option value="">Select a Crane Type</option>
+                                                <option value="">Select a Hydra Crane Type</option>
                                                 <option value="Crawler Cranes">Crawler Cranes</option>
                                                 <option value="Carry Deck Cranes">Carry Deck Cranes</option>
                                                 <option value="Hammerhead Cranes">Hammerhead Cranes</option>

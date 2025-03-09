@@ -888,7 +888,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
 
                                 {selectedOptionsArray.includes("crane") && (
                                     <label className="form-field1">
-                                        Crane:
+                                        Hydra Crane:
                                         <select
                                             className='inputField1'
                                             name="crane"
@@ -896,7 +896,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                             onChange={handleChange}
                                             disabled={(formData.crane !== null && formData.crane !== "") && dummyFormData.crane == null}
                                         >
-                                            <option value="">Select a Crane</option>
+                                            <option value="">Select a Hydra Crane</option>
                                             {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crane").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
@@ -972,7 +972,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                 </div>
                                 {selectedOptionsArray.includes("crane") && (
                                     <label className="form-field1">
-                                        Crane:
+                                        Hydra Crane:
                                         <select
                                             className='inputField1'
                                             name="crane"
@@ -980,7 +980,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                             onChange={handleChange}
                                             disabled={(formData.crane !== null && formData.crane !== "") && dummyFormData.crane == null}
                                         >
-                                            <option value="">Select a Crane</option>
+                                            <option value="">Select a Hydra Crane</option>
                                             {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "crane").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
