@@ -789,10 +789,19 @@ const StatusTracking = ({ vehicleNumber }) => {
                                                     <div className="flex justify-between m-3">
                                                         <div className="flex items-center">
                                                             <div
-                                                                className="bg-green-700 m-1 px-6 py-2 rounded-xl cursor-pointer"
+                                                                className="bg-green-700 m-1 px-4 py-2 rounded-xl cursor-pointer"
                                                                 onClick={() => { goToMap(item) }}
                                                             >
                                                                 <p className="text-white font-semibold text-xs text-center">Track Location </p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex items-center">
+                                                            <div
+                                                                className="bg-red-700 m-1 px-3 py-2 rounded-xl cursor-pointer"
+                                                                onClick={() => { goToMap(item) }}
+                                                            >
+                                                                <p className="text-white font-semibold text-xs text-center">Reject </p>
                                                             </div>
                                                         </div>
 
@@ -948,13 +957,13 @@ const StatusTracking = ({ vehicleNumber }) => {
 
             <Modal isOpen={openFilterModal} onClose={() => setOpenFilterModal(!openFilterModal)}>
                 {openFilterModal && (
-                    <div style={{ textAlign: "center", marginTop: "30px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                    <div style={{ textAlign: "center", marginTop: "5px", flexDirection: "column", display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                         <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('newest') }}>newest to oldest</p>
                         <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('oldest') }}>oldest to newest</p>
                         <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('daily') }}>Yesterday</p>
                         <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('weekly') }}>Last 7 days</p>
                         <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('monthly') }}>Last 30 days</p>
-                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('year') }}>Year</p>
+                        <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "0px", fontSize: "15px", border: "1px solid red", background: "rgb(0 243 122 / 65%)", minWidth: "200px", borderRadius: "20px", padding: "7px" }} onClick={() => { settingFilter('year') }}>Year</p>
                     </div>
                 )}
             </Modal>

@@ -548,7 +548,7 @@ const Registrations = () => {
                                                                     <ul style={{ alignItems: "center" }} className={`dropdown-menu${showDropdownVendor ? " show" : ""}`} aria-labelledby="dropdownMenuButton1">
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "advocate")}>Advocate</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "crane")}>Crane</a></li>
-                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "recoveryVan")}>recovery van</a></li>
+                                                                        <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "recoveryVan")}>Mobile van</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "mechanic")}>Mechanic</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "workshop")}>Workshop</a></li>
                                                                         <li><a className="dropdown-item" href="#" onClick={(e) => handleSelect1(e, "partsDistributor")}>Parts Distributor</a></li>

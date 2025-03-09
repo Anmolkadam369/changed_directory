@@ -42,7 +42,7 @@ const VehiclePanel = (props) => {
             }} className='mt-3 flex bg-[#f5f5f5] rounded-xl active:border-green p-3 w-full items-center justify-between ' style={{ border: "3px solid black" }}>
                 <img className='h-[4rem] w-[4rem] p-2' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGO-VK9DCPXVGAmbx27ErrmIbqaJBMfJcAYw&s" alt="crane" />
                 <div className=' p-2 w-1/2'>
-                    <h4 className='font-medium text-base font-semibold'>Recovery Van</h4>
+                    <h4 className='font-medium text-base font-semibold'>Mobile Van</h4>
                     <h5 className='font-medium text-xs'>catch up quickly</h5>
                     <p className='font-medium text-xs text-grey-400'>get best service with crane </p>
                 </div>
@@ -60,9 +60,9 @@ const VehiclePanel = (props) => {
                 <img className='h-20 w-20 p-2' src="https://toppng.com/uploads/preview/crane-png-indo-power-crane-11563243373unjn5iufbu.png" alt="crane" />
                 
                 <div className=' p-2 w-1/2'>
-                    <h4 className='font-medium text-sm font-semibold'>Recovery Van + Crane</h4>
+                    <h4 className='font-medium text-sm font-semibold'>Mobile Van + Crane</h4>
                     <h5 className='font-medium text-xs'>catch up quickly  </h5>
-                    <p className='font-medium text-xs text-grey-400'>get cran and recovery van</p>
+                    <p className='font-medium text-xs text-grey-400'>get cran and Mobile van</p>
                 </div>
                 {/* <h2 className='text-xl font-semibold p-1'>₹ 20,000</h2> */}
             </div>)}

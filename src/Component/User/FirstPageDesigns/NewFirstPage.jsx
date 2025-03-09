@@ -205,7 +205,7 @@ function NewFirstPage() {
     const services = [
         {
             icon: Truck,
-            title: "Recovery Van Services",
+            title: "Mobile Van Services",
             description: "24/7 emergency vehicle recovery with GPS-tracked fleet. Instant response for breakdown and accidents.",
             imageUrl: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80",
             rating: "4.8",
@@ -476,7 +476,7 @@ function NewFirstPage() {
                                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Testimonials</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <div className="bg-white p-6 rounded-lg shadow">
-                                        <p className="text-gray-700 text-sm italic">"The recovery van arrived within 15 minutes and was extremely professional. Highly recommend!"</p>
+                                        <p className="text-gray-700 text-sm italic">"The Mobile van arrived within 15 minutes and was extremely professional. Highly recommend!"</p>
                                         <div className="mt-4 flex items-center space-x-2">
                                             <Star className="w-5 h-5 text-yellow-500" />
                                             <span className="text-gray-900 font-medium">4.8/5</span>
@@ -508,11 +508,11 @@ function NewFirstPage() {
                                     <div className="min-w-[280px] bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
                                         <img
                                             src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80"
-                                            alt="Recovery Van Services"
+                                            alt="Mobile Van Services"
                                             className="w-full h-32 object-cover"
                                         />
                                         <div className="p-4">
-                                            <h3 className="text-lg font-bold text-gray-800">Recovery Van</h3>
+                                            <h3 className="text-lg font-bold text-gray-800">Mobile Van</h3>
                                             <p className="text-sm text-gray-600 mt-2">Emergency vehicle recovery available 24/7 with GPS tracking.</p>
                                         </div>
                                     </div>
