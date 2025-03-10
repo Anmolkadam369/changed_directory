@@ -290,7 +290,7 @@ const VendorPerformance = () => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.id}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.id}/${state.type}/not_defined`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)

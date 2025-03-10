@@ -149,7 +149,7 @@ function EditAccidentVehicle({ id, onUpdate }) {
 
     const getAccidentDataById = async (id) => {
         console.log("getdatabyid", id)
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicleAccidentById/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVehicleAccidentById/${id}/${userId}`);
         console.log("response123", response.data.data[0]);
         setAccidentVehicleData(response.data.data[0])
     }
@@ -932,6 +932,22 @@ function EditAccidentVehicle({ id, onUpdate }) {
                                         >
                                             <option value="">Select a Workshop</option>
                                             {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "workshop").map((vendor) => (
+                                                <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
+                                            ))}
+                                        </select>
+                                    </label>)}
+                                    {selectedOptionsArray.includes("recoveryVan") && (
+                                    <label className="form-field1">
+                                        Recovery Van:
+                                        <select
+                                            className='inputField1'
+                                            name="recoveryVan"
+                                            value={formData.recoveryVan || ""}
+                                            onChange={handleChange}
+                                            disabled={(formData.recoveryVan !== null && formData.recoveryVan !== "") && dummyFormData.recoveryVan == null}
+                                        >
+                                            <option value="">Select a Recovery Van</option>
+                                            {vendorData && vendorData.data.filter(vendor => vendor.vendorType === "recoveryVan").map((vendor) => (
                                                 <option key={vendor.vendorCode} value={vendor.vendorCode}>{`${vendor.vendorName} - ${vendor.vendorCode}`}</option>
                                             ))}
                                         </select>

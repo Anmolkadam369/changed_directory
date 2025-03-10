@@ -27,6 +27,8 @@ const CraneOrders = () => {
     const [rejectedByAdmin, setRejectedByAdmin] = useState([])
     const [rejectedByCustomer, setRejectedByCustomer] = useState([])
     const [completedVehicle, setCompletedVehicle] = useState([])
+    const [recentlyCancelled, setRecentlyCancelled] = useState('')
+
     console.log("compltedVehicler", completedVehicle)
 
 
@@ -57,7 +59,7 @@ const CraneOrders = () => {
 
     useEffect(() => {
         messages.forEach((message) => {
-            console.log("form crane USER-all cases")
+            console.log("message123", message.message)
             if (message.forPage == "crane-user-all-cases") {
                 fetchAssignedCases()
             }
@@ -70,8 +72,8 @@ const CraneOrders = () => {
 
     const fetchAssignedCases = async () => {
         try {
-            let apiDetail = userId.startsWith('VC-') ? 'assignedTasksCraneForVendor' : 'assignedTasksUnfiltered';
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/${apiDetail}/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+            // let apiDetail = userId.startsWith('VC-') ? 'assignedTasksCraneForVendor' : 'assignedTasksUnfiltered';
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/assignedTasksUnfiltered/${userId}/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log("Total assignedTasksMechanic", response.data.data);
             setTotalAssignedCases(response.data.data);
 
@@ -115,6 +117,21 @@ const CraneOrders = () => {
             // console.log("tempRejectedByAdmin",tempRejectedByAdmin)
             console.log("tempRejectedByCustomer", tempRejectedByCustomer)
             console.log("tempCompletedVehicl1e", tempCompletedVehicle)
+            tempRejectedByCustomer.map(item=>{
+                console.log('item.cancelledAt',item.details[0].cancelledAt)
+                const cancellationTime = new Date(item.details[0].cancelledAt);
+                console.log('cancellationTime', cancellationTime)
+                const currentTime = new Date();
+                console.log('currentTime', currentTime)
+
+               const timeDiff = (currentTime - cancellationTime)/(1000*60);
+               console.log('timediff', timeDiff)
+                if(timeDiff < 2){
+                    console.log('details[0].issue_occured',item.details[0].issue_occured)
+                    setRecentlyCancelled(item.details[0].issue_occured);
+                }
+                
+        })
 
             // Update state with collected results
             setApprovedCaseByYou(tempApprovedCaseByYou);
@@ -178,7 +195,7 @@ const CraneOrders = () => {
             )}
 
             {selectedIndex == 0 && (
-                <CraneAcceptedOrders data={approvedCaseByYou} />
+                <CraneAcceptedOrders data={approvedCaseByYou} recentlyCancelled={recentlyCancelled} />
             )}
 
             {selectedIndex == 2 && (

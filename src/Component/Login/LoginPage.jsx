@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -87,6 +87,7 @@ const Login = () => {
     e.stopPropagation();
     setShowPassword(!showPassword);
   };
+  
 
   // const [selected, setSelected] = useState(0);
   // const handleClick = (value) => {
@@ -115,6 +116,36 @@ const Login = () => {
   //       };
   //   }
   // };
+
+  const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
+  const urlBase64ToUint8Array = base64String => {
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+  };
+
+
+
+          const sendLoginNotification = async () => {
+              try {
+                  console.log('Registering service worker...');
+                  const registration = await navigator.serviceWorker.register('/service-worker.js');
+                  console.log('Service worker registered:', registration);
+
+                  const subscription = await registration.pushManager.subscribe({
+                      userVisibleOnly: true,
+                      applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                  });
+                  console.log('Push Manager subscription:', subscription);
+
+                  await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/subscription/${userId}`, subscription,{ headers: { Authorization: `Bearer ${token}` }});
+
+              } catch (error) {
+                  console.error('Error sending login notification:', error);
+              }
+          };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -170,7 +201,6 @@ const Login = () => {
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
           localStorage.setItem("rememberedPassword", password);
-
           localStorage.setItem("rememberMe", true);
         } else {
           localStorage.removeItem("rememberedaEmail");
@@ -180,7 +210,7 @@ const Login = () => {
         }
 
         setAlertInfo({ show: true, messageAdvocate: response.data.message, severity: 'success' });
-
+        sendLoginNotification();
         console.log("RESPONSEONDSTS", response.data.data.userType)
         if (response.data.data?.userType === "admin" ||
           response.data.data.department?.trim() === "Management") {

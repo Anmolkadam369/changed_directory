@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -77,8 +77,16 @@ const MapComponent = ({ accidentLocation1, additionalInfo }) => {
     if (map) {
       map.setView([accidentLocation.lat, accidentLocation.lon], 13);
     }
-    vendorsData(additionalInfo.vendorType || "all");
-  }, [map, additionalInfo.vendorType]);
+  }, [map]); // Only runs when `map` changes
+  
+  const prevVendorType = useRef(null);
+  
+  useEffect(() => {
+    if (additionalInfo.vendorType !== prevVendorType.current) {
+      prevVendorType.current = additionalInfo.vendorType;
+      vendorsData(additionalInfo.vendorType || "all");
+    }
+  }, [additionalInfo.vendorType]);
 
   const vendorsData = async (vendorType) => {
     const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/vendorByType/${vendorType}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});

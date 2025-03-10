@@ -233,7 +233,7 @@ const QuotationUpdate = ({ vehicleNumber }) => {
             console.log(`${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem?.[`${currentService}Details`][`${currentService}`]}`)
             const response = await axios({
                 method: "PUT",
-                url: `${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem[`${currentService}Details`][`${currentService}`]}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}/api/cancellingOrderSecondaryStage/${currentItem?.[`${currentService}Details`].AccidentVehicleCode}/${currentService}/${userId}/${currentItem[`${currentService}Details`][`${currentService}`]}/${currentItem?.[`${currentService}Details`].vehicleNo}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },

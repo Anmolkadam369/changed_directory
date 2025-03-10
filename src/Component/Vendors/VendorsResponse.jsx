@@ -123,12 +123,12 @@ const VendorResponse = () => {
       });
       console.log("console dataMydata", response.data)
       const fetchedData = response.data.data;
-      const formattedData = fetchedData.map(item => ({
-        ...item,
-        systemDate: item.systemDate ? formatDate(item.systemDate) : "___",
-      }));
-      setData(formattedData);
-      setCurrentItems(formattedData);
+      // const formattedData = fetchedData.map(item => ({
+      //   ...item,
+      //   systemDate: item.systemDate ? formatDate(item.systemDate) : "___",
+      // }));
+      setData(fetchedData);
+      setCurrentItems(fetchedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -141,7 +141,7 @@ const VendorResponse = () => {
   };
   const handleUpdate = () => {
     getData();
-    setShowActualVendorResponse(false); 
+    setShowActualVendorResponse(false);
   };
 
 
@@ -149,26 +149,32 @@ const VendorResponse = () => {
     let arr = [];
     if (vehicle.mechanicData.length !== 0 ) {
       for(let i=0; i< vehicle.mechanicData.length; i++){
-        if(vehicle.mechanicData[i].acceptedByAdmin != 'reject')
-        arr.push(vehicle.mechanicData[0].acceptedByAdmin == null ? "pending" : vehicle.mechanicData[0].acceptedByAdmin)
+        if(vehicle.mechanicData[i].connectedVendorFully != true)
+        arr.push(vehicle.mechanicData[0].connectedVendorFully == false ? "pending" : vehicle.mechanicData[0].connectedVendorFully)
+      }
+    }
+    if (vehicle.recoveryVanData.length !== 0 ) {
+      for(let i=0; i< vehicle.recoveryVanData.length; i++){
+        if(vehicle.recoveryVanData[i].connectedVendorFully != true)
+        arr.push(vehicle.recoveryVanData[0].connectedVendorFully == false ? "pending" : vehicle.recoveryVanData[0].connectedVendorFully)
       }
     }
     if (vehicle.craneData.length !== 0 ) {
       for(let i=0; i< vehicle.craneData.length; i++){
-        if(vehicle.craneData[i].acceptedByAdmin != 'reject')
-        arr.push(vehicle.craneData[0].acceptedByAdmin == null ? "pending" : vehicle.craneData[0].acceptedByAdmin)
+        if(vehicle.craneData[i].connectedVendorFully != true)
+        arr.push(vehicle.craneData[0].connectedVendorFully == false ? "pending" : vehicle.craneData[0].connectedVendorFully)
       }
     }
     if (vehicle.advocateData.length !== 0 ) {
       for(let i=0; i< vehicle.advocateData.length; i++){
-        if(vehicle.advocateData[i].acceptedByAdmin != 'reject')
-        arr.push(vehicle.advocateData[0].acceptedByAdmin == null ? "pending" : vehicle.advocateData[0].acceptedByAdmin)
+        if(vehicle.advocateData[i].connectedVendorFully != true)
+        arr.push(vehicle.advocateData[0].connectedVendorFully == false ? "pending" : vehicle.advocateData[0].connectedVendorFully)
       }
     }
     if (vehicle.workshopData.length !== 0 ) {
       for(let i=0; i< vehicle.workshopData.length; i++){
-        if(vehicle.workshopData[i].acceptedByAdmin != 'reject')
-        arr.push(vehicle.workshopData[0].acceptedByAdmin == null ? "pending" : vehicle.workshopData[0].acceptedByAdmin)
+        if(vehicle.workshopData[i].connectedVendorFully != true)
+        arr.push(vehicle.workshopData[0].connectedVendorFully == false ? "pending" : vehicle.workshopData[0].connectedVendorFully)
       }
     }
 
@@ -188,7 +194,9 @@ const VendorResponse = () => {
     (vehicle.mechanicData && vehicle.mechanicData.length !== 0) ||
     (vehicle.craneData && vehicle.craneData.length !== 0) ||
     (vehicle.advocate && vehicle.advocate.length !== 0) ||
-    (vehicle.workshop && vehicle.workshop.length !== 0)
+    (vehicle.workshop && vehicle.workshop.length !== 0) ||
+    (vehicle.recoveryVan && vehicle.recoveryVan.length !== 0)
+
   );
 
   const columns = [
@@ -283,12 +291,12 @@ const VendorResponse = () => {
         return noOfCounts > 0 ? (
           <span className='popUp'>
             <PendingActionsIcon style={{ fontSize: '1.0rem', color: "red" }} />
-            <p style={{ fontSize: '0.4rem', color: "red" }}>Admin pending</p>
+            <p style={{ fontSize: '0.4rem', color: "red" }}> pending</p>
           </span>
         ) : (
           <span>
             <TaskIcon style={{ fontSize: '1.4rem', color: "blue" }} />
-            <p style={{ fontSize: '0.6rem', color: "blue" }}>Admin response</p>
+            <p style={{ fontSize: '0.6rem', color: "blue" }}> response</p>
           </span>
         );
       },
