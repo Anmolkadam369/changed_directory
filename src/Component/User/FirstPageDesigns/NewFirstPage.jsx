@@ -6,7 +6,10 @@ import BottomNavigationBar from '../BottomNavigationBar';
 
 
 import PermissionCheck from './PermissionCheck';
-
+import PhotoUploader from './PhotoUploader';
+import { Input } from '@mui/material';
+import PhotoAndDetailUploader from './PhotoAndDetailUploader';
+import ModalButton from "./ModalButton";
 
 function ServiceCard({ icon: Icon, title, description, imageUrl, rating, eta }) {
     return (
@@ -88,8 +91,43 @@ function NewFirstPage() {
     };
 
     useEffect(() => {
+        let locationEnabled = null;
+        let notificationPermission = null;
 
-        getLocation();
+        function checkPermissions() {
+            // Check Location Permission
+            navigator.geolocation.getCurrentPosition(
+                () => {
+                    if (locationEnabled === false) {
+                        console.log("Location turned ON. Reloading...");
+                        window.location.reload();
+                    }
+                    locationEnabled = true;
+                },
+                (error) => {
+                    if (error.code === error.PERMISSION_DENIED) {
+                        if (locationEnabled === true) {
+                            console.log("Location turned OFF. Reloading...");
+                            window.location.reload();
+                        }
+                        locationEnabled = false;
+                    }
+                }
+            );
+
+            // Check Notification Permission
+            let currentNotificationPermission = Notification.permission;
+            if (notificationPermission !== null && notificationPermission !== currentNotificationPermission) {
+                console.log("Notification permission changed. Reloading...");
+                window.location.reload();
+            }
+            notificationPermission = currentNotificationPermission;
+        }
+
+        getLocation()
+
+        const interval = setInterval(checkPermissions, 1000);
+        return () => clearInterval(interval);
 
     }, []);
 
@@ -219,6 +257,7 @@ function NewFirstPage() {
         return matchesSearch && matchesCategory;
     });
 
+
     return (
 
         <div>
@@ -233,6 +272,7 @@ function NewFirstPage() {
                 </div>
             ) : location ? (
                 <div>
+
                     <div>
                         <div className="w-full">
                             {/* Status Bar */}
@@ -297,8 +337,10 @@ function NewFirstPage() {
                                     </div>
                                 </div>
                             </div>
-
-
+                          
+                            <div className="text-center mt-5">
+                                <ModalButton />
+                            </div>
 
                             <div className="px-4 mb-6">
                                 <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide max-w-[300px]">
@@ -347,7 +389,6 @@ function NewFirstPage() {
                                 </div>
 
                             </div>
-
 
                             {/* Enhanced Service Details */}
                             <div className="px-4 pb-6">
@@ -534,6 +575,9 @@ function NewFirstPage() {
                             <BottomNavigationBar />
                         </div>
                     </div>
+
+
+
                 </div>
             ) : (
 
