@@ -246,9 +246,9 @@ const CraneHydra = () => {
 
                         <div className={`admin-page ${!comingValue ? 'blur' : ''}`}>
                             <Helmet>
-                                <title>Crane Hydra Dashboard - Claimpro</title>
-                                <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Crane Hydra Dashboard." />
-                                <meta name="keywords" content="Crane Hydra Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
+                                <title>Hydra Crane Dashboard - Claimpro</title>
+                                <meta name="description" content="Manage assigned vehicles, view tasks, and analyze case details on the Claimpro Hydra Crane Dashboard." />
+                                <meta name="keywords" content="Hydra Crane Dashboard, Claimpro, Vehicle Management, Task Management, Case Details" />
                                 <link rel='canonical' href={`https://claimpro.in/CraneDashboard`} />
                             </Helmet>
 

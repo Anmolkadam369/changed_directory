@@ -526,8 +526,8 @@ function CraneVehicleData() {
             {showUserDetails && (<form style={{ boxShadow: "0px 0px 10px 0px black", margin: "10px", marginBottom: "50px", padding: "15px" }} className='Customer-master-form'>
 
                 <Helmet>
-                    <title>Accident Data Added By Crane - Claimpro</title>
-                    <meta name="description" content="Accident Data By Crane." />
+                    <title>Accident Data Added By Hydra Crane - Claimpro</title>
+                    <meta name="description" content="Accident Data By Hydra Crane." />
                     <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
                     <link rel='canonical' href={`https://claimpro.in/AddedDataByCrane`} />
                 </Helmet>
@@ -1001,7 +1001,7 @@ function CraneVehicleData() {
                     <form style={{ maxWidth: "600px", flexGrow: 1, boxShadow: "0px 0px 10px 0px black", margin: "10px", marginBottom: "100px", padding: "15px" }} className='Customer-master-form'>
 
                         <div class='header-container'>
-                            <h2 className='bigtitle' style={{ marginBottom: "0px", marginLeft: "0px" }}>Document Upload - Crane</h2>
+                            <h2 className='bigtitle' style={{ marginBottom: "0px", marginLeft: "0px" }}>Document Upload - Hydra Crane</h2>
                         </div>
 
                         <div className='form-row' style={{ flexDirection: "column" }}>
@@ -1029,7 +1029,7 @@ function CraneVehicleData() {
                             </label>
 
                             <label className="form-field">
-                                Recovery Van Estimate:
+                                Mobile Crane Estimate:
                                 <input
                                     type="text"
                                     className='inputField form-control'

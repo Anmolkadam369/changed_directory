@@ -207,7 +207,7 @@ const WorkshopVendorRegistrationForm = () => {
           <meta name="description" content="Contact form for the query" />
           <meta
             name="keywords"
-            content="Vehicle Accidents, accident trucks,customer form,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management"
+            content="Vehicle Accidents, accident trucks,customer form,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services, Hydra Crane service ,On site repair,Accident Management"
           />
           <link rel="canonical" href={`https://claimpro.in/ContactUs`} />
         </Helmet>

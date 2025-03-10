@@ -431,7 +431,7 @@ const CustomerApproved = () => {
         <Helmet>
           <title>Customer Table - Claimpro</title>
           <meta name="description" content="Customer Table BVC claimPro Assist." />
-          <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
+          <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Hydra Crane service, On site repair, Accident Management" />
           <link rel='canonical' href={`https://claimpro.in/CustomerApproved`} />
         </Helmet>
         <div>

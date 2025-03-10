@@ -525,7 +525,7 @@ const Visitors = () => {
             <Helmet>
                 <title>Visitors Information - Claimpro</title>
                 <meta name="description" content="Visitors Information For BVC Claimpro Assist" />
-                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services, Hydra Crane service ,On site repair,Accident Management" />
                 <link rel='canonical' href={`https://claimpro.in/Visitors`} />
             </Helmet>
             {addVisitor && (

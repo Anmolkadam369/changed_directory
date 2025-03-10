@@ -242,7 +242,7 @@ const AccidentVehicle = () => {
         <Helmet>
           <title>Accident Vehicle Service - Claimpro</title>
           <meta name="description" content="Accident Vehicle Service." />
-          <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Crane service, On site repair, Accident Management" />
+          <meta name="keywords" content="Vehicle Accidents, accident trucks, Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist, Accidental repair, Motor Insurance claim, Advocate services, Hydra Crane service, On site repair, Accident Management" />
           <link rel='canonical' href={`https://claimpro.in/AccidentVehicle`} />
         </Helmet>
         <h3 className="bigtitle">Assign Vendor to Accident Vehicle</h3>

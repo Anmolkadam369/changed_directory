@@ -84,7 +84,7 @@
 //         </button>
 //         <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
 //           <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "advocate")}>Advocate</a></li>
-//           <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "crane")}>Crane</a></li>
+//           <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "crane")}>Hydra Crane</a></li>
 //           <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "mechanic")}>Mechanic</a></li>
 //           <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "workshop")}>Workshop</a></li>
 //         </ul>
@@ -278,7 +278,7 @@ const AssignedVendorsTable = () => {
           </button>
           <ul className={`dropdown-menu${showDropdown ? " show" : ""}`} aria-labelledby="dropdownMenuButton">
             <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "advocate")}>Advocate</a></li>
-            <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "crane")}>Crane</a></li>
+            <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "crane")}>Hydra Crane</a></li>
             <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "mechanic")}>Mechanic</a></li>
             <li><a className="dropdown-item" href="#" onClick={(e) => handleTypeChange(e, "workshop")}>Workshop</a></li>
           </ul>

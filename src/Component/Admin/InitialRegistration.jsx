@@ -340,7 +340,7 @@ function InitialRegistration() {
                 <Helmet>
                     <title>Customer Service Vehicle Number - Claimpro</title>
                     <meta name="description" content="Customer Service Vehicle for BVC ClaimPro Assist to register the vehicle and get data about vehicle." />
-                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services ,Crane service ,On site repair,Accident Management" />
+                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services , Hydra Crane service ,On site repair,Accident Management" />
                     <link rel='canonical' href={`https://claimpro.in/Register`} />
                 </Helmet>
 
@@ -695,7 +695,7 @@ function InitialRegistration() {
                                                 )}
 
                                                 <div style={{ display: 'flex' }}>
-                                                    <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Recovery Van Needed?</p>
+                                                    <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Mobile Crane Needed?</p>
 
                                                     {/* Required Button */}
                                                     <button

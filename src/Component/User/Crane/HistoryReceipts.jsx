@@ -611,10 +611,12 @@ const HistoryReceipts = ({ vehicleNumber }) => {
                         )}
                     </Modal>
 
+
                     {data.length == 0 && (
                         <NoDataFound />
                     )}
                 </div>)}
+
 
         </div>
     )

@@ -278,9 +278,9 @@
 //       {!showAddedDataByVendor && (
 //         <div>
 //           <Helmet>
-//             <title>Assigned Vehicles to Crane Manager - Claimpro</title>
-//             <meta name="description" content="View and manage vehicles assigned to Crane Manager for service. Track accident file numbers, vehicle codes, and more." />
-//             <meta name="keywords" content="Assigned Vehicles, Crane Manager, Vehicle Service, Accident File, Vehicle Management, Claimpro" />
+//             <title>Assigned Vehicles to Hydra Crane Manager - Claimpro</title>
+//             <meta name="description" content="View and manage vehicles assigned to Hydra Crane Manager for service. Track accident file numbers, vehicle codes, and more." />
+//             <meta name="keywords" content="Assigned Vehicles, Hydra Crane Manager, Vehicle Service, Accident File, Vehicle Management, Claimpro" />
 //             <link rel='canonical' href={`https://claimpro.in/AssignedVehicleCrane`} />
 //           </Helmet>
 
@@ -370,7 +370,7 @@
 
 //               <div className="flex-fill mt-4 justify-content-center" style={{ maxWidth: '100%', overflowX: 'auto' }}>
 //               <div className="header-container mb-3">
-//                   <h3 className="bigtitle">Assigned Vehicles To Crane Manager</h3>
+//                   <h3 className="bigtitle">Assigned Vehicles To Hydra Crane Manager</h3>
 //                 </div>
 //                 <DataTable
 //                   columns={columns}
@@ -847,9 +847,9 @@ const AssignedVehicleCrane = ({ getFilterInfo }) => {
       {!showAddedDataByVendor && (
         <div>
           <Helmet>
-            <title>Assigned Vehicles to Crane Manager - Claimpro</title>
-            <meta name="description" content="View and manage vehicles assigned to Crane Manager for service. Track accident file numbers, vehicle codes, and more." />
-            <meta name="keywords" content="Assigned Vehicles, Crane Manager, Vehicle Service, Accident File, Vehicle Management, Claimpro" />
+            <title>Assigned Vehicles to Hydra Crane Manager - Claimpro</title>
+            <meta name="description" content="View and manage vehicles assigned to Hydra Crane Manager for service. Track accident file numbers, vehicle codes, and more." />
+            <meta name="keywords" content="Assigned Vehicles, Hydra Crane Manager, Vehicle Service, Accident File, Vehicle Management, Claimpro" />
             <link rel='canonical' href={`https://claimpro.in/AssignedVehicleCrane`} />
           </Helmet>
 

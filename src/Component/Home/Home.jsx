@@ -481,7 +481,7 @@ function Home() {
                                     <div className="home-elem-55">
                                         <span className="home-elem-54">
                                             <p style={{ fontSize: "15px", fontWeight: "bold", color: "lightgreen", textAlign: "center" }}> 1500+ </p>
-                                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>Crane / Hydra </p>
+                                            <p style={{ fontSize: "15px", fontWeight: "bold" }}>Hydra Crane / Mobile Crane </p>
                                         </span>
                                         <span className="home-elem-53">
                                             <p><br /></p>
