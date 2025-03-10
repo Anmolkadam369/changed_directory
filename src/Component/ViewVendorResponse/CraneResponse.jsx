@@ -929,7 +929,7 @@ function CraneResponse({ data, onUpdate }) {
                             </label>
 
                             <label className="form-field">
-                            Mobile Van Estimate:
+                            Mobile Crane Estimate:
                                 <input
                                     type="text"
                                     className='inputField form-control'

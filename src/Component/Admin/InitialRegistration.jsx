@@ -695,7 +695,7 @@ function InitialRegistration() {
                                                 )}
 
                                                 <div style={{ display: 'flex' }}>
-                                                    <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Mobile Van Needed?</p>
+                                                    <p style={{ fontSize: '13px', marginTop: "20px", marginRight: "10px" }}>Mobile Crane Needed?</p>
 
                                                     {/* Required Button */}
                                                     <button
