@@ -341,7 +341,7 @@ const VendorMoving = ({ item }) => {
                                 borderRadius: '30px',
                                 fontWeight: "bold",
                                 color: "white",
-                                display: 'flex',
+                              display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: "center",
                                 position: "relative",
