@@ -41,8 +41,21 @@ function haversine(lat1, lon1, lat2, lon2) {
     return distance;
 }
 
-const CraneAcceptedOrders = ({ data }) => {
+const Notification = ({ message, onClose }) => {
+    return (
+        <div className="notification">
+            <button className="close-btn" onClick={onClose}>✖</button>
+            <p>{message}</p>
+        </div>
+    );
+};
+
+const CraneAcceptedOrders = ({ data, recentlyCancelled }) => {
     const [totalAcceptedCases, setTotalAcceptedCase] = useState([]);
+    console.log("data from crane order delete", recentlyCancelled)
+    const [recentlyCancelledData, setRecentlyCancelledData] = useState(false)
+    const [gotCancelled, setGotCancelled] = useState(false)
+
     const [spareUseData, setSpareUseData] = useState([]);
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -91,6 +104,10 @@ const CraneAcceptedOrders = ({ data }) => {
                 setOpenDetails(false)
             }
         }
+        setRecentlyCancelledData(recentlyCancelled)
+       if (recentlyCancelled !== "" )setGotCancelled(true)
+
+
     }, [data])
 
     const handleChoosenCase = (item) => {
@@ -284,8 +301,8 @@ const CraneAcceptedOrders = ({ data }) => {
 
                 }}>
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
-                        <div className="container fixed " style={{zIndex:'1001'}}>
-                            <div className="d-flex justify-content-center h-100" style={{  position: 'sticky', top: "25px" }}>
+                        <div className="container fixed " style={{ zIndex: '1001' }}>
+                            <div className="d-flex justify-content-center h-100" style={{ position: 'sticky', top: "25px" }}>
                                 <div className="searchbar" style={{ border: '1px solid', minWidth: "130px" }}>
                                     <input className="search_input" type="text" placeholder="Search..." style={{ margin: "3px", paddingTop: "5px" }} value={searchValue} onChange={(e) => { handleSearch(e.target.value) }} />
                                     <img src={searchinterfacesymbol} className="search_icon" style={{ height: '15px', width: '15px' }} alt='search' />
@@ -296,6 +313,17 @@ const CraneAcceptedOrders = ({ data }) => {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div>
+
+                    {gotCancelled && (
+                        <div>   
+                        <Notification
+                            message={recentlyCancelledData}
+                            onClose={() => setGotCancelled(false)}
+                        />
+                        </div>
+                    )}
                 </div>
                 {totalAcceptedCases.length > 0 && (
                     <div
@@ -438,7 +466,7 @@ const CraneAcceptedOrders = ({ data }) => {
                                     <div className="mt-2 mr-auto ml-auto flex justify-center">
                                         <p
                                             className="text-sm mt-1 font-semibold bg-red-600 text-white rounded-full   text-center   flex items-center justify-center relative cursor-pointer max-w-[200px] min-w-[150px] h-[30px]"
-                                            style={{  border: '1px solid', paddingLeft: "10px", fontSize: "13px" }}
+                                            style={{ border: '1px solid', paddingLeft: "10px", fontSize: "13px" }}
                                             onClick={() => handleChoosenCase(item)}
                                         >
                                             View Case

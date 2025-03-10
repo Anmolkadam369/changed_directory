@@ -39,6 +39,8 @@ const VendorTable = ({ vendors, categoryName }) => {
     const [viewCraneData, setViewCraneData] = useState(false);
     const [viewAdvocateData, setViewAdvocateData] = useState(false);
     const [viewWorkshopData, setViewWorkshopData] = useState(false);
+    const [viewRecoveryVanData, setViewRecoveryVanData] = useState(false);
+
     const [selectedId, setSelectedId] = useState({});
     console.log("VEndors1123456789", vendors[0])
 
@@ -50,6 +52,7 @@ const VendorTable = ({ vendors, categoryName }) => {
         setViewCraneData(false);
         setViewAdvocateData(false);
         setViewWorkshopData(false);
+        setViewRecoveryVanData(false);
     }
     const viewCrane = (data) => {
         console.log("DATACRANESHERE", data);
@@ -59,6 +62,8 @@ const VendorTable = ({ vendors, categoryName }) => {
         setViewCraneData(true);
         setViewAdvocateData(false);
         setViewWorkshopData(false);
+        setViewRecoveryVanData(false);
+
     }
     const viewAdvocate = (data) => {
         console.log("DATA", data);
@@ -68,6 +73,8 @@ const VendorTable = ({ vendors, categoryName }) => {
         setViewCraneData(false);
         setViewAdvocateData(true);
         setViewWorkshopData(false);
+        setViewRecoveryVanData(false);
+
     }
     const viewWorkshop = (data) => {
         console.log("DATA", data);
@@ -77,6 +84,19 @@ const VendorTable = ({ vendors, categoryName }) => {
         setViewCraneData(false);
         setViewAdvocateData(false);
         setViewWorkshopData(true);
+        setViewRecoveryVanData(false);
+
+    }
+    const viewRecoveryVan = (data) => {
+        console.log("DATA", data);
+        setSelectedId(data)
+        setMainContent(false);
+        setViewMechanicData(false);
+        setViewCraneData(false);
+        setViewAdvocateData(false);
+        setViewWorkshopData(false);
+        setViewRecoveryVanData(true);
+
     }
 
     const handleUpdate = () => {
@@ -85,7 +105,11 @@ const VendorTable = ({ vendors, categoryName }) => {
         setViewCraneData(false);
         setViewAdvocateData(false);
         setViewWorkshopData(false);
+        setViewRecoveryVanData(false);
+
     };
+
+    console.log('categorizedacceptedOrNotActioned21324', vendors)
 
     return (
         <div>
@@ -109,23 +133,26 @@ const VendorTable = ({ vendors, categoryName }) => {
                                     <tr key={vendor.VendorCode}>
                                         <td>{index + 1}</td>
                                         <td>{vendor.vendorName}</td>
-                                        <td>{vendor.assignedOn}</td>
+                                        <td>{vendor.systemDate.split("T")[0]}</td>
                                         <td>{vendor.vendorType}</td>
                                         <td>{vendor.email}</td>
                                         <td>
                                             {vendor.vendorDecision !== "reject" && vendor.acceptedByAdmin !== "reject" && vendor.cancelOrder == false && (
                                                 <>
-                                                    {vendor.vendorType === "crane" && vendor.vendorDecision !== "reject" && vendor.acceptedByAdmin !== "reject" && vendor.cancelOrder == false && (
+                                                    {vendor.vendorType === "crane" &&  vendor.connectedVendorFully == true  && vendor.cancelOrder == false && (
                                                         <button className="action-btn" onClick={() => viewCrane([vendor])}>View</button>
                                                     )}
-                                                    {vendor.vendorType === "mechanic" && vendor.vendorDecision !== "reject" && vendor.acceptedByAdmin !== "reject" && vendor.cancelOrder == false && (
+                                                    {vendor.vendorType === "mechanic" &&  vendor.connectedVendorFully == true  && vendor.cancelOrder == false && (
                                                         <button className="action-btn" onClick={() => viewMechanic([vendor])}>View</button>
                                                     )}
-                                                    {vendor.vendorType === "advocate" && vendor.vendorDecision !== "reject" && vendor.acceptedByAdmin !== "reject" && vendor.cancelOrder == false && (
+                                                    {vendor.vendorType === "advocate" &&  vendor.connectedVendorFully == true  && vendor.cancelOrder == false && (
                                                         <button className="action-btn" onClick={() => viewAdvocate([vendor])}>View</button>
                                                     )}
-                                                    {vendor.vendorType === "workshop" && vendor.vendorDecision !== "reject" && vendor.acceptedByAdmin !== "reject" && vendor.cancelOrder == false && (
+                                                    {vendor.vendorType === "workshop" &&  vendor.connectedVendorFully == true  && vendor.cancelOrder == false && (
                                                         <button className="action-btn" onClick={() => viewWorkshop([vendor])}>View</button>
+                                                    )}
+                                                     {vendor.vendorType === "recoveryVan" && vendor.connectedVendorFully == true && vendor.cancelOrder == false && (
+                                                        <button className="action-btn" onClick={() => viewRecoveryVan([vendor])}>View</button>
                                                     )}
                                                 </>)}
 
@@ -227,6 +254,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     });
 
     const [acceptedOrNotActionedCrane, setAcceptedOrNotActionedCrane] = useState([]);
+    const [acceptedOrNotActionedRecoveryVan, setAcceptedOrNotActionedRecoveryVan] = useState([]);
     const [acceptedOrNotActionedMechanic, setAcceptedOrNotActionedMechanic] = useState([]);
     const [acceptedOrNotActionedWorkshop, setAcceptedOrNotActionedWorkshop] = useState([]);
     const [acceptedOrNotActionedAdvocate, setAcceptedOrNotActionedAdvocate] = useState([]);
@@ -240,10 +268,12 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
             ...acceptedOrNotActionedMechanic,
             ...acceptedOrNotActionedWorkshop,
             ...acceptedOrNotActionedAdvocate,
+            ...acceptedOrNotActionedRecoveryVan
         ]);
-    }, [acceptedOrNotActionedCrane, acceptedOrNotActionedMechanic, acceptedOrNotActionedWorkshop, acceptedOrNotActionedAdvocate]);
+    }, [acceptedOrNotActionedCrane, acceptedOrNotActionedMechanic, acceptedOrNotActionedWorkshop, acceptedOrNotActionedAdvocate, acceptedOrNotActionedRecoveryVan]);
 
     const [craneAdminRejected, setCraneAdminRejected] = useState([]);
+    const [recoveryVanAdminRejected, setRecoveryVanAdminRejected] = useState([]);
     const [mechanicAdminRejected, setMechanicAdminRejected] = useState([]);
     const [workshopAdminRejected, setWorkshopAdminRejected] = useState([]);
     const [advocateAdminRejected, setAdvocateAdminRejected] = useState([]);
@@ -253,14 +283,16 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     useEffect(() => {
         setDataRejected([
             ...craneAdminRejected,
+            ...recoveryVanAdminRejected,
             ...mechanicAdminRejected,
             ...workshopAdminRejected,
             ...advocateAdminRejected,
         ]);
-    }, [craneAdminRejected, mechanicAdminRejected, workshopAdminRejected, advocateAdminRejected]);
+    }, [craneAdminRejected,recoveryVanAdminRejected, mechanicAdminRejected, workshopAdminRejected, advocateAdminRejected]);
 
 
     const [craneVendorRejected, setCraneVendorRejected] = useState([]);
+    const [recoveryVanVendorRejected, setRecoveryVanVendorRejected] = useState([]);
     const [mechanicVendorRejected, setMechanicVendorRejected] = useState([]);
     const [workshopVendorRejected, setWorkshopVendorRejected] = useState([]);
     const [advocateVendorRejected, setAdvocateVendorRejected] = useState([]);
@@ -274,11 +306,13 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
             ...mechanicVendorRejected,
             ...workshopVendorRejected,
             ...advocateVendorRejected,
+            ...recoveryVanVendorRejected,
         ]);
-    }, [craneVendorRejected, mechanicVendorRejected, workshopVendorRejected, advocateVendorRejected]);
+    }, [craneVendorRejected, mechanicVendorRejected, workshopVendorRejected, advocateVendorRejected,recoveryVanVendorRejected]);
 
 
     const [craneCustomerRejected, setCraneCustomerRejected] = useState([]);
+    const [recoveryVanCustomerRejected, setRecoveryVanCustomerRejected] = useState([]);
     const [mechanicCustomerRejected, setMechanicCustomerRejected] = useState([]);
     const [workshopCustomerRejected, setWorkshopCustomerRejected] = useState([]);
     const [advocateCustomerRejected, setAdvocateCustomerRejected] = useState([]);
@@ -292,8 +326,9 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
             ...mechanicCustomerRejected,
             ...workshopCustomerRejected,
             ...advocateCustomerRejected,
+            ...recoveryVanCustomerRejected,
         ]);
-    }, [craneCustomerRejected, mechanicCustomerRejected, workshopCustomerRejected, advocateCustomerRejected]);
+    }, [craneCustomerRejected, mechanicCustomerRejected, workshopCustomerRejected, advocateCustomerRejected, recoveryVanCustomerRejected]);
 
 
 
@@ -312,6 +347,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
         const fetchVendorData = async () => {
             if (vehicle) {
+                console.log('vehicle123', vehicle)
                 let vendors = [];
                 if (vehicle.craneData.length > 0) {
                     vehicle.craneData.map((individualCraneData) => {
@@ -332,12 +368,19 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                         vendors.push(individualworkshopData.VendorCode)
                     })
                 }
+                if (vehicle.recoveryVanData.length > 0) {
+                    vehicle.recoveryVanData.map((individualrecoveryVanData) => {
+                        vendors.push(individualrecoveryVanData.VendorCode)
+                    })
+                }
                 console.log("VENDORSDFD", vendors)
                 console.log("VEDORDSSSDD", uniqueVendors)
 
                 for (const ven of vendors) {
                     try {
-                        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdForVendor/${ven}`);
+                        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/findByIdForVendor/${ven}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
+
+                        console.log('resposnt', response)
                         setComingVendorData(prevData => [...prevData, response.data.data[0]]);
                     } catch (error) {
                         console.error("Error fetching vendor data:", error);
@@ -357,45 +400,59 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         if (vehicle.craneData.length !== 0) {
             console.log("vanva", vehicle.craneData)
             const result = someFunct(vehicle.craneData);
-            const result2 = someFunct2(vehicle.craneData);
-            const result3 = someFunct3(vehicle.craneData);
+            // const result2 = someFunct2(vehicle.craneData);
+            // const result3 = someFunct3(vehicle.craneData);
             const result4 = someFunct4(vehicle.craneData);
             console.log("resudlt4abc",result4 )
             setAcceptedOrNotActionedCrane(result);
-            setCraneAdminRejected(result2)
-            setCraneVendorRejected(result3)
+            // setCraneAdminRejected(result2)
+            // setCraneVendorRejected(result3)
             setCraneCustomerRejected(result4)
+        }
+        if (vehicle.recoveryVanData.length !== 0) {
+            console.log("vanva recoveryvan", vehicle.recoveryVanData)
+            const result = someFunct(vehicle.recoveryVanData);
+            // const result2 = someFunct2(vehicle.recoveryVanData);
+            // const result3 = someFunct3(vehicle.recoveryVanData);
+            const result4 = someFunct4(vehicle.recoveryVanData);
+            console.log("resudlt",result )
+            console.log("resudlt4abc",result4 )
+
+            setAcceptedOrNotActionedRecoveryVan(result);
+            // setRecoveryVanAdminRejected(result2)
+            // setRecoveryVanVendorRejected(result3)
+            setRecoveryVanCustomerRejected(result4)
         }
         if (vehicle.mechanicData.length !== 0) {
             const result = someFunct(vehicle.mechanicData);
-            const result2 = someFunct2(vehicle.mechanicData);
-            const result3 = someFunct3(vehicle.mechanicData);
+            // const result2 = someFunct2(vehicle.mechanicData);
+            // const result3 = someFunct3(vehicle.mechanicData);
             const result4 = someFunct4(vehicle.mechanicData);
             setAcceptedOrNotActionedMechanic(result);
-            setMechanicAdminRejected(result2)
-            setMechanicVendorRejected(result3)
+            // setMechanicAdminRejected(result2)
+            // setMechanicVendorRejected(result3)
             setMechanicCustomerRejected(result4)
 
         }
         if (vehicle.advocateData.length !== 0) {
             const result = someFunct(vehicle.advocateData);
-            const result2 = someFunct2(vehicle.advocateData);
-            const result3 = someFunct3(vehicle.advocateData);
+            // const result2 = someFunct2(vehicle.advocateData);
+            // const result3 = someFunct3(vehicle.advocateData);
             const result4 = someFunct4(vehicle.advocateData);
             setAcceptedOrNotActionedWorkshop(result);
-            setWorkshopAdminRejected(result2)
-            setWorkshopVendorRejected(result3)
+            // setWorkshopAdminRejected(result2)
+            // setWorkshopVendorRejected(result3)
             setWorkshopCustomerRejected(result4)
 
         }
         if (vehicle.workshopData.length !== 0) {
             const result = someFunct(vehicle.workshopData);
-            const result2 = someFunct2(vehicle.workshopData);
-            const result3 = someFunct3(vehicle.workshopData);
+            // const result2 = someFunct2(vehicle.workshopData);
+            // const result3 = someFunct3(vehicle.workshopData);
             const result4 = someFunct4(vehicle.workshopData);
             setAcceptedOrNotActionedAdvocate(result);
-            setAdvocateAdminRejected(result2)
-            setAdvocateVendorRejected(result3)
+            // setAdvocateAdminRejected(result2)
+            // setAdvocateVendorRejected(result3)
             setAdvocateCustomerRejected(result4)
 
         }
@@ -403,24 +460,23 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
     const someFunct = (data) => {
         return data.filter(item => {
-            return (item.acceptedByAdmin !== 'reject' && item.vendorDecision !== 'reject' && item.cancelOrder == false)
+            return (item.connectedVendorFully !== false  && item.cancelOrder == false)
         });
     };
-    const someFunct2 = (data) => {
-        return data.filter((item) => {
-            return (item.acceptedByAdmin === 'reject')
-        })
-    };
-    const someFunct3 = (data) => {
-        return data.filter((item) => {
-            return (item.vendorDecision === 'reject')
-        })
-    };
+    // const someFunct2 = (data) => {
+    //     return data.filter((item) => {
+    //         return (item.acceptedByAdmin === 'reject')
+    //     })
+    // };
+    // const someFunct3 = (data) => {
+    //     return data.filter((item) => {
+    //         return (item.vendorDecision === 'reject')
+    //     })
+    // };
     const someFunct4 = (data) => {
         console.log("SOMEFUNCT4", data)
         return data.filter((item) => {
-            console.log("item.cancleOrder", item.cancelOrder, "ITEM.acceptedByAdmin", item.acceptedByAdmin)
-            return (item.cancelOrder == true && item.acceptedByAdmin ===  'accept')
+            return (item.cancelOrder == true)
         })
     };
 
@@ -539,7 +595,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
     console.log("comigDatahere", comingVendorData)
     const uniqueVendors = comingVendorData.filter((vendor, index, self) =>
-        index === self.findIndex((v) => v.vendorCode === vendor.vendorCode));
+        index === self.findIndex((v) => v.vendorDriverCode === vendor.vendorDriverCode));
 
 
 
@@ -550,7 +606,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
 
     const [DataRejectedVendors, setDataRejectedVendors] = useState([]);
     const [craneDataRejected, setCraneDataRejected] = useState([]);
-    console.log("cranedatarejected", craneDataRejected)
+    const [recoveryVanataRejected, setRecoveryDataRejected] = useState([]);
     const [advocateDataRejected, setAdvocateDataRejected] = useState([]);
     const [mechanicDataRejected, setMechanicDataRejected] = useState([]);
     const [workshopDataRejected, setWorkshopDataRejected] = useState([]);
@@ -587,14 +643,14 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     
     */
     const [categorizedacceptedOrNotActioned, setCategorizedacceptedOrNotActioned] = useState([])
-    const [categorizeddataRejected, setCategorizeddataRejected] = useState([])
-    const [categorizedvendorRejected, setCategorizedvendorRejected] = useState([])
-    const [categorizedCustomerRejected, setCategorizedCustomerRejected] = useState([])
+    // const [categorizeddataRejected, setCategorizeddataRejected] = useState([])
+    // const [categorizedvendorRejected, setCategorizedvendorRejected] = useState([])
+    const [categorizedCustomerRejected, setCategorizedCustomerRejected] = useState([])  //setAcceptedOrNotActionedRecoveryVan
 
 
     console.log("categorizedacceptedOrNotActioned", categorizedacceptedOrNotActioned)
-    console.log("setCategorizeddataRejected", categorizeddataRejected)
-    console.log("categorizedvendorRejected", categorizedvendorRejected)
+    // console.log("setCategorizeddataRejected", categorizeddataRejected)
+    // console.log("categorizedvendorRejected", categorizedvendorRejected)
 
 
 
@@ -602,69 +658,78 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
         const transformVendorData = (uniqueVendors, acceptedOrNotActioned, customerRejected, dataRejected, vendorRejected) => {
             // Initialize arrays to store the categorized data
             let allAcceptedOrNotActioned = [];
-            let allDataRejected = [];
-            let allVendorRejected = [];
+            // let allDataRejected = [];
+            // let allVendorRejected = [];
             let allCustomerRejected = [];
-
+            console.log('acceptedOrNotActioned123', acceptedOrNotActioned)
             uniqueVendors.forEach((vendor) => {
-                const { vendorCode } = vendor;
+            const vendorCodes = [vendor.vendorCode, vendor.vendorDriverCode].filter(Boolean);
 
-                const categories = {
-                    acceptedOrNotActioned: acceptedOrNotActioned
-                        .filter((item) => item.VendorCode === vendorCode)
-                        .map((item) => ({
-                            ...item,
-                            vendorName: vendor.vendorName,
-                            email: vendor.email,
-                            vendorType: vendor.vendorType,
-                        })),
-                    dataRejected: dataRejected
-                        .filter((item) => item.VendorCode === vendorCode)
-                        .map((item) => ({
-                            ...item,
-                            vendorName: vendor.vendorName,
-                            email: vendor.email,
-                            vendorType: vendor.vendorType,
-                        })),
-                    vendorRejected: vendorRejected
-                        .filter((item) => item.VendorCode === vendorCode)
-                        .map((item) => ({
-                            ...item,
-                            vendorName: vendor.vendorName,
-                            email: vendor.email,
-                            vendorType: vendor.vendorType,
-                        })),
+
+               const categories = {
+        acceptedOrNotActioned: acceptedOrNotActioned
+            .filter((item) => vendorCodes.includes(item.VendorCode))
+            .map((item) => ({
+                ...item,
+                vendorName: vendor.vendorName || vendor.driverName,
+                email: vendor.email,
+                vendorType: vendor.vendorType || vendor.type,
+            })),
+                    // dataRejected: dataRejected
+                    //     .filter((item) => item.VendorCode === vendorCode)
+                    //     .map((item) => ({
+                    //         ...item,
+                    //         vendorName: vendor.vendorName,
+                    //         email: vendor.email,
+                    //         vendorType: vendor.vendorType,
+                    //     })),
+                    // vendorRejected: vendorRejected
+                    //     .filter((item) => item.VendorCode === vendorCode)
+                    //     .map((item) => ({
+                    //         ...item,
+                    //         vendorName: vendor.vendorName,
+                    //         email: vendor.email,
+                    //         vendorType: vendor.vendorType,
+                    //     })),
                         customerRejected:customerRejected
-                        .filter((item)=>item.VendorCode === vendorCode)
+                        .filter((item)=>vendorCodes.includes(item.VendorCode))
                         .map((item)=>({
                             ...item,
-                            vendorName:vendor.vendorName,
-                            email:vendor.email,
-                            vendorType:vendor.vendorType,
+                            vendorName: vendor.vendorName || vendor.driverName,
+                            email: vendor.email,
+                            vendorType: vendor.vendorType|| vendor.type,
                         }))
                 };
 
                 // Collect all categorized data
+                console.log('categories.acceptedOrNotActioned', categories.acceptedOrNotActioned)
                 allAcceptedOrNotActioned.push(...categories.acceptedOrNotActioned);
-                allDataRejected.push(...categories.dataRejected);
-                allVendorRejected.push(...categories.vendorRejected);
+                // allDataRejected.push(...categories.dataRejected);
+                // allVendorRejected.push(...categories.vendorRejected);
                 allCustomerRejected.push(...categories.customerRejected);
             });
 
             return {
                 allAcceptedOrNotActioned,
-                allDataRejected,
-                allVendorRejected,
+                // allDataRejected,
+                // allVendorRejected,
                 allCustomerRejected,
             };
         };
 
         if (
             uniqueVendors.length > 0 &&
-            (acceptedOrNotActioned.length > 0 || customerRejected.length > 0 || dataRejected.length > 0 || vendorRejected.length > 0)
+            (acceptedOrNotActioned.length > 0 
+               /* || customerRejected.length > 0 
+                || dataRejected.length > 0 */ ||
+                 vendorRejected.length > 0)
         ) {
-            const { allAcceptedOrNotActioned, allDataRejected, allVendorRejected, allCustomerRejected } =
-                transformVendorData(uniqueVendors, acceptedOrNotActioned, customerRejected, dataRejected, vendorRejected);
+            const { allAcceptedOrNotActioned,
+                //  allDataRejected, allVendorRejected, 
+                 allCustomerRejected } =
+                transformVendorData(uniqueVendors, acceptedOrNotActioned,
+                    //  customerRejected, dataRejected,
+                      vendorRejected);
 
             // Update states only if the data has changed
             if (
@@ -674,13 +739,13 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                 setCategorizedacceptedOrNotActioned(allAcceptedOrNotActioned);
             }
 
-            if (JSON.stringify(allDataRejected) !== JSON.stringify(categorizeddataRejected)) {
-                setCategorizeddataRejected(allDataRejected);
-            }
+            // if (JSON.stringify(allDataRejected) !== JSON.stringify(categorizeddataRejected)) {
+            //     setCategorizeddataRejected(allDataRejected);
+            // }
 
-            if (JSON.stringify(allVendorRejected) !== JSON.stringify(categorizedvendorRejected)) {
-                setCategorizedvendorRejected(allVendorRejected);
-            }
+            // if (JSON.stringify(allVendorRejected) !== JSON.stringify(categorizedvendorRejected)) {
+            //     setCategorizedvendorRejected(allVendorRejected);
+            // }
 
             if(JSON.stringify(allCustomerRejected) !== JSON.stringify(categorizedCustomerRejected)){
                 setCategorizedCustomerRejected(allCustomerRejected)
@@ -689,12 +754,12 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
     }, [
         uniqueVendors,
         acceptedOrNotActioned,
-        dataRejected,
-        vendorRejected,
+        // dataRejected,
+        // vendorRejected,
         customerRejected,
         categorizedacceptedOrNotActioned,
-        categorizeddataRejected,
-        categorizedvendorRejected,
+        // categorizeddataRejected,
+        // categorizedvendorRejected,
     ]);
 
 
@@ -795,7 +860,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                             ) : (
                                 <p className="no-data-message">No data available for Accepted or Not Actioned</p>
                             )}
-
+{/* 
                             {categorizeddataRejected.length > 0 ? (
                                 <VendorTable
                                     vendors={categorizeddataRejected}
@@ -812,7 +877,7 @@ const ActualVendorResponse = ({ vehicle, onUpdate }) => {
                                 />
                             ) : (
                                 <p className="no-data-message">No data available for Vendor Rejected</p>
-                            )}
+                            )} */}
 
                               {categorizedCustomerRejected.length > 0 ? (
                                 <VendorTable

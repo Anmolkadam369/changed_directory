@@ -6,20 +6,20 @@ export const WebSocketProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
     const isSocketOpenRef = useRef(false); // Ref to track the connection state
     const socketRef = useRef(null); // Ref to store the WebSocket instance
+    const reconnectTimeoutRef = useRef(null);
 
-    useEffect(() => {
-        // const ws = new WebSocket("wss://claimpro.in/ws/");
-        const ws = new WebSocket("ws://localhost:3001");
+    const connectWebSocket = () => {
+        console.log("process.env.REACT_APP_WEBSOCKET",process.env.REACT_APP_WEBSOCKET)
+        const ws = new WebSocket(process.env.REACT_APP_WEBSOCKET);
 
-        socketRef.current = ws; // Store the WebSocket instance in the ref
+        socketRef.current = ws; 
 
         ws.onopen = () => {
             console.log('Connected to WebSocket server');
-            isSocketOpenRef.current = true; // Set the connection state to true
+            isSocketOpenRef.current = true;
             const userId = localStorage.getItem("userId");
             if (userId) {
                 ws.send(JSON.stringify({ userId }));
-                console.log(`User ID ${userId} sent to server`);
             }
         };
 
@@ -30,12 +30,27 @@ export const WebSocketProvider = ({ children }) => {
         };
 
         ws.onclose = () => {
-            console.log("WebSocket  Connected closed");
-            isSocketOpenRef.current = false; // Set the connection state to false
+            console.log("WebSocket connection closed. Reconnecting...");
+            isSocketOpenRef.current = false;
+
+            // Attempt to reconnect after 5 seconds
+            reconnectTimeoutRef.current = setTimeout(() => {
+                connectWebSocket();
+            }, 5000);
         };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+            ws.close(); // Ensure it closes before reconnecting
+        };
+    };
+
+    useEffect(() => {
+        connectWebSocket();
 
         return () => {
             if (socketRef.current) socketRef.current.close();
+            clearTimeout(reconnectTimeoutRef.current);
         };
     }, []);
 

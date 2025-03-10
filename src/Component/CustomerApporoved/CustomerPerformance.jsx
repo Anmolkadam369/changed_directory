@@ -25,7 +25,7 @@ const CustomerPerformance = () => {
     const [accidentVehData, setAccidentVehData] = useState([]);
     const [allAccidentVehicleData, setAllAccidentVehicleData] = useState([]);
     const state = useLocation();
-    console.log("answer", accidentVehData)
+    console.log("answer", state.state.customerId)
 
     const publicVapidKey = 'BI0sWPKFjmxnkWYcwjylL7qmo9svTNzEyuEG8-xyswDkQ_FKbONR1yQ6CAUZ9EsryyJiQATfDUZnfloTn8z9DS0';
     const effectRan = useRef(false);
@@ -92,7 +92,8 @@ const CustomerPerformance = () => {
 
     const getAccidentData = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
+            console.log('`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`', `${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.state.customerId}`)
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.state.customerId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             if (response.data.message == "No accident vehicle data found.") setAccidentVehData([])
@@ -104,7 +105,7 @@ const CustomerPerformance = () => {
 
     const getVendorData = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicleInfoById/${state.customerId}`);
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalVehicleInfoById/${state.state.customerId}`);
             setVendorData(response.data.data);
         } catch (error) {
             console.error("Error fetching vendor data", error);
@@ -113,7 +114,7 @@ const CustomerPerformance = () => {
 
     const getAllAccidentVehicleData = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`,{        headers: {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.state.customerId}`,{        headers: {
           'Authorization': `Bearer ${token}`
         }});
             console.log("responssesesesee", response)

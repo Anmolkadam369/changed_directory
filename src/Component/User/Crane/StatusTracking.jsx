@@ -129,7 +129,7 @@ const StatusTracking = ({ vehicleNumber }) => {
 
 
         for (let i = 0; i < dummyData.length; i++) {
-            let getTime = dummyData[i]?.[`${currentService}Details`]?.filedCaseFullyTime.split('|');
+            let getTime = dummyData[i]?.[`${currentService}Details`]?.systemDate.split('T');
             let assignedDate = getTime[0];
             let assignedTime = getTime[1];
             let assignedDateTime = new Date(`${assignedDate} ${assignedTime}`);
@@ -168,16 +168,16 @@ const StatusTracking = ({ vehicleNumber }) => {
         if (filter === 'newest') {
             console.log("Sorting by newest to oldest");
             dummyData.sort((a, b) => {
-                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
-                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateA = new Date(a?.[`${currentService}Details`]?.systemDate.split('T').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.systemDate.split('T').join(' '));
                 return dateB - dateA; // Descending order
             });
             setData([...dummyData]);
         } else if (filter === 'oldest') {
             console.log("Sorting by oldest to newest");
             dummyData.sort((a, b) => {
-                const dateA = new Date(a?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
-                const dateB = new Date(b?.[`${currentService}Details`]?.filedCaseFullyTime.split('|').join(' '));
+                const dateA = new Date(a?.[`${currentService}Details`]?.systemDate.split('T').join(' '));
+                const dateB = new Date(b?.[`${currentService}Details`]?.systemDate.split('T').join(' '));
                 return dateA - dateB; // Ascending order
             });
             setData([...dummyData]);

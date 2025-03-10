@@ -374,6 +374,7 @@ function Home() {
         navigate('/Blogs')
     }
 
+    
     return (
         <div>
             <Header />

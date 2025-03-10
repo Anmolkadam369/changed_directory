@@ -120,7 +120,6 @@ import CraneOrders from './Component/Crane-user/CraneOrders/CraneOrders';
 import CraneVehicleData from './Component/Crane-user/CraneVehicleData';
 import NewAccidentVehicle from './Component/User/NewAccidentVehicle/NewAccidentVehicle';
 
-import { WebSocketProvider } from './Component/ContexAPIS/WebSocketContext';
 import AddNewVehicle from './Component/Registration/AddNewVehicle';
 import VendorSignUp from './Component/VendorApproved/VendorSignUp';
 import InitialRegistration from './Component/Admin/InitialRegistration';
@@ -138,11 +137,16 @@ import VendorPerformance from './Component/AAAAAAAAAAAAAAAAAA/VendorPerformnce';
 import CustomerPerformance from './Component/CustomerApporoved/CustomerPerformance';
 
 import WorkshopVendorRegistrationForm from './Component/WorkshopVendorRegisterationForm/WorkshopVendorRegisterationForm.jsx';
+import useLocationWorker from './Component/ContexAPIS/useLocationWorker.js';
+import { useWebSocket } from './Component/ContexAPIS/WebSocketContext';
 
 function App() {
+  // const {sendMessage} = useWebSocket()
+  // const userId = localStorage.getItem("userId");
+  // console.log('userid123', userId)
+  // useLocationWorker(sendMessage,userId) 
   return (
     <Provider store={store}>
-      <WebSocketProvider>
         <Router>
           <Routes>
             <Route exact path='/' element={<Home />} />
@@ -254,10 +258,9 @@ function App() {
 
           </Routes>
         </Router>
-      </WebSocketProvider>
     </Provider>
 
   );
 }
-
+ 
 export default App;

@@ -126,7 +126,7 @@ const VendorMoving = ({ item }) => {
             let response = await axios(`${process.env.REACT_APP_BACKEND_URL}/api/VendorWorkDone/${userId}/${item.AccidentVehicleCode}/${item.details[0].vendorType}`, {
                 method: 'PUT',
                 headers: {
-                    Authorization:  `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -181,11 +181,11 @@ const VendorMoving = ({ item }) => {
 
     return (
         <div>
-            { (
+            {(
 
 
 
-                <div className="text-overlay" style={{ height: "90%", padding:'0px' }}>
+                <div className="text-overlay" style={{ height: "90%", padding: '0px' }}>
                     <div className='h-full w-full '>
                         <MapContainer zoom={13} center={[19.0760, 72.8777]} style={{ width: '100%', height: '100vh' }}>
                             <TileLayer
@@ -195,7 +195,7 @@ const VendorMoving = ({ item }) => {
                         </MapContainer>
                     </div>
 
-                    <div className="text-overlay text-overlay2" style={{  padding:"10px 20px 20px 20px", zIndex:"1000" }}>
+                    <div className="text-overlay text-overlay2" style={{ padding: "10px 20px 20px 20px", zIndex: "1000" }}>
                         <div className="flex justify-between m-3">
 
                             <h1 style={{ textAlign: "center", fontSize: "23px", fontWeight: "bold" }}>{item.reg}</h1>
@@ -352,6 +352,12 @@ const VendorMoving = ({ item }) => {
                                     right: "10px"
                                 }} />
                             </p>
+                        )}
+
+                        {item.details[0]?.issue_occured !== null && (
+                            <div style={{ marginTop: "5px", fontSize: "12px", padding: "10px" }} className={`alert alert-danger text-center`} role="alert">
+                                {item.details[0]?.issue_occured}
+                            </div>
                         )}
 
                         {alertMessage && (

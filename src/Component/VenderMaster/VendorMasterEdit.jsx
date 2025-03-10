@@ -380,6 +380,7 @@ const VendorMasterEdit = () => {
       response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getPotentialVendorById/${id}/${userId}`,{ headers: { Authorization: `Bearer ${token}` }});
     }
     else {
+      console.log('${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${state.id}/${userId}', `${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${state.id}/${userId}`)
       response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/getVendor/${state.id}/${userId}`, { headers: { Authorization: `Bearer ${token}` }});
     }
     console.log("daa", response.data.data)

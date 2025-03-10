@@ -240,6 +240,7 @@ const CustomerApproved = () => {
     setShowCustomerTable(false)
     setShowCustomerMasterEdit(false);
     setShowCustomerPerformance(true);
+    console.log('id`${process.env.REACT_APP_BACKEND_URL}/api/getPersonalAccidentVehicleInfoById/${state.customerId}`',id)
     navigate('/customer-form-activity', {state:{customerId:id}})
 
   }

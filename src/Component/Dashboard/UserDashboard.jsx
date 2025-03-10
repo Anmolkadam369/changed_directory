@@ -58,6 +58,7 @@ const UserDashboard = () => {
         }
     }, []);
 
+    
 
     const [doughnutData, setDoughnutData] = useState({
         labels: ['Total Vehicles', 'Accident Vehicles', 'Resolved Vehicles', 'Pending Vehicles'],
