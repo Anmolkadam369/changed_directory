@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import '../FirstPage.css'
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
@@ -7,8 +6,6 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { FaClipboardCheck, FaTruck, FaCheckCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-// '../../../environment';
-
 import assignedTask from '../../../Assets/assignedTask.png'
 import comingCrane from '../../../Assets/comingCrane.png'
 import checksuccess from '../../../Assets/checksuccess.png'
@@ -19,14 +16,11 @@ import NoDataFound from '../Cards/NoDataFound';
 import filterUser from '../../../Assets/filterUser.png'
 import ratingStar from '../../../Assets/ratingStar.png'
 import telephonecall from '../../../Assets/telephonecall.png'
-
 import Modal from '../../Location1/Modal.jsx';
 import Loading from '../Cards/Loading.jsx';
-
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
 import NetworkWifiIcon from '@mui/icons-material/NetworkWifi';
-
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
@@ -34,9 +28,6 @@ import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from '@mui/material';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
-
-
-
 
 
 const StatusTracking = ({ vehicleNumber }) => {
@@ -63,10 +54,7 @@ const StatusTracking = ({ vehicleNumber }) => {
     const [doneFetching, setDoneFetching] = useState(false)
 
 
-
-
     console.log("avg", avg)
-
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     const currentService = localStorage.getItem("currentService")
@@ -99,7 +87,6 @@ const StatusTracking = ({ vehicleNumber }) => {
             navigate("/");
         }
     }, [token, userId, navigate, messages, currentService]);
-
 
 
     const getFilteredData = (filter) => {
@@ -471,8 +458,6 @@ const StatusTracking = ({ vehicleNumber }) => {
         setData(newRows);
     };
 
-
-
     console.log("{item?.[`${currentService}Details`]?.customerAcceptedVendor", data[0]?.[`${currentService}Details`]?.customerAcceptedVendor)
     console.log("disptan", data.length, doneFetching, distance.length, avg.length)
 
@@ -534,11 +519,7 @@ const StatusTracking = ({ vehicleNumber }) => {
             console.error("Error canceling order:", error);
         }
     };
-
-
-    // const [currentItem, setCurrentltem] = useState({})
-
-
+    
     const cancleCaseProcedureFunc = (item) => {
         setCurrentltem(item)
         setIsCancelContainerVisible(true)
@@ -546,7 +527,6 @@ const StatusTracking = ({ vehicleNumber }) => {
         getVendorRating(item?.[`${currentService}Details`].crane)
         getVendorLocation(item?.[`${currentService}Details`].crane, item?.[`${currentService}Details`].accidentLatitude, item?.[`${currentService}Details`].accidentLongitude)
     }
-
 
 
 

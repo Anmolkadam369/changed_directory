@@ -3,30 +3,11 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const MapForVendorDistance = () => {
-    const [map, setMap] = useState(null);
-    const navigate = useNavigate();
-    const { state } = useLocation();
-const [changeHeight, setChangeHeight] = useState(null)
-    const [accidentLatitude, setAccidentLatitude] = useState(state?.accidentLatitude);
-    const [accidentLongitude, setAccidentLongitude] = useState(state?.accidentLongitude);
-    const [vendorLatitude, setVendorLatitude] = useState(state?.vendorLatitude);
-    const [vendorLongitude, setVendorLongitude] = useState(state?.vendorLongitude);
-    const [vehicleNo, setVehicleNo] = useState(state?.vehicleNo);
-    const [fromPage, setFromPage] = useState(state?.fromPage);
-    console.log('state?.fromPage',state?.fromPage )
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        if (fromPage === 'statusTracking') {
-            setChangeHeight('100vh');
-        } else {
-            setChangeHeight('30vh');
-        }
-    }, [fromPage]);
-
-    const [distance, setDistance] = useState(0.0);
     const [currentLocation, setCurrentLocation] = useState(null);
 
     const accidentIcon = new L.Icon({
@@ -39,104 +20,81 @@ const [changeHeight, setChangeHeight] = useState(null)
         shadowSize: [41, 41],
     });
 
-    const markerIcon = new L.Icon({
-        iconUrl: require('leaflet/dist/images/marker-icon.png'),
-        iconRetinaUrl: require('leaflet/dist/images/marker-icon.png'),
-        shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-        iconSize: [10, 20],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [20, 30],
-    });
 
-    useEffect(() => {
-        if (!state || !accidentLatitude || !accidentLongitude || !vendorLatitude || !vendorLongitude) {
-            // Fetch current location if state data is incomplete or missing
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setCurrentLocation({ latitude, longitude });
-                },
-                (error) => {
-                    console.error("Error fetching current location:", error);
+    const simulateMovement = ([lat, lon]) => {
+        const offset = 0.0004;
+        const newLat = lat + (Math.random() * offset - offset / 2);
+        const newLon = lon + (Math.random() * offset - offset / 2);
+        return [newLat, newLon];
+    };
+
+    const fetchLocation = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/api/get-accident-customer-vendor-current-location/AV-14e3a066-9052-41ad-bf81-78fee46eb174/${userId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log("Fetched Location:", result);
+
+                if (result.status && result.data.length > 0) {
+                    let { latitude, longitude } = result.data[0];
+
+                    if (latitude && longitude) {
+                        let newPosition = [parseFloat(latitude), parseFloat(longitude)];
+
+                        // if (currentLocation &&
+                        //     currentLocation[0] === newPosition[0] &&
+                        //     currentLocation[1] === newPosition[1]) {
+                        //     console.log('simulated position calling:');
+                        // }
+                        
+                        newPosition = simulateMovement(newPosition); 
+                        setCurrentLocation(newPosition);
+                        console.log("Updated Position:", newPosition);
+                    }
+                } else {
+                    console.error("Invalid response structure or empty data array");
+                }
+            } else {
+                console.error(`Error: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error fetching location:", error);
         }
-    }, [state, accidentLatitude, accidentLongitude, vendorLatitude, vendorLongitude]);
-
-    function haversine(lat1, lon1, lat2, lon2) {
-        const toRad = (value) => (value * Math.PI) / 180;
-        const R = 6371;
-
-        const dLat = toRad(lat2 - lat1);
-        const dLon = toRad(lon2 - lon1);
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const distance = R * c;
-        return distance;
-    }
+    };
 
     useEffect(() => {
-        if (accidentLatitude && accidentLongitude && vendorLatitude && vendorLongitude) {
-            setDistance(haversine(accidentLatitude, accidentLongitude, vendorLatitude, vendorLongitude));
-        }
-    }, [accidentLatitude, accidentLongitude, vendorLatitude, vendorLongitude]);
-
-    useEffect(() => {
-        if (map && currentLocation) {
-            const routeControl = L.Routing.control({
-                waypoints: [
-                    L.latLng(currentLocation.latitude, currentLocation.longitude),
-                    L.latLng(accidentLatitude || currentLocation.latitude, accidentLongitude || currentLocation.longitude),
-                ],
-                routeWhileDragging: true,
-                createMarker: () => null,
-                lineOptions: {
-                    styles: [{ color: 'blue', weight: 4 }],
-                },
-            }).addTo(map);
-
-            return () => {
-                map.removeControl(routeControl);
-            };
-        }
-    }, [map, currentLocation, accidentLatitude, accidentLongitude]);
+        fetchLocation(); // Initial fetch
+        const interval = setInterval(fetchLocation, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div>
-        <div style={{ height: changeHeight }}>
-            {currentLocation && (
-                <MapContainer
-                    center={[
-                        accidentLatitude || currentLocation.latitude,
-                        accidentLongitude || currentLocation.longitude,
-                    ]}
-                    zoom={14}
-                    style={{ height: "100%", width: "100%",  }}
-                >
-                    <TileLayer
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                        attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'
-                    />
-                    <Marker
-                        position={[
-                            accidentLatitude || currentLocation.latitude,
-                            accidentLongitude || currentLocation.longitude,
-                        ]}
-                        icon={accidentIcon}
+            <div style={{ height: "100vh" }}>
+                {currentLocation && (
+                    <MapContainer
+                        center={currentLocation}
+                        zoom={100}
+                        style={{ height: "100%", width: "100%" }}
                     >
-                        <Popup>Current Location</Popup>
-                    </Marker>
-                    {vendorLatitude && vendorLongitude && (
-                        <Marker position={[vendorLatitude, vendorLongitude]} icon={markerIcon}>
-                            <Popup>Vendor Location</Popup>
+                        <TileLayer
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                            attribution='&copy; <a href="https://www.esri.com/en-us/home">Esri</a> contributors'
+                        />
+                        <Marker position={currentLocation} icon={accidentIcon}>
+                            <Popup>Current Location</Popup>
                         </Marker>
-                    )}
-                </MapContainer>
-            )}
-        </div>
+                    </MapContainer>
+                )}
+            </div>
         </div>
     );
 };
