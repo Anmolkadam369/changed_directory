@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useEffect } from "react";
 import { useWebSocket } from "./WebSocketContext";
 
 export const LocationContext = createContext();
@@ -32,7 +32,7 @@ export const LocationProvider = ({ children }) => {
         };
 
         updateLocation();
-        const interval = setInterval(updateLocation, 5000);
+        const interval = setInterval(updateLocation, 600000);
 
         return () => clearInterval(interval);
     }, [sendMessage, userId]);

@@ -1,0 +1,64 @@
+.responsive-table {
+  overflow-x: auto;  /* Allows table to scroll horizontally */
+}
+
+@media (max-width: 768px) {
+  .responsive-table table {
+    width: auto; /* Allows table to shrink and expand as needed */
+  }
+  
+  .responsive-table th, .responsive-table td {
+    padding: 8px; /* Reduce padding on smaller screens */
+  }
+
+  /* Optional: Hide less important columns on smaller screens */
+  .responsive-table th:nth-child(3), .responsive-table td:nth-child(3) {
+    display: none;
+  }
+}
+
+
+
+
+
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table, th, td {
+    border: 1px solid #ddd;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  th {
+    background-color: #04AA6D;
+    color: white;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  tr:hover {
+    background-color: #ddd;
+  }
+  .view-button {
+    padding: 6px 16px;
+    background-color: lightblue;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+  

@@ -24,5 +24,5 @@ self.onmessage = function (e) {
 
     // Send location immediately, then repeat every 2 minutes
     sendLocationUpdate();
-    setInterval(sendLocationUpdate, 120000);
+    setInterval(sendLocationUpdate, 600000);
 };

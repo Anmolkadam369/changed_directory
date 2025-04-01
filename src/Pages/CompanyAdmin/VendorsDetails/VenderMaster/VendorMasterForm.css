@@ -1,0 +1,149 @@
+.vendor-master-form {
+    margin-top:30px;
+    /* margin-right: 0px; */
+    margin-bottom: auto;
+    margin-left:60px;
+    width: 1080px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(38, 21, 21, 0.1);
+    background-color: #fff;
+  }
+  
+  .vendor-master-form label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .vendor-master-form .form-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .vendor-master-form .form-field {
+    flex: 1 1 22%; /* Adjust as needed to fit 4 items in a row */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Space between rows */
+  }
+  
+  .vendor-master-form input,
+  .vendor-master-form textarea,
+  .vendor-master-form select {
+    width: 100%; /* The input will take up the full width of its container */
+    padding: 7px;
+    margin-top: 5px; /* Adjust as needed */
+    border: 1px solid #ccc;
+    background-color: white;
+    /* border-radius: 4px; */
+  }
+  
+  .vendor-master-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+  }
+  
+  .vendor-master-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .vendor-master-form .required {
+    color: red;
+  }
+  
+  /* Responsive adjustments if necessary */
+  @media (max-width: 768px) {
+    .vendor-master-form .form-row {
+      flex-direction: column;
+    }
+  
+    .vendor-master-form .form-field {
+      flex: 1 1 100%; /* Full width on small screens */
+    }
+    .vendor-master-form .required {
+        color: red;
+      }
+  }
+
+  .required-asterisk {
+    color: red;
+    margin-right: 4px;
+}
+  
+.header-container {
+  display: flex;        /* Establishes a flex container */
+  align-items: center;  /* Vertically centers the items in the container */
+}
+.mandatory-note {
+  color: red;
+  margin-top:10px;
+  font-size: 0.8rem;    /* Makes the font size smaller */
+  margin-left:10px;        /* Optional: changes the color to make it less prominent */
+  margin-bottom:5px;
+}
+/* Styling for buttons and dropdowns */
+.green-dropdown .btn-secondary {
+  background-color: #f1f1f1; /* Light gray color, previously set as a placeholder for green */
+  border-color: black; /* Matching border color */
+}
+
+.green-dropdown .dropdown-menu {
+  width: 200px; /* Set width for dropdown menu */
+  text-align: center;
+}
+
+/* Styling for input fields within a label that has 'input-group' class */
+.input-group .form-control {
+  /* background-color: #fff; Set background color for input */
+  border: 1px solid #ccc; /* Match the dropdown border style */
+  width: 300px; /* Match the width of the dropdown */
+}
+
+.input-group .form-control[readonly] {
+  background-color: #e9ecef; /* Slightly different background for readonly fields */
+  color: #495057; /* Text color for readonly fields */
+}
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 50%;
+  max-width: 500px;
+  outline: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
