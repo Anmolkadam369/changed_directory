@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../FirstPage.css'
+import '../FirstPageDesigns/FirstPage.css';
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -9,21 +9,21 @@ import assignedTask from '../../../Assets/assignedTask.png'
 import comingCrane from '../../../Assets/comingCrane.png'
 import checksuccess from '../../../Assets/checksuccess.png'
 import crossUser from '../../../Assets/crossUser.png'
-import NoDataFound from '../Cards/NoDataFound';
+import NoDataFound from '../../../Component/Customers/Cards/NoDataFound.jsx';
 import filterUser from '../../../Assets/filterUser.png'
 import telephonecall from '../../../Assets/telephonecall.png'
-import Modal from '../../Location1/Modal.jsx';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal.jsx';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
 import NetworkWifiIcon from '@mui/icons-material/NetworkWifi';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
-import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
+import { useWebSocket } from '../../../ContexAPI/WebSocketContext.jsx';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from '@mui/material';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
-import ModalButton from '../../../Components/User/FirstPageDesigns/ModalButton.jsx';
-import RatingModal from "./RatingModal.jsx";
+import ModalButton from '../FirstPageDesigns/ModalButton.jsx';
+import RatingModal from './RatingModal.jsx';
 
 const StatusTracking = ({ vehicleNumber }) => {
 

@@ -9,9 +9,9 @@ import { Alert } from '@mui/material';
 // '../../environment';
 import { Helmet } from 'react-helmet-async';
 import { ClipLoader } from 'react-spinners';
-import repairingonstand123 from '../../Assets/repairingonstand123.avif'
-import repairingonstand from '../../Assets/repairingonstand.jpg'
-import locationiconforlocation from '../../Assets/locationiconforlocation.jpeg'
+import repairingonstand123 from '../../../Assets/repairingonstand123.avif'
+import repairingonstand from '../../../Assets/repairingonstand.jpg'
+import locationiconforlocation from '../../../Assets/locationiconforlocation.jpeg'
 
 
 const config = {

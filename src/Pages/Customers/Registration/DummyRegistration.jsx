@@ -5,14 +5,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
 // '../../environment';
-import Modal from '../Location1/Modal'; // Import the modal component
+// import Modal from '../Location1/Modal'; // Import the modal component
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal';
 import { Helmet } from 'react-helmet-async';
-import crossUser from '../../Assets/crossUser.png'
+import crossUser from '../../../Assets/crossUser.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
-import checksuccess from '../../Assets/checksuccess.png'
-import SuccessIcon from '../CaseFirstCard/SuccessIcon';
-import BottomNavigationBar from '../User/BottomNavigationBar';
+import checksuccess from '../../../Assets/checksuccess.png'
+import SuccessIcon from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/SuccessIcon';
+import BottomNavigationBar from '../../../Component/Customers/BottomNavigationBar';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',

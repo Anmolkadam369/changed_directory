@@ -7,7 +7,7 @@ const LocationSearchPanel=({ suggestions, setVehiclePanel, setPanelOpen, setPick
         } else if (activeField === 'destination') {
             setDropLocation(suggestion.address)
         }
-        // setVehiclePanel(true)
+        // setVehiclePanel(truce)
         // setPanelOpen(false)
     }
     return (

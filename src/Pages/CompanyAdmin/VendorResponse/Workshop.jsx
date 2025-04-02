@@ -3,21 +3,21 @@ import './Advocate.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+import { tokenState, userIdState } from '../../../Auth/Atoms';
 import { FaUserCircle } from 'react-icons/fa';
-import ConfirmationModal from '../../../Components/ConfirmModel';
+import ConfirmationModal from '../../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
 import AssignedVehicleWorkshop from './AssignedVehiclesWorkshop';
-import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
+import claimproassist from '../../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
-import SummarizeOutlinedIcon from '@mui/icons-material/SummaDailyWorkshoprizeOutlined';
-import userImg from "../../Assets/userImg.jpg";
+import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
+import userImg from "../../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import WorkshopDashboard from './WorkshopDashboard';
-import Login from '../Login/LoginPage';
+import Login from '../../Authentication/Login/LoginPage';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import ScrapDashboard from '../Scrap/ScrapDashboard';
+import ScrapDashboard from '../../Home/Scrap/ScrapDashboard';
 
 
 const Workshop = () => {

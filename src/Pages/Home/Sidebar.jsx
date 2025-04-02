@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 
-import VendorMasterForm from '../../Components/VenderMaster/VendorMasterForm';
-import VendorApproved from '../../Components/VendorApproved/VendorApporoved';
-import CustomerMaster from '../CustomerMaster/CustomerMaster';
-import CustomerApproved from '../CustomerApporoved/CustomerApproved';
-import ViewVehicleInfo from '../../Components/ViewVehicleInfo/ViewVehicleInfo';
+import VendorMasterForm from '../CompanyAdmin/VendorsDetails/VenderMaster/VendorMasterForm';
+import VendorApproved from '../CompanyAdmin/VendorsDetails/VendorApproved/VendorApporoved';
+import CustomerMaster from '../CompanyAdmin/CustomersDetails/CustomerMaster/CustomerMaster';
+import CustomerApproved from '../CompanyAdmin/CustomersDetails/CustomerApporoved/CustomerApproved';
+import ViewVehicleInfo from '../CompanyAdmin/ViewVehicleInfo/ViewVehicleInfo';
 import { FaUserCircle } from 'react-icons/fa';
-import ConfirmationModal from '../../Components/ConfirmModel';
+import ConfirmationModal from '../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
 import ImageUpload from '../../Component/CompanyAdmin/ImageUpload/ImageUpload';
-import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
-import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
-import VendorResponse from '../../Components/Vendors/VendorsResponse';
+import AccidentVehicle from '../CompanyAdmin/AccidentVehicle/AccidentVehicle';
+import AccidentVehicleRegUpdate from '../CompanyAdmin/AccidentVehicle/AccidentVehicleRegUpdate';
+import VendorResponse from '../CompanyAdmin/VendorResponse/VendorsResponse';
 import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
-import EmployeeForm from '../EmployeeForm/EmployeeForm';
-import EmployeeApproved from '../EmployeeForm/EmployeeApproved';
-import Visitors from '../../Components/Visitors/Visitors';
+import EmployeeForm from '../CompanyAdmin/Employees/EmployeeForm';
+import EmployeeApproved from '../CompanyAdmin/Employees/EmployeeApproved';
+import Visitors from '../CompanyAdmin/Visitors/Visitors';
 import StoreIcon from "@mui/icons-material/Store";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -27,8 +27,8 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import userImg from "../../Assets/userImg.jpg";
-import CustomerEnquiry from '../CustomerEnquiry/CustomerEnquiry';
-import DummyDashboard from '../Dashboard/DummyDashboard';
+import CustomerEnquiry from '../CompanyAdmin/Enquiry/CustomerEnquiry';
+import DummyDashboard from '../CompanyAdmin/AdminHome/Dashboard/DummyDashboard';
 
 import './Sidebar.css'
 

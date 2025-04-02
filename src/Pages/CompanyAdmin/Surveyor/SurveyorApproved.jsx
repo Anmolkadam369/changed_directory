@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import "../CustomerApporoved/CustomerApproved.css";
-import '../AccidentVehicle/AccidentVehicle.css';
-import '../Location2/Location2.css'
 import axios from 'axios';
+import '../CustomersDetails/CustomerApporoved/CustomerApproved.css';
+import '../AccidentVehicle/AccidentVehicle.css'
+import '../../../Component/CompanyAdmin/Location2/Location2.css'
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
-import ActivationModel from '../Visitors/ActivationModel';
+import ActivationModel from '../../../Component/CompanyAdmin/ActivationModel/ActivationModel.js';
 import { Helmet } from 'react-helmet-async';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DataTable from "react-data-table-component";
-import SurveyorMasterEdit from './SurveyorMasterEdit.jsx'
+import SurveyorMasterEdit from './SurveyorMasterEdit.jsx';
 import SurveyorByMap from './SurveyorByMap.jsx';
-import Admin from '../Admin/Admin.jsx';
+// import Admin from '../Admin/Admin.jsx';
+import Admin from '../AdminHome/SideBar/Admin.jsx';
+
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

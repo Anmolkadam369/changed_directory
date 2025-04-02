@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../Login/LoginPage.css";
+import "../../Authentication/Login/LoginPage.css";
 import { Alert } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Helmet } from "react-helmet-async";
-import Header from "../Home/Header";
-import Footer from "../Home/Footer";
+import Header from "../../Home/Header";
+import Footer from "../../Home/Footer";
 
 const WorkshopVendorRegistrationForm = () => {
 

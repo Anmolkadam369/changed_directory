@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 // import './AccidentVehicle.css';
-import '../Location2/Location2.css'
+// import '../Location2/Location2.css'
+import '../../../Component/CompanyAdmin/Location2/Location2.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import EditAccidentVehicle from "../EditAccidentVehicle/EditAccidentVehicle"
+import EditAccidentVehicle from '../EditAccidentVehicle/EditAccidentVehicle'
 import DataTable from "react-data-table-component";
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
 
 const formatDate = (isoDateString) => {
   const date = new Date(isoDateString);

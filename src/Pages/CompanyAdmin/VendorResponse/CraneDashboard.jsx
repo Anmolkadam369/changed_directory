@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import '../Dashboard/Dashboard.css'; 
+import '../AdminHome/Dashboard/Dashboard.css';
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import craneadvocatemechanic from '../../Assets/camw.webp'; 
-import vehicleIcon from '../../Assets/vehicleIcon.webp'; 
+import craneadvocatemechanic from '../../../Assets/camw.webp'; 
+import vehicleIcon from '../../../Assets/vehicleIcon.webp'; 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import Featured from '../Charts/Featured';
+import Featured from '../../../Component/CompanyAdmin/Charts/Featured.jsx';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 import AssignedVehicleCrane from './AssignedVehiclesCrane';
-import CaseFirstCard from '../CaseFirstCard/CaseFirstCard';
+import CaseFirstCard from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/CaseFirstCard.jsx';
 import VendorViewRating from '../../Vendors/VendorViewRating/VendorViewRating.jsx';
 import VendorMoving from './VendorMoving.jsx';
-import crossUser from '../../Assets/crossUser.png'
+import crossUser from '../../../Assets/crossUser.png'
 
 const CraneDashboard = ({ getData }) => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);

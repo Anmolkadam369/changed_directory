@@ -3,7 +3,7 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
-import telephonecall from '../../Assets/telephonecall.png'
+import telephonecall from '../../../Assets/telephonecall.png'
 import PersonIcon from '@mui/icons-material/Person';
 
 const MovingVehicles = () => {

@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import BottomNavigationVendor from "./BottomNavigationVendor/BottomNavigationVendor"
+import BottomNavigationVendor from '../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor';
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
-import CaseFirstCard from '../CaseFirstCard/CaseFirstCard';
+import CaseFirstCard from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/CaseFirstCard';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
-import vehicleIcon from '../../Assets/vehicleIcon.webp';
-import craneadvocatemechanic from '../../Assets/camw.webp';
-import Featured from '../Charts/Featured';
+import vehicleIcon from '../../../Assets/vehicleIcon.webp';
+import craneadvocatemechanic from '../../../Assets/camw.webp';
+import Featured from '../../../Component/CompanyAdmin/Charts/Featured';
 import VendorViewRating from '../VendorViewRating/VendorViewRating';
-import { useWebSocket } from '../ContexAPIS/WebSocketContext';
-import Modal from '../Location1/Modal';
-import UserProfileDetails from '../User/UserProfile/UserProfileDetails';
+import { useWebSocket } from '../../../ContexAPI/WebSocketContext';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal';
+import UserProfileDetails from '../../Customers/UserProfile/UserProfileDetails';
 
 const CraneUserDashboard = () => {
 

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import craneadvocatemechanic from '../../Assets/camw.webp'; 
-import vehicleIcon from '../../Assets/vehicleIcon.webp'; 
+import craneadvocatemechanic from '../../../Assets/camw.webp'; 
+import vehicleIcon from '../../../Assets/vehicleIcon.webp'; 
 import 'leaflet/dist/leaflet.css';
-import Featured from '../Charts/Featured';
+import Featured from '../../../Component/CompanyAdmin/Charts/Featured';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
@@ -13,7 +13,7 @@ import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurned
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
 
 const VendorPerformance = () => {
     const [totalAssignedCases, setTotalAssignedCases] = useState([]);

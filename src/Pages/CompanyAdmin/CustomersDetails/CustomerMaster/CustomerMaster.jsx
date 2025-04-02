@@ -4,20 +4,21 @@ import axios from 'axios';
 import { Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import demoexcel from '../../Assets/demoexcel.png'
+import demoexcel from '../../../../Assets/demoexcel.png'
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
-import customerInfo1 from '../../Assets/customerInfo1.jpg'
-import customerInfo2 from '../../Assets/customerInfo2.jpg'
-import customerInfo from '../../Assets/customerInfo.xlsx';
-import fleetInfo from '../../Assets/fleetInfo.xlsx';
+import customerInfo1 from '../../../../Assets/customerInfo1.jpg'
+import customerInfo2 from '../../../../Assets/customerInfo2.jpg'
+import customerInfo from '../../../../Assets/customerInfo.xlsx';
+import fleetInfo from '../../../../Assets/fleetInfo.xlsx';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
+
 
 
 const config = {

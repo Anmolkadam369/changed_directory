@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../AccidentVehicle/AccidentVehicle.css'
-import '../CustomerMaster/CustomerMaster.css'
-import '../../Component/CompanyAdmin/Location2/Location2.css';
+import '../CustomersDetails/CustomerMaster/CustomerMaster.css';
+import  '../../../Component/CompanyAdmin/Location2/Location2.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -9,7 +9,7 @@ import ActualVendorResponse from './ActualVendorResponse';
 import DataTable from "react-data-table-component";
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TaskIcon from '@mui/icons-material/Task';
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
 
 const formatDate = (isoDateString) => {
   if (!isoDateString) return "___"; // Handle null or undefined input

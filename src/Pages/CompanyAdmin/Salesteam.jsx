@@ -1,34 +1,16 @@
+// External packages
 import React, { useState, useEffect, useRef } from 'react';
-import '../Admin/Admin.css';
-import axios from 'axios';
 import { useNavigate, Outlet } from 'react-router-dom';
-import VendorMasterForm from './VendorsDetails/VenderMaster/VendorMasterForm';
-import PieChartComponent from '../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/PieChart/PieChartComponent'
-import VendorApproved from './VendorsDetails/VendorApproved/VendorApporoved';
-import CustomerMaster from '../CustomerMaster/CustomerMaster';
-import CustomerApproved from '../CustomerApporoved/CustomerApproved';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
-import VehicleClaimRegistration from './VehicleClaimRegistration/VehicleClaimRegistration';
-import ViewVehicleInfo from './ViewVehicleInfo/ViewVehicleInfo';
 import { FaUserCircle } from 'react-icons/fa';
-import ConfirmationModal from '../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
-import ImageUpload from '../../Component/CompanyAdmin/ImageUpload/ImageUpload';
-import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
-import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
-import VendorResponse from './VendorResponse/VendorsResponse';
-import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
-// "../../environment";
+import { Helmet } from 'react-helmet-async';
+import { getToken, onMessage } from 'firebase/messaging';
+import axios from 'axios';
+
+// Material UI Components
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import Dashboard from '../Dashboard/Dashboard';
-import { getToken, onMessage } from 'firebase/messaging';
-import { messaging } from '../../Services/Firebase/Firebase';
-import EmployeeForm from './Employees/EmployeeForm';
-import EmployeeApproved from './Employees/EmployeeApproved';
-import Visitors from './Visitors/Visitors';
-import { Helmet } from 'react-helmet-async';
 import StoreIcon from "@mui/icons-material/Store";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -43,8 +25,42 @@ import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+
+// Firebase services
+import { messaging } from '../../Services/Firebase/Firebase';
+
+// Styles
+import './AdminHome/SideBar/Admin.css';
+
+// Assets
+import claimproassist from '../../Assets/claimproassistwithoutName.jpg';
 import userImg from "../../Assets/userImg.jpg";
-import CustomerEnquiry from '../CustomerEnquiry/CustomerEnquiry';
+
+// Local components
+import VendorMasterForm from './VendorsDetails/VenderMaster/VendorMasterForm';
+import PieChartComponent from '../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/PieChart/PieChartComponent';
+import VendorApproved from './VendorsDetails/VendorApproved/VendorApporoved';
+import CustomerMaster from './CustomersDetails/CustomerMaster/CustomerMaster';
+import CustomerApproved from './CustomersDetails/CustomerApporoved/CustomerApproved';
+import VehicleClaimRegistration from './VehicleClaimRegistration/VehicleClaimRegistration';
+import ViewVehicleInfo from './ViewVehicleInfo/ViewVehicleInfo';
+import ConfirmationModal from '../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
+import ImageUpload from '../../Component/CompanyAdmin/ImageUpload/ImageUpload';
+import AccidentVehicle from './AccidentVehicle/AccidentVehicle';
+import AccidentVehicleRegUpdate from './AccidentVehicle/AccidentVehicleRegUpdate';
+import VendorResponse from './VendorResponse/VendorsResponse';
+import Dashboard from './AdminHome/Dashboard/Dashboard';
+import EmployeeForm from './Employees/EmployeeForm';
+import EmployeeApproved from './Employees/EmployeeApproved';
+import Visitors from './Visitors/Visitors';
+import CustomerEnquiry from './Enquiry/CustomerEnquiry';
+
+// State Management
+import { tokenState, userIdState } from '../Auth/Atoms';
+
+// "../../environment"; (Commented out as it's unclear if needed)
+
+
 
 
 const Salesteam = () => {

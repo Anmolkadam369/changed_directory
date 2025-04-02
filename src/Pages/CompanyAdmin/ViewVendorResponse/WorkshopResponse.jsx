@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { Button } from '@mui/material';
-import './vendorResponse.css';
+import VendorResponse from '../../../Pages/CompanyAdmin/ViewVendorResponse/vendorResponse.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
 import ActivationModel from '../../../Component/CompanyAdmin/ActivationModel/ActivationModel';

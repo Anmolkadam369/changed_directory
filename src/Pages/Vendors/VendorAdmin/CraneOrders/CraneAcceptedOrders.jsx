@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import VendorMoving from "../../Vendors/VendorMoving";
-import assignedTask from '../../../Assets/assignedTask.png'
-import comingCrane from '../../../Assets/comingCrane.png'
-import checksuccess from '../../../Assets/checksuccess.png'
-import ratingStar from '../../../Assets/ratingStar.png'
-import NoDataFound from '../../User/Cards/NoDataFound';
+import VendorMoving from "../../../CompanyAdmin/VendorResponse/VendorMoving";
+import assignedTask from '../../../../Assets/assignedTask.png'
+import comingCrane from '../../../../Assets/comingCrane.png'
+import checksuccess from '../../../../Assets/checksuccess.png'
+import ratingStar from '../../../../Assets/ratingStar.png'
+import NoDataFound from "../../../../Component/Customers/Cards/NoDataFound";
 import axios from "axios";
-import crossUser from '../../../Assets/crossUser.png'
-import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
-import filterUser from '../../../Assets/filterUser.png'
-import viewcase from '../../../Assets/viewcase.png'
-import Modal from "../../Location1/Modal";
-import { useWebSocket } from "../../ContexAPIS/WebSocketContext";
+import crossUser from '../../../../Assets/crossUser.png'
+import searchinterfacesymbol from '../../../../Assets/search-interface-symbol.png'
+import filterUser from '../../../../Assets/filterUser.png'
+import viewcase from '../../../../Assets/viewcase.png'
+import Modal from "../../../../Component/CompanyAdmin/Location1/Modal";
+import { useWebSocket } from "../../../../ContexAPI/WebSocketContext";
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
@@ -562,17 +562,17 @@ export default CraneAcceptedOrders;
 // import { useEffect, useState } from "react";
 // import VendorMoving from "../../Vendors/VendorMoving";
 // import BottomNavigationVendor from "../BottomNavigationVendor/BottomNavigationVendor";
-// import assignedTask from '../../../Assets/assignedTask.png'
-// import comingCrane from '../../../Assets/comingCrane.png'
-// import checksuccess from '../../../Assets/checksuccess.png'
-// import ratingStar from '../../../Assets/ratingStar.png'
+// import assignedTask from '../../../../Assets/assignedTask.png'
+// import comingCrane from '../../../../Assets/comingCrane.png'
+// import checksuccess from '../../../../Assets/checksuccess.png'
+// import ratingStar from '../../../../Assets/ratingStar.png'
 // import NoDataFound from '../../User/Cards/NoDataFound';
 // import axios from "axios";
 // // "../../../environment";
-// import crossUser from '../../../Assets/crossUser.png'
-// import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
-// import filterUser from '../../../Assets/filterUser.png'
-// import viewcase from '../../../Assets/viewcase.png'
+// import crossUser from '../../../../Assets/crossUser.png'
+// import searchinterfacesymbol from '../../../../Assets/search-interface-symbol.png'
+// import filterUser from '../../../../Assets/filterUser.png'
+// import viewcase from '../../../../Assets/viewcase.png'
 
 // import Modal from "../../Location1/Modal";
 // import { useWebSocket } from "../../ContexAPIS/WebSocketContext";

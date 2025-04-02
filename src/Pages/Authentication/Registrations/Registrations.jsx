@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './Registrations.css'
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
-import '../VenderMaster/VendorMasterForm.css'
-import signup1 from '../../Assets/signup1.jpg'
+// import '../VenderMaster/VendorMasterForm.css'
+import '../../CompanyAdmin/VendorsDetails/VenderMaster/VendorMasterForm.css';
+import signup1 from '../../../Assets/signup1.jpg'
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -11,7 +12,7 @@ import axios from 'axios';
 // '../../environment';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import claimproassist from "../../Assets/claimproimage.png";
+import claimproassist from "../../../Assets/claimproimage.png";
 import Header from '../../Home/Header';
 import Footer from '../../Home/Footer';
 import { ClipLoader } from 'react-spinners';

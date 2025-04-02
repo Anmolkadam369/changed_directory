@@ -3,7 +3,7 @@ import "react-circular-progressbar/dist/styles.css";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import rupeesymbol from '../../Assets/rupeesymbol.png'
+import rupeesymbol from '../../../Assets/rupeesymbol.png'
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 const Featured = () => {
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "./Table.css";
-import "../VenderMaster/VendorMasterForm.css"
+import "../../CompanyAdminHome/CustomerAdminDashboard/Table.css";
+// import "../VenderMaster/VendorMasterForm.css"
+import "../../../../Pages/CompanyAdmin/VendorsDetails/VenderMaster/VendorMasterForm.css";
 import axios from 'axios';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';

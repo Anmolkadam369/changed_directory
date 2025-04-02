@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../CustomerMaster/CustomerMaster.css'
+import '../CustomersDetails/CustomerMaster/CustomerMaster.css';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners'
 import { Helmet } from 'react-helmet-async';
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
+
 
 
 const config = {

@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState , useRef} from 'react';
-import './vendorResponse.css';
+// import './vendorResponse.css';
+import VendorResponse from '../../../Pages/CompanyAdmin/ViewVendorResponse/vendorResponse.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
 import axios from 'axios';
@@ -12,13 +13,13 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
-import feedbackByVendor from '../../Assets/feedbackByVendor.png'
-import commissionbyvendor from '../../Assets/commissionbyvendor.png'
-import paymentcheck from '../../Assets/payment-check.png'
-import onlinepayment from '../../Assets/onlinepayment.png'
-import cash from '../../Assets/cash.png'
+import feedbackByVendor from '../../../Assets/feedbackByVendor.png'
+import commissionbyvendor from '../../../Assets/commissionbyvendor.png'
+import paymentcheck from '../../../Assets/payment-check.png'
+import onlinepayment from '../../../Assets/onlinepayment.png'
+import cash from '../../../Assets/cash.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import exploration from '../../Assets/exploration.png'
+import exploration from '../../../Assets/exploration.png'
 const modalTitleFontSize = window.innerWidth < 576 ? '1rem' : window.innerWidth < 768 ? '0.9rem' : '1.0rem';
 const modalBodyFontSize = window.innerWidth < 576 ? '0.9rem' : window.innerWidth < 768 ? '0.6rem' : '0.9rem';
 

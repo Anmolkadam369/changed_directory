@@ -17,12 +17,12 @@ import DriveEtaIcon from '@mui/icons-material/DriveEta';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BuildIcon from '@mui/icons-material/Build';
 import AdjustIcon from '@mui/icons-material/Adjust';
-import BottomNavigationBar from "../User/BottomNavigationBar";
+import BottomNavigationBar from "../../../Component/Customers/BottomNavigationBar";
 // "../../environment";
 import EmailIcon from '@mui/icons-material/Email';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from "react-router-dom";
-import BottomNavigationVendor from "../Crane-user/BottomNavigationVendor/BottomNavigationVendor";
+import BottomNavigationVendor from "../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor";
 
 
 

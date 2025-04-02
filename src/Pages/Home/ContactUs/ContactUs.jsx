@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
-import '../Login/LoginPage.css';
+import { tokenState, userIdState } from '../../../Auth/Atoms';
+import '../../Authentication/Login/LoginPage.css';
 import { Alert } from '@mui/material';
-import trucks1 from "../../Assets/logintime_truck.webp";
+import trucks1 from "../../../Assets/logintime_truck.webp";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
-import Header from '../../../Components/Home/Header';
-import Footer from '../../../Components/Home/Footer';
+import Header from '../Header';
+import Footer from '../Footer';
 
 const ContactUs = () => {
     const navigate = useNavigate();

@@ -2,7 +2,7 @@ import './Payment.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 // '../../environment';
-import onlinePaymentImage from "../../Assets/onlinePaymentImage.png"
+import onlinePaymentImage from "../../../Assets/onlinePaymentImage.png"
 import { useParams , useLocation, useNavigate} from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 

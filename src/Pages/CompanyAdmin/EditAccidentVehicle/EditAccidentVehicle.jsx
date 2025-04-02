@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import '../CustomerMaster/CustomerMaster.css'
+import '../CustomersDetails/CustomerMaster/CustomerMaster.css';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Helmet } from 'react-helmet-async';
-import MapComponent from '../AAAAAAAAAAAAAAAAAA/MapComponent';
+import MapComponent from '../../../Component/CompanyAdmin/MapComponent/MapComponent';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';

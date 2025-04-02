@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../../Pages/CompanyAdmin/VendorsDetails/VenderMaster/VendorMasterForm.css'
-import "../CustomerApporoved/CustomerApproved.css"
-import '../AccidentVehicle/AccidentVehicle.css'
-import '../../Component/CompanyAdmin/Location2/Location2.css'
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaHome, FaCoffee, FaUser, FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+import { tokenState, userIdState } from '../../../Auth/Atoms';
+
 // '../../environment';
 import { ClipLoader } from 'react-spinners';
 import { IconButton } from '@mui/material';
@@ -22,8 +19,13 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import '../VendorsDetails/VenderMaster/VendorMasterForm.css';
+import '../CustomersDetails/CustomerApporoved/CustomerApproved.css';
+import '../AccidentVehicle/AccidentVehicle.css';
+import'../../../Component/CompanyAdmin/Location2/Location2.css';
+import Admin from '../AdminHome/SideBar/Admin';
 import DataTable from "react-data-table-component";
-import Admin from '../Admin/Admin';
+
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);

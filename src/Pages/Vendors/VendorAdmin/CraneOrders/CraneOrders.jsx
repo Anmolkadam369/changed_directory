@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import BottomNavigationVendor from "../BottomNavigationVendor/BottomNavigationVendor"
+// import BottomNavigationVendor from "../BottomNavigationVendor/BottomNavigationVendor"
+import BottomNavigationVendor from '../../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
 import CraneAcceptedOrders from './CraneAcceptedOrders';
 import CraneRejectedOrder from './CraneRejectedOrder';
 import CraneCompletedOrders from './CraneCompletedOrders';
-import { useWebSocket } from '../../ContexAPIS/WebSocketContext';
+import { useWebSocket } from '../../../../ContexAPI/WebSocketContext';
 
 const CraneOrders = () => {
 

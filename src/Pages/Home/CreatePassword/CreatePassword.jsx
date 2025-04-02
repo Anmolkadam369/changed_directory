@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../Login/LoginPage.css';
+import '../../Authentication/Login/LoginPage.css';
 import { Alert } from '@mui/material';
-import trucks1 from "../../Assets/trucks1.jpg";
+import trucks1 from "../../../Assets/trucks1.jpg";
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import IconButton from '@mui/material/IconButton';
@@ -11,7 +11,7 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
+import claimproassist from "../../../Assets/claimproassistwithoutName.jpg";
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 

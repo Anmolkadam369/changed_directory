@@ -5,7 +5,7 @@ import { Alert } from '@mui/material';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import './vendorResponse.css';
+import VendorResponse from '../../../Pages/CompanyAdmin/ViewVendorResponse/vendorResponse.css';
 import { Helmet } from 'react-helmet-async';
 import ActivationModel from '../../../Component/CompanyAdmin/ActivationModel/ActivationModel';
 import { IconButton } from '@mui/material';

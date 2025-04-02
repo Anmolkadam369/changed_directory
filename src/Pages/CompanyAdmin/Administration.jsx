@@ -1,35 +1,43 @@
+// External Packages
 import React, { useState, useEffect, useRef } from 'react';
-import '../Admin/Admin.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import VendorMasterForm from '../../Components/VenderMaster/VendorMasterForm';
-import VendorApproved from '../../Components/VendorApproved/VendorApporoved';
-import CustomerMaster from '../CustomerMaster/CustomerMaster';
-import CustomerApproved from '../CustomerApporoved/CustomerApproved';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
-import ViewVehicleInfo from '../../Components/ViewVehicleInfo/ViewVehicleInfo';
 import { FaUserCircle } from 'react-icons/fa';
-import ConfirmationModal from '../../Components/ConfirmModel';
-import ImageUpload from '../../Components/ImageUpload/ImageUpload';
-import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
-import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
-import VendorResponse from '../../Components/Vendors/VendorsResponse';
-import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
-import MenuIcon from '@mui/icons-material/Menu';
-import Dashboard from '../Dashboard/Dashboard';
-import EmployeeForm from '../../Components/EmployeeForm/EmployeeForm';
-import EmployeeApproved from '../../Components/EmployeeForm/EmployeeApproved';
-import Visitors from '../../Components/Visitors/Visitors';
 import { Helmet } from 'react-helmet-async';
+
+// MUI Icons
+import MenuIcon from '@mui/icons-material/Menu';
 import BadgeIcon from '@mui/icons-material/Badge';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import HailIcon from '@mui/icons-material/Hail';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
-import userImg from "../../Assets/userImg.jpg";
-import CustomerEnquiry from '../CustomerEnquiry/CustomerEnquiry';
 
+// Styles
+import './AdminHome/SideBar/Admin.css';
+
+// Assets
+import claimproassist from '../../Assets/claimproassistwithoutName.jpg';
+import userImg from '../../Assets/userImg.jpg';
+
+// Local Components & Files
+import { tokenState, userIdState } from '../../Auth/Atoms';
+import VendorMasterForm from './VendorsDetails/VenderMaster/VendorMasterForm';
+import VendorApproved from './VendorsDetails/VendorApproved/VendorApporoved';
+import CustomerMaster from './CustomersDetails/CustomerMaster/CustomerMaster';
+import CustomerApproved from './CustomersDetails/CustomerApporoved/CustomerApproved';
+import ViewVehicleInfo from './ViewVehicleInfo/ViewVehicleInfo';
+import ConfirmationModal from '../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
+import ImageUpload from '../../Component/CompanyAdmin/ImageUpload/ImageUpload';
+import AccidentVehicle from './AccidentVehicle/AccidentVehicle';
+import AccidentVehicleRegUpdate from './AccidentVehicle/AccidentVehicleRegUpdate';
+import VendorResponse from './VendorResponse/VendorsResponse';
+import Dashboard from './AdminHome/Dashboard/Dashboard';
+import EmployeeForm from './Employees/EmployeeForm';
+import EmployeeApproved from './Employees/EmployeeApproved';
+import Visitors from './Visitors/Visitors';
+import CustomerEnquiry from './Enquiry/CustomerEnquiry';
 
 const Administration = () => {
 

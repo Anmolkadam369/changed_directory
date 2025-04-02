@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import '../../Dashboard/Dashboard.css'; 
+// import '../../Dashboard/Dashboard.css'; 
+import '../CompanyAdmin/AdminHome/Dashboard/Dashboard.css';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import axios from 'axios';
-import rupeesymbol from '../../../Assets/rupeesymbol.png'
+import rupeesymbol from '../../Assets/rupeesymbol.png'
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import CaseFirstCard from '../../CaseFirstCard/CaseFirstCard';
-import advocateprotest from '../../../Assets/advocateprotest.png'
-import mechanicuser from '../../../Assets/mechanicuser.png'
-import garageuser from '../../../Assets/garageuser.png'
-import cranetruckuser from '../../../Assets/cranetruckuser.png'
-import onRoad from '../../../Assets/onRoad.png'
-import comingCrane from '../../../Assets/comingCrane.png'
-import commissionpaid from '../../../Assets/commissionpaid.png'
-import hourglass from '../../../Assets/hour-glass.png'
-import crossUser from '../../../Assets/crossUser.png'
-import Registration from '../../Registration/Registration.jsx';
+import CaseFirstCard from '../../Component/Vendors/FirstAppearComponent/CaseFirstCard/CaseFirstCard.jsx';
+import advocateprotest from '../../Assets/advocateprotest.png'
+import mechanicuser from '../../Assets/mechanicuser.png'
+import garageuser from '../../Assets/garageuser.png'
+import cranetruckuser from '../../Assets/cranetruckuser.png'
+import onRoad from '../../Assets/onRoad.png'
+import comingCrane from '../../Assets/comingCrane.png'
+import commissionpaid from '../../Assets/commissionpaid.png'
+import hourglass from '../../Assets/hour-glass.png'
+import crossUser from '../../Assets/crossUser.png'
+import Registration from '../Customers/Registration/Registration.jsx';
 
 
 const CraneUserLanding = () => {

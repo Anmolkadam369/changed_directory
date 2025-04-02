@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../AccidentVehicle/AccidentVehicle.css'
+import  '../AccidentVehicle/AccidentVehicle.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';

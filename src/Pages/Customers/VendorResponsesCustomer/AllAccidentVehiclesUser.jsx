@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import assignedTask from './../../Assets/assignedTask.png'
-import comingCrane from './../../Assets/comingCrane.png'
-import checksuccess from './../../Assets/checksuccess.png'
-import './calender.css'
-import CraneFirstPage from './Crane/CraneFirstPage';
+import assignedTask from '../../../Assets/assignedTask.png'
+import comingCrane from '../../../Assets/comingCrane.png'
+import checksuccess from '../../../Assets/checksuccess.png'
+import '../../../../src/Component/CompanyAdmin/calender.css'
+import CraneFirstPage from './CraneFirstPage';
 
 
 const AllAccidentVehiclesUser = () => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import '../VenderMaster/VendorMasterForm.css'
+// import '../VenderMaster/VendorMasterForm.css'
+import '../../../Pages/CompanyAdmin/VendorsDetails/VenderMaster/VendorMasterForm.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';

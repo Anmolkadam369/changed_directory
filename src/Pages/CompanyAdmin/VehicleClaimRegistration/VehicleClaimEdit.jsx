@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './VehicleClaimRegistration.css';
+import  './VehicleClaimRegistration.css';
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useRecoilValue } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+import { tokenState, userIdState } from '../../../Auth/Atoms';
 import axios from 'axios';
-import { loadStates, loadCities } from '../StateAPI';
+import { loadStates, loadCities } from '../../../Component/CompanyAdmin/CompanyAdminHome/StateAPI';
 import { Alert } from '@mui/material';
 // '../../environment';
 import ReactDatePicker from 'react-datepicker';
@@ -19,7 +19,8 @@ import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
+import VehicleClaimRegistration from './VehicleClaimRegistration';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',

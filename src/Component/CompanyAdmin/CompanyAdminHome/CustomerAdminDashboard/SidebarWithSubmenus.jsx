@@ -4,7 +4,7 @@ import StoreIcon from "@mui/icons-material/Store";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import VendorApproved from '../VendorApproved/VendorApporoved';
+import VendorApproved from '../../../../Pages/CompanyAdmin/VendorsDetails/VendorApproved/VendorApporoved';
 
 const SidebarWithSubmenus = () => {
     const [starting, setStarting] = useState(true);

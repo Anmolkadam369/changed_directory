@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState, typeState } from '../Auth/Atoms';
+import { tokenState, userIdState, typeState } from '../../../Auth/Atoms.jsx';
 import './LoginPage.css';
 import { Alert, Checkbox } from '@mui/material';
 // '../../environment';
-import trucks1 from "../../Assets/trucks1.jpg";
+import trucks1 from "../../../Assets/trucks1.jpg";
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import IconButton from '@mui/material/IconButton';
@@ -14,12 +14,13 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import claimproassist from "../../Assets/claimproassistwithoutName.jpg";
+import claimproassist from "../../../Assets/claimproassistwithoutName.jpg";
 import { Helmet } from 'react-helmet-async';
 import { useDispatch } from 'react-redux'
 import { login } from './authSlice';
-import Footer from '../Home/Footer';
-import encrypt from '../../Services/Encyption';
+import Footer from '../../Home/Footer';
+import encrypt from '../../../Services/Encryption/Encyption.js';
+
 
 
 const Login = () => {

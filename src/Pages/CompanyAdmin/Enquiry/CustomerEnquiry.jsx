@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../VenderMaster/VendorMasterForm.css';
-import "../CustomerMaster/CustomerMaster.css";
-import '../Location2/Location2.css'
+import '../CustomersDetails/CustomerMaster/CustomerMaster.css';
+import  '../VendorsDetails/VenderMaster/VendorMasterForm.css';
+import '../../../Component/CompanyAdmin/Location2/Location2.css';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { Helmet } from 'react-helmet-async';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
-import Admin from '../Admin/SideBar/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);

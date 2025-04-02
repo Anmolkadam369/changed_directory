@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './CustomerApproved.css';
-import '../AccidentVehicle/AccidentVehicle.css';
+// import '../AccidentVehicle/AccidentVehicle.css';
+import '../../AccidentVehicle/AccidentVehicle.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from '@mui/material';
-import ActivationModel from '../Visitors/ActivationModel';
+import ActivationModel from '../../../../Component/CompanyAdmin/ActivationModel/ActivationModel';
 import { Helmet } from 'react-helmet-async';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DataTable from "react-data-table-component";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

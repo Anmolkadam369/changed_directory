@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../VenderMaster/VendorMasterForm.css'
+import '../VendorsDetails/VenderMaster/VendorMasterForm.css';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';

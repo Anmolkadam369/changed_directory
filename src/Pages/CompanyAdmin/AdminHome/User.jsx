@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "../Admin/Admin.css";
+// import "../Admin/Admin.css";
+import  './SideBar/Admin.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+import { tokenState, userIdState } from '../../../Auth/Atoms';
 import { FaUserCircle } from 'react-icons/fa';
-import ConfirmationModal from '../../../Components/ConfirmModel';
-import Registration from '../Registration/Registration';
-import Location1 from '../Location1/Location1';
+import ConfirmationModal from '../../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
+import Registration from '../../Customers/Registration/Registration';
+import Location1 from '../../../Component/CompanyAdmin/Location1/Location1';
 import { Alert } from '@mui/material';
-import AccidentVehicleUser from '../AccidentVehicle/AccidentVehicleUser';
-import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
+import AccidentVehicleUser from '../../../Pages/CompanyAdmin/AccidentVehicle/AccidentVehicleUser.jsx';
+import claimproassist from '../../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
-import UserDashboard from '../Dashboard/UserDashboard';
-import userImg from "../../Assets/userImg.jpg";
+import UserDashboard from './Dashboard/UserDashboard.jsx';
+import userImg from "../../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
-import Login from '../Login/LoginPage';
+import Login from '../../Authentication/Login/LoginPage';
 
 
 const User = () => {

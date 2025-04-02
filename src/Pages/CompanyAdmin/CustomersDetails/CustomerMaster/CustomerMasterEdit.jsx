@@ -14,7 +14,8 @@ import { Helmet } from 'react-helmet-async';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
+
 
 
 const config = {

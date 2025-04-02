@@ -186,7 +186,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import '../../Pages/CompanyAdmin/VendorsDetails/VenderMaster/VendorMasterForm.css'
+import '../VendorsDetails/VenderMaster/VendorMasterForm.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, Button } from '@mui/material';
 import axios from 'axios';

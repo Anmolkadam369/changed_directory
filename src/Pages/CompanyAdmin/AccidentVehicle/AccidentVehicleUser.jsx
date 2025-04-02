@@ -3,9 +3,9 @@ import './AccidentVehicle.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import '../CustomerMaster/CustomerMaster.css'
-import SeeUpdatedPics from '../../../Components/SeeUpdatedPics/SeeUpdatedPics'
-import CustomerViewDetails from '../../../Components/CustomerMaster/CustomerViewDetails';
+import '../CustomersDetails/CustomerMaster/CustomerMaster.css';
+import SeeUpdatedPics from '../../../Component/CompanyAdmin/ImageUpload/SeeUpdatedPics';
+import CustomerViewDetails from '../CustomersDetails/CustomerMaster/CustomerViewDetails'
 import DataTable from "react-data-table-component";
 
 const AccidentVehicleUser = () => {

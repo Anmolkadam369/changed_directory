@@ -1,13 +1,13 @@
 import React, { useState , useEffect} from "react";
 import './ImageViewer.css';
 import { useNavigate } from 'react-router-dom';
-import scrapMain from '../../Assets/scrapmain.jpg';
-import scrap2 from '../../Assets/scrap2.jpeg';
-import scrap3 from '../../Assets/scrap3.jpeg';
-import shoppingonline  from '../../Assets/shopping-online.png'
-import recieved from '../../Assets/recieved.png'
-import Header from "../Home/Header";
-import Footer from "../Home/Footer";
+import scrapMain from '../../../Assets/scrapmain.jpg';
+import scrap2 from '../../../Assets/scrap2.jpeg';
+import scrap3 from '../../../Assets/scrap3.jpeg';
+import shoppingonline  from '../../../Assets/shopping-online.png'
+import recieved from '../../../Assets/recieved.png'
+import Header from "../Header";
+import Footer from "../Footer";
 
 
 const ImageViewer = () => {

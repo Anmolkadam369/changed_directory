@@ -1,10 +1,10 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './RotatingBoard.css'
-import trucksImage from '../../Assets/trucksImage (1).webp';
-import trucksImage2 from '../../Assets/trucksImage3.avif';
-import trucksImage4 from '../../Assets/trucksImage6.png';
-import trucksImageblue from '../../Assets/truckimagesblue.avif';
+import trucksImage from '../../../Assets/trucksImage (1).webp';
+import trucksImage2 from '../../../Assets/trucksImage3.avif';
+import trucksImage4 from '../../../Assets/trucksImage6.png';
+import trucksImageblue from '../../../Assets/truckimagesblue.avif';
 import { useNavigate } from 'react-router-dom';
 
 

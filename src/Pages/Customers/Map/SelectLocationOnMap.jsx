@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom'; // To navigate back
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import L from 'leaflet';
-import './FirstPage.css'
+import '../FirstPageDesigns/FirstPage.css'
 import axios from 'axios';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 

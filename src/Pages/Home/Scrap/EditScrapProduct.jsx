@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 // import './VendorMasterForm.css'
-import addProduct from '../../Assets/add-product.png'
+import addProduct from '../../../Assets/add-product.png'
 import CloseIcon from '@mui/icons-material/Close';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';

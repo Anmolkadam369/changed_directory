@@ -4,7 +4,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import axios from 'axios';
-import "./Table.css"; 
+import  '../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/Table.css';
 
 const VendorResponseTable = () => {
   const [newResponseData, setData] = useState([]);

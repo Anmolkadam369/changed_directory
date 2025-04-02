@@ -4,7 +4,7 @@ import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutl
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import rupeesymbol  from '../../Assets/rupeesymbol.png'
+import rupeesymbol  from '../../../Assets/rupeesymbol.png'   
 
 const CompletePayment = () => {
 

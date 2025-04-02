@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import "../CustomerApporoved/CustomerApproved.css";
-import '../AccidentVehicle/AccidentVehicle.css';
+import  '../../CompanyAdmin/CustomersDetails/CustomerApporoved/CustomerApproved.css';
+import '../../CompanyAdmin/AccidentVehicle/AccidentVehicle.css';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import ViewKanbanOutlinedIcon from '@mui/icons-material/ViewKanbanOutlined';

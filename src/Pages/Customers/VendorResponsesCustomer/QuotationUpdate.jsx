@@ -1,29 +1,32 @@
 
 import React, { useEffect, useState } from 'react';
-import '../FirstPage.css'
 import axios from 'axios';
-import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
+
+// import '../FirstPage.css'
+import '../FirstPageDesigns/FirstPage.css';
+import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import casefiled from '../../../Assets/casefiled.png'
 import telephonecall from '../../../Assets/telephonecall.png'
 import checksuccess from '../../../Assets/checksuccess.png'
 import crossUser from '../../../Assets/crossUser.png'
-import NoDataFound from '../Cards/NoDataFound';
-import SuccessIcon from '../../CaseFirstCard/SuccessIcon';
+import NoDataFound from '../../../Component/Customers/Cards/NoDataFound.jsx';
+import SuccessIcon from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/SuccessIcon.jsx';
 import filterUser from '../../../Assets/filterUser.png'
-import Modal from '../../Location1/Modal.jsx';
-import { useWebSocket } from '../../ContexAPIS/WebSocketContext.jsx';
+import LookingForAccptance from '../Registration/LookingForAcceptance.jsx';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal.jsx';
+import { useWebSocket } from '../../../ContexAPI/WebSocketContext.jsx';
+
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
 import NetworkWifiIcon from '@mui/icons-material/NetworkWifi';
 import SignalWifi4BarIcon from '@mui/icons-material/SignalWifi4Bar';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import PinDropIcon from '@mui/icons-material/PinDrop';
-import LookingForAccptance from '../../Registration/LookingForAcceptance.jsx';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import SocialDistanceIcon from '@mui/icons-material/SocialDistance';
 import AssistantDirectionIcon from '@mui/icons-material/AssistantDirection';

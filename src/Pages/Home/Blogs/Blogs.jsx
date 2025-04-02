@@ -1,9 +1,9 @@
 import { React, useRef, useEffect, useState } from 'react';
-import trucksImage2 from '../../Assets/trucksImage3.jpg';
-import trucksImage4 from '../../Assets/trucksImage6.png';
+import trucksImage2 from '../../../Assets/trucksImage3.jpg';
+import trucksImage4 from '../../../Assets/trucksImage6.png';
 import './Blogs.css'
-import Header from '../Home/Header';
-import Footer from '../Home/Footer';
+import Footer from '../Footer';
+import Header from '../Header';
 
 function Blogs() {
     const [article1, setArticle1] = useState(true);

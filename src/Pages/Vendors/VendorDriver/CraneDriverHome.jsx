@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom"
 import HomeIcon from '@mui/icons-material/Home';
 import CraneDriverDetails from './CraneDriverDetails';
 import RidePopUp from './RidePopUp';
-import BottomNavigationVendor from '../VendorAdmin/BottomNavigationVendor/BottomNavigationVendor';
-import CaseFirstCard from '../../CaseFirstCard/CaseFirstCard';
-import { useWebSocket } from '../../ContexAPIS/WebSocketContext';
+import BottomNavigationVendor from '../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor';
+import CaseFirstCard from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/CaseFirstCard';
+import { useWebSocket } from '../../../ContexAPI/WebSocketContext';
 
 const CraneDriverHome = () => {
     const navigate = useNavigate()

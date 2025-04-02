@@ -3,12 +3,11 @@ import axios from 'axios';
 import "./ImageUpload.css";
 import '../Location1/Location1.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-// '../../environment';
 import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Admin from '../Admin/Admin';
+import Admin from '../../../Pages/CompanyAdmin/AdminHome/SideBar/Admin';
 
 function ImageUpload() {
     const {state, location} = useLocation();

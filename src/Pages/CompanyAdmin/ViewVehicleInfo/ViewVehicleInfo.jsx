@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import '../AccidentVehicle/AccidentVehicle.css'
-import '../../Component/CompanyAdmin/Location2/Location2.css';
+import '../AccidentVehicle/AccidentVehicle.css';
+import '../../../Component/CompanyAdmin/Location2/Location2.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
 import DataTable from "react-data-table-component";
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

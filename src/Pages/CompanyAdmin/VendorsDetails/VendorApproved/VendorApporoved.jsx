@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import "../CustomerApporoved/CustomerApproved.css";
-import '../AccidentVehicle/AccidentVehicle.css';
-import '../../Component/CompanyAdmin/Location2/Location2.css'
+import '../../CustomersDetails/CustomerApporoved/CustomerApproved.css';
+import '../../AccidentVehicle/AccidentVehicle.css';
+import  '../../../../Component/CompanyAdmin/Location2/Location2.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
@@ -10,7 +10,7 @@ import ActivationModel from '../../../../Component/CompanyAdmin/ActivationModel/
 import { Helmet } from 'react-helmet-async';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DataTable from "react-data-table-component";
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

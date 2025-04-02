@@ -4,14 +4,14 @@ import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import craneadvocatemechanic from '../../Assets/camw.webp'; 
-import customerImage from '../../Assets/customer.webp'; 
-import complaints from '../../Assets/complaints.webp'; 
-import vehicleIcon from '../../Assets/vehicleIcon.webp'; 
+import craneadvocatemechanic from '../../../../Assets/camw.webp'; 
+import customerImage from '../../../../Assets/customer.webp'; 
+import complaints from '../../../../Assets/complaints.webp'; 
+import vehicleIcon from '../../../../Assets/vehicleIcon.webp'; 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import Chart from '../Charts/Chart';
+import Chart from '../../../../Component/CompanyAdmin/Charts/Chart';
 
 const UserDashboard = () => {
     const [vendorData, setVendorData] = useState([]);

@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import telephonecall from '../../Assets/telephonecall.png'
+import telephonecall from '../../../Assets/telephonecall.png'
 import { MapContainer, TileLayer } from 'react-leaflet';
-import ModalButton from "../User/FirstPageDesigns/ModalButton";
+import ModalButton from "../../Customers/FirstPageDesigns/ModalButton";
 
 const VendorMoving = ({ item }) => {
     const navigate = useNavigate()

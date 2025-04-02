@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import '../FirstPage.css'
+// import '../FirstPage.css'
+import '../FirstPageDesigns/FirstPage.css';
 import changeServicesUser from '../../../Assets/changeServicesUser.png'
 import { useLocation } from 'react-router-dom';
 import QuotationUpdate from './QuotationUpdate';
 import StatusTracking from './StatusTracking';
 import HistoryReceipts from './HistoryReceipts';
-import BottomNavigationBar from '../BottomNavigationBar.jsx';
-import Modal from '../../Location1/Modal.jsx';
+import BottomNavigationBar from '../../../Component/Customers/BottomNavigationBar.jsx';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal.jsx';
 import AllCancelledOrders from './AllCancelledOrders.jsx';
 import advocatecurrentservice from "../../../Assets/advocatecurrentservice.jpg"
 import mechaniccurrentservice from "../../../Assets/mechaniccurrentservice.jpg"

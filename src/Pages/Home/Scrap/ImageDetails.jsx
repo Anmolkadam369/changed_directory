@@ -6,16 +6,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 
-import scrapMain from '../../Assets/scrapmain.jpg';
-import scrap2 from '../../Assets/scrap2.jpeg';
-import scrap3 from '../../Assets/scrap3.jpeg';
-import scrap4 from '../../Assets/scrap4.webp';
-import scrap5 from '../../Assets/scrap5.jpeg';
-import Header from '../Home/Header';
-import Footer from '../Home/Footer';
-import cart from '../../Assets/cart.png'
-import shoppingbag from '../../Assets/shopping-bag.png'
-import heart from '../../Assets/heart.png'
+import scrapMain from '../../../Assets/scrapmain.jpg';
+import scrap2 from '../../../Assets/scrap2.jpeg';
+import scrap3 from '../../../Assets/scrap3.jpeg';
+import scrap4 from '../../../Assets/scrap4.webp';
+import scrap5 from '../../../Assets/scrap5.jpeg';
+import Header from '../Header';
+import Footer from '../Footer';
+import cart from '../../../Assets/cart.png'
+import shoppingbag from '../../../Assets/shopping-bag.png'
+import heart from '../../../Assets/heart.png'
 
 
 

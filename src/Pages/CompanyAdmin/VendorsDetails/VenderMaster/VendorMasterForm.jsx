@@ -5,17 +5,16 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { Helmet } from 'react-helmet-async';
-import vendorInfo1 from '../../Assets/vendorInfo1.jpg'
-import vendorInfo2 from '../../Assets/vendorInfo2.jpg'
+import vendorInfo1 from '../../../../Assets/vendorInfo1.jpg'
+import vendorInfo2 from '../../../../Assets/vendorInfo2.jpg'
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import DownloadIcon from '@mui/icons-material/Download';
-import vendorsInfo from '../../Assets/vendorsInfo.xlsx';
+import vendorsInfo from '../../../../Assets/vendorsInfo.xlsx';
 import { IconButton } from '@mui/material';
-import Admin from '../Admin/Admin';
-
+import Admin from '../../AdminHome/SideBar/Admin';
 
 const config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries/IN',

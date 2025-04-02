@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import '../FirstPage.css'
-import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+// import '../FirstPage.css'
+import '../FirstPageDesigns/FirstPage.css';
+import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import assignedTask from '../../../Assets/assignedTask.png'
 import comingCrane from '../../../Assets/comingCrane.png'
 import checksuccess from '../../../Assets/checksuccess.png'
 import crossUser from '../../../Assets/crossUser.png'
 import historyUser from '../../../Assets/historyUser.png'
-import axios from 'axios';
 import workDoneUser from '../../../Assets/workDoneUser.png'
 import reachedUser from '../../../Assets/reachedUser.png'
-import NoDataFound from '../Cards/NoDataFound';
-import BottomNavigationBar from '../../../Components/User/BottomNavigationBar';
+import NoDataFound from '../../../Component/Customers/Cards/NoDataFound';
+import BottomNavigationBar from '../../../Component/Customers/BottomNavigationBar';
 
 
 const HistoryPageUser = () => {

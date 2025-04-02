@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './FirstPageDesigns.css'
 import { Truck, Plane, Scale, Wrench, Building2, MapPin, Star, Clock, Shield, ChevronDown } from 'lucide-react';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
-import BottomNavigationBar from '../BottomNavigationBar';
+import BottomNavigationBar from '../../../Component/Customers/BottomNavigationBar';
 import PermissionCheck from './PermissionCheck';
-import ModalButton from "./ModalButton";
+import ModalButton from './ModalButton';
 
 function ServiceCard({ icon: Icon, title, description, imageUrl, rating, eta }) {
     return (

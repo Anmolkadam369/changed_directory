@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import BottomNavigationBar from '../Profiles/BottomNavigationBar';
+import BottomNavigationBar from '../../../Component/Customers/BottomNavigationBar';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import './UserProfileFirst.css'
 
 import { useNavigate } from 'react-router-dom';
-import Modal from '../../Location1/Modal';
+// import Modal from '../../Location1/Modal';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal';
 
 const UserProfileFirst = () => {
   const navigate =  useNavigate() 

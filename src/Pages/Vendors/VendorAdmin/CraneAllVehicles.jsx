@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import searchinterfacesymbol from '../../Assets/search-interface-symbol.png'
-import allAccidentVehicleImg from '../../Assets/allAccidentVehicle.jpg'
-import fleetvehicles from '../../Assets/fleetvehicles.jpg'
+import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
+import allAccidentVehicleImg from '../../../Assets/allAccidentVehicle.jpg'
+import fleetvehicles from '../../../Assets/fleetvehicles.jpg'
 import { useNavigate } from 'react-router-dom';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import crossUser from '../../Assets/crossUser.png'
-import checksuccess from '../../Assets/checksuccess.png'
-import processImgUser from '../../Assets/processImgUser.png'
+import crossUser from '../../../Assets/crossUser.png'
+import checksuccess from '../../../Assets/checksuccess.png'
+import processImgUser from '../../../Assets/processImgUser.png'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import BottomNavigationVendor from '../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor.jsx';
-import LookingForAccptance from '../../Customers/Registration/LookingForAcceptance.js';
-import AddNewData from '../../../Component/Customers/Cards/AddNewData.js';
-import Modal from '../../../Component/CompanyAdmin/Location1/Modal.js';
+import LookingForAccptance from '../../Customers/Registration/LookingForAcceptance.jsx';
+import AddNewData from '../../../Component/Customers/Cards/AddNewData.jsx';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal.jsx';
 
 export default function CraneAllVehicles() {
     const [data, setData] = useState([]);

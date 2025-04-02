@@ -16,8 +16,8 @@ const MapComponent = ({ accidentLocation1, additionalInfo }) => {
   const userId = localStorage.getItem("userId");
 
   const accidentIcon = new L.Icon({
-    iconUrl: require('../../Assets/markerIcon1.png'),
-    iconRetinaUrl: require('../../Assets/markerIcon1.png'),
+    iconUrl: require('../../../Assets/markerIcon1.png'),
+    iconRetinaUrl: require('../../../Assets/markerIcon1.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
     iconSize: [30, 30],
     iconAnchor: [15, 45],

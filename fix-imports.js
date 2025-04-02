@@ -1,24 +1,27 @@
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
-import { glob } from 'glob';
+import { glob } from 'glob'; // Use if ES module syntax
 
 // Get the current directory path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Define the pattern for JS files in the src directory
+// Define the pattern to search for JS files in src and subdirectories
 const absolutePattern = path.join(__dirname, 'src', '**', '*.js');
-console.log('Glob Pattern:', absolutePattern); // Verify absolute pattern
+console.log('Glob Pattern here:', absolutePattern);  // Log resolved pattern
+console.log('Current directory:', __dirname);  // Log current directory
 
-// Check if the glob pattern works at all
-glob('**/*.js', { cwd: path.join(__dirname, 'src'), nodir: true }, (err, files) => {
+// Use glob to search recursively for JS files
+glob('src/**/*.js', { nodir: true }, (err, files) => {
     if (err) {
         console.error('Error occurred:', err);
     } else {
-        console.log('Found JS files:', files);
+        console.log('Files matched:', files);  // Log matched files
+        console.log('Found JS files:', files);  // Log found files
     }
 });
+
 
 
 

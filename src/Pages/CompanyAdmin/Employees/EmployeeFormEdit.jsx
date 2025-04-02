@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../VenderMaster/VendorMasterForm.css'
+import  '../VendorsDetails/VenderMaster/VendorMasterForm.css';
 import { Alert } from '@mui/material';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -11,7 +11,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
+
 
 
 const config = {

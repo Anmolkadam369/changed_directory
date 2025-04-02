@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import '../../User/UserProfile/UserProfileFirst.css'
+// import '../../Customers/UserProfile/UserProfileDetails.css';
+// import '../../Customers/UserProfile/UserProfileDetails.css';
 import { useNavigate } from 'react-router-dom';
-import Modal from '../../Location1/Modal';
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal';
 import BottomNavigationVendor from '../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor';
 
 const CraneUserProfile = () => {

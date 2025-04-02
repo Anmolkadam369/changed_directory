@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../Admin/Admin.css';
+// import '../Admin/Admin.css';
+import '../../Pages/CompanyAdmin/AdminHome/SideBar/Admin.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import StoreIcon from '@mui/icons-material/Store';

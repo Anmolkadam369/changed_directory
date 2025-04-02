@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import mapimage from '../../Assets/mapimage.jpg'
+import mapimage from '../../../Assets/mapimage.jpg'
 // '../../environment';
 
 const LocationAccessModal = ({ triggerModel, onSuccess }) => {

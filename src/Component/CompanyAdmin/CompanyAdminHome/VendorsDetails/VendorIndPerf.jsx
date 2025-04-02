@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Table.css'
+import '../../CompanyAdminHome/CustomerAdminDashboard/Table.css'
 import axios from 'axios';
 
 const VendorIndPerf = () => {

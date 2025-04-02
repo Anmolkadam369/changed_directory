@@ -11,7 +11,7 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
-import Admin from '../Admin/Admin';
+import Admin from '../AdminHome/SideBar/Admin';
 
 
 const config = {

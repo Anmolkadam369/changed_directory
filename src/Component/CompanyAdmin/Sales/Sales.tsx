@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Grid, Paper, Stack, Button } from '@mui/material';
 import IconifyIcon from './Iconify.tsx';
-import { sales } from '../Data/sales.ts';
+import { sales } from './sales.ts';
 import SaleCard from './SaleCard.tsx';
 
 

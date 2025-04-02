@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
-import VendorMoving from "../../Vendors/VendorMoving";
-import BottomNavigationVendor from "../BottomNavigationVendor/BottomNavigationVendor";
-import assignedTask from '../../../Assets/assignedTask.png'
-import comingCrane from '../../../Assets/comingCrane.png'
-import checksuccess from '../../../Assets/checksuccess.png'
-import NoDataFound from '../../User/Cards/NoDataFound';
+// import VendorMoving from "../../Vendors/VendorMoving";
+import VendorMoving from "../../../CompanyAdmin/VendorResponse/VendorMoving";
+// import BottomNavigationVendor from "../BottomNavigationVendor/BottomNavigationVendor";
+import BottomNavigationVendor from "../../../../Component/Vendors/BottomNavigationVendor/BottomNavigationVendor";
+import assignedTask from '../../../../Assets/assignedTask.png'
+import comingCrane from '../../../../Assets/comingCrane.png'
+import checksuccess from '../../../../Assets/checksuccess.png'
+// import NoDataFound from '../../User/Cards/NoDataFound';
+import NoDataFound from "../../../../Component/Customers/Cards/NoDataFound";
 import axios from "axios";
-import crossUser from '../../../Assets/crossUser.png'
-import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
-import filterUser from '../../../Assets/filterUser.png'
-import Modal from "../../Location1/Modal";
-import historyUser from '../../../Assets/historyUser.png'
-import workDoneUser from '../../../Assets/workDoneUser.png'
-import reachedUser from '../../../Assets/reachedUser.png'
+import crossUser from '../../../../Assets/crossUser.png'
+import searchinterfacesymbol from '../../../../Assets/search-interface-symbol.png'
+import filterUser from '../../../../Assets/filterUser.png'
+// import Modal from "../../Location1/Modal";
+import Modal from "../../../../Component/CompanyAdmin/Location1/Modal";
+import historyUser from '../../../../Assets/historyUser.png'
+import workDoneUser from '../../../../Assets/workDoneUser.png'
+import reachedUser from '../../../../Assets/reachedUser.png'
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';

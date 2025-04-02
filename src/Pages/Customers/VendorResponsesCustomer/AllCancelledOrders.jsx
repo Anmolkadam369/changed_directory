@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import Loading from "../Cards/Loading";
-import NoDataFound from "../Cards/NoDataFound";
+import Loading from "../../../Component/Customers/Cards/Loading.jsx";
+import NoDataFound from "../../../Component/Customers/Cards/NoDataFound.jsx";
 import axios from 'axios';
 import reachedUser from '../../../Assets/reachedUser.png'
 import filterUser from '../../../Assets/filterUser.png'
-import Modal from '../../Location1/Modal.jsx';
 import workDoneUser from '../../../Assets/workDoneUser.png'
 import searchinterfacesymbol from '../../../Assets/search-interface-symbol.png'
 import historyUser from '../../../Assets/historyUser.png'
@@ -14,6 +13,7 @@ import comingCrane from '../../../Assets/comingCrane.png'
 import checksuccess from '../../../Assets/checksuccess.png'
 import ratingStar from '../../../Assets/ratingStar.png'
 import dropReason from '../../../Assets/dropReason.png'
+import Modal from "../../../Component/CompanyAdmin/Location1/Modal.jsx";
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';

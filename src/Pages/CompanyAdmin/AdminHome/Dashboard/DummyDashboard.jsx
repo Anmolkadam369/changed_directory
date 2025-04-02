@@ -1,50 +1,59 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2'; // For the line, doughnut, and bar charts
-import '../AAAAAAAAAAAAAAAAAA/Table.css';
-import './Dashboard.css'; // Ensure you create this CSS file for styling
-// '../../environment';
 import { Grid } from '@mui/material';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+
+// Styles
+import '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/Table.css';
+
+import './Dashboard.css'; // Ensure you create this CSS file for styling
+
+// Assets
+import craneadvocatemechanic from '../../../../Assets/camw.webp';
+import complaints from '../../../../Assets/complaints.webp';
+import customerImage from '../../../../Assets/customer.webp';
+import registerComplaints from '../../../../Assets/registeredComplaints.webp';
+import remainingComplaints from '../../../../Assets/remainingComplaints.webp';
+import vehicleIcon from '../../../../Assets/vehicleIcon.webp';
+import vendorResponseImg from '../../../../Assets/vendorResponse.webp';
+
+// Local Components
 import TargetVsReality from '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/TargetVsReality/TargetVsReality.tsx';
-import craneadvocatemechanic from '../../Assets/camw.webp';
-import complaints from '../../Assets/complaints.webp';
-import customerImage from '../../Assets/customer.webp';
-import registerComplaints from '../../Assets/registeredComplaints.webp';
-import remainingComplaints from '../../Assets/remainingComplaints.webp';
-import vehicleIcon from '../../Assets/vehicleIcon.webp';
-import vendorResponseImg from '../../Assets/vendorResponse.webp';
-import AssignedVendorsTable from '../AAAAAAAAAAAAAAAAAA/AssignedVendorsTable';
-import CustomerRatings from '../AAAAAAAAAAAAAAAAAA/CustomerRatings';
-import CustomerSatisfaction from '../AAAAAAAAAAAAAAAAAA/CustomerSatisfaction/CustomerSatisfaction.tsx';
-import MostNumberOfVehicle from '../AAAAAAAAAAAAAAAAAA/MostNumberOfVehicle';
-import TotalRevenue from '../AAAAAAAAAAAAAAAAAA/TotalRevenue/TotalRevenue.tsx';
-import VendorAccpetedDoughnut from '../AAAAAAAAAAAAAAAAAA/VendorAcceptedDoughnut';
-import VendorIndPerf from '../AAAAAAAAAAAAAAAAAA/VendorIndPerf';
-import VendorRating from '../AAAAAAAAAAAAAAAAAA/VendorRating';
-import VendorResponseTable from '../AAAAAAAAAAAAAAAAAA/VendorResponseTable';
-import VisitorInsights from '../AAAAAAAAAAAAAAAAAA/VisitorsCard/VisitorInsights.tsx';
-import AccidentVehicle from '../AccidentVehicle/AccidentVehicle';
-import AccidentVehicleRegUpdate from '../AccidentVehicle/AccidentVehicleRegUpdate';
-import Admin from '../Admin/Admin.jsx';
-import Chart from '../Charts/Chart';
-import ComplaintsCharts from '../Charts/ComplaintsCharts';
-import CustomerChart from '../Charts/CustomerChart';
-import EmployeeChart from '../Charts/EmployeeChart';
-import FullyAssignedVendorsHere from '../Charts/FullyAssignedVendors';
-import IncomingComplaints from '../Charts/IncomingComplaints';
-import NotAssignedVendorsHere from '../Charts/NotAssignedVendors';
-import RemainingAssigned from '../Charts/RemainingAssigned';
-import CustomerApproved from '../CustomerApporoved/CustomerApproved';
-import EmployeeApproved from '../EmployeeForm/EmployeeApproved';
-import Sales from '../Sales/Sales.tsx';
-import VendorApproved from '../VendorApproved/VendorApporoved';
-import VendorResponse from '../Vendors/VendorsResponse';
-import ViewVehicleInfo from '../ViewVehicleInfo/ViewVehicleInfo';
-import Visitors from '../Visitors/Visitors';
+import AssignedVendorsTable from '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/AssignedVendorsTable/AssignedVendorsTable.jsx';
+import CustomerRatings from '../../../../Component/Customers/CustomerRating/CustomerRatings.jsx';
+import CustomerSatisfaction from '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/CustomerSatisfaction/CustomerSatisfaction.tsx';
+import MostNumberOfVehicle from '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerDetails/MostNumberOfVehicle.js';
+import TotalRevenue from '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/TotalRevenue/TotalRevenue.tsx';
+import VendorAccpetedDoughnut from '../../../../Component/CompanyAdmin/CompanyAdminHome/VendorsDetails/VendorAcceptedDoughnut.jsx';
+import VendorIndPerf from '../../../../Component/CompanyAdmin/CompanyAdminHome/VendorsDetails/VendorIndPerf.jsx';
+import VendorRating from '../../../../Component/CompanyAdmin/CompanyAdminHome/VendorsDetails/VendorRating';
+import VendorResponseTable from '../../VendorResponse/VendorResponseTable.jsx';
+import VisitorInsights from '../../../../Component/CompanyAdmin/CompanyAdminHome/CustomerAdminDashboard/VisitorsCard/VisitorInsights.tsx';
+
+import AccidentVehicle from '../../AccidentVehicle/AccidentVehicle.jsx';
+import AccidentVehicleRegUpdate from '../../AccidentVehicle/AccidentVehicleRegUpdate.jsx';
+import Admin from '../SideBar/Admin.jsx';
+import Chart from '../../../../Component/CompanyAdmin/Charts/Chart.jsx';
+import ComplaintsCharts from '../../../../Component/CompanyAdmin/Charts/ComplaintsCharts.jsx';
+import CustomerChart from '../../../../Component/CompanyAdmin/Charts/CustomerChart';
+import EmployeeChart from '../../../../Component/CompanyAdmin/Charts/EmployeeChart';
+import FullyAssignedVendorsHere from '../../../../Component/CompanyAdmin/Charts/FullyAssignedVendors';
+import IncomingComplaints from '../../../../Component/CompanyAdmin/Charts/IncomingComplaints';
+import NotAssignedVendorsHere from '../../../../Component/CompanyAdmin/Charts/NotAssignedVendors';
+import RemainingAssigned from '../../../../Component/CompanyAdmin/Charts/RemainingAssigned';
+
+import CustomerApproved from '../../CustomersDetails/CustomerApporoved/CustomerApproved.jsx';
+import EmployeeApproved from '../../Employees/EmployeeApproved.jsx';
+import Sales from '../../../../Component/CompanyAdmin/Sales/Sales.tsx';
+import VendorApproved from '../../VendorsDetails/VendorApproved/VendorApporoved.jsx';
+import VendorResponse from '../../VendorResponse/VendorsResponse.jsx';
+import ViewVehicleInfo from '../../ViewVehicleInfo/ViewVehicleInfo.jsx';
+import Visitors from '../../Visitors/Visitors.jsx';
+
 
 // ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

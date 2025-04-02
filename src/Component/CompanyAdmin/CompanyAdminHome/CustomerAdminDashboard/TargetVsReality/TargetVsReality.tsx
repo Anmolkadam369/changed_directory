@@ -1,6 +1,6 @@
 import { Paper, Stack, Typography } from '@mui/material';
 import TargetVsRealityChart from './TargetVsRealityChart.tsx';
-import IconifyIcon from '../../Sales/Iconify.tsx';
+import IconifyIcon from '../../../Sales/Iconify.tsx';
 import { salesData, targetVsReality } from './target-vs-reality.ts';
 import React from 'react';
 

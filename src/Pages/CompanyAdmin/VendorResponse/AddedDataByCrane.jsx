@@ -9,14 +9,14 @@ import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
-import feedbackByVendor from '../../Assets/feedbackByVendor.png'
-import commissionbyvendor from '../../Assets/commissionbyvendor.png'
-import paymentcheck from '../../Assets/payment-check.png'
-import onlinepayment from '../../Assets/onlinepayment.png'
-import cash from '../../Assets/cash.png'
-import list from '../../Assets/list.png'
-import imageshowing from '../../Assets/imageshowing.png'
-import exploration from '../../Assets/exploration.png'
+import feedbackByVendor from '../../../Assets/feedbackByVendor.png'
+import commissionbyvendor from '../../../Assets/commissionbyvendor.png'
+import paymentcheck from '../../../Assets/payment-check.png'
+import onlinepayment from '../../../Assets/onlinepayment.png'
+import cash from '../../../Assets/cash.png'
+import list from '../../../Assets/list.png'
+import imageshowing from '../../../Assets/imageshowing.png'
+import exploration from '../../../Assets/exploration.png'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 
 

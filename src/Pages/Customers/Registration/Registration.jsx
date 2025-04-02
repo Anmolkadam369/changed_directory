@@ -7,20 +7,20 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Alert, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import Modal from '../Location1/Modal'; 
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal'; 
 import { Helmet } from 'react-helmet-async';
 
-import checksuccess from '../../Assets/checksuccess.png'
-import SuccessIcon from '../CaseFirstCard/SuccessIcon';
-import BottomNavigationBar from '../User/BottomNavigationBar';
-import LocationSearchPanel from '../Location1/LocationSearchPanel';
+import checksuccess from '../../../Assets/checksuccess.png'
+import SuccessIcon from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/SuccessIcon';
+import BottomNavigationBar from '../../../Component/Customers/BottomNavigationBar';
+import LocationSearchPanel from '../../../Component/CompanyAdmin/Location1/LocationSearchPanel';
 import VehiclePanel from './VehiclePanel';
 import ConfirmedRide from './ConfirmedRide';
 import LookingForAccptance from './LookingForAcceptance';
 import WaitForVehicleCome from './WaitForVehicleCome';
-import MapForVendorDistance from '../User/MapForVendorDistance';
-import Loading from '../User/Cards/Loading';
-import AddNewData from '../User/Cards/AddNewData';
+import MapForVendorDistance from '../Map/MapForVendorDistance';
+import Loading from '../../../Component/Customers/Cards/Loading';
+import AddNewData from '../../../Component/Customers/Cards/AddNewData';
 import VehicleImagePanel from './VehicleImagePanel';
 
 const config = {

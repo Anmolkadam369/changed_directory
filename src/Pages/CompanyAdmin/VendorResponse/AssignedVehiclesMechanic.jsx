@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import "../CustomerApporoved/CustomerApproved.css";
-import '../AccidentVehicle/AccidentVehicle.css'
+import '../CustomersDetails/CustomerApporoved/CustomerApproved.css';
+import  '../AccidentVehicle/AccidentVehicle.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+// import AddedDataByMechanic from './AddedDataByMechanic';
 import AddedDataByMechanic from './AddedDataByMechanic';
 import DataTable from "react-data-table-component";
 

@@ -9,7 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import { useNavigate } from 'react-router-dom';
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',

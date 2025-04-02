@@ -7,8 +7,9 @@ import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import SuccessIcon from './SuccessIcon';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Modal from '../Location1/Modal';
-import crossUser from '../../Assets/crossUser.png'
+// import Modal from '../Location1/Modal';
+import Modal from '../../../CompanyAdmin/Location1/Modal';
+import crossUser from '../../../../Assets/crossUser.png'
 import FirstCardPage from './FIrstCardPage';
 
 function haversineDistance(lat1, lon1, lat2, lon2) {

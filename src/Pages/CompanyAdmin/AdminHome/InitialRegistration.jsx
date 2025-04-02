@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../Registration/Registration.css';
+import  '../../Customers/Registration/Registration';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
-import Modal from '../Location1/Modal'; 
+import Modal from '../../../Component/CompanyAdmin/Location1/Modal';
 import { Helmet } from 'react-helmet-async';
-import crossUser from '../../Assets/crossUser.png'
+import crossUser from '../../../Assets/crossUser.png'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import repairingonstand123 from '../../Assets/repairingonstand123.avif'
-import repairingonstand from '../../Assets/repairingonstand.jpg'
-import checksuccess from '../../Assets/checksuccess.png'
-import SuccessIcon from '../CaseFirstCard/SuccessIcon';
-import Admin from './Admin';
+import repairingonstand123 from '../../../Assets/repairingonstand123.avif'
+import repairingonstand from '../../../Assets/repairingonstand.jpg'
+import checksuccess from '../../../Assets/checksuccess.png'
+import SuccessIcon from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/SuccessIcon';
+import Admin from './SideBar/Admin';
 
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',

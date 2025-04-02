@@ -19,7 +19,7 @@ import CarRepairIcon from '@mui/icons-material/CarRepair';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 import registerComplaints from '../../Assets/registeredComplaints.webp'; // Correct import path
 import { Helmet } from 'react-helmet-async';
-import RotatingBoard from '../AAAAAAAAAAAAAAAAAA/RotatingBoard';
+import RotatingBoard from './RotatingBoard/RotatingBoard';
 import Header from './Header';
 import Footer from './Footer';
 import axios from 'axios';

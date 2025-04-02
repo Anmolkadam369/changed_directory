@@ -20,7 +20,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
   padding: 8,

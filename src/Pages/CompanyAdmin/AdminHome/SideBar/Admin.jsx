@@ -3,8 +3,8 @@ import './Admin.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
-import ConfirmationModal from '../../../../Components/ConfirmModel';
-import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
+import ConfirmationModal from '../../../../Component/CompanyAdmin/CompanyAdminHome/ConfirmModel';
+import claimproassist from '../../../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
 import StoreIcon from "@mui/icons-material/Store";
@@ -19,7 +19,7 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
-import userImg from "../../Assets/userImg.jpg";
+import userImg from "../../../../Assets/userImg.jpg";
 
 
 const Admin = () => {

@@ -3,17 +3,18 @@ import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate , useLocation} from 'react-router-dom';
-import craneadvocatemechanic from '../../Assets/camw.webp'; 
-import customerImage from '../../Assets/customer.webp'; 
-import complaints from '../../Assets/complaints.webp'; 
-import vehicleIcon from '../../Assets/vehicleIcon.webp'; 
+import craneadvocatemechanic from '../../../../Assets/camw.webp'; 
+import customerImage from '../../../../Assets/customer.webp'; 
+import complaints from '../../../../Assets/complaints.webp'; 
+import vehicleIcon from '../../../../Assets/vehicleIcon.webp'; 
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import Featured from '../Charts/Featured';
+import Featured from '../../../../Component/CompanyAdmin/Charts/Featured';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DataTable from "react-data-table-component";
-import Admin from '../Admin/Admin';
+import Admin from '../../AdminHome/SideBar/Admin';
+
 
 const CustomerPerformance = () => {
     const [vendorData, setVendorData] = useState([]);

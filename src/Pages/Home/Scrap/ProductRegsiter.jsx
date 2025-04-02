@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import ViewProduct from './ViewProduct';
-
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='

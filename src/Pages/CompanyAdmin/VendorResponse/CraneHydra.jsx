@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "../Admin/Admin.css"
+import '../AdminHome/SideBar/Admin.css';
 import './Advocate.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { tokenState, userIdState } from '../Auth/Atoms';
+import { tokenState, userIdState } from '../../../Auth/Atoms';
 import { FaUserCircle } from 'react-icons/fa';
-import claimproassist from '../../Assets/claimproassistwithoutName.jpg'
+import claimproassist from '../../../Assets/claimproassistwithoutName.jpg'
 import MenuIcon from '@mui/icons-material/Menu';
 import { Helmet } from 'react-helmet-async';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
-import userImg from "../../Assets/userImg.jpg";
+import userImg from "../../../Assets/userImg.jpg";
 import CenterFocusWeakIcon from '@mui/icons-material/OpenWith';
 import CraneDashboard from './CraneDashboard';
-import Login from '../Login/LoginPage';
-import Profiles from '../Profiles/Profiles';
-import LocationAccessModal from '../Location1/LocationAccessModal';
+import Login from '../../Authentication/Login/LoginPage';
+import Profiles from '../../Customers/Profiles/Profiles';
+import LocationAccessModal from '../../../Component/CompanyAdmin/Location1/LocationAccessModal';
 
 const CraneHydra = () => {
 

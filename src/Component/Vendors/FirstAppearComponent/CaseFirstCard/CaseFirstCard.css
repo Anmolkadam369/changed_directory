@@ -50,7 +50,7 @@
 
 /* Background image styling */
 .background-image {
-  background-image: url('../../Assets/firstcasebackground.avif');
+  background-image: url('../../../../Assets/firstcasebackground.avif');
   /* Add your image URL */
   background-position: center;
   background-size: cover;

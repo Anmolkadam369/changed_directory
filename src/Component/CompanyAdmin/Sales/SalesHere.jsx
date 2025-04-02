@@ -1,6 +1,7 @@
 import { Button, Grid, Paper, Stack, Typography } from '@mui/material';
-import IconifyIcon from 'components/base/IconifyIcon';
-import { sales } from 'data/sales';
+// import IconifyIcon from 'components/base/IconifyIcon';
+import IconifyIcon from './Iconify';
+import { sales } from './sales';
 import SaleCard from './SaleCard';
 
 const SalesHere = () => {
