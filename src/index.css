@@ -1,4 +1,151 @@
-
+/* 
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-Italic.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./Fonts/OTF/Satoshi-BlackItalic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+}
+
+
+.font-satoshi {
+  font-family: 'Satoshi';
+}
+  html.lenis {
+    height: auto;
+  }
+  
+  .lenis.lenis-smooth {
+    scroll-behavior: auto;
+  }
+  
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{ overflow-x: hidden;}
+
+
+.hero-section { background-image: url('../src/Assets/home/hero.png'); height: 896px; width: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative;}
+.gd-text { background: linear-gradient(180deg, #21A6E9 10.32%, #FFFFFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+
+.services-card .services-content {background-color: #F9F9F9; transition: all 0.5s; border-radius: 0 0 16px 16px; padding: 18px 24px; }
+.services-card:hover .services-content {background-color: #21A6E9; }
+.services-card .s-title { font-family: 'Satoshi'; font-weight: 500; font-size: 31px; line-height: 62.4px; color: #000000; transition: all 0.5s;}
+.services-card:hover .s-title { color: #FFF;}
+.services-card .s-text { font-family: 'Satoshi'; font-weight: 400; font-size: 18px; line-height: 30px; color: #000000; transition: all 0.5s;}
+.services-card:hover .s-text { color: #FFF;}
+
+.services-slider { position: relative;}
+.services-slider .prev-arrow .arrow-icon {
+  transition: all 0.3s ease-in-out;z-index: 10;
+}
+.services-slider .next-arrow .arrow-icon {
+  transition: all 0.3s ease-in-out; z-index: 10;
+}
+/* Left Arrow */
+.services-slider .prev-arrow:hover .arrow-icon,
+.services-slider .prev-arrow:active .arrow-icon {
+  content: url("../src/Assets/home/s-l-light.svg");
+}
+
+/* Right Arrow */
+.services-slider .next-arrow:hover .arrow-icon,
+.services-slider .next-arrow:active .arrow-icon {
+  content: url("../src/Assets/home/s-light.svg");
+}
+
+.test-slider { position: relative; overflow: hidden; }
+.test-slider .slick-dots { position: absolute; bottom: -50px; }
+.test-slider .slick-dots li { height: 14px; width: 14px; margin: 0 3px;}
+.test-slider .slick-dots li button { height: 14px; width: 14px; padding: 0; }
+.test-slider .slick-dots li button:before { height: 14px; width: 14px; padding: 0; color: transparent; background-color: #21A6E966; border-radius: 50px;}
+.test-slider .slick-dots li.slick-active button:before { height: 14px; width: 14px; padding: 0; color: transparent; background-color: #21A6E9; border-radius: 50px;}
+.test-slider .slick-next { right: 60px; }
+.test-slider .slick-prev { left: 60px; z-index: 10; }
+
+.contact-section { background-image: url('../src/Assets/login/img1.svg'); height: 626px; width: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;}

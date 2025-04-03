@@ -94,7 +94,11 @@ import { WebSocketProvider } from "./context/WebSocketContext.jsx";
 import { LocationProvider } from "./context/LocationContext";
 
 
-function App() {
+import SignUp from './Pages/Authentication/Registrations/SignUp.jsx'
+import NewLoginPage from './Pages/Authentication/Login/NewLoginPage.jsx';
+
+
+function App() { 
 
   const userId = localStorage.getItem("userId");
   console.log(userId);
@@ -109,6 +113,8 @@ function App() {
             <Routes>
               <Route exact path='/' element={<Home />} />
               {/* <Route path='/ContactUs' element={<ContactUs />} /> */}
+              <Route path='/Signup' element={<SignUp/>}/>
+              <Route path='/NewLoginPage' element={<NewLoginPage/>}/>
               <Route path='/ContactUs' element={<WorkshopVendorRegistrationForm />} />
               <Route path='/Blogs' element={<Blogs />} />
               <Route path='/CaseFirstCard' element={<CaseFirstCard />} />
