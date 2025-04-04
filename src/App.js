@@ -96,9 +96,14 @@ import { LocationProvider } from "./context/LocationContext";
 
 import SignUp from './Pages/Authentication/Registrations/SignUp.jsx'
 import NewLoginPage from './Pages/Authentication/Login/NewLoginPage.jsx';
+import NewContactUs from './Pages/Home/ContactUs/NewContactUs.jsx'
+import ContactUs from './Pages/Home/ContactUs/ContactUs.jsx';
+import AddVehicles from './Pages/Customers/Registration/AddVehicles.jsx';
+import ScrollToTop from './Component/ScrollToTop.jsx';
+import Navbar from './Component/Home/Navbar.jsx';
+import Footer from './Component/Home/footer/Footer.jsx'
 
-
-function App() { 
+function App() {
 
   const userId = localStorage.getItem("userId");
   console.log(userId);
@@ -108,14 +113,20 @@ function App() {
 
       <WebSocketProvider>
         <LocationProvider >
-
           <Router>
+            <ScrollToTop />
+            <Navbar />
             <Routes>
               <Route exact path='/' element={<Home />} />
               {/* <Route path='/ContactUs' element={<ContactUs />} /> */}
-              <Route path='/Signup' element={<SignUp/>}/>
-              <Route path='/NewLoginPage' element={<NewLoginPage/>}/>
-              <Route path='/ContactUs' element={<WorkshopVendorRegistrationForm />} />
+              <Route path='/Signup' element={<SignUp />} />
+              <Route path='/NewLoginPage' element={<NewLoginPage />} />
+              <Route path='/newContactUs' element={<NewContactUs />} />
+              <Route path='/addVehicles' element={<AddVehicles />} />
+
+
+
+              <Route path='/ContactUs' element={<ContactUs />} />
               <Route path='/Blogs' element={<Blogs />} />
               <Route path='/CaseFirstCard' element={<CaseFirstCard />} />
               <Route path='/SuccessIcon' element={<SuccessIcon />} />
@@ -221,8 +232,8 @@ function App() {
               <Route path="*" element={<NotFoundPage />} />
 
             </Routes>
+            <Footer />
           </Router>
-
         </LocationProvider>
       </WebSocketProvider>
     </Provider>

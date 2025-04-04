@@ -303,9 +303,9 @@ function Login() {
                     <div className='max-w-[430px] w-full'>
                         <h6 className="font-[500] font-satoshi text-[30px] text-[#000000] pb-[26px] m-0">Log in</h6>
                         <p className="font-[400] font-satoshi text-[#515151] text-[16px] mb-0">If you don’t have an account register</p>
-                        <p className="font-[400] font-satoshi text-[#515151] text-[16px] mb-0 pb-[52px]">You can
+                        <p className="font-[400] font-satoshi text-[#515151] text-[16px] mb-0 pb-[52px] mt-2">You can
                             <Link to="/signUp" className='no-underline'>
-                                <span className='font-[600] text-[#21A6E9]'> Register here !</span>
+                                <span className='font-[600] text-[#21A6E9] mt-2'> Register here !</span>
                             </Link>
                         </p>
                         <div className="flex flex-col gap-[42px]">

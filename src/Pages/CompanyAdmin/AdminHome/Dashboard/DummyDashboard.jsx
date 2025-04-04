@@ -726,7 +726,7 @@ const DummyDashboard = () => {
                                     )}
                                     {selectedStat === 'Employees' && (
                                         <div className="statistics">
-                                            <EmployeeChart />
+                                            {/* <EmployeeChart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'incomingComplaints' && (
@@ -923,17 +923,17 @@ const DummyDashboard = () => {
 
                                     {selectedStat === 'vendor' && (
                                         <div className="statistics">
-                                            <Chart />
+                                            {/* <Chart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'customer' && (
                                         <div className="statistics" style={{ marginRight: "0px" }}>
-                                            <CustomerChart />
+                                            {/* <CustomerChart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'Employees' && (
                                         <div className="statistics">
-                                            <EmployeeChart />
+                                            {/* <EmployeeChart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'incomingComplaints' && (
@@ -1054,17 +1054,17 @@ const DummyDashboard = () => {
 
                                     {selectedStat === 'vendor' && (
                                         <div className="statistics">
-                                            <Chart />
+                                            {/* <Chart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'customer' && (
                                         <div className="statistics" style={{ marginRight: "0px" }}>
-                                            <CustomerChart />
+                                            {/* <CustomerChart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'Employees' && (
                                         <div className="statistics">
-                                            <EmployeeChart />
+                                            {/* <EmployeeChart /> */}
                                         </div>
                                     )}
                                     {selectedStat === 'incomingComplaints' && (

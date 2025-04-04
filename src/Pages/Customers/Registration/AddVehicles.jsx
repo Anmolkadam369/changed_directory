@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import Modal from '../../../Component/CompanyAdmin/Location1/Modal';
 import { Helmet } from 'react-helmet-async';
+import { ClipLoader } from 'react-spinners';
 
 import checksuccess from '../../../Assets/checksuccess.png'
 import SuccessIcon from '../../../Component/Vendors/FirstAppearComponent/CaseFirstCard/SuccessIcon';
@@ -23,12 +24,46 @@ import Loading from '../../../Component/Customers/Cards/Loading';
 import AddNewData from '../../../Component/Customers/Cards/AddNewData';
 import VehicleImagePanel from './VehicleImagePanel';
 
+
+
+import img1 from '../../../Assets/add/img1.png'
+import icon2 from '../../../Assets/add/icon2.svg'
+import icon1 from '../../../Assets/add/icon1.svg'
+import icon4 from '../../../Assets/add/icon4.svg'
+import icon5 from '../../../Assets/add/icon5.svg'
+import search from '../../../Assets/add/search.svg'
+
+import icon3 from '../../../Assets/add/icon3.svg'
+import rightarrow from '../../../Assets/navbar/right-arrow.svg'
+import img2 from '../../../Assets/add/img2.png'
+import img3 from '../../../Assets/add/img3.png'
+import img4 from '../../../Assets/add/img4.png'
+import img5 from '../../../Assets/add/img5.png'
+import img6 from '../../../Assets/add/img6.png'
+import img7 from '../../../Assets/add/img7.png'
+
+
+
+const steps = [
+    { id: "01", title: "Accident Detail" },
+    { id: "02", title: "Choose Vehicle" },
+    { id: "03", title: "Upload Image" },
+    { id: "04", title: "Confirm Info" },
+];
+
 const config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries/IN',
     ckey: 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
 };
 
-function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
+
+function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
+    const [currentStep, setCurrentStep] = useState("01");
+    const [isModalOpenLooking, setIsModalOpenLooking] = useState(false);
+    const [isLoadingPlaces, setIsLoadingPlaces] = useState(false);
+
+
+
     const [alertInfo, setAlertInfo] = useState({ show: false, message: '', severity: 'info' });
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -708,7 +743,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         } catch (error) {
         }
         try {
-            console.log('latitudedsss', longitude, latitude)
+            setIsLoadingPlaces(true)
+            console.log('latitudedsss', longitude, latitude, isLoadingPlaces)
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/get-nearby-places`, {
                 data: { lat: latitude, lon: longitude, radius: 1000 },
                 headers: {
@@ -718,6 +754,8 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
             })
             console.log("respose.data", response.data)
             setPickupSuggestions(response.data)
+            setIsLoadingPlaces(false)
+
         } catch {
         }
     }
@@ -739,15 +777,16 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
         if (dropLatitude != "" && dropLongitude != '') {
             try {
                 console.log('latitudedsss', longitude, latitude)
+                setIsLoadingPlaces(true)
                 const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/get-nearby-places`, {
                     data: { lat: dropLatitude, lon: dropLongitude, radius: 1000 },
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
-
                 })
                 console.log("respose.data", response.data)
                 setDestinationSuggestions(response.data)
+                setIsLoadingPlaces(false)
             } catch {
             }
         }
@@ -763,397 +802,373 @@ function Registration({ item, fromPageHere, centerHere, vehicleNo }) {
     }
 
 
+
     return (
-        <div>
+        <>
+            <div className="bg-[#EFF9FD] pt-[50px] md:px-[80px] pb-[108px] px-[20px]">
+                <div className="flex items-center flex-wrap justify-center relative pb-[33px]">
+                    {steps.map((step, index) => (
+                        <div className='flex items-center'>
 
-            {doneFetching === false && (
-                <Loading />
-            )}
-            {doneFetching === true && allVehicleNumbers.length === 0 && (
-                <div>
-                    <div onClick={(navigateTo)}>
-                        <AddNewData index={userId.startsWith('CUD-') ? 2 : 1} />
-                    </div>
-                </div>
-            )}
-            {doneFetching && allVehicleNumbers.length > 0 && (<div className="Registrationdetails-elem-16 bg-white h-full">
-                <Helmet>
-                    <title>Customer Service Vehicle Number - Claimpro</title>
-                    <meta name="description" content="Customer Service Vehicle for BVC ClaimPro Assist to register the vehicle and get data about vehicle." />
-                    <meta name="keywords" content="Vehicle Accidents, accident trucks,  Customer Service, Claimpro, Claim pro Assist, Bvc Claimpro Assist ,Accidental repair ,Motor Insurance claim,Advocate services , Hydra Crane service ,On site repair,Accident Management" />
-                    <link rel='canonical' href={`https://claimpro.in/Register`} />
-                </Helmet>
-                <div style={{ position: 'relative' }}>
-                    {getData.isActive === "false" && showPopup && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            background: 'lightgrey',
-                            width: 'fit-content',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
-                        }}>
-                            <button
-                                onClick={() => setShowPopup(false)}
-                                style={{
-                                    position: 'absolute',
-                                    top: '5px',
-                                    right: '5px',
-                                    background: 'transparent',
-                                    border: 'none',
-                                    fontSize: '16px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                &times;
-                            </button>
-                            <h3 style={{ margin: '0 20px 0 0' }}>You Are Not Currently Active To Take The Appoinments</h3>
+                            <div key={index} className="flex flex-col justify-center items-center">
+                                {index !== 0 && (
+                                    <div
+                                        className={`absolute w-full h-1 top-4 ${currentStep > index ? "bg-blue-500" : "bg-gray-300"
+                                            }`}
+                                        style={{ left: "-50%", zIndex: -1 }}
+                                    />
+                                )}
+
+                                <div
+                                    className={`w-[32px] text-[#242E39] cursor-pointer bg-[#FFFFFF] h-[32px] border-[2px] flex items-center justify-center rounded-full font-bold
+                ${currentStep >= step?.id
+                                            ? "border-[#21A6E9]"
+                                            : "border-[#A1AEBE]"
+                                        }`}
+                                    onClick={() => setCurrentStep(step?.id)}
+                                >
+                                    {step?.id}
+                                </div>
+                                <p className={`mt-[10px] mb-0 text-[13px] text-center font-satoshi font-[500] ${currentStep >= step?.id
+                                    ? "text-[#21A6E9]"
+                                    : "text-[#A1AEBE]"
+                                    }`}>{step.title}</p>
+                            </div>
+                            {index !== steps.length - 1 && (
+                                <div className={`h-[3px] w-[80px] mx-2 mb-[32px]
+                                ${currentStep > steps[index]?.id ? "bg-[#21A6E9]" : "bg-[#A1AEBE]"}
+                            `}></div>
+                            )}
                         </div>
-                    )}
+                    ))}
                 </div>
-                <div className="Registrationdetails-elem-15">
-                    <div className="Registrationdetails-elem-14" style={{ padding: "30px 1px 0px 1px", height: "100vh" }}>
-                        <span className="cd-paragraph-clean Registrationdetails-elem-7">
-                        </span>
-                        <div className="Registrationdetails-elem-13">
-                            <div className="Registrationdetails-elem-11">
-                                <div className="Registrationdetails-elem-10">
-                                    <div style={{ display: 'flex', justifyContent: "space-between" }}>
-                                        <p className='pl-3' style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}><em> Accident Vehicle Details</em></p>
-                                        {fromPageHere === "allvehicles" && (<button style={{ padding: "5px 10px", background: nowReadOnly ? "lightblue" : 'green', color: nowReadOnly ? "black" : "white", width: "60px", fontSize: "15px", fontWeight: "bold", marginBottom: "20px", borderRadius: "10px" }} onClick={() => setNowReadOnly(!nowReadOnly)}>Edit</button>)}
-                                    </div>
-                                    {/* <span className="cd-paragraph-clean Registrationdetails-elem-8"> */}
-
-                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Vehicle No OR Chassis No </p>
-
-                                    {/* </span> */}
-                                    <div style={{ display: "flex", marginBottom: "20px" }}>
-
-
-
-                                        <select
-                                            name="regNo"
-                                            className={`w-full text-sm h-[30px] p-0 m-[10px] Registrationdetails-elem-9 
-                border border-black rounded-md focus:outline-none focus:ring-2 
-                focus:ring-blue-500 focus:border-blue-500 
-            ${getData.isActive === "false" ? "bg-gray-500 cursor-not-allowed" : ""}`}
-                                            style={{ fontSize: "13px", height: "30px", padding: '0px', margin: "10px 10px 0px 10px" }}
-                                            value={regNo}
-                                            onChange={(e) => {
-                                                const selectedVehicle = allVehicleNumbers.find(vehicle => vehicle.vehicleNo === e.target.value)
-                                                handleChange(e, selectedVehicle)
-                                            }}  // Pass vehicle object with event
-                                            disabled={getData.isActive === "false"}
-                                        >
-                                            <option className='text-sm font-semibold text-center' value="">Select Vehicle</option>
-                                            {!cities.error && allVehicleNumbers.map(vehicle => (
-                                                <option key={vehicle.vehicleNo} value={vehicle.vehicleNo}>
-                                                    {vehicle.vehicleNo}
-                                                </option>
-                                            ))}
-                                        </select>
-
-                                        {/* <div style={{ border: "1px solid" }}> hey </div> */}
-
-                                        {regNo != "" && (
-                                            <div className='w-[100px]'>
-                                                <img src={checksuccess} style={{ marginTop: '10px', height: "25px", width: '25px' }} />
-                                            </div>
-                                        )}
-                                    </div>
-                                    {regNo != "" && (
+                {currentStep === "01" &&
+                    <div>
+                        <h6 className="mb-0 font-[500] font-satoshi md:text-[48px] text-[30px] leading-[68px] text-center text-[#000000] pb-[40px]">Add Accident Vehicle Details</h6>
+                        <div className="flex md:flex-row flex-col justify-center gap-[30px]">
+                            <div className="max-w-[694px] w-full bg-[#FFFFFF] rounded-[30px] md:py-[50px] py-[30px] md:px-[40px] px-[20px]">
+                                <div className="grid grid-cols-2 gap-[24px]">
+                                    <div className="col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Vehicle Number</label>
                                         <div>
-                                            <div className='flex'>
-                                                <div>
-                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Spot Person</p>
+                                            <select name="" id="" value={regNo}
+                                                onChange={(e) => {
+                                                    const selectedVehicle = allVehicleNumbers.find(vehicle => vehicle.vehicleNo === e.target.value)
+                                                    handleChange(e, selectedVehicle)
+                                                }}
+                                                disabled={getData.isActive === "false"}
+                                                className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full'>
+                                                <option value="">Select Number</option>
+                                                {!cities.error && allVehicleNumbers.map(vehicle => (
+                                                    <option key={vehicle.vehicleNo} value={vehicle.vehicleNo}>
+                                                        {vehicle.vehicleNo}
+                                                    </option>
+                                                ))}
+                                            </select>
 
-                                                    <input
-                                                        type="text"
-                                                        className="Registrationdetails-elem-9"
-                                                        style={{ textAlign: 'left', margin: '10px', width: '80%' }}
-                                                        value={onSpotName}  // This is fine as long as both values are being correctly updated
-                                                        name="spotPerson"
-                                                        placeholder="Spot Person Name"
-                                                        onChange={(e) => setOnSpotName(e.target.value)}  // Make sure `setOnSpotName` is correctly updating state
-                                                        disabled={getData?.isActive === "false"}  // Ensure `getData.isActive` is the correct type (string vs boolean)
-                                                    />
-
-                                                </div>
-
-                                                <div>
-
-                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Spot Person No</p>
-
-                                                    <input
-                                                        type="text"
-                                                        className="Registrationdetails-elem-9"
-                                                        style={{ textAlign: 'left', margin: '10px 10px 10px 10px', width: '80%' }}
-                                                        value={onSpotContact}
-                                                        placeholder='Spot Person Number'
-                                                        onChange={(e) => setOnSpotContact(e.target.value)}
-                                                        disabled={getData.isActive === "false"}
-                                                    />
-                                                </div>
-                                                <div>
-
-                                                    <p className='pl-3' style={{ fontSize: "12px", fontWeight: "bold" }}>Quantity (tons)</p>
-
-                                                    <input
-                                                        type="number"
-                                                        name="quantity"
-                                                        className="Registrationdetails-elem-9"
-                                                        style={{ textAlign: 'left', margin: '10px 10px 10px 10px', width: '80%' }}
-                                                        value={quantity}
-                                                        readOnly={nowReadOnly ? true : false}
-                                                        onChange={(e) => {
-                                                            const newValue = e.target.value;
-                                                            if (/^\d*$/.test(newValue)) {
-                                                                setQuantity(newValue);
-                                                            }
-                                                        }}
-
-                                                        placeholder='Quantity'
-                                                        disabled={getData.isActive === "false"}
-                                                    />
-                                                </div>
-
-
-                                            </div>
-
-                                            <div className="bg-white h-screen w-screen relative overflow-hidden">
-                                                {/* Map Image */}
-                                                {/* <img
-                                                className={`h-auto w-full object-cover transition-opacity duration-500 ${panelOpen ? 'opacity-0' : 'opacity-100'
-                                                    }`}
-                                                src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-                                                alt="dummy map"
-                                            /> */}
-                                                <div className={`h-auto w-full object-cover transition-opacity duration-500 ${panelOpen ? 'opacity-0' : 'opacity-100'
-                                                    }`}>
-                                                    <MapForVendorDistance state={{ fromPage: 'registration' }} />
-                                                </div>
-
-                                                {/* Input Panel */}
-                                                <div
-                                                    style={{
-                                                        paddingTop: panelOpen ? '70px' : '20px',
-                                                        transform: panelOpen ? 'translateY(0)' : 'translateY(100%)',
-                                                        position: panelOpen ? 'fixed' : 'absolute',
-                                                        zIndex: panelOpen ? '100' : '1000',
-                                                        top: 0,
-                                                        left: 0,
-                                                        width: '100%',
-                                                        transition: panelOpen ? 'transform 0.3s ease-in-out, opacity 0s' : 'none', // Apply instant opacity change when not open
-                                                    }}
-                                                    className={`bg-white   pl-4 pr-4 pb-4 rounded-lg bg-opacity-60  w-full transition-all duration-500 ease-in-out`}
-                                                >
-                                                    <h5 className="text-sm text-black font-semibold mb-3 text-left">Book Vehicle Now</h5>
-                                                    <div
-                                                        className={`transition-all duration-500 ease-in-out`}
-                                                        style={{
-                                                            transform: panelOpen ? 'translateY(-1px)' : 'translateY(0px)',
-                                                        }}
-                                                    >
-                                                        <input
-
-                                                            type="text"
-                                                            onClick={() => {
-                                                                setPanelOpen(true)
-                                                                setActiveField('pickup')
-                                                            }}
-                                                            className="text-black p-2 m-1 w-full mb-3 rounded-lg border border-black-300 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                                                            value={pickupLocation}
-                                                            name="pickup"
-                                                            onChange={handlePickupChange}
-                                                            placeholder="pickup location"
-
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            onClick={() => {
-                                                                setPanelOpen(true)
-                                                                setActiveField('destination')
-                                                            }}
-                                                            className="text-black p-2 m-1 w-full rounded-lg border border-black-300 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                                                            value={dropLocation}
-                                                            name="drop"
-                                                            onChange={handleDestinationChange}
-                                                            placeholder="drop location"
-                                                        />
-                                                    </div>
-                                                    <button
-                                                        onClick={findTrip}
-                                                        disabled={!dropLocation || !pickupLocation}
-                                                        className={`px-4 py-2 rounded-lg mt-3 w-full text-sm ${!dropLocation || !pickupLocation ? 'bg-gray-500' : 'bg-black'} text-white`}>
-                                                        Done
-                                                    </button>
-                                                </div>
-                                                {/* Panel */}
-                                                <div
-                                                    ref={panelRef}
-                                                    className="bg-white w-full transition-all duration-500 ease-in-out absolute bottom-0 left-0"
-                                                    style={{
-                                                        height: panelOpen ? '100%' : '0%',
-                                                        opacity: panelOpen ? 1 : 1,
-                                                        paddingTop: panelOpen ? '20px' : '0',
-
-                                                    }}
-                                                >
-                                                    {/* Close Icon */}
-                                                    <div className='text-center top-0 mb-1'>
-                                                        <IconButton
-                                                            onClick={() => setPanelOpen(false)}
-                                                            className="absolute"
-                                                        >
-                                                            <ExpandMoreIcon className='fixed' />
-                                                        </IconButton>
-                                                    </div>
-
-                                                    {/* Panel content */}
-
-
-                                                    <div className='position max-h-[500px] overflow-y-auto'>
-                                                        <LocationSearchPanel
-                                                            suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
-                                                            setPanelOpen={setPanelOpen}
-                                                            setVehiclePanel={setVehiclePanel}
-                                                            setPickupLocation={setPickupLocation}
-                                                            setDropLocation={setDropLocation}
-                                                            activeField={activeField}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div ref={vehiclePanelRef} style={{ zIndex: "1001" }} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
-                                                    <VehiclePanel selectedVehicleData={selectedVehicleData} setVehicleType={setVehicleType} setVehicleImagesPanel={setVehicleImagesPanel} setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
-                                                </div>
-                                                <div ref={vehicleImagesPanelRef} style={{ zIndex: "1001" }} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 pt-0 mb-10'>
-                                                    <VehicleImagePanel setImages={setImages} setConfirmVehicle={setConfirmVehicle} setVehicleImagesPanel={setVehicleImagesPanel} setVehiclePanel={setVehiclePanel} />
-                                                </div>
-                                                <div ref={confirmVehicleRef} style={{ zIndex: "1001" }} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
-                                                    <ConfirmedRide vehicleType={vehicleType} accidentData={accidentDataObject} setConfirmVehicle={setConfirmVehicle} setVehicleImagesPanel={setVehicleImagesPanel} setVehicleFound={setVehicleFound} />
-                                                </div>
-                                                <div ref={vehicleFoundRef} className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
-                                                    <LookingForAccptance vehicleType={vehicleType} accidentData={accidentDataObject} setVehicleFound={setVehicleFound} />
-                                                </div>
-                                                <div className='fixed  w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8 mb-10'>
-                                                    <WaitForVehicleCome />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {successDone && (
-                                        <div style={{
-                                            position: "fixed",
-                                            top: 0,
-                                            left: 0,
-                                            width: "100%",
-                                            height: "100%",
-                                            backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent background
-                                            zIndex: 1000, // ensure it appears above other content
-                                            display: "flex",
-                                            alignItems: "flex-end", // positions the container at the bottom
-                                            justifyContent: "center",
-                                            animation: "slideUp 0.5s ease-out" // apply the animation
-                                        }}>
-                                            <div className="image-container" style={{
-                                                backgroundColor: "#f1ffc2",
-                                                padding: "20px",
-                                                borderRadius: "15px 15px 0px 0px",
-                                                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-                                                maxWidth: "600px",
-                                                width: "97%",
-                                                marginBottom: "20px"
-                                            }}>
-                                                <div style={{ marginTop: "40%" }}>
-                                                </div>
-                                                <SuccessIcon />
-                                                <h1 style={{ textAlign: "center", fontWeight: "bold", fontSize: "17px", color: "green", margin: "0px 50px 20px 30px", padding: "5px", flex: 1 }}>Our executives will reach out to you within minutes !!! </h1>
-                                            </div>
 
                                         </div>
-                                    )}
+                                    </div>
+                                    <div className="md:col-span-1 col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person</label>
+                                        <div>
+                                            <input
+                                                type="text"
+                                                className="border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] pl-[15px] py-[16px] px-[10px]  w-full"
+                                                style={{ padding: '20px' }}
+                                                value={onSpotName}  // This is fine as long as both values are being correctly updated
+                                                name="spotPerson"
+                                                placeholder="Enter Name"
+                                                onChange={(e) => setOnSpotName(e.target.value)}  // Make sure `setOnSpotName` is correctly updating state
+                                                disabled={getData?.isActive === "false"}  // Ensure `getData.isActive` is the correct type (string vs boolean)
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="md:col-span-1 col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person Number</label>
+                                        <div>
+                                            <input
+                                                type="text"
+                                                className="border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full"
+                                                style={{ padding: '20px' }}
+                                                value={onSpotContact}
+                                                placeholder='Spot Person Number'
+                                                onChange={(e) => setOnSpotContact(e.target.value)}
+                                                disabled={getData.isActive === "false"}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Quantity (Tons)</label>
+                                        <div>
+                                            <input
+                                                type="number"
+                                                name="quantity"
+                                                className="border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full"
+                                                style={{ padding: '20px' }}
+                                                value={quantity}
+                                                readOnly={nowReadOnly ? true : false}
+                                                onChange={(e) => {
+                                                    const newValue = e.target.value;
+                                                    if (/^\d*$/.test(newValue)) {
+                                                        setQuantity(newValue);
+                                                    }
+                                                }}
+                                                placeholder='Quantity'
+                                                disabled={getData.isActive === "false"}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='h-[350px] mb-[200px] col-span-2 relative mt-[16px]'>
+                                        {/* <img src={img1} alt="" /> */}
+                                        <div className="h-full w-full rounded-xl overflow-hidden">
+                                            <MapForVendorDistance className="h-full w-full rounded-xl" />
+                                        </div>
+                                        <div className="flex gap-[14px] flex-col w-full z-[1000] absolute px-[32px] bottom-[32px]">
+                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[10px] px-[10px]">
+                                                <div className="flex gap-[20px] items-center">
+                                                    <img src={icon2} className='h-[20px] w-[20px]' alt="" />
+                                                    <input
 
+                                                        type="text"
+                                                        onClick={() => {
+                                                            setActiveField('pickup')
+                                                        }}
+                                                        className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]"
+                                                        value={pickupLocation}
+                                                        name="pickup"
+                                                        onChange={handlePickupChange}
+                                                        placeholder="pickup location"
 
-                                    {alertInfo.show && (
-                                        <Alert severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })}>
-                                            {alertInfo.message}
-                                        </Alert>
-                                    )}
+                                                    />
+                                                    {/* <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Pickup location</p> */}
+                                                </div>
+                                                {/* <img src={search} className='h-[30px] w-[30px]' alt="" /> */}
+                                            </div>
+
+                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[10px] px-[10px]">
+                                                <div className="flex gap-[20px] items-center">
+                                                    <img src={icon1} className='h-[20px] w-[20px]' alt="" />
+                                                    <input
+                                                        type="text"
+                                                        onClick={() => {
+                                                            setActiveField('destination')
+                                                        }}
+                                                        className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]"
+                                                        value={dropLocation}
+                                                        name="drop"
+                                                        onChange={handleDestinationChange}
+                                                        placeholder="drop location"
+                                                    />
+                                                    {/* <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Drop Location</p> */}
+                                                </div>
+                                                {/* <img src={search} className='h-[30px] w-[30px]' alt="" /> */}
+                                            </div>
+                                        </div>
+                                        {isLoadingPlaces && (
+                                            <ClipLoader color="#4CAF50" loading={isLoading} />
+                                        )}
+                                        {!isLoadingPlaces && (
+                                            <div className=' bg-white position max-h-[180px] max-h-[400px] overflow-y-auto mt-4'>
+                                            <LocationSearchPanel
+                                                suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
+                                                setPanelOpen={setPanelOpen}
+                                                setVehiclePanel={setVehiclePanel}
+                                                setPickupLocation={setPickupLocation}
+                                                setDropLocation={setDropLocation}
+                                                activeField={activeField}
+                                            />
+                                        </div>)}
+                                    </div>
+                                    <div className="flex items-center col-span-2 gap-[12px]">
+                                        <p className="m-0 font-[500] text-[#000000] font-satoshi text-[16px]">Estimated Fair is This</p>
+                                        <img src={icon3} className='h-[30px] w-[30px]' alt="" />
+                                        <p className="m-0 font-[500] text-[#21A6E9] font-satoshi text-[16px]">Mumbai 25 Km </p>
+                                    </div>
+                                    <div className="flex justify-end col-span-2">
+                                        <div className="bg-[#21A6E9] flex py-[5px] rounded-full pr-[6px] pl-[26px]">
+                                            <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]">Continue</button>
+                                            <img src={rightarrow} alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='w-full max-w-[555px]'>
+                                <img src={img2} className='w-full h-[400px]' alt="" />
+                            </div>
+                        </div>
+                    </div>}
+                {currentStep === "02" &&
+                    <div>
+                        <h6 className="mb-0 font-[500] font-satoshi md:text-[48px] text-[30px] leading-[68px] text-center text-[#000000] pb-[40px]">Choose Vehicle Type</h6>
+                        <div className="w-full bg-[#FFFFFF] rounded-[30px] md:p-[78px] p-[20px]">
+                            <div className="grid md:grid-cols-3 grid-cols-1 gap-[24px]">
+                                <div className="c-card">
+                                    <img src={img3} className='h-[197px] w-full object-contain' alt="" />
+                                    <h6 className="pt-[10px] mb-0 text-center c-title text-[#000000] text-[20px] pb-[13px]">Hydra Crane</h6>
+                                    <p className="m-0">Get the quick service</p>
+                                </div>
+                                <div className="c-card">
+                                    <img src={img4} className='h-[197px] w-full object-contain' alt="" />
+                                    <h6 className="pt-[10px] mb-0 text-center c-title text-[#000000] text-[20px] pb-[13px]">Mobile Crane</h6>
+                                    <p className="m-0">catch up quickly get best service with crane</p>
+                                </div>
+                                <div className="c-card">
+                                    <img src={img5} className='h-[197px] w-full object-contain' alt="" />
+                                    <h6 className="pt-[10px] mb-0 text-center c-title text-[#000000] text-[20px] pb-[13px]">Mobile Crane Hydra Crane</h6>
+                                    <p className="m-0">catch up quickly get crane and Mobile crane </p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <span className="cd-paragraph-clean Registrationdetails-elem-12">
-                        <p><br /></p>
-                    </span>
-                </div>
-
-
-
-
-
-
-
-                <Modal className="custom-modal-content" isOpen={isModalOpen} onClose={closeModal}>
-                    {comingVehicleInfo && (
-                        <div>
-                            <div className="responsive-table" style={{ marginBottom: "0px" }}>
-                                {comingVehicleInfo.length === 0 ? (
-                                    <div style={{ textAlign: 'center', fontWeight: "bold" }}>No Data Found Related This No...</div>
-                                ) : (
-                                    comingVehicleInfo.map((item, index) => (
-                                        <div key={index} className="vertical-table">
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Vehicle Number:</strong></div>
-                                                <div className="table-cell">{item.vehicleNo || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Chassis Number:</strong></div>
-                                                <div className="table-cell">{item.chassisNo || '---'}</div>
-                                            </div>
-                                            {/* <div className="table-row">
-                                                <div className="table-cell"><strong>Make:</strong></div>
-                                                <div className="table-cell">{item.make || '---'}</div>
-                                            </div> */}
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Model:</strong></div>
-                                                <div className="table-cell">{item.model || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Engine Number:</strong></div>
-                                                <div className="table-cell">{item.engineNo || '---'}</div>
-                                            </div>
-                                            <div className="table-row">
-                                                <div className="table-cell"><strong>Insurance Name:</strong></div>
-                                                <div className="table-cell">{item.InsuranceName || '---'}</div>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
+                    </div>}
+                {currentStep === "03" &&
+                    <div>
+                        <h6 className="mb-0 font-[500] font-satoshi md:text-[48px] text-[30px] leading-[68px] text-center text-[#000000] pb-[40px]">Add Vehicle Images</h6>
+                        <div className="w-full bg-[#FFFFFF] rounded-[30px] md:p-[78px] max-w-[1148px] mx-auto p-[20px]">
+                            <div className="grid md:grid-cols-3 grid-cols-1 gap-[24px]">
+                                <div className="h-[342px] bg-[#F9F9F9] rounded-[16px] flex items-center justify-center">
+                                    <img src={icon4} alt="" />
+                                </div>
+                                <div className="h-[342px] bg-[#F9F9F9] rounded-[16px] flex items-center justify-center">
+                                    <img src={icon4} alt="" />
+                                </div>
+                                <div className="h-[342px] bg-[#F9F9F9] rounded-[16px] flex items-center justify-center">
+                                    <img src={icon4} alt="" />
+                                </div>
                             </div>
-                            <div style={{ textAlign: 'center' }}>
-                                <button
-                                    type="submit"
-                                    style={{ padding: '10px 30px', border: 'none', borderRadius: '4px', cursor: 'pointer', backgroundColor: 'rgb(255 0 0)', color: '#f9f9f9' }}
-                                    onClick={handleNext}
-                                >
-                                    Next
-                                </button>
+                            <div className="flex justify-end items-center gap-[30px] pt-[60px]">
+                                <button className='text-[#21A6E9] font-[400] font-satoshi text-[24px] leading-[33.6px]'>Skip</button>
+                                <div className="bg-[#21A6E9] flex py-[5px] rounded-full pr-[6px] pl-[26px]">
+                                    <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]">Continue</button>
+                                    <img src={rightarrow} alt="" />
+                                </div>
                             </div>
                         </div>
-                    )}
-                </Modal>
-
-            </div >)}
-
-            <div>
-                <BottomNavigationBar />
+                    </div>}
+                {currentStep === "04" &&
+                    <div>
+                        <h6 className="mb-0 font-[500] font-satoshi md:text-[48px] text-[30px] leading-[68px] text-center text-[#000000] pb-[40px]">Confirm Information</h6>
+                        <div className="flex md:flex-row flex-col justify-center gap-[30px]">
+                            <div className="max-w-[694px] w-full bg-[#FFFFFF] rounded-[30px] md:py-[50px] py-[30px] md:px-[40px] px-[20px]">
+                                <div className="grid grid-cols-2 gap-[24px]">
+                                    <div className="col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Vehicle No  OR Chassis No</label>
+                                        <div>
+                                            <select name="" id="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full'>
+                                                <option value="">Select Number</option>
+                                                <option value="">1</option>
+                                                <option value="">2</option>
+                                                <option value="">3</option>
+                                                <option value="">4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="md:col-span-1 col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person</label>
+                                        <div>
+                                            <input type="text" name="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full' id="" placeholder='Enter Person' />
+                                        </div>
+                                    </div>
+                                    <div className="md:col-span-1 col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person Number</label>
+                                        <div>
+                                            <input type="number" name="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full' id="" placeholder='Enter Number' />
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Quantity (Tons)</label>
+                                        <div>
+                                            <input type="text" name="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full' id="" placeholder='Enter Quantity' />
+                                        </div>
+                                    </div>
+                                    <div className='col-span-2 relative mt-[16px]'>
+                                        <img src={img1} alt="" />
+                                        <div className="flex gap-[14px] flex-col w-full absolute px-[32px] bottom-[32px]">
+                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[16px] px-[18px]">
+                                                <div className="flex gap-[20px] items-center">
+                                                    <img src={icon2} className='h-[20px] w-[20px]' alt="" />
+                                                    <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Pickup location</p>
+                                                </div>
+                                                <img src={search} className='h-[30px] w-[30px]' alt="" />
+                                            </div>
+                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[16px] px-[18px]">
+                                                <div className="flex gap-[20px] items-center">
+                                                    <img src={icon1} className='h-[20px] w-[20px]' alt="" />
+                                                    <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Drop Location?</p>
+                                                </div>
+                                                <img src={search} className='h-[30px] w-[30px]' alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center col-span-2 gap-[12px]">
+                                        <p className="m-0 font-[500] text-[#000000] font-satoshi text-[16px]">Estimated Fair is This</p>
+                                        <img src={icon3} className='h-[30px] w-[30px]' alt="" />
+                                        <p className="m-0 font-[500] text-[#21A6E9] font-satoshi text-[16px]">Mumbai 25 Km </p>
+                                    </div>
+                                    <div className="col-span-2 pt-[16px]">
+                                        <h6 className="m-0 font-satoshi font-[500] text-[32px] text-[#000000] pb-[33px]">Vehicle Type</h6>
+                                        <div className='bg-[#E6F8FE] border border-[#21A6E9] rounded-[16px] py-[10px] px-[32px] flex items-center gap-[46px]'>
+                                            <img src={img3} className='h-[101px] w-[100px]' alt="" />
+                                            <div>
+                                                <h6 className="m-0 font-satoshi font-[500] text-[20px] leading-[28px] text-[#21A6E9]">Hydra Crane</h6>
+                                                <p className="m-0 font-[400] font-satoshi text-[16px] leading-[30px] text-[#000000]">Get the quick service</p>
+                                            </div>
+                                        </div>
+                                        <h6 className="m-0 font-satoshi font-[500] text-[32px] text-[#000000] py-[30px]">Vehicle Images</h6>
+                                        <div className="grid md:grid-cols-3 grid-cols-1 gap-[15px]">
+                                            <img src={img6} alt="" />
+                                            <img src={img7} alt="" />
+                                            <img src={img6} alt="" />
+                                        </div>
+                                    </div>
+                                    <div className="flex md:flex-row flex-col md:gap-0 gap-[20px] justify-between items-center col-span-2 pt-[36px]">
+                                        <div className="bg-[#FFFFFF] border-[1px] border-[#21A6E9] flex py-[5px] pr-[6px] pl-[26px]" style={{ border: '1px', borderRadius: '20px' }}>
+                                            <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[26px] text-[#21A6E9]">Download PDF</button>
+                                            <img src={icon5} className='h-[40px] w-[40px]' alt="" />
+                                        </div>
+                                        <div className="bg-[#21A6E9] flex py-[5px] rounded-full pr-[6px] pl-[26px] cursor-pointer" onClick={() => setIsModalOpenLooking(true)}>
+                                            <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]">Continue</button>
+                                            <img src={rightarrow} alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='w-full max-w-[555px]'>
+                                <img src={img2} className='w-full h-[400px]' alt="" />
+                            </div>
+                        </div>
+                        <ModalForLookVehicle
+                            isOpen={isModalOpenLooking}
+                            onClose={() => setIsModalOpenLooking(false)}
+                        />
+                    </div>}
             </div>
-        </div >
-    );
+        </>
+    )
 }
 
-export default Registration;
+export default AddVehicles
+
+
+function ModalForLookVehicle({ isOpen, onClose, }) {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+            <div className="bg-white py-[42px] px-[50px] rounded-[30px] shadow-lg w-[90%] md:w-[536px] relative">
+                <h6 className="m-0 font-[500] text-[48px] font-satoshi text-center text-[#000000]">Your Request in Progress</h6>
+                <div className="grid md:grid-cols-2 grid-cols-1 pt-[40px] items-center gap-[18px]">
+                    <div
+                        onClick={onClose}
+                        className="bg-[#EE3840] flex py-[5px] rounded-full pr-[6px] pl-[26px] w-full justify-between items-center cursor-pointer">
+                        <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]">Cancel</button>
+                        <img src={rightarrow} className='h-[40px] w-[40px]' alt="" />
+                    </div>
+                    <div className="bg-[#21A6E9] flex py-[5px] rounded-full pr-[6px] pl-[26px] w-full cursor-pointer justify-between items-center">
+                        <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] text-[#FFFFFF]">Look For Vehicle</button>
+                        <img src={rightarrow} className='h-[40px] w-[40px]' alt="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

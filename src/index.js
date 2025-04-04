@@ -4,6 +4,8 @@ import { RecoilRoot } from 'recoil';
 import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import '../src/Services/Firebase/Firebase'
 import { HelmetProvider } from "react-helmet-async";
 import { WebSocketProvider } from '../src/ContexAPI/WebSocketContext.jsx';
