@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 
-header { position: sticky; z-index: 1000; top: 0; display: flex; justify-content: space-between; padding: 4px 80px; align-items: center; border-bottom: 1px solid #DADADA; background: #FFFFFF;}
+header { position: sticky; z-index: 1001; top: 0; display: flex; justify-content: space-between; padding: 4px 80px; align-items: center; border-bottom: 1px solid #DADADA; background: #FFFFFF;}
 .header-list .list-item { position: relative; transition: all 0.5s;}
 
 .header-lists .list-item a { color:#FFFFFF; font-family: 'Satoshi', sans-serif; font-size: 40px; font-style: normal; font-weight: 700; line-height: 140%; letter-spacing: 0.2px; text-decoration: none; transition: all 0.5s; padding: 22px 0; border-bottom: 2px solid transparent; text-align: left;}

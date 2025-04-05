@@ -865,10 +865,9 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                                                     </option>
                                                 ))}
                                             </select>
-
-
                                         </div>
                                     </div>
+
                                     <div className="md:col-span-1 col-span-2">
                                         <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person</label>
                                         <div>
@@ -969,16 +968,16 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                                             <ClipLoader color="#4CAF50" loading={isLoading} />
                                         )}
                                         {!isLoadingPlaces && (
-                                            <div className=' bg-white position max-h-[180px] max-h-[400px] overflow-y-auto mt-4'>
-                                            <LocationSearchPanel
-                                                suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
-                                                setPanelOpen={setPanelOpen}
-                                                setVehiclePanel={setVehiclePanel}
-                                                setPickupLocation={setPickupLocation}
-                                                setDropLocation={setDropLocation}
-                                                activeField={activeField}
-                                            />
-                                        </div>)}
+                                            <div className=' bg-white position max-h-[400px] overflow-y-auto mt-4' style={{maxHeight:'180px'}}>
+                                                <LocationSearchPanel
+                                                    suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
+                                                    setPanelOpen={setPanelOpen}
+                                                    setVehiclePanel={setVehiclePanel}
+                                                    setPickupLocation={setPickupLocation}
+                                                    setDropLocation={setDropLocation}
+                                                    activeField={activeField}
+                                                />
+                                            </div>)}
                                     </div>
                                     <div className="flex items-center col-span-2 gap-[12px]">
                                         <p className="m-0 font-[500] text-[#000000] font-satoshi text-[16px]">Estimated Fair is This</p>
@@ -987,10 +986,14 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                                     </div>
                                     <div className="flex justify-end col-span-2">
                                         <div className="bg-[#21A6E9] flex py-[5px] rounded-full pr-[6px] pl-[26px]">
-                                            <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]">Continue</button>
+                                            <button
+                                            className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]"
+                                            onClick={()=>setCurrentStep('02')}>Continue</button>
+                                          
                                             <img src={rightarrow} alt="" />
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             <div className='w-full max-w-[555px]'>
@@ -1003,21 +1006,31 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                         <h6 className="mb-0 font-[500] font-satoshi md:text-[48px] text-[30px] leading-[68px] text-center text-[#000000] pb-[40px]">Choose Vehicle Type</h6>
                         <div className="w-full bg-[#FFFFFF] rounded-[30px] md:p-[78px] p-[20px]">
                             <div className="grid md:grid-cols-3 grid-cols-1 gap-[24px]">
-                                <div className="c-card">
+                            {(selectedVehicleData.length === 0 || selectedVehicleData.includes('crane')) && ( 
+                                <div className="c-card" onClick={()=>{
+                                    setCurrentStep('03')
+                                    setVehicleType('crane')}}>
                                     <img src={img3} className='h-[197px] w-full object-contain' alt="" />
                                     <h6 className="pt-[10px] mb-0 text-center c-title text-[#000000] text-[20px] pb-[13px]">Hydra Crane</h6>
                                     <p className="m-0">Get the quick service</p>
                                 </div>
-                                <div className="c-card">
+                            )}
+                            {(selectedVehicleData.length === 0 || selectedVehicleData.includes('recoveryVan')) && ( 
+                                <div className="c-card" onClick={()=>{
+                                    setCurrentStep('03')
+                                    setVehicleType('recoveryVan')}}>
                                     <img src={img4} className='h-[197px] w-full object-contain' alt="" />
                                     <h6 className="pt-[10px] mb-0 text-center c-title text-[#000000] text-[20px] pb-[13px]">Mobile Crane</h6>
                                     <p className="m-0">catch up quickly get best service with crane</p>
-                                </div>
-                                <div className="c-card">
+                                </div>)}
+                                {(selectedVehicleData.length === 0 || selectedVehicleData.includes('crane') && selectedVehicleData.includes('recoveryVan')) && ( 
+                                <div className="c-card" onClick={()=>{
+                                    setCurrentStep('03')
+                                    setVehicleType('crane,recoveryVan')}}>
                                     <img src={img5} className='h-[197px] w-full object-contain' alt="" />
                                     <h6 className="pt-[10px] mb-0 text-center c-title text-[#000000] text-[20px] pb-[13px]">Mobile Crane Hydra Crane</h6>
                                     <p className="m-0">catch up quickly get crane and Mobile crane </p>
-                                </div>
+                                </div>)}
                             </div>
                         </div>
                     </div>}
@@ -1025,24 +1038,20 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                     <div>
                         <h6 className="mb-0 font-[500] font-satoshi md:text-[48px] text-[30px] leading-[68px] text-center text-[#000000] pb-[40px]">Add Vehicle Images</h6>
                         <div className="w-full bg-[#FFFFFF] rounded-[30px] md:p-[78px] max-w-[1148px] mx-auto p-[20px]">
-                            <div className="grid md:grid-cols-3 grid-cols-1 gap-[24px]">
+                            {/* <div className="grid md:grid-cols-3 grid-cols-1 gap-[24px]">
                                 <div className="h-[342px] bg-[#F9F9F9] rounded-[16px] flex items-center justify-center">
-                                    <img src={icon4} alt="" />
+                                    <img src={icon4} className='h-[100px] w-[100px]' alt="" />
                                 </div>
-                                <div className="h-[342px] bg-[#F9F9F9] rounded-[16px] flex items-center justify-center">
-                                    <img src={icon4} alt="" />
-                                </div>
-                                <div className="h-[342px] bg-[#F9F9F9] rounded-[16px] flex items-center justify-center">
-                                    <img src={icon4} alt="" />
-                                </div>
-                            </div>
-                            <div className="flex justify-end items-center gap-[30px] pt-[60px]">
+                                
+                            </div> */}
+                            <VehicleImagePanel setImages={setImages} setCurrentStep={setCurrentStep}/>
+                            {/* <div className="flex justify-end items-center gap-[30px] pt-[60px]">
                                 <button className='text-[#21A6E9] font-[400] font-satoshi text-[24px] leading-[33.6px]'>Skip</button>
                                 <div className="bg-[#21A6E9] flex py-[5px] rounded-full pr-[6px] pl-[26px]">
                                     <button className="font-satoshi font-[400] text-[18px] leading-[33.6px] pr-[36px] text-[#FFFFFF]">Continue</button>
                                     <img src={rightarrow} alt="" />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>}
                 {currentStep === "04" &&
@@ -1052,53 +1061,135 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                             <div className="max-w-[694px] w-full bg-[#FFFFFF] rounded-[30px] md:py-[50px] py-[30px] md:px-[40px] px-[20px]">
                                 <div className="grid grid-cols-2 gap-[24px]">
                                     <div className="col-span-2">
-                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Vehicle No  OR Chassis No</label>
+                                        <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Vehicle Number</label>
                                         <div>
-                                            <select name="" id="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full'>
+                                            <select name="" id="" value={regNo}
+                                                onChange={(e) => {
+                                                    const selectedVehicle = allVehicleNumbers.find(vehicle => vehicle.vehicleNo === e.target.value)
+                                                    handleChange(e, selectedVehicle)
+                                                }}
+                                                disabled={getData.isActive === "false"}
+                                                className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full'>
                                                 <option value="">Select Number</option>
-                                                <option value="">1</option>
-                                                <option value="">2</option>
-                                                <option value="">3</option>
-                                                <option value="">4</option>
+                                                {!cities.error && allVehicleNumbers.map(vehicle => (
+                                                    <option key={vehicle.vehicleNo} value={vehicle.vehicleNo}>
+                                                        {vehicle.vehicleNo}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
+
                                     <div className="md:col-span-1 col-span-2">
                                         <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person</label>
                                         <div>
-                                            <input type="text" name="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full' id="" placeholder='Enter Person' />
+                                            <input
+                                                type="text"
+                                                className="border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] pl-[15px] py-[16px] px-[10px]  w-full"
+                                                style={{ padding: '20px' }}
+                                                value={onSpotName}  // This is fine as long as both values are being correctly updated
+                                                name="spotPerson"
+                                                placeholder="Enter Name"
+                                                onChange={(e) => setOnSpotName(e.target.value)}  // Make sure `setOnSpotName` is correctly updating state
+                                                disabled={getData?.isActive === "false"}  // Ensure `getData.isActive` is the correct type (string vs boolean)
+                                            />
                                         </div>
                                     </div>
                                     <div className="md:col-span-1 col-span-2">
                                         <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Spot Person Number</label>
                                         <div>
-                                            <input type="number" name="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full' id="" placeholder='Enter Number' />
+                                            <input
+                                                type="text"
+                                                className="border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full"
+                                                style={{ padding: '20px' }}
+                                                value={onSpotContact}
+                                                placeholder='Spot Person Number'
+                                                onChange={(e) => setOnSpotContact(e.target.value)}
+                                                disabled={getData.isActive === "false"}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-span-2">
                                         <label htmlFor="" className='font-[500] font-satoshi text-[16px] text-[#000000] pb-[14px]'>Quantity (Tons)</label>
                                         <div>
-                                            <input type="text" name="" className='border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full' id="" placeholder='Enter Quantity' />
+                                            <input
+                                                type="number"
+                                                name="quantity"
+                                                className="border border-[#DEDEE8] bg-[#F6F6F6] rounded-[7px] py-[16px] px-[10px] w-full"
+                                                style={{ padding: '20px' }}
+                                                value={quantity}
+                                                readOnly={nowReadOnly ? true : false}
+                                                onChange={(e) => {
+                                                    const newValue = e.target.value;
+                                                    if (/^\d*$/.test(newValue)) {
+                                                        setQuantity(newValue);
+                                                    }
+                                                }}
+                                                placeholder='Quantity'
+                                                disabled={getData.isActive === "false"}
+                                            />
                                         </div>
                                     </div>
-                                    <div className='col-span-2 relative mt-[16px]'>
-                                        <img src={img1} alt="" />
-                                        <div className="flex gap-[14px] flex-col w-full absolute px-[32px] bottom-[32px]">
-                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[16px] px-[18px]">
+                                    <div className='h-[350px] mb-[200px] col-span-2 relative mt-[16px]'>
+                                        {/* <img src={img1} alt="" /> */}
+                                        <div className="h-full w-full rounded-xl overflow-hidden">
+                                            <MapForVendorDistance className="h-full w-full rounded-xl" />
+                                        </div>
+                                        <div className="flex gap-[14px] flex-col w-full z-[1000] absolute px-[32px] bottom-[32px]">
+                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[10px] px-[10px]">
                                                 <div className="flex gap-[20px] items-center">
                                                     <img src={icon2} className='h-[20px] w-[20px]' alt="" />
-                                                    <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Pickup location</p>
+                                                    <input
+
+                                                        type="text"
+                                                        onClick={() => {
+                                                            setActiveField('pickup')
+                                                        }}
+                                                        className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]"
+                                                        value={pickupLocation}
+                                                        name="pickup"
+                                                        onChange={handlePickupChange}
+                                                        placeholder="pickup location"
+
+                                                    />
+                                                    {/* <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Pickup location</p> */}
                                                 </div>
-                                                <img src={search} className='h-[30px] w-[30px]' alt="" />
+                                                {/* <img src={search} className='h-[30px] w-[30px]' alt="" /> */}
                                             </div>
-                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[16px] px-[18px]">
+
+                                            <div style={{ boxShadow: "0px 2px 4px 0px #00000040" }} className="flex items-center justify-between rounded-[7px] bg-[#FFFFFF] py-[10px] px-[10px]">
                                                 <div className="flex gap-[20px] items-center">
                                                     <img src={icon1} className='h-[20px] w-[20px]' alt="" />
-                                                    <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Drop Location?</p>
+                                                    <input
+                                                        type="text"
+                                                        onClick={() => {
+                                                            setActiveField('destination')
+                                                        }}
+                                                        className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]"
+                                                        value={dropLocation}
+                                                        name="drop"
+                                                        onChange={handleDestinationChange}
+                                                        placeholder="drop location"
+                                                    />
+                                                    {/* <p className="m-0 font-satoshi font-[400] text-[14px] text-[#19104E]">Drop Location</p> */}
                                                 </div>
-                                                <img src={search} className='h-[30px] w-[30px]' alt="" />
+                                                {/* <img src={search} className='h-[30px] w-[30px]' alt="" /> */}
                                             </div>
                                         </div>
+                                        {isLoadingPlaces && (
+                                            <ClipLoader color="#4CAF50" loading={isLoading} />
+                                        )}
+                                        {!isLoadingPlaces && (
+                                            <div className=' bg-white position max-h-[400px] overflow-y-auto mt-4' style={{maxHeight:'180px'}}>
+                                                <LocationSearchPanel
+                                                    suggestions={activeField === 'pickup' ? pickupSuggestions : destinationSuggestions}
+                                                    setPanelOpen={setPanelOpen}
+                                                    setVehiclePanel={setVehiclePanel}
+                                                    setPickupLocation={setPickupLocation}
+                                                    setDropLocation={setDropLocation}
+                                                    activeField={activeField}
+                                                />
+                                            </div>)}
                                     </div>
                                     <div className="flex items-center col-span-2 gap-[12px]">
                                         <p className="m-0 font-[500] text-[#000000] font-satoshi text-[16px]">Estimated Fair is This</p>
@@ -1131,12 +1222,15 @@ function AddVehicles({ item, fromPageHere, centerHere, vehicleNo }) {
                                             <img src={rightarrow} alt="" />
                                         </div>
                                     </div>
+                                   
+
                                 </div>
                             </div>
                             <div className='w-full max-w-[555px]'>
                                 <img src={img2} className='w-full h-[400px]' alt="" />
                             </div>
                         </div>
+
                         <ModalForLookVehicle
                             isOpen={isModalOpenLooking}
                             onClose={() => setIsModalOpenLooking(false)}

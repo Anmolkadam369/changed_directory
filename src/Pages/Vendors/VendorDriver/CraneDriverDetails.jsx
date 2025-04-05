@@ -45,7 +45,7 @@ const CraneDriverDetails = (props) => {
 
 
             </div>
-            <div className=' absolute flex items-center justify-center max-w-[90%]'>
+            <div className=' absolute flex items-center justify-center max-w-[95%]'>
                 <div style={{ overflowX: 'auto' }} className='flex p-3 mt-8 bg-gray-500 rounded-xl justify-center gap-5 items-start'>
                     <div className='text-center ml-[155px] mr-2'>
                         <CurrencyRupeeIcon className=" text-white text-3xl mb-2 font-thin " />
